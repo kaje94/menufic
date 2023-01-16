@@ -1,0 +1,19 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "cSpell.words": [
+        "Blurhash",
+        "clsx",
+        "downloadjs",
+        "Expletus",
+        "formkit",
+        "Mantine",
+        "menufic",
+        "superjson",
+        "tabler",
+        "TRPC",
+        "UPSTASH"
+    ]
+}

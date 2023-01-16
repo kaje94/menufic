@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    url      = env("DATABASE_URL")
+}
+
+model Restaurant {
+    id          String   @unique @default(cuid())
+    userId      String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    name        String
+    location    String
+    isPublished Boolean
+    menus       Menu[]   @relation("MenusOfRestaurant")
+    image       Image?   @relation("ImageOfRestaurant", fields: [imageId], references: [id])
+    imageId     String?  @unique
+    banners     Image[]  @relation("BannersOfRestaurant")
+
+    @@id([id, userId])
+    @@index([isPublished])
+}
+
+model Menu {
+    id            String      @unique @default(cuid())
+    userId        String
+    createdAt     DateTime    @default(now())
+    updatedAt     DateTime    @updatedAt
+    name          String
+    availableTime String
+    position      Int
+    categories    Category[]  @relation("CategoriesOfMenu")
+    restaurant    Restaurant? @relation("MenusOfRestaurant", fields: [restaurantId], references: [id])
+    restaurantId  String?
+
+    @@id([id, userId])
+}
+
+model Category {
+    id        String     @unique @default(cuid())
+    userId    String
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    name      String
+    position  Int
+    items     MenuItem[] @relation("MenuItemsOfCategory")
+    menu      Menu?      @relation("CategoriesOfMenu", fields: [menuId], references: [id])
+    menuId    String?
+
+    @@id([id, userId])
+}
+
+model MenuItem {
+    id          String    @unique @default(cuid())
+    userId      String
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    name        String
+    description String
+    price       String
+    position    Int
+    category    Category? @relation("MenuItemsOfCategory", fields: [categoryId], references: [id])
+    categoryId  String?
+    image       Image?    @relation("ImageOfMenuItem", fields: [imageId], references: [id])
+    imageId     String?   @unique
+
+    @@id([id, userId])
+}
+
+model Image {
+    id               String      @unique
+    path             String
+    blurHash         String
+    color            String
+    menuItem         MenuItem?   @relation("ImageOfMenuItem")
+    restaurant       Restaurant? @relation("ImageOfRestaurant")
+    restaurantBanner Restaurant? @relation("BannersOfRestaurant", fields: [restaurantId], references: [id])
+    restaurantId     String?
+}

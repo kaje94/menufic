@@ -1,0 +1,11 @@
+diff --git a/node_modules/@mantine/styles/lib/theme/types/MantineColor.d.ts b/node_modules/@mantine/styles/lib/theme/types/MantineColor.d.ts
+index 49cc856..74b7b3e 100644
+--- a/node_modules/@mantine/styles/lib/theme/types/MantineColor.d.ts
++++ b/node_modules/@mantine/styles/lib/theme/types/MantineColor.d.ts
+@@ -1,5 +1,5 @@
+ import { Tuple } from './Tuple';
+-export type DefaultMantineColor = 'dark' | 'gray' | 'red' | 'pink' | 'grape' | 'violet' | 'indigo' | 'blue' | 'cyan' | 'green' | 'lime' | 'yellow' | 'orange' | 'teal' | (string & {});
++export type DefaultMantineColor = 'dark' | 'gray' | 'red' | 'pink' | 'grape' | 'violet' | 'indigo' | 'blue' | 'cyan' | 'green' | 'lime' | 'yellow' | 'orange' | 'teal' | 'primary' | (string & {});
+ export type MantineThemeColorsOverride = {};
+ export type MantineThemeColors = MantineThemeColorsOverride extends {
+     colors: Record<infer CustomColors, Tuple<string, 10>>;
