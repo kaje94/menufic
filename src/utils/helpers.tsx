@@ -12,7 +12,7 @@ export const showErrorToast = (title: string, err?: { message: string }) => {
 };
 
 export const showSuccessToast = (title: string, message?: string) => {
-    showNotification({ title, message, icon: <IconCheck /> });
+    showNotification({ title, message, icon: <IconCheck />, color: "green" });
 };
 
 export function reorderList<T>(current: T[], from: number, to: number) {

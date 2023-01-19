@@ -1,7 +1,6 @@
 import { AppShell, Box, Center, Loader } from "@mantine/core";
 import type { FC, PropsWithChildren } from "react";
 import { useState } from "react";
-// todo: absalute paths
 import { Footer } from "../Footer";
 import { NavHeader } from "../Header";
 import { NavPanel } from "./NavPanel";

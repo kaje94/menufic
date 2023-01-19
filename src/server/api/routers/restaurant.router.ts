@@ -1,5 +1,5 @@
 import type { Prisma, Restaurant, Image, PrismaPromise } from "@prisma/client";
-import { bannerInput, id, restaurantInput } from "src/utils/validators";
+import { bannerInput, id, restaurantInput, restaurantId } from "src/utils/validators";
 import { uploadImage, encodeImageToBlurhash, imageKit, rgba2hex, getColor } from "src/server/imageUtil";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "src/server/api/trpc";
@@ -128,15 +128,18 @@ export const restaurantRouter = createTRPCRouter({
 
         return currentItem;
     }),
-    // todo: for all get endpoints, only the owner should be able to access if
     get: protectedProcedure.input(id).query(({ ctx, input }) =>
         ctx.prisma.restaurant.findUniqueOrThrow({
             where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
         })
     ),
-    getBanners: protectedProcedure
-        .input(id)
-        .query(({ ctx, input }) => ctx.prisma.image.findMany({ where: { restaurantId: input.id } })),
+    getBanners: protectedProcedure.input(id).query(async ({ ctx, input }) => {
+        const restaurant = await ctx.prisma.restaurant.findUniqueOrThrow({
+            where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
+            select: { banners: true },
+        });
+        return restaurant.banners;
+    }),
     getAll: protectedProcedure.query(({ ctx }) =>
         ctx.prisma.restaurant.findMany({ where: { userId: ctx.session.user.id }, include: { image: true } })
     ),
@@ -161,12 +164,14 @@ export const restaurantRouter = createTRPCRouter({
             },
         })
     ),
-    setPublished: protectedProcedure.input(id.extend({ isPublished: z.boolean() })).mutation(async ({ ctx, input }) =>
-        ctx.prisma.restaurant.update({
+    setPublished: protectedProcedure.input(id.extend({ isPublished: z.boolean() })).mutation(async ({ ctx, input }) => {
+        const restaurant = await ctx.prisma.restaurant.update({
             where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
             data: { isPublished: input.isPublished },
-        })
-    ),
+        });
+        await ctx.res?.revalidate(`/restaurant/${input.id}/menu`);
+        return restaurant;
+    }),
     addBanner: protectedProcedure.input(bannerInput).mutation(async ({ ctx, input }) => {
         const restaurant = await ctx.prisma.restaurant.findUniqueOrThrow({
             where: { id_userId: { id: input.restaurantId, userId: ctx.session.user.id } },
@@ -195,11 +200,18 @@ export const restaurantRouter = createTRPCRouter({
             },
         });
     }),
-    deleteBanner: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
-        const [, deletedImage] = await Promise.all([
-            imageKit.deleteFile(input.id),
-            ctx.prisma.image.delete({ where: { id: input.id } }),
-        ]);
-        return deletedImage;
+    deleteBanner: protectedProcedure.input(restaurantId.extend({ id: z.string() })).mutation(async ({ ctx, input }) => {
+        const restaurant = await ctx.prisma.restaurant.findUniqueOrThrow({
+            where: { id_userId: { id: input.restaurantId, userId: ctx.session.user.id } },
+            include: { banners: true },
+        });
+        if (restaurant.banners.find((item) => item.id === input.id)) {
+            const [, deletedImage] = await Promise.all([
+                imageKit.deleteFile(input.id),
+                ctx.prisma.image.delete({ where: { id: input.id } }),
+            ]);
+            return deletedImage;
+        }
+        throw new TRPCError({ code: "FORBIDDEN" });
     }),
 });

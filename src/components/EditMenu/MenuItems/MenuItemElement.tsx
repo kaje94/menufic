@@ -31,14 +31,18 @@ const useStyles = createStyles((theme) => ({
         borderRadius: theme.radius.md,
         border: `1px solid ${theme.colors.dark[2]}`,
         overflow: "hidden",
+        verticalAlign: "center",
+        textAlign: "center",
+        fontSize: theme.fontSizes.xs,
+        color: theme.colors.dark[5],
+        display: "flex",
+        alignItems: "center",
     },
 }));
 
 interface Props {
     /** Item which will be represented by the component */
     menuItem: MenuItem & { image?: Image };
-    /** Index or the position  of the item */
-    index: number; // todo: check if this can be replaced by menuitem.position
     /** Id of the menu to which the item belongs to  */
     menuId: string;
     /** Id of the Category to which the item belongs to */
@@ -46,9 +50,9 @@ interface Props {
 }
 
 /** Individual menu item component with an option to edit or delete */
-export const MenuItemElement: FC<Props> = ({ menuItem, index, menuId, categoryId }) => {
+export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => {
     const trpcCtx = api.useContext();
-    const { classes, cx } = useStyles();
+    const { classes, cx, theme } = useStyles();
     const [deleteMenuItemModalOpen, setDeleteMenuItemModalOpen] = useState(false);
     const [menuItemFormOpen, setMenuItemFormOpen] = useState(false);
 
@@ -71,7 +75,7 @@ export const MenuItemElement: FC<Props> = ({ menuItem, index, menuId, categoryId
 
     return (
         <>
-            <Draggable key={menuItem.id} index={index} draggableId={menuItem.id}>
+            <Draggable key={menuItem.id} index={menuItem.position} draggableId={menuItem.id}>
                 {(provided, snapshot) => (
                     <Grid
                         gutter="lg"
@@ -93,25 +97,35 @@ export const MenuItemElement: FC<Props> = ({ menuItem, index, menuId, categoryId
 
                         <Grid.Col span={2} md={2} lg={1}>
                             <Box className={classes.emptyImage}>
-                                <ImageKitImage
-                                    imagePath={menuItem.image?.path}
-                                    height={50}
-                                    width={50}
-                                    imageAlt={menuItem.name}
-                                    blurhash={menuItem.image?.blurHash}
-                                    color={menuItem.image?.color}
-                                />
+                                {menuItem.image?.path ? (
+                                    <ImageKitImage
+                                        imagePath={menuItem.image?.path}
+                                        height={50}
+                                        width={50}
+                                        imageAlt={menuItem.name}
+                                        blurhash={menuItem.image?.blurHash}
+                                        color={menuItem.image?.color}
+                                    />
+                                ) : (
+                                    <Text>No Image</Text>
+                                )}
                             </Box>
                         </Grid.Col>
 
                         <Grid.Col span={6} md={5} lg={2}>
-                            <Text weight={700}>{menuItem.name}</Text>
+                            <Text weight={700} align="center">
+                                {menuItem.name}
+                            </Text>
                         </Grid.Col>
                         <Grid.Col span={3} md={3} lg={2}>
-                            {menuItem.price}
+                            <Text align="center" color="red" opacity={0.8}>
+                                {menuItem.price}
+                            </Text>
                         </Grid.Col>
                         <Grid.Col span={12} md={9} lg={5}>
-                            <Text color="dimmed">{menuItem.description}</Text>
+                            <Text color={menuItem.description ? theme.colors.dark[6] : theme.colors.dark[3]}>
+                                {menuItem.description || "No Description"}
+                            </Text>
                         </Grid.Col>
                         <Grid.Col span={12} md={3} lg={1}>
                             <Group position="center">

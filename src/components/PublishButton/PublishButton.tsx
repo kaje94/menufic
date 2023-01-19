@@ -2,7 +2,6 @@ import {
     Alert,
     Button,
     Box,
-    Modal,
     Switch,
     Text,
     Flex,
@@ -22,6 +21,7 @@ import { useState } from "react";
 import QRCode from "react-qr-code";
 import { api } from "src/utils/api";
 import { showErrorToast } from "../../utils/helpers";
+import { Modal } from "../Modal";
 
 interface Props {
     /** Selected restaurant for which the published state needs to be managed */
@@ -83,9 +83,7 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                 size="lg"
                 opened={modelVisible}
                 onClose={() => setModalVisible(false)}
-                title={<Text size="lg">Publish and share your menu</Text>}
-                overlayOpacity={0.1}
-                overlayBlur={5}
+                title="Publish and share your menu"
             >
                 <Alert
                     icon={isPublished ? <IconTrophy /> : <IconAlertCircle />}
@@ -96,8 +94,11 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                 >
                     {isPublished ? (
                         <>
-                            Changes to the menu will take around 30 minutes to be reflected in the published menu page
-                            <Text weight="bold" mt="sm">
+                            <Text color={theme.black}>
+                                Changes to the menu could take around 30 minutes to be reflected in the published menu
+                                page
+                            </Text>
+                            <Text weight="bold" mt="sm" color={theme.black}>
                                 Published menu URL
                             </Text>
                             <Flex justify="space-between" align="center">
@@ -109,7 +110,7 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                                     {({ copied, copy }) => (
                                         <Tooltip
                                             label={copied ? "URL copied" : "Copy URL"}
-                                            color={copied ? "green" : "gray"}
+                                            color={copied ? "green" : theme.black}
                                             position="left"
                                             withArrow
                                         >
@@ -122,7 +123,10 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                             </Flex>
                         </>
                     ) : (
-                        "Please publish the menu once you have finalized your changes. Once published, you will be able to either share the direct URL or the QR code for your menu, with your customers"
+                        <Text color={theme.black}>
+                            "Please publish the menu once you have finalized your changes. Once published, you will be
+                            able to either share the direct URL or the QR code for your menu, with your customers"
+                        </Text>
                     )}
                 </Alert>
 
@@ -133,7 +137,7 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                     sx={{ borderRadius: theme.radius.lg }}
                     p="md"
                 >
-                    <Text>Publish Menu</Text>
+                    <Text color={theme.black}>Publish Menu</Text>
                     <Switch
                         checked={isPublished}
                         onChange={(event) => setPublished({ id, isPublished: event.target.checked })}
@@ -162,8 +166,8 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                     mt="lg"
                     opacity={restaurant.isPublished ? 0.75 : 1}
                 >
-                    <Text>Preview URL</Text>
-                    <Text color="dimmed" size="sm">
+                    <Text color={theme.black}>Preview URL</Text>
+                    <Text color={theme.colors.dark[7]} size="sm">
                         The following URL can be used for testing purposes as it will mimic the interface of actual menu
                         while also updating in real time
                     </Text>
@@ -179,7 +183,7 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                             {({ copied, copy }) => (
                                 <Tooltip
                                     label={copied ? "URL copied" : "Copy URL"}
-                                    color={copied ? "green" : "gray"}
+                                    color={copied ? "green" : theme.black}
                                     position="left"
                                     withArrow
                                 >

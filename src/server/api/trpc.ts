@@ -24,6 +24,7 @@ import { prisma } from "src/server/db";
 
 type CreateContextOptions = {
     session: Session | null;
+    res?: NextApiResponse;
 };
 
 /**
@@ -39,6 +40,7 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
     return {
         session: opts.session,
         prisma,
+        res: opts.res,
     };
 };
 
@@ -55,6 +57,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 
     return createInnerTRPCContext({
         session,
+        res,
     });
 };
 
@@ -66,6 +69,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  */
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
+import type { NextApiResponse } from "next/types";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
     transformer: superjson,

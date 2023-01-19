@@ -37,7 +37,7 @@ export const MenuItems: FC<Props> = ({ categoryId, menuItems, menuId }) => {
                           items: reorderedList.reduce((acc: (MenuItem & { image: Image | null })[], reorderedItem) => {
                               const matchingItem = item?.items?.find((menuItem) => menuItem.id === reorderedItem.id);
                               if (matchingItem) {
-                                  return [...acc, matchingItem];
+                                  return [...acc, { ...matchingItem, position: reorderedItem.newPosition }];
                               }
                               return acc;
                           }, []),
@@ -77,10 +77,9 @@ export const MenuItems: FC<Props> = ({ categoryId, menuItems, menuId }) => {
                                 (itemsParent as any).current = ref;
                             }}
                         >
-                            {menuItems.map((item, index) => (
+                            {menuItems.map((item) => (
                                 <MenuItemElement
                                     key={item.id}
-                                    index={index}
                                     menuItem={item}
                                     categoryId={categoryId}
                                     menuId={menuId}
@@ -94,6 +93,7 @@ export const MenuItems: FC<Props> = ({ categoryId, menuItems, menuId }) => {
             {menuItems?.length < Number(env.NEXT_PUBLIC_MAX_MENU_ITEMS_PER_CATEGORY) && (
                 <Flex justify="center">
                     <Button
+                        key="add-new-menu-item"
                         leftIcon={<IconPlus size={14} />}
                         mt="md"
                         my={menuItems?.length === 0 ? "lg" : 0}

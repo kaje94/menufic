@@ -1,14 +1,13 @@
 import type { ModalProps } from "@mantine/core";
-import { Modal, Stack, Button, Group, Text, useMantineTheme } from "@mantine/core";
+import { Stack, Button, Group, Text, useMantineTheme } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
-import imageCompression from "browser-image-compression";
 import type { FC } from "react";
-import { useCallback, useEffect, useState } from "react";
-import { toBase64, showErrorToast, showSuccessToast } from "src/utils/helpers";
+import { useEffect, useState } from "react";
+import { showErrorToast, showSuccessToast } from "src/utils/helpers";
 import { api } from "src/utils/api";
 import { bannerInput } from "src/utils/validators";
 import { ImageUpload } from "../ImageUpload";
-import { CropModal } from "./CropModal";
+import { Modal } from "../Modal";
 
 interface Props extends ModalProps {
     /** Id of the restaurant for the the banner needs to be attached to */
@@ -44,34 +43,8 @@ export const BannerForm: FC<Props> = ({ opened, onClose, restaurantId, ...rest }
         }
     }, [restaurantId, opened]);
 
-    const [imageCropModalOpen, setImageCropModalOpen] = useState(false);
-    const [newUploadedImageUrl, setNewUploadedImageUrl] = useState("");
-
-    const onCropComplete = useCallback(
-        async (croppedImageBlob: Blob) => {
-            setImageCropModalOpen(false);
-            setNewUploadedImageUrl("");
-
-            const compressedFile = await imageCompression(
-                new File([croppedImageBlob], "menu-item.jpeg", { type: croppedImageBlob.type }),
-                { maxWidthOrHeight: 900, useWebWorker: true, initialQuality: 0.75 }
-            );
-            const base64File = await toBase64(compressedFile);
-            setValues({ imageBase64: base64File as string });
-            setImagePath(URL.createObjectURL(compressedFile));
-        },
-        [setValues, setImageCropModalOpen]
-    );
-
     return (
-        <Modal
-            opened={opened}
-            onClose={onClose}
-            title={<Text size="lg">Add Banner</Text>}
-            overlayOpacity={0.1}
-            overlayBlur={5}
-            {...rest}
-        >
+        <Modal opened={opened} onClose={onClose} title="Add Banner" loading={isCreating} {...rest}>
             <form
                 onSubmit={onSubmit((values) => {
                     if (isDirty()) {
@@ -82,20 +55,15 @@ export const BannerForm: FC<Props> = ({ opened, onClose, restaurantId, ...rest }
                 })}
             >
                 <Stack spacing="sm">
-                    <Text size="md" mt="md">
-                        Image
-                        <Text component="span" color="red">
-                            *
-                        </Text>
-                    </Text>
                     <ImageUpload
                         width={750}
                         height={300}
                         imageUrl={imagePath}
                         error={!!errors.imageBase64}
-                        onImageDrop={(file) => {
-                            setNewUploadedImageUrl(URL.createObjectURL(file));
-                            setImageCropModalOpen(true);
+                        imageRequired
+                        onImageCrop={(imageBase64, imagePath) => {
+                            setValues({ imageBase64 });
+                            setImagePath(imagePath);
                         }}
                         onImageDeleteClick={() => {
                             setValues({ imageBase64: "" });
@@ -111,14 +79,6 @@ export const BannerForm: FC<Props> = ({ opened, onClose, restaurantId, ...rest }
                         </Button>
                     </Group>
                 </Stack>
-
-                <CropModal
-                    opened={imageCropModalOpen}
-                    onClose={() => setImageCropModalOpen(false)}
-                    onCrop={onCropComplete}
-                    imageUrl={newUploadedImageUrl}
-                    aspect={2.5 / 1}
-                />
             </form>
         </Modal>
     );

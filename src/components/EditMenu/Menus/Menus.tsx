@@ -1,5 +1,5 @@
 import { IconCirclePlus } from "@tabler/icons";
-import { Text, createStyles, Center, Box, Loader } from "@mantine/core";
+import { Text, Center, Box, Loader } from "@mantine/core";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
@@ -12,29 +12,7 @@ import { env } from "src/env/client.mjs";
 import { showErrorToast } from "src/utils/helpers";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Empty } from "../../Empty";
-
-const useStyles = createStyles((theme) => ({
-    item: {
-        display: "flex",
-        alignItems: "center",
-        borderRadius: theme.radius.lg,
-        border: `1px solid ${theme.colors.gray[2]}`,
-        padding: theme.spacing.sm,
-        backgroundColor: theme.white,
-        marginBottom: theme.spacing.sm,
-        cursor: "pointer",
-        position: "relative",
-        color: theme.colors.primary[7],
-        transition: "background 500ms ease",
-        "&:hover": { backgroundColor: theme.colors.dark[0] },
-    },
-    initialAdd: {
-        backgroundColor: theme.colors.primary[8],
-        color: theme.white,
-        "&:hover": { backgroundColor: theme.colors.primary[6] },
-    },
-    itemTitle: { fontWeight: 600 },
-}));
+import { useStyles } from "./styles";
 
 interface Props {
     /** Id of the restaurant to which the menus belong to */
@@ -49,7 +27,6 @@ interface Props {
 export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }) => {
     const trpcCtx = api.useContext();
     const { classes, cx } = useStyles();
-    const [menusParent, enableAutoAnimate] = useAutoAnimate<HTMLElement>();
     const [rootParent] = useAutoAnimate<HTMLDivElement>();
     const [menuFormOpen, setMenuFormOpen] = useState(false);
 
@@ -81,7 +58,7 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
             for (const item of reorderedList) {
                 const matchingItem = previousMenus?.find((prev) => prev.id === item.id);
                 if (matchingItem) {
-                    reorderedMenus.push(matchingItem);
+                    reorderedMenus.push({ ...matchingItem, position: item.newPosition });
                 }
             }
 
@@ -98,7 +75,6 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
         <>
             <Box ref={rootParent}>
                 <DragDropContext
-                    onBeforeDragStart={() => enableAutoAnimate(false)}
                     onDragEnd={({ destination, source }) => {
                         if (source.index !== destination?.index) {
                             const reorderedList = reorderList(menus, source.index, destination?.index || 0);
@@ -109,24 +85,15 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
                                 }))
                             );
                         }
-                        setTimeout(() => enableAutoAnimate(true), 100);
                     }}
                 >
                     <Droppable droppableId="dnd-list">
                         {(provided) => (
-                            <Box
-                                {...provided.droppableProps}
-                                ref={(ref) => {
-                                    provided.innerRef(ref);
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                    (menusParent as any).current = ref;
-                                }}
-                            >
-                                {menus?.map((item, index) => (
+                            <Box {...provided.droppableProps} ref={provided.innerRef}>
+                                {menus?.map((item) => (
                                     <MenuElement
                                         key={item.id}
                                         item={item}
-                                        index={index}
                                         selectedMenu={selectedMenu}
                                         restaurantId={restaurantId}
                                         setSelectedMenu={setSelectedMenu}
@@ -147,7 +114,8 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
                 )}
                 {!menusLoading && menus?.length < Number(env.NEXT_PUBLIC_MAX_MENUS_PER_RESTAURANT) && (
                     <Box
-                        className={cx(classes.item, menus?.length === 0 && classes.initialAdd)}
+                        key="add-new-menu"
+                        className={cx(classes.item, classes.addItem, menus?.length === 0 && classes.initialAdd)}
                         onClick={() => setMenuFormOpen(true)}
                     >
                         <Center p="sm">

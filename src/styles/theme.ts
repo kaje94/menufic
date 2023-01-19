@@ -1,76 +1,75 @@
 import type { ColorScheme, MantineThemeOverride, Tuple } from "@mantine/core";
 import { Expletus_Sans } from "@next/font/google";
+import { getStyles } from "./styles";
 
 const font = Expletus_Sans({
     variable: "--expletus-sans-font",
     display: "swap",
     fallback: ["Helvetica", "Arial", "sans-serif"],
-    // todo: check purpose of subsets
     subsets: [],
 });
 
 export const Black = "#000000";
 export const White = "#ffffff";
 
-// todo: Change purple theme
 const theme: Record<ColorScheme, { dark: Tuple<string, 10>; primary: Tuple<string, 10> }> = {
     light: {
         dark: [
-            "#faf8fa",
-            "#f4f1f5",
-            "#e2dee2",
-            "#c5c2c7",
-            "#a5a1a7",
-            "#948d96",
-            "#79747c",
-            "#3e383f",
-            "#2f2830",
-            "#1c171d",
+            "#faf8f8",
+            "#f5f1f2",
+            "#e2dede",
+            "#c7c2c3",
+            "#a7a1a2",
+            "#968d8e",
+            "#7c7475",
+            "#3f3839",
+            "#302829",
+            "#1d1718",
         ],
         primary: [
-            "#F8F0FC",
-            "#ebd3f1",
-            "#ddafe9",
-            "#d28be2",
-            "#c56ddb",
-            "#af50c7",
-            "#a841c2",
-            "#9735af",
-            "#8b30a1",
-            "#702783",
+            "#fcf0f1",
+            "#f1d3d7",
+            "#e9afb7",
+            "#e28b92",
+            "#db6d7c",
+            "#c75060",
+            "#c24152",
+            "#af3545",
+            "#a1303f",
+            "#832733",
         ],
     },
 
     dark: {
         dark: [
-            "#0b080c",
-            "#181218",
-            "#1f1920",
-            "#3c303d",
-            "#3d323f",
-            "#514453",
-            "#6f6572",
-            "#a799aa",
-            "#ded7e0",
-            "#faf8fa",
+            "#0c0809",
+            "#181213",
+            "#20191a",
+            "#3d3032",
+            "#58494b",
+            "#756567",
+            "#807274",
+            "#a59394",
+            "#dbcbce",
+            "#faf8f8",
         ],
         primary: [
-            "#a653bb",
-            "#bb63d1",
-            "#c36fd8",
-            "#d787eb",
-            "#de98f0",
-            "#ebbef5",
-            "#eec5f7",
-            "#f2e0f7",
-            "#f4ecf7",
-            "#f7f2fa",
+            "#91404b",
+            "#a04752",
+            "#944b54",
+            "#92515a",
+            "#ac6f77",
+            "#c77b84",
+            "#c78d94",
+            "#c9989e",
+            "#ddb4b6",
+            "#ebd5d8",
         ],
     },
 };
 
 export const getMantineTheme = (colorScheme: ColorScheme): MantineThemeOverride => ({
-    defaultGradient: { from: "#702783", to: "#af50c7", deg: 45 },
+    defaultGradient: { from: theme.light.primary[5], to: theme.light.primary[7], deg: 180 },
     colorScheme,
     primaryColor: "primary",
     defaultRadius: "lg",
@@ -79,16 +78,5 @@ export const getMantineTheme = (colorScheme: ColorScheme): MantineThemeOverride 
     black: colorScheme === "light" ? Black : White,
     loader: "dots",
     fontFamily: `${font.style.fontFamily} !important`,
-    globalStyles: (theme) => ({
-        "*, *::before, *::after": { boxSizing: "border-box" },
-        body: {
-            ...theme.fn.fontStyles(),
-            backgroundColor: theme.white,
-            color: theme.colors.dark[9],
-            margin: 0,
-            padding: 0,
-            lineHeight: theme.lineHeight,
-        },
-        a: { color: "inherit", textDecoration: "none" },
-    }),
+    globalStyles: getStyles,
 });

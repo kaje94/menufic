@@ -1,5 +1,5 @@
 import type { ModalProps } from "@mantine/core";
-import { Modal, TextInput, Button, Group, Text, Stack } from "@mantine/core";
+import { TextInput, Button, Group, Stack } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import { api } from "src/utils/api";
 import type { Category } from "@prisma/client";
@@ -7,6 +7,7 @@ import type { FC } from "react";
 import { useEffect } from "react";
 import { categoryInput } from "src/utils/validators";
 import { showErrorToast, showSuccessToast } from "src/utils/helpers";
+import { Modal } from "../Modal";
 
 interface Props extends ModalProps {
     /** Category item that needs to be edited */
@@ -61,9 +62,8 @@ export const CategoryForm: FC<Props> = ({ opened, onClose, menuId, categoryItem,
         <Modal
             opened={opened}
             onClose={onClose}
-            title={<Text size="lg">{categoryItem ? "Update Category" : "Create Category"}</Text>}
-            overlayOpacity={0.1}
-            overlayBlur={5}
+            title={categoryItem ? "Update Category" : "Create Category"}
+            loading={isCreating || isUpdating}
             {...rest}
         >
             <form

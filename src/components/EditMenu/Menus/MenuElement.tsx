@@ -1,4 +1,4 @@
-import { Center, Text, Box, createStyles } from "@mantine/core";
+import { Center, Text, Box } from "@mantine/core";
 import type { Menu } from "@prisma/client";
 import { IconGripVertical } from "@tabler/icons";
 import type { FC } from "react";
@@ -9,43 +9,12 @@ import { DeleteConfirmModal } from "../../DeleteConfirmModal";
 import { EditDeleteOptions } from "../../EditDeleteOptions";
 import { MenuForm } from "../../Forms/MenuForm";
 import { showErrorToast, showSuccessToast } from "src/utils/helpers";
-
-const useStyles = createStyles((theme) => ({
-    item: {
-        display: "flex",
-        alignItems: "center",
-        borderRadius: theme.radius.lg,
-        border: `1px solid ${theme.colors.gray[2]}`,
-        padding: theme.spacing.sm,
-        backgroundColor: theme.white,
-        marginBottom: theme.spacing.sm,
-        cursor: "pointer",
-        position: "relative",
-
-        transition: "background 500ms ease",
-        "&:hover": { backgroundColor: theme.colors.dark[0] },
-    },
-    itemTitle: { fontWeight: 600 },
-    itemSubTitle: { fontSize: theme.fontSizes.xs },
-    itemDragging: { boxShadow: theme.shadows.sm },
-    itemSelected: {
-        backgroundColor: theme.colors.primary[2],
-        "&:hover": { backgroundColor: theme.colors.primary[2] },
-    },
-    dragHandle: {
-        ...theme.fn.focusStyles(),
-        height: "100%",
-        color: theme.colors.dark[6],
-        padding: theme.spacing.sm,
-    },
-}));
+import { useStyles } from "./styles";
 
 interface Props {
     /** Menu which will be represented by the component */
     item: Menu;
     /** Index or the position  of the item */
-    index: number; // todo: check if this can be replaced by menuitem.position
-    /** Id of the restaurant to which the menus belong to */
     restaurantId: string;
     /** Selected Menu of the restaurant */
     selectedMenu: Menu | undefined;
@@ -54,9 +23,9 @@ interface Props {
 }
 
 /** Individual Menu selection component with an option to edit or delete */
-export const MenuElement: FC<Props> = ({ item, index, selectedMenu, restaurantId, setSelectedMenu }) => {
+export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSelectedMenu }) => {
     const trpcCtx = api.useContext();
-    const { classes, cx } = useStyles();
+    const { classes, cx, theme } = useStyles();
     const [deleteMenuModalOpen, setDeleteMenuModalOpen] = useState(false);
     const [menuFormOpen, setMenuFormOpen] = useState(false);
 
@@ -76,21 +45,26 @@ export const MenuElement: FC<Props> = ({ item, index, selectedMenu, restaurantId
         onError: (err) => showErrorToast("Failed to delete restaurant menu", err),
     });
 
+    const isSelected = item.id === selectedMenu?.id;
+
     return (
         <>
-            <Draggable key={item.id} index={index} draggableId={item.id}>
+            <Draggable key={item.id} index={item.position} draggableId={item.id}>
                 {(provided, snapshot) => (
                     <Box
                         className={cx(classes.item, {
                             [classes.itemDragging]: snapshot.isDragging,
-                            [classes.itemSelected]: item.id === selectedMenu?.id,
+                            [classes.itemSelected]: isSelected,
                         })}
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         onClick={() => setSelectedMenu(item)}
                     >
                         <Center {...provided.dragHandleProps} className={classes.dragHandle}>
-                            <IconGripVertical size={18} stroke={1.5} />
+                            <IconGripVertical
+                                size={18}
+                                color={isSelected ? theme.colors.primary[7] : theme.colors.dark[6]}
+                            />
                         </Center>
                         <Box sx={{ flex: 1 }}>
                             <Text className={classes.itemTitle}>{item.name}</Text>
@@ -100,6 +74,8 @@ export const MenuElement: FC<Props> = ({ item, index, selectedMenu, restaurantId
                             loading={isDeleting}
                             onEditClick={() => setMenuFormOpen(true)}
                             onDeleteClick={() => setDeleteMenuModalOpen(true)}
+                            color={isSelected ? theme.colors.primary[7] : theme.colors.dark[6]}
+                            hoverColor={isSelected ? theme.black : theme.colors.primary[5]}
                         />
                     </Box>
                 )}

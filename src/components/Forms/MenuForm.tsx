@@ -1,5 +1,6 @@
 import type { ModalProps } from "@mantine/core";
-import { Modal, TextInput, Button, Group, Text, Stack } from "@mantine/core";
+import { useMantineTheme } from "@mantine/core";
+import { TextInput, Button, Group, Stack } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import { api } from "src/utils/api";
 import type { Menu } from "@prisma/client";
@@ -7,6 +8,7 @@ import type { FC } from "react";
 import { useEffect } from "react";
 import { menuInput } from "src/utils/validators";
 import { showErrorToast, showSuccessToast } from "src/utils/helpers";
+import { Modal } from "../Modal";
 
 interface Props extends ModalProps {
     /** Menu to be edited */
@@ -18,6 +20,7 @@ interface Props extends ModalProps {
 /** Form to be used when allowing users to add or edit menus of restaurant */
 export const MenuForm: FC<Props> = ({ opened, onClose, restaurantId, menu: menuItem, ...rest }) => {
     const trpcCtx = api.useContext();
+    const theme = useMantineTheme();
 
     const { mutate: createMenu, isLoading: isCreating } = api.menu.create.useMutation({
         onSuccess: (data) => {
@@ -56,9 +59,8 @@ export const MenuForm: FC<Props> = ({ opened, onClose, restaurantId, menu: menuI
         <Modal
             opened={opened}
             onClose={onClose}
-            title={<Text size="lg">{menuItem ? "Update Menu" : "Create Menu"}</Text>}
-            overlayOpacity={0.1}
-            overlayBlur={5}
+            title={menuItem ? "Update Menu" : "Create Menu"}
+            loading={isCreating || isUpdating}
             {...rest}
         >
             <form

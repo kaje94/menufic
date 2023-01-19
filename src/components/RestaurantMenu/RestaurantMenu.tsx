@@ -11,7 +11,7 @@ import { IconSun, IconMoonStars } from "@tabler/icons";
 import { useMediaQuery } from "@mantine/hooks";
 import { Empty } from "../Empty";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { White } from "src/styles/theme";
+import { Black, White } from "src/styles/theme";
 
 const useStyles = createStyles((theme) => ({
     headerImageBox: { borderRadius: theme.radius.lg, overflow: "hidden", position: "relative" },
@@ -22,8 +22,17 @@ const useStyles = createStyles((theme) => ({
         top: 0,
         bottom: 0,
         zIndex: 1,
-        // Todo: refactor color
-        backgroundImage: "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.5) 100%)",
+        backgroundImage: theme.fn.linearGradient(
+            180,
+            theme.fn.rgba(Black, 0),
+            theme.fn.rgba(Black, 0.01),
+            theme.fn.rgba(Black, 0.025),
+            theme.fn.rgba(Black, 0.05),
+            theme.fn.rgba(Black, 0.1),
+            theme.fn.rgba(Black, 0.2),
+            theme.fn.rgba(Black, 0.35),
+            theme.fn.rgba(Black, 0.5)
+        ),
     },
     carousalTitle: {
         padding: theme.spacing.md,
@@ -36,15 +45,13 @@ const useStyles = createStyles((theme) => ({
         justifyContent: "flex-end",
     },
     themeSwitch: { position: "absolute", bottom: 10, right: 12, zIndex: 1 },
+    switchTrack: { background: `${theme.fn.darken(White, 0.1)} !important`, border: "unset" },
+    switchThumb: { background: theme.fn.lighten(Black, 0.2) },
 }));
 
 interface Props {
     restaurant: Restaurant & {
-        menus: (Menu & {
-            categories: (Category & {
-                items: (MenuItem & { image: Image | null })[];
-            })[];
-        })[];
+        menus: (Menu & { categories: (Category & { items: (MenuItem & { image: Image | null })[] })[] })[];
         image: Image | null;
         banners: Image[];
     };
@@ -55,7 +62,7 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
     const { classes, theme } = useStyles();
     const bannerCarousalRef = useRef(Autoplay({ delay: 5000 }));
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-    const isMobile = useMediaQuery("(min-width: 600px)");
+    const isNotMobile = useMediaQuery("(min-width: 600px)");
     const [menuParent] = useAutoAnimate<HTMLDivElement>();
     const [selectedMenu, setSelectedMenu] = useState<string | null | undefined>(restaurant?.menus?.[0]?.id);
 
@@ -75,7 +82,7 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
     const haveMenuItems = menuDetails?.categories?.some((category) => category?.items?.length > 0);
 
     return (
-        <>
+        <Box mih="calc(100vh - 100px)">
             <Box pos="relative">
                 <Carousel
                     mx="auto"
@@ -90,7 +97,7 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                     loop
                     styles={{ indicator: { background: White } }}
                 >
-                    {images?.map((banner) => (
+                    {images?.map((banner, index) => (
                         <Carousel.Slide key={banner.id}>
                             <ImageKitImage
                                 width={750}
@@ -98,16 +105,17 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                                 imagePath={banner.path}
                                 blurhash={banner.blurHash}
                                 color={banner.color}
+                                imageAlt={`${restaurant.name}-banner-${index}`}
                             />
                             <Box className={classes.carousalOverlay} />
                         </Carousel.Slide>
                     ))}
                 </Carousel>
                 <Box className={classes.carousalTitle}>
-                    <Text color={White} weight="bold" size={isMobile ? 40 : 30}>
+                    <Text color={White} weight="bold" size={isNotMobile ? 40 : 30}>
                         {restaurant?.name}
                     </Text>
-                    <Text color={theme.fn.darken(White, 0.7)} size={isMobile ? 25 : 20}>
+                    <Text color={White} opacity={0.7} size={isNotMobile ? 25 : 20}>
                         {restaurant?.location}
                     </Text>
                 </Box>
@@ -118,6 +126,7 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                     size="md"
                     onLabel={<IconSun color={theme.white} size={15} />}
                     offLabel={<IconMoonStars color={theme.colors.dark[7]} size={15} />}
+                    classNames={{ track: classes.switchTrack, thumb: classes.switchThumb }}
                 />
             </Box>
 
@@ -135,7 +144,7 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                     ))}
                 </Tabs.List>
             </Tabs>
-            <Box ref={menuParent} mih={400}>
+            <Box ref={menuParent}>
                 {menuDetails?.categories
                     ?.filter((category) => category?.items.length)
                     ?.map((category) => (
@@ -158,12 +167,18 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                         </Box>
                     ))}
                 {restaurant?.menus?.length === 0 && !haveMenuItems && (
-                    <Empty text="There aren't any menus available for this restaurant" height={400} />
+                    <Empty
+                        text="There aren't any menus available for this restaurant. Try checking out later"
+                        height={400}
+                    />
                 )}
                 {!!restaurant?.menus?.length && !haveMenuItems && (
-                    <Empty text="There aren't any menu items for the chosen restaurant menu" height={400} />
+                    <Empty
+                        text="There aren't any menu items for the chosen restaurant menu. Try checking out later."
+                        height={400}
+                    />
                 )}
             </Box>
-        </>
+        </Box>
     );
 };

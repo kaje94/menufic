@@ -25,7 +25,6 @@ const useStyles = createStyles((theme, _params, getRef) => {
         },
 
         link: {
-            // todo check focusStyles
             ...theme.fn.focusStyles(),
             display: "flex",
             alignItems: "center",
@@ -55,11 +54,8 @@ const useStyles = createStyles((theme, _params, getRef) => {
         linkActive: {
             "&, &:hover": {
                 backgroundColor: theme.fn.variant({ variant: "light", color: theme.primaryColor }).background,
-                color: theme.fn.variant({ variant: "light", color: theme.primaryColor }).color,
-                [`& .${icon}`]: {
-                    // todo: check variant functions
-                    color: theme.fn.variant({ variant: "light", color: theme.primaryColor }).color,
-                },
+                color: theme.colors.primary[6],
+                [`& .${icon}`]: { color: theme.colors.primary[6] },
             },
         },
     };
@@ -93,7 +89,7 @@ export const NavPanel: FC<Props> = ({ opened }) => {
 
             <Navbar.Section className={classes.footer}>
                 <Flex align="center" justify="space-between">
-                    <Text color={theme.colors.dark[6]} size="sm">
+                    <Text color={theme.colors.dark[7]} size="sm">
                         Theme
                     </Text>
                     <Switch

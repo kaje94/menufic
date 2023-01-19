@@ -22,6 +22,8 @@ interface Props {
     target?: HTMLAttributeAnchorTarget;
     /** To show the three dot menu for the card */
     editDeleteOptions?: EditDeleteOptionsProps;
+    /** Alt text of the image */
+    imageAlt?: string;
 }
 
 /** Card item with an image as its background */
@@ -37,6 +39,7 @@ export const ImageCard: FC<Props> = ({ image, title, subTitle, editDeleteOptions
                     imagePath={image?.path}
                     blurhash={image?.blurHash}
                     color={image?.color}
+                    imageAlt={title}
                 />
             </Box>
 
@@ -61,7 +64,7 @@ export const ImageCard: FC<Props> = ({ image, title, subTitle, editDeleteOptions
         </>
     );
 
-    if (href) {
+    if (href && editDeleteOptions?.loading !== true) {
         return (
             <Card p="lg" className={classes.card} withBorder>
                 <Link href={href} target={target}>

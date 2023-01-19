@@ -35,7 +35,7 @@ interface Props {
     /** Background color to be displayed before js hydration of if blurhash is not available */
     color?: string;
     /** Alt text of the image */
-    imageAlt?: string; // todo: check appropriate alt test is passed in all usage
+    imageAlt?: string;
     /** Path of the image which will be appended to imageKit base url */
     imagePath?: string;
     /** Height of the image */
@@ -64,7 +64,7 @@ export const ImageKitImage: FC<Props> = ({ blurhash, color, imagePath, imageAlt,
             )}
             {imagePath && (
                 <Image
-                    alt={`${imageAlt}-image`}
+                    alt={`${imageAlt} image`}
                     src={`${env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}/${imagePath}?tr=f-avif,w-${width}`}
                     height={height}
                     width={width}

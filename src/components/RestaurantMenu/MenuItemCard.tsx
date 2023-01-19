@@ -2,11 +2,26 @@ import { Text, createStyles, Paper, Stack, Box } from "@mantine/core";
 import { ImageKitImage } from "../ImageKitImage";
 import type { Image, MenuItem } from "@prisma/client";
 import type { FC } from "react";
+import { useMemo } from "react";
 import { useState } from "react";
 import { ViewMenuItemModal } from "./ViewMenuItemModal";
 
-const useStyles = createStyles((theme, _params, getRef) => {
+export interface StyleProps {
+    imageColor?: string;
+}
+
+const useStyles = createStyles((theme, { imageColor }: StyleProps, getRef) => {
     const image = getRef("image");
+
+    const bgColor = useMemo(() => {
+        if (imageColor) {
+            if (theme.colorScheme === "light") {
+                return theme.fn.lighten(imageColor, 0.95);
+            }
+            return theme.fn.darken(imageColor, 0.95);
+        }
+        return theme.colors.dark[0];
+    }, [imageColor, theme.colorScheme]);
 
     return {
         cardItem: {
@@ -15,10 +30,14 @@ const useStyles = createStyles((theme, _params, getRef) => {
             color: theme.colors.dark[8],
             cursor: "pointer",
             padding: "0 !important",
-            background: theme.colors.dark[1],
+            backgroundColor: bgColor,
             transition: "all 500ms ease",
             overflow: "hidden",
-            [`&:hover`]: { backgroundColor: theme.colors.dark[2] },
+            "&:hover": {
+                backgroundColor:
+                    theme.colorScheme === "light" ? theme.fn.darken(bgColor, 0.05) : theme.fn.lighten(bgColor, 0.05),
+                boxShadow: theme.shadows.xs,
+            },
             [`&:hover .${image}`]: { transform: "scale(1.05)" },
         },
         cardImageWrap: {
@@ -49,7 +68,7 @@ interface Props {
 
 /** Display each menu item as a card in the full restaurant menu */
 export const MenuItemCard: FC<Props> = ({ item }) => {
-    const { classes } = useStyles();
+    const { classes, theme } = useStyles({ imageColor: item?.image?.color });
     const [modalVisible, setModalVisible] = useState(false);
     return (
         <>
@@ -63,6 +82,7 @@ export const MenuItemCard: FC<Props> = ({ item }) => {
                                 imagePath={item?.image?.path}
                                 blurhash={item?.image?.blurHash}
                                 color={item?.image?.color}
+                                imageAlt={item.name}
                             />
                         </Box>
                     </Box>
@@ -72,8 +92,10 @@ export const MenuItemCard: FC<Props> = ({ item }) => {
                     <Text size="lg" weight={700}>
                         {item.name}
                     </Text>
-                    <Text size="md">{item.price}</Text>
-                    <Text size="xs" color="dimmed" className={classes.cardItemDesc}>
+                    <Text size="sm" color="red">
+                        {item.price}
+                    </Text>
+                    <Text size="xs" opacity={0.7} color={theme.black} className={classes.cardItemDesc}>
                         {item.description}
                     </Text>
                 </Stack>

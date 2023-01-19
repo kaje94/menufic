@@ -10,6 +10,7 @@ import {
     Menu,
     Button,
     Group,
+    Box,
 } from "@mantine/core";
 import { IconLogout } from "@tabler/icons";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -36,7 +37,7 @@ export const NavHeader: FC<Props> = ({ opened = false, setOpened, showLoginButto
 
     return (
         <Header height={{ base: 50, md: 70 }} p="md" bg={theme.colors.dark[0]}>
-            <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+            <Box sx={{ display: "flex", alignItems: "center", height: "100%" }}>
                 {setOpened && (
                     <MediaQuery largerThan="sm" styles={{ display: "none" }}>
                         <Burger
@@ -51,15 +52,8 @@ export const NavHeader: FC<Props> = ({ opened = false, setOpened, showLoginButto
 
                 <Flex w="100%" justify="space-between" align="center">
                     <Flex align="center">
-                        <Image src="/logo.svg" height={25} width={25} alt="logo" />
-                        <Text
-                            variant="gradient"
-                            gradient={{ from: theme.colors.primary[7], to: theme.colors.primary[5] }}
-                            ta="center"
-                            fz="xl"
-                            fw={700}
-                            ml="sm"
-                        >
+                        <Image src="/logo.svg" height={50} width={25} alt="logo" />
+                        <Text variant="gradient" gradient={theme.defaultGradient} ta="center" fz="xl" fw="bold" ml="sm">
                             Menufic
                         </Text>
                     </Flex>
@@ -82,22 +76,27 @@ export const NavHeader: FC<Props> = ({ opened = false, setOpened, showLoginButto
                                 </>
                             )}
                             {status === "authenticated" && (
-                                <Menu shadow="xl">
+                                <Menu shadow="xl" styles={{ dropdown: { background: theme.white } }}>
                                     <Menu.Target>
                                         <ActionIcon>
-                                            <Avatar src={sessionData?.user?.image} color={theme.colors.primary[8]}>
+                                            <Avatar
+                                                src={sessionData?.user?.image}
+                                                color={theme.colors.primary[8]}
+                                                sx={{ border: `1px solid ${theme.colors.dark[2]}` }}
+                                            >
                                                 {sessionData?.user?.name?.[0]}
                                             </Avatar>
                                         </ActionIcon>
                                     </Menu.Target>
                                     <Menu.Dropdown>
-                                        <Text px="md" py="sm" color="dimmed">
+                                        <Text px="md" py="sm" color={theme.colors.dark[7]}>
                                             {sessionData?.user?.name}
                                         </Text>
 
                                         <Menu.Item
                                             onClick={() => signOut({ callbackUrl: "/" })}
                                             icon={<IconLogout stroke={1.5} />}
+                                            color="red"
                                         >
                                             Logout
                                         </Menu.Item>
@@ -107,7 +106,7 @@ export const NavHeader: FC<Props> = ({ opened = false, setOpened, showLoginButto
                         </Group>
                     )}
                 </Flex>
-            </div>
+            </Box>
         </Header>
     );
 };

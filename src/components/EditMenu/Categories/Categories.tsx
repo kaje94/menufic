@@ -10,6 +10,7 @@ import { CategoryElement } from "./CategoryElement";
 import type { Category, MenuItem, Image } from "@prisma/client";
 import { env } from "../../../env/client.mjs";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { useStyles } from "./styles";
 
 interface Props {
     /** Id of the menu to which the categories belong to */
@@ -19,6 +20,7 @@ interface Props {
 /** Draggable list of categories items with add, edit and delete options */
 export const Categories: FC<Props> = ({ menuId }) => {
     const trpcCtx = api.useContext();
+    const { classes } = useStyles();
     const [categoryFormOpen, setCategoryFormOpen] = useState(false);
     const [openedCategories, setOpenedCategories] = useState<string[]>([]);
     const [categoriesParent, enableAutoAnimate] = useAutoAnimate<HTMLElement>();
@@ -53,7 +55,7 @@ export const Categories: FC<Props> = ({ menuId }) => {
                 ) => {
                     const matchingItem = previousCategories?.find((prev) => prev.id === item.id);
                     if (matchingItem) {
-                        acc.push(matchingItem);
+                        acc.push({ ...matchingItem, position: item.newPosition });
                     }
                     return acc;
                 },
@@ -77,6 +79,7 @@ export const Categories: FC<Props> = ({ menuId }) => {
                     multiple={true}
                     value={openedCategories}
                     onChange={setOpenedCategories}
+                    classNames={{ control: classes.accordionControl, item: classes.accordionItem }}
                 >
                     <DragDropContext
                         onBeforeDragStart={() => enableAutoAnimate(false)}
@@ -103,13 +106,8 @@ export const Categories: FC<Props> = ({ menuId }) => {
                                         (categoriesParent as any).current = ref;
                                     }}
                                 >
-                                    {categories.map((item, index) => (
-                                        <CategoryElement
-                                            key={item.id}
-                                            index={index}
-                                            categoryItem={item}
-                                            menuId={menuId}
-                                        />
+                                    {categories.map((item) => (
+                                        <CategoryElement key={item.id} categoryItem={item} menuId={menuId} />
                                     ))}
                                     {provided.placeholder}
                                 </Box>
@@ -125,6 +123,7 @@ export const Categories: FC<Props> = ({ menuId }) => {
 
                 {!categoriesLoading && categories?.length < Number(env.NEXT_PUBLIC_MAX_CATEGORIES_PER_MENU) && (
                     <Button
+                        key="add-new-category"
                         leftIcon={<IconPlus size={20} />}
                         mt={categories?.length === 0 ? 0 : "md"}
                         variant={categories?.length === 0 ? "filled" : "default"}

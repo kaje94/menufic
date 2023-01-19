@@ -1,11 +1,12 @@
 import type { ModalProps } from "@mantine/core";
-import { Modal, createStyles, Button, Group, Box, Text, Stack } from "@mantine/core";
+import { createStyles, Button, Group, Box, Text, Stack } from "@mantine/core";
 import type { FC } from "react";
 import { useCallback, useState } from "react";
 import type { Point, Area } from "react-easy-crop";
 import Cropper from "react-easy-crop";
 import { Slider } from "@mantine/core";
 import { getCroppedImg } from "src/utils/helpers";
+import { Modal } from "../Modal";
 
 interface Props extends ModalProps {
     /** Path of the image to be cropped */
@@ -28,16 +29,13 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-// TODO: check if this can be moved ned to image upload component
-
 /** Modal to allow the user to zoom & crop the uploading image into appropriate aspect ratio */
 export const CropModal: FC<Props> = ({ imageUrl, onCrop, aspect = 1, onClose, ...rest }) => {
-    const { classes } = useStyles();
+    const { classes, theme } = useStyles();
     const [cropping, setCropping] = useState(false);
     const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [rotation, setRotation] = useState(0);
-
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
     const onCropComplete = useCallback((_: Area, croppedAreaPixels: Area) => {
@@ -61,7 +59,7 @@ export const CropModal: FC<Props> = ({ imageUrl, onCrop, aspect = 1, onClose, ..
     }, [croppedAreaPixels, rotation, imageUrl, onCrop]);
 
     return (
-        <Modal size="lg" centered onClose={onClose} title={<Text size="lg">Crop Image</Text>} {...rest}>
+        <Modal size="lg" centered onClose={onClose} title="Crop Image" loading={cropping} {...rest}>
             <Stack spacing="md">
                 <Box className={classes.cropAreaWrap}>
                     <Cropper
@@ -78,17 +76,17 @@ export const CropModal: FC<Props> = ({ imageUrl, onCrop, aspect = 1, onClose, ..
                     />
                 </Box>
                 <Box>
-                    <Text>Zoom</Text>
+                    <Text color={theme.black}>Zoom</Text>
                     <Slider label="Zoom" value={zoom} min={1} max={3} step={0.1} onChange={setZoom} />
                 </Box>
                 <Box>
-                    <Text>Rotation</Text>
+                    <Text color={theme.black}>Rotation</Text>
                     <Slider label="Rotation" value={rotation} min={0} max={360} step={1} onChange={setRotation} />
                 </Box>
             </Stack>
 
             <Group position="right" mt="md">
-                <Button variant="subtle" onClick={onClose}>
+                <Button variant="subtle" onClick={onClose} disabled={cropping}>
                     Cancel
                 </Button>
                 <Button onClick={finishCropImage} loading={cropping}>

@@ -1,16 +1,14 @@
 import type { ModalProps } from "@mantine/core";
-import { Modal, TextInput, Textarea, Button, Text, Stack, Group } from "@mantine/core";
+import { TextInput, Textarea, Button, Stack, Group } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import type { MenuItem, Image } from "@prisma/client";
 import type { FC } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { api } from "src/utils/api";
 import { menuItemInput } from "src/utils/validators";
-import { toBase64 } from "src/utils/helpers";
-import imageCompression from "browser-image-compression";
-import { CropModal } from "./CropModal";
 import { ImageUpload } from "../ImageUpload";
 import { showErrorToast, showSuccessToast } from "src/utils/helpers";
+import { Modal } from "../Modal";
 
 interface Props extends ModalProps {
     /** Id of the menu that the item belongs to */
@@ -67,7 +65,6 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
 
     useEffect(() => {
         if (opened) {
-            setNewUploadedImageUrl("");
             const values = {
                 name: menuItem?.name || "",
                 price: menuItem?.price || "",
@@ -80,36 +77,12 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
         }
     }, [menuItem, opened]);
 
-    const [imageCropModalOpen, setImageCropModalOpen] = useState(false);
-    const [newUploadedImageUrl, setNewUploadedImageUrl] = useState("");
-
-    const onCropComplete = useCallback(
-        async (croppedImageBlob: Blob) => {
-            setImageCropModalOpen(false);
-            setNewUploadedImageUrl("");
-
-            const compressedFile = await imageCompression(
-                new File([croppedImageBlob], "menu-item.jpeg", {
-                    type: croppedImageBlob.type,
-                }),
-                { maxWidthOrHeight: 400, useWebWorker: true, initialQuality: 0.75 }
-            );
-            const base64File = await toBase64(compressedFile);
-            setValues({
-                imageBase64: base64File as string,
-                imagePath: URL.createObjectURL(compressedFile),
-            });
-        },
-        [setValues, setImageCropModalOpen]
-    );
-
     return (
         <Modal
             opened={opened}
             onClose={onClose}
-            title={<Text size="lg">{menuItem ? "Update Menu Item" : "Create Menu Item"}</Text>}
-            overlayOpacity={0.1}
-            overlayBlur={5}
+            title={menuItem ? "Update Menu Item" : "Create Menu Item"}
+            loading={isCreating || isUpdating}
             {...rest}
         >
             <form
@@ -135,18 +108,12 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
                     />
                     <TextInput withAsterisk label="Price" placeholder="$10.00" {...getInputProps("price")} />
                     <Textarea label="Description" {...getInputProps("description")} />
-                    <Text size="md" mt="md">
-                        Image
-                    </Text>
                     <ImageUpload
                         width={400}
                         height={400}
                         imageUrl={values?.imagePath}
                         imageHash={menuItem?.image?.blurHash}
-                        onImageDrop={(file) => {
-                            setNewUploadedImageUrl(URL.createObjectURL(file));
-                            setImageCropModalOpen(true);
-                        }}
+                        onImageCrop={(imageBase64, imagePath) => setValues({ imageBase64, imagePath })}
                         onImageDeleteClick={() => setValues({ imageBase64: "", imagePath: "" })}
                     />
                     <Group position="right" mt="md">
@@ -155,12 +122,6 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
                         </Button>
                     </Group>
                 </Stack>
-                <CropModal
-                    opened={imageCropModalOpen}
-                    onClose={() => setImageCropModalOpen(false)}
-                    onCrop={onCropComplete}
-                    imageUrl={newUploadedImageUrl}
-                />
             </form>
         </Modal>
     );

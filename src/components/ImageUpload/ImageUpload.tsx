@@ -1,8 +1,11 @@
 import { Text, Box, ActionIcon, AspectRatio, Stack, Image as MantineImage, useMantineTheme } from "@mantine/core";
-import type { FileWithPath } from "@mantine/dropzone";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { IconTrash, IconUpload, IconX, IconPhoto } from "@tabler/icons";
+import imageCompression from "browser-image-compression";
 import type { FC } from "react";
+import { useCallback, useState } from "react";
+import { toBase64 } from "src/utils/helpers";
+import { CropModal } from "./CropModal";
 import { ImageKitImage } from "../ImageKitImage";
 
 interface Props {
@@ -16,8 +19,10 @@ interface Props {
     width: number;
     /** To show the upload component in an error state */
     error?: boolean;
+    /** To show the red asterisk next to the label or not*/
+    imageRequired?: boolean;
     /** Callback to be fired when a new image is uploaded */
-    onImageDrop: (file: FileWithPath) => void;
+    onImageCrop: (imageBase64: string, imagePath: string) => void;
     /** Callback to be fired when the image is deleted */
     onImageDeleteClick: () => void;
 }
@@ -29,13 +34,41 @@ export const ImageUpload: FC<Props> = ({
     height,
     width,
     error,
-    onImageDrop,
+    imageRequired,
+    onImageCrop,
     onImageDeleteClick,
 }) => {
     const theme = useMantineTheme();
+    const [imageCropModalOpen, setImageCropModalOpen] = useState(false);
+    const [newUploadedImageUrl, setNewUploadedImageUrl] = useState("");
+
+    const onCropComplete = useCallback(
+        async (croppedImageBlob: Blob) => {
+            setImageCropModalOpen(false);
+            setNewUploadedImageUrl("");
+
+            const compressedFile = await imageCompression(
+                new File([croppedImageBlob], "image.jpeg", {
+                    type: croppedImageBlob.type,
+                }),
+                { maxWidthOrHeight: width, useWebWorker: true, initialQuality: 0.75 }
+            );
+            const base64File = await toBase64(compressedFile);
+            onImageCrop(base64File as string, URL.createObjectURL(compressedFile));
+        },
+        [width, onImageCrop, setImageCropModalOpen]
+    );
 
     return (
         <>
+            <Text size="md" mt="md" color={theme.black}>
+                Image
+                {imageRequired && (
+                    <Text component="span" color="red">
+                        *
+                    </Text>
+                )}
+            </Text>
             {imageUrl ? (
                 <Box sx={{ borderRadius: theme.radius.lg, overflow: "hidden", position: "relative", display: "block" }}>
                     {imageUrl?.startsWith("blob") ? (
@@ -55,7 +88,8 @@ export const ImageUpload: FC<Props> = ({
                 <Dropzone
                     onDrop={(files) => {
                         if (files[0]) {
-                            onImageDrop(files[0]);
+                            setImageCropModalOpen(true);
+                            setNewUploadedImageUrl(URL.createObjectURL(files[0]));
                         }
                     }}
                     accept={[MIME_TYPES.jpeg]}
@@ -64,7 +98,7 @@ export const ImageUpload: FC<Props> = ({
                 >
                     <AspectRatio
                         ratio={width / height}
-                        bg={error ? theme.colors.red[1] : theme.colors.dark[1]}
+                        bg={error ? theme.colors.red[6] : theme.colors.dark[0]}
                         sx={{ borderRadius: theme.radius.lg }}
                     >
                         <Stack spacing="md">
@@ -78,12 +112,19 @@ export const ImageUpload: FC<Props> = ({
                                 <IconPhoto size={50} stroke={1.5} color={theme.black} />
                             </Dropzone.Idle>
                             <Text size="md" inline align="center" px="xl" color={theme.black}>
-                                Drag a jpeg image here or click to select a jpeg image files
+                                Drag a jpeg image here or click to select a jpeg image file
                             </Text>
                         </Stack>
                     </AspectRatio>
                 </Dropzone>
             )}
+            <CropModal
+                opened={imageCropModalOpen}
+                onClose={() => setImageCropModalOpen(false)}
+                onCrop={onCropComplete}
+                imageUrl={newUploadedImageUrl}
+                aspect={width / height}
+            />
         </>
     );
 };
