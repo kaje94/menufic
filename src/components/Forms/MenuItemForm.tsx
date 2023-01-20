@@ -77,12 +77,14 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
         }
     }, [menuItem, opened]);
 
+    const loading = isCreating || isUpdating;
+
     return (
         <Modal
             opened={opened}
             onClose={onClose}
             title={menuItem ? "Update Menu Item" : "Create Menu Item"}
-            loading={isCreating || isUpdating}
+            loading={loading}
             {...rest}
         >
             <form
@@ -103,21 +105,29 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
                         withAsterisk
                         label="Name"
                         placeholder="Item Name"
+                        disabled={loading}
                         {...getInputProps("name")}
                         autoFocus={true}
                     />
-                    <TextInput withAsterisk label="Price" placeholder="$10.00" {...getInputProps("price")} />
-                    <Textarea label="Description" {...getInputProps("description")} />
+                    <TextInput
+                        withAsterisk
+                        label="Price"
+                        placeholder="$10.00"
+                        disabled={loading}
+                        {...getInputProps("price")}
+                    />
+                    <Textarea label="Description" disabled={loading} {...getInputProps("description")} />
                     <ImageUpload
                         width={400}
                         height={400}
                         imageUrl={values?.imagePath}
                         imageHash={menuItem?.image?.blurHash}
+                        disabled={loading}
                         onImageCrop={(imageBase64, imagePath) => setValues({ imageBase64, imagePath })}
                         onImageDeleteClick={() => setValues({ imageBase64: "", imagePath: "" })}
                     />
                     <Group position="right" mt="md">
-                        <Button type="submit" loading={isCreating || isUpdating} px="xl">
+                        <Button type="submit" loading={loading} px="xl">
                             Save
                         </Button>
                     </Group>

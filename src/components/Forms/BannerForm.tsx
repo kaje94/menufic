@@ -61,6 +61,7 @@ export const BannerForm: FC<Props> = ({ opened, onClose, restaurantId, ...rest }
                         imageUrl={imagePath}
                         error={!!errors.imageBase64}
                         imageRequired
+                        disabled={isCreating}
                         onImageCrop={(imageBase64, imagePath) => {
                             setValues({ imageBase64 });
                             setImagePath(imagePath);

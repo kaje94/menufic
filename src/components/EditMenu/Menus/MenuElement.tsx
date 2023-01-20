@@ -43,6 +43,7 @@ export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSe
             showSuccessToast("Successfully deleted", `Deleted the menu ${data.name} and related details successfully`);
         },
         onError: (err) => showErrorToast("Failed to delete restaurant menu", err),
+        onSettled: () => setDeleteMenuModalOpen(false),
     });
 
     const isSelected = item.id === selectedMenu?.id;
@@ -71,7 +72,6 @@ export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSe
                             <Text className={classes.itemSubTitle}>{item.availableTime}</Text>
                         </Box>
                         <EditDeleteOptions
-                            loading={isDeleting}
                             onEditClick={() => setMenuFormOpen(true)}
                             onDeleteClick={() => setDeleteMenuModalOpen(true)}
                             color={isSelected ? theme.colors.primary[7] : theme.colors.dark[6]}
@@ -89,10 +89,8 @@ export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSe
             <DeleteConfirmModal
                 opened={deleteMenuModalOpen}
                 onClose={() => setDeleteMenuModalOpen(false)}
-                onDelete={() => {
-                    deleteMenu({ id: item.id });
-                    setDeleteMenuModalOpen(false);
-                }}
+                onDelete={() => deleteMenu({ id: item.id })}
+                loading={isDeleting}
                 title={`Delete ${item.name} menu`}
                 description="Are you sure, you want to delete this menu? This action will also delete all the categories & items associated with this menu and cannot be undone"
             />

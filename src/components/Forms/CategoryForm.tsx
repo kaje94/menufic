@@ -58,12 +58,14 @@ export const CategoryForm: FC<Props> = ({ opened, onClose, menuId, categoryItem,
         }
     }, [categoryItem, opened]);
 
+    const loading = isCreating || isUpdating;
+
     return (
         <Modal
             opened={opened}
             onClose={onClose}
             title={categoryItem ? "Update Category" : "Create Category"}
-            loading={isCreating || isUpdating}
+            loading={loading}
             {...rest}
         >
             <form
@@ -80,9 +82,15 @@ export const CategoryForm: FC<Props> = ({ opened, onClose, menuId, categoryItem,
                 })}
             >
                 <Stack spacing="sm">
-                    <TextInput withAsterisk label="Name" placeholder="Category Name" {...getInputProps("name")} />
+                    <TextInput
+                        withAsterisk
+                        label="Name"
+                        placeholder="Category Name"
+                        disabled={loading}
+                        {...getInputProps("name")}
+                    />
                     <Group position="right" mt="md">
-                        <Button type="submit" loading={isCreating || isUpdating} px="xl">
+                        <Button type="submit" loading={loading} px="xl">
                             Save
                         </Button>
                     </Group>

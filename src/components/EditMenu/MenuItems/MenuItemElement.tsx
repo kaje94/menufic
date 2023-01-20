@@ -71,6 +71,7 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
             showSuccessToast("Successfully deleted", `Deleted the menu item ${data.name}`);
         },
         onError: (err) => showErrorToast("Failed to delete menu item", err),
+        onSettled: () => setDeleteMenuItemModalOpen(false),
     });
 
     return (
@@ -129,18 +130,12 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
                         </Grid.Col>
                         <Grid.Col span={12} md={3} lg={1}>
                             <Group position="center">
-                                {isDeleting ? (
-                                    <Loader variant="oval" size="sm" />
-                                ) : (
-                                    <>
-                                        <ActionIcon onClick={() => setMenuItemFormOpen(true)}>
-                                            <IconEdit size={18} />
-                                        </ActionIcon>
-                                        <ActionIcon color="red" onClick={() => setDeleteMenuItemModalOpen(true)}>
-                                            <IconTrash size={18} />
-                                        </ActionIcon>
-                                    </>
-                                )}
+                                <ActionIcon onClick={() => setMenuItemFormOpen(true)}>
+                                    <IconEdit size={18} />
+                                </ActionIcon>
+                                <ActionIcon color="red" onClick={() => setDeleteMenuItemModalOpen(true)}>
+                                    <IconTrash size={18} />
+                                </ActionIcon>
                             </Group>
                         </Grid.Col>
                     </Grid>
@@ -150,10 +145,8 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
             <DeleteConfirmModal
                 opened={deleteMenuItemModalOpen}
                 onClose={() => setDeleteMenuItemModalOpen(false)}
-                onDelete={() => {
-                    deleteMenuItem({ id: menuItem?.id });
-                    setDeleteMenuItemModalOpen(false);
-                }}
+                onDelete={() => deleteMenuItem({ id: menuItem?.id })}
+                loading={isDeleting}
                 title={`Delete ${menuItem?.name} item`}
                 description="Are you sure, you want to delete this menu item? This action cannot be undone"
             />

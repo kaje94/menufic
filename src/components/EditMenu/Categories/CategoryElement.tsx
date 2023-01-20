@@ -37,6 +37,7 @@ export const CategoryElement: FC<Props> = ({ categoryItem, menuId }) => {
             );
         },
         onError: (err) => showErrorToast("Failed to delete category", err),
+        onSettled: () => setDeleteCategoryModalOpen(false),
     });
 
     return (
@@ -58,7 +59,6 @@ export const CategoryElement: FC<Props> = ({ categoryItem, menuId }) => {
                                 </Box>
                                 <Text sx={{ flex: 1 }}>{categoryItem.name}</Text>
                                 <EditDeleteOptions
-                                    loading={isDeleting}
                                     onEditClick={() => setCategoryFormOpen(true)}
                                     onDeleteClick={() => setDeleteCategoryModalOpen(true)}
                                 />
@@ -79,10 +79,8 @@ export const CategoryElement: FC<Props> = ({ categoryItem, menuId }) => {
             <DeleteConfirmModal
                 opened={deleteCategoryModalOpen}
                 onClose={() => setDeleteCategoryModalOpen(false)}
-                onDelete={() => {
-                    deleteCategory({ id: categoryItem?.id });
-                    setDeleteCategoryModalOpen(false);
-                }}
+                onDelete={() => deleteCategory({ id: categoryItem?.id })}
+                loading={isDeleting}
                 title={`Delete ${categoryItem?.name} category`}
                 description="Are you sure, you want to delete this category? This action will also delete all the items associated with this category and cannot be undone"
             />

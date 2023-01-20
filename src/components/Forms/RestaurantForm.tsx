@@ -63,12 +63,14 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
         }
     }, [restaurant, opened]);
 
+    const loading = isCreating || isUpdating;
+
     return (
         <Modal
             opened={opened}
             onClose={onClose}
             title={restaurant ? "Edit Restaurant" : "Add Restaurant"}
-            loading={isCreating || isUpdating}
+            loading={loading}
             {...rest}
         >
             <form
@@ -89,6 +91,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                         withAsterisk
                         label="Name"
                         placeholder="Restaurant Name"
+                        disabled={loading}
                         {...getInputProps("name")}
                         autoFocus={true}
                     />
@@ -96,6 +99,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                         withAsterisk
                         label="Location"
                         placeholder="No 05, Road Name, City"
+                        disabled={loading}
                         {...getInputProps("location")}
                     />
                     <ImageUpload
@@ -105,6 +109,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                         imageHash={restaurant?.image?.blurHash}
                         error={!!errors.imagePath}
                         imageRequired
+                        disabled={loading}
                         onImageCrop={(imageBase64, imagePath) => setValues({ imageBase64, imagePath })}
                         onImageDeleteClick={() => setValues({ imageBase64: "", imagePath: "" })}
                     />
@@ -112,7 +117,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                         {errors.imagePath}
                     </Text>
                     <Group position="right" mt="md">
-                        <Button type="submit" loading={isCreating || isUpdating} px="xl">
+                        <Button type="submit" loading={loading} px="xl">
                             Save
                         </Button>
                     </Group>

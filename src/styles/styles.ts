@@ -26,4 +26,5 @@ export const getStyles = (theme: MantineTheme): CSSObject => ({
     ".mantine-Notification-title,.mantine-Notification-description,.mantine-Textarea-label,.mantine-TextInput-label": {
         color: theme.black,
     },
+    ".mantine-1n2375h:disabled": { backgroundColor: "unset", color: "unset" },
 });

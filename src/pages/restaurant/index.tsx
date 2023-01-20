@@ -90,6 +90,7 @@ const RestaurantCard: FC<{ item: Restaurant & { image: Image | null } }> = ({ it
             );
         },
         onError: (err) => showErrorToast("Failed to delete restaurant", err),
+        onSettled: () => setDeleteFormOpen(false),
     });
     return (
         <>
@@ -99,7 +100,6 @@ const RestaurantCard: FC<{ item: Restaurant & { image: Image | null } }> = ({ it
                 title={item.name}
                 subTitle={item.location}
                 editDeleteOptions={{
-                    loading: isDeleting,
                     onDeleteClick: () => setDeleteFormOpen(true),
                     onEditClick: () => setRestaurantFormOpen(true),
                 }}
@@ -112,10 +112,8 @@ const RestaurantCard: FC<{ item: Restaurant & { image: Image | null } }> = ({ it
             <DeleteConfirmModal
                 opened={deleteFormOpen}
                 onClose={() => setDeleteFormOpen(false)}
-                onDelete={() => {
-                    deleteRestaurant({ id: item.id || "" });
-                    setDeleteFormOpen(false);
-                }}
+                onDelete={() => deleteRestaurant({ id: item.id || "" })}
+                loading={isDeleting}
                 title={`Delete restaurant ${item.name}`}
                 description="Are you sure, you want to delete this restaurant? This action will also delete all the items associated with this restaurant and cannot be undone"
             />

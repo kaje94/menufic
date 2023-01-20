@@ -1,5 +1,4 @@
 import type { ModalProps } from "@mantine/core";
-import { useMantineTheme } from "@mantine/core";
 import { TextInput, Button, Group, Stack } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import { api } from "src/utils/api";
@@ -20,7 +19,6 @@ interface Props extends ModalProps {
 /** Form to be used when allowing users to add or edit menus of restaurant */
 export const MenuForm: FC<Props> = ({ opened, onClose, restaurantId, menu: menuItem, ...rest }) => {
     const trpcCtx = api.useContext();
-    const theme = useMantineTheme();
 
     const { mutate: createMenu, isLoading: isCreating } = api.menu.create.useMutation({
         onSuccess: (data) => {
@@ -55,12 +53,14 @@ export const MenuForm: FC<Props> = ({ opened, onClose, restaurantId, menu: menuI
         }
     }, [menuItem, opened]);
 
+    const loading = isCreating || isUpdating;
+
     return (
         <Modal
             opened={opened}
             onClose={onClose}
             title={menuItem ? "Update Menu" : "Create Menu"}
-            loading={isCreating || isUpdating}
+            loading={loading}
             {...rest}
         >
             <form
@@ -77,14 +77,21 @@ export const MenuForm: FC<Props> = ({ opened, onClose, restaurantId, menu: menuI
                 })}
             >
                 <Stack spacing="sm">
-                    <TextInput withAsterisk label="Name" placeholder="Menu Name" {...getInputProps("name")} />
+                    <TextInput
+                        withAsterisk
+                        label="Name"
+                        placeholder="Menu Name"
+                        disabled={loading}
+                        {...getInputProps("name")}
+                    />
                     <TextInput
                         label="Available Time"
                         placeholder="10.00 AM - 9.00 PM"
+                        disabled={loading}
                         {...getInputProps("availableTime")}
                     />
                     <Group position="right" mt="md">
-                        <Button type="submit" loading={isCreating || isUpdating} px="xl">
+                        <Button type="submit" loading={loading} px="xl">
                             Save
                         </Button>
                     </Group>

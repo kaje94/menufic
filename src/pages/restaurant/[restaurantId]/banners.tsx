@@ -131,25 +131,21 @@ const BannerCard: FC<{ item: Image; restaurantName?: string; index?: number }> =
             showSuccessToast("Successfully deleted", `Deleted the banner of the restaurant successfully`);
         },
         onError: (err) => showErrorToast("Failed to create banner", err),
+        onSettled: () => setDeleteFormOpen(false),
     });
 
     return (
         <>
             <ImageCard
                 image={item}
-                editDeleteOptions={{
-                    loading: isDeleting,
-                    onDeleteClick: () => setDeleteFormOpen(true),
-                }}
+                editDeleteOptions={{ onDeleteClick: () => setDeleteFormOpen(true) }}
                 imageAlt={`${restaurantName}-banner-${index}`}
             />
             <DeleteConfirmModal
                 opened={deleteFormOpen}
                 onClose={() => setDeleteFormOpen(false)}
-                onDelete={() => {
-                    deleteRestaurant({ id: item.id, restaurantId });
-                    setDeleteFormOpen(false);
-                }}
+                onDelete={() => deleteRestaurant({ id: item.id, restaurantId })}
+                loading={isDeleting}
                 title="Delete restaurant banner?"
                 description="Are you sure, you want to delete this restaurant banner? This action action cannot be undone"
             />
