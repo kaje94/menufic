@@ -1,4 +1,4 @@
-import { ActionIcon, createStyles, Text, Group, Grid, Loader, Box } from "@mantine/core";
+import { ActionIcon, createStyles, Text, Grid, Box } from "@mantine/core";
 import type { Image, MenuItem } from "@prisma/client";
 import { IconGripVertical, IconEdit, IconTrash } from "@tabler/icons";
 import type { FC } from "react";
@@ -37,6 +37,11 @@ const useStyles = createStyles((theme) => ({
         color: theme.colors.dark[5],
         display: "flex",
         alignItems: "center",
+    },
+    actionButtons: {
+        display: "flex",
+        justifyContent: "center",
+        gap: 10,
     },
 }));
 
@@ -88,15 +93,15 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
                     >
                         <Grid.Col
                             span={1}
-                            md={2}
-                            lg={1}
+                            sm={2}
+                            md={1}
                             className={classes.dragHandleTable}
                             {...provided.dragHandleProps}
                         >
                             <IconGripVertical size={18} stroke={1.5} />
                         </Grid.Col>
 
-                        <Grid.Col span={2} md={2} lg={1}>
+                        <Grid.Col span={2} sm={2} md={1}>
                             <Box className={classes.emptyImage}>
                                 {menuItem.image?.path ? (
                                     <ImageKitImage
@@ -113,30 +118,28 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
                             </Box>
                         </Grid.Col>
 
-                        <Grid.Col span={6} md={5} lg={2}>
+                        <Grid.Col span={6} sm={5} md={2}>
                             <Text weight={700} align="center">
                                 {menuItem.name}
                             </Text>
                         </Grid.Col>
-                        <Grid.Col span={3} md={3} lg={2}>
+                        <Grid.Col span={3} sm={3} md={2}>
                             <Text align="center" color="red" opacity={0.8}>
                                 {menuItem.price}
                             </Text>
                         </Grid.Col>
-                        <Grid.Col span={12} md={9} lg={5}>
+                        <Grid.Col span={12} sm={9} lg={5}>
                             <Text color={menuItem.description ? theme.colors.dark[6] : theme.colors.dark[3]}>
                                 {menuItem.description || "No Description"}
                             </Text>
                         </Grid.Col>
-                        <Grid.Col span={12} md={3} lg={1}>
-                            <Group position="center">
-                                <ActionIcon onClick={() => setMenuItemFormOpen(true)}>
-                                    <IconEdit size={18} />
-                                </ActionIcon>
-                                <ActionIcon color="red" onClick={() => setDeleteMenuItemModalOpen(true)}>
-                                    <IconTrash size={18} />
-                                </ActionIcon>
-                            </Group>
+                        <Grid.Col span={12} sm={3} lg={1} className={classes.actionButtons}>
+                            <ActionIcon onClick={() => setMenuItemFormOpen(true)}>
+                                <IconEdit size={18} />
+                            </ActionIcon>
+                            <ActionIcon color="red" onClick={() => setDeleteMenuItemModalOpen(true)}>
+                                <IconTrash size={18} />
+                            </ActionIcon>
                         </Grid.Col>
                     </Grid>
                 )}

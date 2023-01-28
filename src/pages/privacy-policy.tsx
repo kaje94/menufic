@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Container, List, Text, Title, useMantineTheme } from "@mantine/core";
 import { NavHeader } from "src/components/Header";
 import { Footer } from "src/components/Footer";
+import { env } from "src/env/client.mjs";
 
 /**
  * Privacy policy generated using freeprivacypolicy.com
@@ -23,7 +24,7 @@ const PrivacyPolicyPage: NextPage = () => {
 
             <NavHeader showLoginButton={true} />
 
-            <Container size="lg" py="lg">
+            <Container size="xl" py="lg">
                 <Title order={1}>Privacy Policy</Title>
                 <Text color={theme.colors.dark[5]} mb="lg">
                     Last updated: January 11, 2023
@@ -442,7 +443,7 @@ const PrivacyPolicyPage: NextPage = () => {
                 <Text>If you have any questions about this Privacy Policy, You can contact us:</Text>
                 <List styles={{ item: { color: theme.black } }}>
                     <List.Item>
-                        <Text>By email: a.kajendran@gmail.com</Text>
+                        <Text>By email: {env.NEXT_PUBLIC_CONTACT_EMAIL}</Text>
                     </List.Item>
                     <List.Item>
                         <Text>

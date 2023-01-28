@@ -54,13 +54,21 @@ const rotateSize = (width: number, height: number, rotation: number) => {
     };
 };
 
-export const getCroppedImg = async (
-    imageSrc: string,
-    pixelCrop: Area,
+interface getCroppedImgArgs {
+    imageSrc: string;
+    pixelCrop: Area;
+    rotation?: number;
+    flip?: { horizontal: boolean; vertical: boolean };
+    fileType?: string;
+}
+
+export const getCroppedImg = async ({
+    imageSrc,
+    pixelCrop,
     rotation = 0,
     flip = { horizontal: false, vertical: false },
-    fileType = "image/jpeg"
-): Promise<Blob | null> => {
+    fileType = "image/jpeg",
+}: getCroppedImgArgs): Promise<Blob | null> => {
     const image = await createImage(imageSrc);
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");

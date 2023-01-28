@@ -1,7 +1,7 @@
 import type { GetStaticPropsContext } from "next";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { Container } from "@mantine/core";
+import { Container, useMantineTheme } from "@mantine/core";
 import { useRouter } from "next/router";
 import { api } from "src/utils/api";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
@@ -13,24 +13,40 @@ import { Footer } from "src/components/Footer";
 import { Empty } from "src/components/Empty";
 import { useMediaQuery } from "@mantine/hooks";
 import { createInnerTRPCContext } from "src/server/api/trpc";
+import { env } from "src/env/client.mjs";
 
 /** Restaurant menu page that will be shared publicly */
 const RestaurantMenuPage: NextPage = () => {
     const router = useRouter();
     const { status } = useSession();
     const restaurantId = router.query?.restaurantId as string;
-    const isNotMobile = useMediaQuery("(min-width: 600px)");
+    const theme = useMantineTheme();
+    const isNotMobile = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px)`);
 
     const { data: restaurant } = api.restaurant.getDetails.useQuery(
         { id: restaurantId },
         { enabled: status === "authenticated" && !!restaurantId }
     );
 
+    const titleTag = `${restaurant?.name} Menu`;
+    const descriptionTag = `Menu of restaurant ${restaurant?.name} created using Menufic`;
+    const imageTag = `${env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}/${restaurant?.image?.path}`;
+
     return (
         <>
             <Head>
-                <title>{`${restaurant?.name} Menu`}</title>
-                <meta name="description" content={`Menu of restaurant ${restaurant?.name} created using Menufic`} />
+                <title>{titleTag}</title>
+                <meta name="description" content={descriptionTag} />
+                <meta name="title" content={titleTag} />
+
+                <meta property="og:title" content={titleTag} />
+                <meta property="og:description" content={descriptionTag} />
+                <meta property="og:image" content={imageTag} />
+                <meta property="og:type" content="restaurant.menu" />
+
+                <meta property="twitter:title" content={titleTag} />
+                <meta property="twitter:description" content={descriptionTag} />
+                <meta property="twitter:image" content={imageTag} />
             </Head>
             <main>
                 <Container size="xl" py="lg">

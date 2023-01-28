@@ -35,7 +35,7 @@ const RestaurantsListPage: NextPage = () => {
                     <Flex align="center" justify="space-between">
                         <Title order={1}>My Restaurants</Title>
                     </Flex>
-                    <Box ref={rootParent}>
+                    <Box ref={rootParent} mt="xl">
                         {isLoading ? (
                             <Center w="100%" h="50vh">
                                 <Loader size="lg" />
@@ -44,9 +44,9 @@ const RestaurantsListPage: NextPage = () => {
                             <SimpleGrid
                                 mt="md"
                                 breakpoints={[
-                                    { minWidth: "xl", cols: 3 },
-                                    { minWidth: "md", cols: 2 },
-                                    { minWidth: "sm", cols: 1 },
+                                    { minWidth: "lg", cols: 3 },
+                                    { minWidth: "sm", cols: 2 },
+                                    { minWidth: "xs", cols: 1 },
                                 ]}
                                 ref={gridItemParent}
                             >

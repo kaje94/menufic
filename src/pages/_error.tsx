@@ -1,6 +1,7 @@
 import { type NextPage } from "next";
 import { Title, Text, Button, Container, createStyles, Group, Box, keyframes } from "@mantine/core";
 import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
 
 const floatingAnimation = keyframes`
 	0% { transform: translateY(0px) }
@@ -73,7 +74,9 @@ const ErrorPage: NextPage = ({ statusCode = 0 }: { statusCode?: number }) => {
     );
 };
 
-ErrorPage.getInitialProps = ({ res, err, asPath }) => {
+ErrorPage.getInitialProps = async (contextData) => {
+    const { res, err, asPath } = contextData;
+    await Sentry.captureUnderscoreErrorException(contextData);
     const errorAsPath = isNaN(Number(asPath?.substring(1))) ? 0 : Number(asPath?.substring(1));
     const statusCode = res?.statusCode || err?.statusCode || errorAsPath || 404;
     return { statusCode };

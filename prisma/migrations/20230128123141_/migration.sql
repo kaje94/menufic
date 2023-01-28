@@ -6,6 +6,7 @@ CREATE TABLE `Restaurant` (
     `updatedAt` DATETIME(3) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `location` VARCHAR(191) NOT NULL,
+    `contactNo` VARCHAR(191) NOT NULL,
     `isPublished` BOOLEAN NOT NULL,
     `imageId` VARCHAR(191) NULL,
 

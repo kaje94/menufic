@@ -9,6 +9,7 @@ import { api } from "src/utils/api";
 import { restaurantInput } from "src/utils/validators";
 import { ImageUpload } from "../ImageUpload";
 import { Modal } from "../Modal";
+import { IconMapPin, IconPhone } from "@tabler/icons";
 
 interface Props extends ModalProps {
     /** Restaurant to be edited */
@@ -44,6 +45,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
         initialValues: {
             name: restaurant?.name || "",
             location: restaurant?.location || "",
+            contactNo: restaurant?.contactNo || "",
             imageBase64: "",
             imagePath: restaurant?.image?.path || "",
         },
@@ -55,6 +57,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
             const values = {
                 name: restaurant?.name || "",
                 location: restaurant?.location || "",
+                contactNo: restaurant?.contactNo || "",
                 imageBase64: "",
                 imagePath: restaurant?.image?.path || "",
             };
@@ -100,7 +103,15 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                         label="Location"
                         placeholder="No 05, Road Name, City"
                         disabled={loading}
+                        icon={<IconMapPin color={theme.colors.dark[4]} />}
                         {...getInputProps("location")}
+                    />
+                    <TextInput
+                        label="Contact Number"
+                        placeholder="+919367788755"
+                        disabled={loading}
+                        icon={<IconPhone color={theme.colors.dark[4]} />}
+                        {...getInputProps("contactNo")}
                     />
                     <ImageUpload
                         width={750}

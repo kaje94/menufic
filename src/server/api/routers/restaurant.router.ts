@@ -7,8 +7,11 @@ import { TRPCError } from "@trpc/server";
 import { env } from "src/env/server.mjs";
 
 export const restaurantRouter = createTRPCRouter({
+    /** Create a new restaurant for the user */
     create: protectedProcedure.input(restaurantInput).mutation(async ({ ctx, input }) => {
         const count = await ctx.prisma.restaurant.count({ where: { userId: ctx.session.user.id } });
+
+        // Check if user has reached the maximum number of restaurants that he/she can create
         if (count >= Number(env.NEXT_PUBLIC_MAX_RESTAURANTS_PER_USER)) {
             throw new TRPCError({
                 code: "BAD_REQUEST",
@@ -26,6 +29,7 @@ export const restaurantRouter = createTRPCRouter({
             data: {
                 name: input.name,
                 location: input.location,
+                contactNo: input.contactNo,
                 image: {
                     create: {
                         id: uploadedResponse.fileId,
@@ -40,16 +44,22 @@ export const restaurantRouter = createTRPCRouter({
             include: { image: true },
         });
     }),
+    /** Update the restaurant details */
     update: protectedProcedure.input(restaurantInput.merge(id)).mutation(async ({ ctx, input }) => {
         const currentItem = await ctx.prisma.restaurant.findUniqueOrThrow({
             where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
         });
 
-        const updateData: Partial<Restaurant> = { name: input.name, location: input.location };
+        const updateData: Partial<Restaurant> = {
+            name: input.name,
+            location: input.location,
+            contactNo: input.contactNo,
+        };
 
         const promiseList = [];
         const transactions: (Prisma.Prisma__ImageClient<Image> | Prisma.Prisma__RestaurantClient<Restaurant>)[] = [];
 
+        // If image is being changed, then delete the previous image from imageKit and database
         if (currentItem.imageId && input.imageBase64) {
             promiseList.push(imageKit.deleteFile(currentItem.imageId));
             transactions.push(ctx.prisma.image.delete({ where: { id: currentItem.imageId } }));
@@ -86,6 +96,7 @@ export const restaurantRouter = createTRPCRouter({
 
         return transactionRes.pop() as Restaurant & { image: Image | null };
     }),
+    /** Delete restaurant along with all the menus, categories, items and images */
     delete: protectedProcedure.input(id).mutation(async ({ ctx, input }) => {
         const currentItem = await ctx.prisma.restaurant.findUniqueOrThrow({
             where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
@@ -128,11 +139,13 @@ export const restaurantRouter = createTRPCRouter({
 
         return currentItem;
     }),
+    /** Get basic info of a restaurant */
     get: protectedProcedure.input(id).query(({ ctx, input }) =>
         ctx.prisma.restaurant.findUniqueOrThrow({
             where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
         })
     ),
+    /** Get banner images belonging to a restaurant */
     getBanners: protectedProcedure.input(id).query(async ({ ctx, input }) => {
         const restaurant = await ctx.prisma.restaurant.findUniqueOrThrow({
             where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
@@ -140,12 +153,15 @@ export const restaurantRouter = createTRPCRouter({
         });
         return restaurant.banners;
     }),
+    /** Get all the restaurants belonging to a user */
     getAll: protectedProcedure.query(({ ctx }) =>
         ctx.prisma.restaurant.findMany({ where: { userId: ctx.session.user.id }, include: { image: true } })
     ),
+    /** Get all the restaurants that have been published by all users */
     getAllPublished: protectedProcedure.query(({ ctx }) =>
         ctx.prisma.restaurant.findMany({ where: { isPublished: true }, include: { image: true } })
     ),
+    /** Get all the details including items and images, for a given restaurant ID */
     getDetails: publicProcedure.input(id).query(({ ctx, input }) =>
         ctx.prisma.restaurant.findFirstOrThrow({
             where: { id: input.id },
@@ -164,19 +180,24 @@ export const restaurantRouter = createTRPCRouter({
             },
         })
     ),
+    /** Update the published status of the restaurant */
     setPublished: protectedProcedure.input(id.extend({ isPublished: z.boolean() })).mutation(async ({ ctx, input }) => {
         const restaurant = await ctx.prisma.restaurant.update({
             where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
             data: { isPublished: input.isPublished },
         });
+        /** Revalidate the published menu page */
         await ctx.res?.revalidate(`/restaurant/${input.id}/menu`);
         return restaurant;
     }),
+    /** Add a banner to a restaurant */
     addBanner: protectedProcedure.input(bannerInput).mutation(async ({ ctx, input }) => {
         const restaurant = await ctx.prisma.restaurant.findUniqueOrThrow({
             where: { id_userId: { id: input.restaurantId, userId: ctx.session.user.id } },
             select: { banners: true },
         });
+
+        // Check if the maximum banner count of the restaurant has been reached
         if (restaurant?.banners.length >= Number(env.NEXT_PUBLIC_MAX_BANNERS_PER_RESTAURANT)) {
             throw new TRPCError({
                 code: "BAD_REQUEST",
@@ -200,6 +221,7 @@ export const restaurantRouter = createTRPCRouter({
             },
         });
     }),
+    /** Delete a banner from the user's restaurant */
     deleteBanner: protectedProcedure.input(restaurantId.extend({ id: z.string() })).mutation(async ({ ctx, input }) => {
         const restaurant = await ctx.prisma.restaurant.findUniqueOrThrow({
             where: { id_userId: { id: input.restaurantId, userId: ctx.session.user.id } },

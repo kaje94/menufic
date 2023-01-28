@@ -7,6 +7,7 @@ import { env } from "src/env/server.mjs";
 import { createTRPCRouter, protectedProcedure } from "src/server/api/trpc";
 
 export const menuItemRouter = createTRPCRouter({
+    /** Create a new menu item under a category of a restaurant menu */
     create: protectedProcedure.input(menuItemInput.merge(categoryId).merge(menuId)).mutation(async ({ ctx, input }) => {
         const [count, lastMenuItem] = await ctx.prisma.$transaction([
             ctx.prisma.menuItem.count({ where: { categoryId: input.categoryId } }),
@@ -15,6 +16,8 @@ export const menuItemRouter = createTRPCRouter({
                 orderBy: { position: "desc" },
             }),
         ]);
+
+        /** Check if the maximum number of items per category has been reached */
         if (count >= Number(env.NEXT_PUBLIC_MAX_MENU_ITEMS_PER_CATEGORY)) {
             throw new TRPCError({
                 code: "BAD_REQUEST",
@@ -50,6 +53,7 @@ export const menuItemRouter = createTRPCRouter({
 
         return ctx.prisma.menuItem.create({ data: createData, include: { image: true } });
     }),
+    /** Update the details of a menu item */
     update: protectedProcedure.input(menuItemInput.merge(id)).mutation(async ({ ctx, input }) => {
         const currentItem = await ctx.prisma.menuItem.findUniqueOrThrow({
             where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
@@ -60,6 +64,7 @@ export const menuItemRouter = createTRPCRouter({
         const promiseList = [];
         const transactions: (Prisma.Prisma__ImageClient<Image> | Prisma.Prisma__MenuItemClient<MenuItem>)[] = [];
 
+        /** Delete the previous image from imageKit and db, if the image is being replaced */
         if (currentItem.imageId && (!input.imagePath || input.imageBase64)) {
             promiseList.push(imageKit.deleteFile(currentItem.imageId));
             transactions.push(ctx.prisma.image.delete({ where: { id: currentItem.imageId } }));
@@ -95,6 +100,7 @@ export const menuItemRouter = createTRPCRouter({
         const [transactionRes] = await Promise.all([ctx.prisma.$transaction(transactions), promiseList]);
         return transactionRes.pop() as MenuItem & { image: Image | null };
     }),
+    /** Delete the menu item from a menu category */
     delete: protectedProcedure.input(id).mutation(async ({ ctx, input }) => {
         const currentItem = await ctx.prisma.menuItem.findUniqueOrThrow({
             where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
@@ -114,6 +120,7 @@ export const menuItemRouter = createTRPCRouter({
         await Promise.all(promiseList);
         return currentItem;
     }),
+    /** Update the positions of all menu items, within the category */
     updatePosition: protectedProcedure
         .input(z.array(id.extend({ newPosition: z.number() })))
         .mutation(async ({ ctx, input }) =>

@@ -60,7 +60,7 @@ const EditMenuPage: NextPage = () => {
                                     </Breadcrumbs>
                                     {restaurant && <PublishButton restaurant={restaurant} />}
                                 </SimpleGrid>
-                                <Grid gutter="lg" mt="lg" justify="center" ref={gridItemParent}>
+                                <Grid gutter="lg" mt="xl" justify="center" ref={gridItemParent}>
                                     <Grid.Col sm={12} md={4} lg={3}>
                                         {router.query?.restaurantId && (
                                             <Menus

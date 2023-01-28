@@ -44,7 +44,6 @@ const RestaurantManagePage: NextPage = () => {
                             </Center>
                         ) : (
                             <>
-                                {" "}
                                 <SimpleGrid
                                     breakpoints={[
                                         { minWidth: "sm", cols: 2 },
@@ -58,11 +57,11 @@ const RestaurantManagePage: NextPage = () => {
                                     {restaurant && <PublishButton restaurant={restaurant} />}
                                 </SimpleGrid>
                                 <SimpleGrid
-                                    mt="lg"
+                                    mt="xl"
                                     breakpoints={[
-                                        { minWidth: "xl", cols: 3 },
-                                        { minWidth: "md", cols: 2 },
-                                        { minWidth: "sm", cols: 1 },
+                                        { minWidth: "lg", cols: 3 },
+                                        { minWidth: "sm", cols: 2 },
+                                        { minWidth: "xs", cols: 1 },
                                     ]}
                                 >
                                     <IconCard

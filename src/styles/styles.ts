@@ -10,6 +10,11 @@ export const getStyles = (theme: MantineTheme): CSSObject => ({
         padding: 0,
         lineHeight: theme.lineHeight,
     },
+    "body::-webkit-scrollbar": { width: "5px", backgroundColor: theme.colors.dark[4] },
+    "body::-webkit-scrollbar-thumb": {
+        backgroundColor: theme.colors.primary[6],
+        outline: `1px solid ${theme.colors.primary[6]}`,
+    },
     a: {
         color: "inherit",
         textDecoration: "none",
@@ -27,4 +32,5 @@ export const getStyles = (theme: MantineTheme): CSSObject => ({
         color: theme.black,
     },
     ".mantine-1n2375h:disabled": { backgroundColor: "unset", color: "unset" },
+    ".mantine-Button-root,.mantine-ActionIcon-root": { transition: "all 500ms ease" },
 });

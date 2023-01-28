@@ -7,6 +7,7 @@ import { createTRPCRouter, protectedProcedure } from "src/server/api/trpc";
 import type { PrismaPromise } from "@prisma/client";
 
 export const categoryRouter = createTRPCRouter({
+    /** Create a new category under a menu of a restaurant */
     create: protectedProcedure.input(categoryInput.merge(menuId)).mutation(async ({ ctx, input }) => {
         const [count, lastCategoryItem] = await ctx.prisma.$transaction([
             ctx.prisma.category.count({ where: { menuId: input.menuId } }),
@@ -15,6 +16,8 @@ export const categoryRouter = createTRPCRouter({
                 orderBy: { position: "desc" },
             }),
         ]);
+
+        /** Check if the maximum number of categories per menu has been reached */
         if (count >= Number(env.NEXT_PUBLIC_MAX_CATEGORIES_PER_MENU)) {
             throw new TRPCError({
                 code: "BAD_REQUEST",
@@ -32,12 +35,14 @@ export const categoryRouter = createTRPCRouter({
             include: { items: { include: { image: true } } },
         });
     }),
+    /** Update the details of a menu category */
     update: protectedProcedure.input(categoryInput.merge(id)).mutation(async ({ ctx, input }) => {
         return ctx.prisma.category.update({
             data: { name: input.name },
             where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
         });
     }),
+    /** Delete the category of a menu along with the items and images related to it */
     delete: protectedProcedure.input(id).mutation(async ({ ctx, input }) => {
         const currentItem = await ctx.prisma.category.findUniqueOrThrow({
             where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
@@ -68,6 +73,7 @@ export const categoryRouter = createTRPCRouter({
 
         return currentItem;
     }),
+    /** Update the position of the categories within a restaurant menu */
     updatePosition: protectedProcedure
         .input(z.array(id.extend({ newPosition: z.number() })))
         .mutation(async ({ ctx, input }) =>
@@ -81,6 +87,7 @@ export const categoryRouter = createTRPCRouter({
                 )
             )
         ),
+    /** Get all categories belonging to a restaurant menu along with the items and images related to it. */
     getAll: protectedProcedure.input(menuId).query(({ ctx, input }) =>
         ctx.prisma.category.findMany({
             where: { menuId: input.menuId, userId: ctx.session.user.id },

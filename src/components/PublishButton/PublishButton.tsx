@@ -11,6 +11,7 @@ import {
     Tooltip,
     Center,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import type { Restaurant } from "@prisma/client";
 import { IconAlertCircle, IconCheck, IconCopy, IconDownload, IconEye, IconEyeOff, IconTrophy } from "@tabler/icons";
 import downloadjs from "downloadjs";
@@ -33,6 +34,7 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
     const trpcCtx = api.useContext();
     const theme = useMantineTheme();
     const { isPublished, id, name } = restaurant;
+    const isNotMobile = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px)`);
 
     const [modelVisible, setModalVisible] = useState(false);
     const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -74,8 +76,7 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                 onClick={() => setModalVisible(true)}
                 leftIcon={isPublished ? <IconEye /> : <IconEyeOff />}
                 variant={isPublished ? "filled" : "light"}
-                w="max-content"
-                sx={{ justifySelf: "flex-end" }}
+                sx={{ justifySelf: isNotMobile ? "flex-end" : "auto" }}
             >
                 {isPublished ? "Published" : "Not Published"}
             </Button>

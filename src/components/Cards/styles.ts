@@ -7,7 +7,7 @@ export const useStyles = createStyles((theme, _params, getRef) => {
     return {
         card: {
             position: "relative",
-            height: 250,
+            height: 200,
             cursor: "pointer",
             transition: "background 500ms ease",
             backgroundColor: theme.white,
@@ -15,7 +15,7 @@ export const useStyles = createStyles((theme, _params, getRef) => {
             [`&:hover .${image}`]: { transform: "scale(1.03)" },
             "&:hover": { backgroundColor: theme.colors.dark[0], boxShadow: theme.shadows.xs },
         },
-        cardDisabled: { cursor: "not-allowed" },
+        cardDisabled: { cursor: "not-allowed", opacity: 0.6 },
         cardNoCursor: { cursor: "unset" },
         imageWrap: {
             transition: "all 500ms ease",

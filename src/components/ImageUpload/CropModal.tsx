@@ -7,6 +7,7 @@ import Cropper from "react-easy-crop";
 import { Slider } from "@mantine/core";
 import { getCroppedImg } from "src/utils/helpers";
 import { Modal } from "../Modal";
+import { useMutation } from "@tanstack/react-query";
 
 interface Props extends ModalProps {
     /** Path of the image to be cropped */
@@ -32,11 +33,18 @@ const useStyles = createStyles((theme) => ({
 /** Modal to allow the user to zoom & crop the uploading image into appropriate aspect ratio */
 export const CropModal: FC<Props> = ({ imageUrl, onCrop, aspect = 1, onClose, ...rest }) => {
     const { classes, theme } = useStyles();
-    const [cropping, setCropping] = useState(false);
     const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
     const [rotation, setRotation] = useState(0);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+    const { mutate, isLoading: cropping } = useMutation(getCroppedImg, {
+        mutationKey: [],
+        onSuccess: (croppedImage) => {
+            if (croppedImage) {
+                onCrop(croppedImage);
+            }
+        },
+    });
 
     const onCropComplete = useCallback((_: Area, croppedAreaPixels: Area) => {
         setCroppedAreaPixels(croppedAreaPixels);
@@ -44,17 +52,7 @@ export const CropModal: FC<Props> = ({ imageUrl, onCrop, aspect = 1, onClose, ..
 
     const finishCropImage = useCallback(async () => {
         if (croppedAreaPixels) {
-            setCropping(true);
-            try {
-                const croppedImage = await getCroppedImg(imageUrl, croppedAreaPixels, rotation);
-                if (croppedImage) {
-                    onCrop(croppedImage);
-                }
-            } catch (e) {
-                console.error(e);
-            } finally {
-                setCropping(false);
-            }
+            mutate({ imageSrc: imageUrl, pixelCrop: croppedAreaPixels, rotation });
         }
     }, [croppedAreaPixels, rotation, imageUrl, onCrop]);
 

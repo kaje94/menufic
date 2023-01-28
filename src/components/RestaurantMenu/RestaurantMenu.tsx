@@ -1,14 +1,13 @@
 import type { FC } from "react";
 import { useRef } from "react";
-import { Box, Text, SimpleGrid, Tabs, createStyles, Switch, useMantineColorScheme } from "@mantine/core";
+import { Box, Text, SimpleGrid, Tabs, createStyles, useMantineColorScheme, ActionIcon, Flex } from "@mantine/core";
 import type { Category, Image, Menu, MenuItem, Restaurant } from "@prisma/client";
 import { useMemo, useState } from "react";
 import { ImageKitImage } from "../ImageKitImage";
 import { MenuItemCard } from "./MenuItemCard";
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel } from "@mantine/carousel";
-import { IconSun, IconMoonStars } from "@tabler/icons";
-import { useMediaQuery } from "@mantine/hooks";
+import { IconSun, IconMoonStars, IconMapPin, IconPhone } from "@tabler/icons";
 import { Empty } from "../Empty";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Black, White } from "src/styles/theme";
@@ -43,8 +42,42 @@ const useStyles = createStyles((theme) => ({
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-end",
+        width: "100%",
     },
-    themeSwitch: { position: "absolute", bottom: 10, right: 12, zIndex: 1 },
+    carousalTitleText: {
+        color: White,
+        opacity: 0.85,
+        fontWeight: "bold",
+        fontSize: 40,
+        [`@media (max-width: ${theme.breakpoints.lg}px)`]: { fontSize: 30 },
+        [`@media (max-width: ${theme.breakpoints.sm}px)`]: { fontSize: 24 },
+    },
+    carousalTitleSubText: {
+        color: White,
+        fontSize: 22,
+        flex: 1,
+        [`@media (max-width: ${theme.breakpoints.lg}px)`]: { fontSize: 18 },
+        [`@media (max-width: ${theme.breakpoints.sm}px)`]: { fontSize: 14 },
+    },
+    carousalSubWrap: {
+        opacity: 0.65,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        [`@media (max-width: ${theme.breakpoints.xs}px)`]: { display: "grid", gap: 2 },
+    },
+    themeSwitch: {
+        position: "absolute",
+        top: 10,
+        right: 12,
+        zIndex: 1,
+        color: theme.black,
+        boxShadow: theme.shadows.md,
+        backgroundColor: theme.white,
+        opacity: 0.6,
+        transition: "all 500ms ease",
+        "&:hover": { opacity: 1, backgroundColor: theme.white },
+    },
     switchTrack: { background: `${theme.fn.darken(White, 0.1)} !important`, border: "unset" },
     switchThumb: { background: theme.fn.lighten(Black, 0.2) },
 }));
@@ -62,7 +95,6 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
     const { classes, theme } = useStyles();
     const bannerCarousalRef = useRef(Autoplay({ delay: 5000 }));
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-    const isNotMobile = useMediaQuery("(min-width: 600px)");
     const [menuParent] = useAutoAnimate<HTMLDivElement>();
     const [selectedMenu, setSelectedMenu] = useState<string | null | undefined>(restaurant?.menus?.[0]?.id);
 
@@ -112,22 +144,23 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                     ))}
                 </Carousel>
                 <Box className={classes.carousalTitle}>
-                    <Text color={White} weight="bold" size={isNotMobile ? 40 : 30}>
-                        {restaurant?.name}
-                    </Text>
-                    <Text color={White} opacity={0.7} size={isNotMobile ? 25 : 20}>
-                        {restaurant?.location}
-                    </Text>
+                    <Text className={classes.carousalTitleText}>{restaurant?.name}</Text>
+                    <Box className={classes.carousalSubWrap}>
+                        <Flex gap={10} align="center">
+                            <IconMapPin color={White} />
+                            <Text className={classes.carousalTitleSubText}>{restaurant?.location}</Text>
+                        </Flex>
+                        {restaurant?.contactNo && (
+                            <Flex gap={10} align="center">
+                                <IconPhone color={White} />
+                                <Text className={classes.carousalTitleSubText}>{restaurant?.contactNo}</Text>
+                            </Flex>
+                        )}
+                    </Box>
                 </Box>
-                <Switch
-                    className={classes.themeSwitch}
-                    checked={colorScheme === "dark"}
-                    onChange={() => toggleColorScheme()}
-                    size="md"
-                    onLabel={<IconSun color={theme.white} size={15} />}
-                    offLabel={<IconMoonStars color={theme.colors.dark[7]} size={15} />}
-                    classNames={{ track: classes.switchTrack, thumb: classes.switchThumb }}
-                />
+                <ActionIcon onClick={() => toggleColorScheme()} size="lg" className={classes.themeSwitch}>
+                    {colorScheme === "dark" ? <IconSun strokeWidth={2.5} size={18} /> : <IconMoonStars size={18} />}
+                </ActionIcon>
             </Box>
 
             <Tabs value={selectedMenu} onTabChange={setSelectedMenu} my={40}>

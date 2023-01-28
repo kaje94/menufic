@@ -22,6 +22,13 @@ export const menuItemInput = z.object({
 export const restaurantInput = z.object({
     name: z.string().trim().min(1, "Name is required").max(30, "Name cannot be longer than 30 characters"),
     location: z.string().trim().min(1, "Location is required").max(50, "Location cannot be longer than 50 characters"),
+    contactNo: z.union([
+        z
+            .string()
+            .trim()
+            .regex(new RegExp("^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$"), "Invalid contact number"),
+        z.literal(""),
+    ]),
     imageBase64: z.string(),
     imagePath: z.string().min(1, "Image is required"),
 });

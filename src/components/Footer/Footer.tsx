@@ -1,4 +1,4 @@
-import { createStyles, Group, Text, Container, Footer } from "@mantine/core";
+import { createStyles, Group, Container, Footer } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import Link from "next/link";
 import type { FC } from "react";
@@ -33,8 +33,8 @@ const footerLinks = [
 
 /** Footer to be shown throughout the app */
 export const CustomFooter: FC = () => {
-    const { classes } = useStyles();
-    const isNotMobile = useMediaQuery("(min-width: 600px)");
+    const { classes, theme } = useStyles();
+    const isNotMobile = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px)`);
 
     const items = footerLinks.map((link) => (
         <Link key={link.label} href={link.link} className={classes.linkItem}>

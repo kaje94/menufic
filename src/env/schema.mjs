@@ -18,14 +18,16 @@ export const serverSchema = z.object({
     ),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
-
-    // Image kit related keys
     IMAGEKIT_PUBLIC_KEY: z.string(),
     IMAGEKIT_PRIVATE_KEY: z.string(),
     IMAGEKIT_BASE_FOLDER: z.string(),
-
     UPSTASH_REDIS_URL: z.string(),
     UPSTASH_REDIS_TOKEN: z.string(),
+
+    SENTRY_URL: z.string().optional(),
+    SENTRY_ORG: z.string().optional(),
+    SENTRY_PROJECT: z.string().optional(),
+    SENTRY_AUTH_TOKEN: z.string().optional(),
 });
 
 /**
@@ -35,13 +37,15 @@ export const serverSchema = z.object({
  */
 export const clientSchema = z.object({
     NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT: z.string(),
-
-    // Limits
     NEXT_PUBLIC_MAX_RESTAURANTS_PER_USER: z.string().regex(/^\d+$/),
     NEXT_PUBLIC_MAX_MENUS_PER_RESTAURANT: z.string().regex(/^\d+$/),
     NEXT_PUBLIC_MAX_CATEGORIES_PER_MENU: z.string().regex(/^\d+$/),
     NEXT_PUBLIC_MAX_MENU_ITEMS_PER_CATEGORY: z.string().regex(/^\d+$/),
     NEXT_PUBLIC_MAX_BANNERS_PER_RESTAURANT: z.string().regex(/^\d+$/),
+    NEXT_PUBLIC_SAMPLE_MENU_ID: z.string(),
+    NEXT_PUBLIC_FORM_API_KEY: z.string(),
+    NEXT_PUBLIC_CONTACT_EMAIL: z.string(),
+    NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
 });
 
 /**
@@ -57,4 +61,8 @@ export const clientEnv = {
     NEXT_PUBLIC_MAX_CATEGORIES_PER_MENU: process.env.NEXT_PUBLIC_MAX_CATEGORIES_PER_MENU,
     NEXT_PUBLIC_MAX_MENU_ITEMS_PER_CATEGORY: process.env.NEXT_PUBLIC_MAX_MENU_ITEMS_PER_CATEGORY,
     NEXT_PUBLIC_MAX_BANNERS_PER_RESTAURANT: process.env.NEXT_PUBLIC_MAX_BANNERS_PER_RESTAURANT,
+    NEXT_PUBLIC_SAMPLE_MENU_ID: process.env.NEXT_PUBLIC_SAMPLE_MENU_ID,
+    NEXT_PUBLIC_FORM_API_KEY: process.env.NEXT_PUBLIC_FORM_API_KEY,
+    NEXT_PUBLIC_CONTACT_EMAIL: process.env.NEXT_PUBLIC_CONTACT_EMAIL,
+    NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
 };

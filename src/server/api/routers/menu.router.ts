@@ -7,6 +7,7 @@ import { createTRPCRouter, protectedProcedure } from "src/server/api/trpc";
 import type { PrismaPromise } from "@prisma/client";
 
 export const menuRouter = createTRPCRouter({
+    /** Create a new menu under a restaurant */
     create: protectedProcedure.input(menuInput.merge(restaurantId)).mutation(async ({ ctx, input }) => {
         const [count, lastMenuItem] = await ctx.prisma.$transaction([
             ctx.prisma.menu.count({ where: { restaurantId: input.restaurantId } }),
@@ -15,6 +16,8 @@ export const menuRouter = createTRPCRouter({
                 orderBy: { position: "desc" },
             }),
         ]);
+
+        /** Check whether the maximum number of menus per restaurant has been reached */
         if (count >= Number(env.NEXT_PUBLIC_MAX_MENUS_PER_RESTAURANT)) {
             throw new TRPCError({
                 code: "BAD_REQUEST",
@@ -32,12 +35,14 @@ export const menuRouter = createTRPCRouter({
             },
         });
     }),
+    /** Update the details of a restaurant menu */
     update: protectedProcedure.input(menuInput.merge(id)).mutation(async ({ ctx, input }) => {
         return ctx.prisma.menu.update({
             data: { name: input.name, availableTime: input.availableTime },
             where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
         });
     }),
+    /** Delete a restaurant menu along with all the categories, items and images belonging to it */
     delete: protectedProcedure.input(id).mutation(async ({ ctx, input }) => {
         const currentItem = await ctx.prisma.menu.findUniqueOrThrow({
             where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
@@ -72,6 +77,7 @@ export const menuRouter = createTRPCRouter({
 
         return currentItem;
     }),
+    /** Update the position the menus of the restaurant */
     updatePosition: protectedProcedure
         .input(z.array(id.extend({ newPosition: z.number() })))
         .mutation(async ({ ctx, input }) =>
@@ -84,6 +90,7 @@ export const menuRouter = createTRPCRouter({
                 )
             )
         ),
+    /** Get all the menus belonging toa restaurant */
     getAll: protectedProcedure.input(restaurantId).query(({ ctx, input }) =>
         ctx.prisma.menu.findMany({
             where: { restaurantId: input.restaurantId, userId: ctx.session.user.id },

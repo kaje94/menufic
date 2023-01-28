@@ -27,11 +27,11 @@ const ExplorePage: NextPage = () => {
                     <Text color={theme.colors.dark[6]}>Following are the restaurants published by all users</Text>
                     <Box ref={itemsParent}>
                         <SimpleGrid
-                            mt="lg"
+                            mt="xl"
                             breakpoints={[
-                                { minWidth: "xl", cols: 3 },
-                                { minWidth: "md", cols: 2 },
-                                { minWidth: "sm", cols: 1 },
+                                { minWidth: "lg", cols: 3 },
+                                { minWidth: "sm", cols: 2 },
+                                { minWidth: "xs", cols: 1 },
                             ]}
                         >
                             {restaurants?.map((item) => (

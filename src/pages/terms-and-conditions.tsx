@@ -3,6 +3,7 @@ import Head from "next/head";
 import { Container, List, Text, Title, useMantineTheme } from "@mantine/core";
 import { NavHeader } from "src/components/Header";
 import { Footer } from "src/components/Footer";
+import { env } from "src/env/client.mjs";
 
 /** Term & Conditions generated using https://policymaker.io/ */
 const TermsAndConditionsPage: NextPage = () => {
@@ -19,7 +20,7 @@ const TermsAndConditionsPage: NextPage = () => {
 
             <NavHeader showLoginButton={true} />
 
-            <Container size="lg" py="lg">
+            <Container size="xl" py="lg">
                 <Title order={1}>Terms and Conditions</Title>
 
                 <Text color={theme.colors.dark[5]} mb="lg">
@@ -43,14 +44,15 @@ const TermsAndConditionsPage: NextPage = () => {
                 </Text>
                 <Text>
                     If you do not agree with (or cannot comply with) Agreements, then you may not use the Service, but
-                    please let us know by emailing at <b>a.kajendran@gmail.com</b> so we can try to find a solution.
-                    These Terms apply to all visitors, users and others who wish to access or use Service.
+                    please let us know by emailing at <b>{env.NEXT_PUBLIC_CONTACT_EMAIL}</b> so we can try to find a
+                    solution. These Terms apply to all visitors, users and others who wish to access or use Service.
                 </Text>
                 <Title order={2}>Communications</Title>
                 <Text>
                     By using our Service, you agree to subscribe to newsletters, marketing or promotional materials and
                     other information we may send. However, you may opt out of receiving any, or all, of these
-                    communications from us by following the unsubscribe link or by emailing at a.kajendran@gmail.com.
+                    communications from us by following the unsubscribe link or by emailing at{" "}
+                    {env.NEXT_PUBLIC_CONTACT_EMAIL}.
                 </Text>
 
                 <Title order={2}>Contests, Sweepstakes and Promotions</Title>
@@ -207,9 +209,9 @@ const TermsAndConditionsPage: NextPage = () => {
                 <Text>
                     If you are a copyright owner, or authorized on behalf of one, and you believe that the copyrighted
                     work has been copied in a way that constitutes copyright infringement, please submit your claim via
-                    email to a.kajendran@gmail.com, with the subject line: “Copyright Infringement” and include in your
-                    claim a detailed description of the alleged Infringement as detailed below, under “DMCA Notice and
-                    Procedure for Copyright Infringement Claims”
+                    email to {env.NEXT_PUBLIC_CONTACT_EMAIL}, with the subject line: “Copyright Infringement” and
+                    include in your claim a detailed description of the alleged Infringement as detailed below, under
+                    “DMCA Notice and Procedure for Copyright Infringement Claims”
                 </Text>
                 <Text>
                     You may be held accountable for damages (including costs and attorneys’ fees) for misrepresentation
@@ -247,18 +249,18 @@ const TermsAndConditionsPage: NextPage = () => {
                         behalf.
                     </List.Item>
                 </List>
-                <Text>You can contact our Copyright Agent via email at a.kajendran@gmail.com.</Text>
+                <Text>You can contact our Copyright Agent via email at {env.NEXT_PUBLIC_CONTACT_EMAIL}.</Text>
                 <Title order={2}>Error Reporting and Feedback</Title>
                 <Text>
-                    You may provide us either directly at a.kajendran@gmail.com or via third party sites and tools with
-                    information and feedback concerning errors, suggestions for improvements, ideas, problems,
-                    complaints, and other matters related to our Service (“Feedback”). You acknowledge and agree that:
-                    (i) you shall not retain, acquire or assert any intellectual property right or other right, title or
-                    interest in or to the Feedback; (ii) Company may have development ideas similar to the Feedback;
-                    (iii) Feedback does not contain confidential information or proprietary information from you or any
-                    third party; and (iv) Company is not under any obligation of confidentiality with respect to the
-                    Feedback. In the event the transfer of the ownership to the Feedback is not possible due to
-                    applicable mandatory laws, you grant Company and its affiliates an exclusive, transferable,
+                    You may provide us either directly at {env.NEXT_PUBLIC_CONTACT_EMAIL} or via third party sites and
+                    tools with information and feedback concerning errors, suggestions for improvements, ideas,
+                    problems, complaints, and other matters related to our Service (“Feedback”). You acknowledge and
+                    agree that: (i) you shall not retain, acquire or assert any intellectual property right or other
+                    right, title or interest in or to the Feedback; (ii) Company may have development ideas similar to
+                    the Feedback; (iii) Feedback does not contain confidential information or proprietary information
+                    from you or any third party; and (iv) Company is not under any obligation of confidentiality with
+                    respect to the Feedback. In the event the transfer of the ownership to the Feedback is not possible
+                    due to applicable mandatory laws, you grant Company and its affiliates an exclusive, transferable,
                     irrevocable, free-of-charge, sub-licensable, unlimited and perpetual right to use (including copy,
                     modify, create derivative works, publish, distribute and commercialize) Feedback in any manner and
                     for any purpose.
@@ -393,7 +395,7 @@ const TermsAndConditionsPage: NextPage = () => {
                 <Title order={2}>Contact Us</Title>
                 <Text>
                     Please send your feedback, comments, requests for technical support by email:{" "}
-                    <b>a.kajendran@gmail.com</b>.
+                    <b>{env.NEXT_PUBLIC_CONTACT_EMAIL}</b>.
                 </Text>
             </Container>
 

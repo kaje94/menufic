@@ -20,11 +20,11 @@ interface Props {
 }
 
 /** Card item with an icon in the middle  */
-export const IconCard: FC<Props> = ({ title, subTitle, Icon, href, iconSize = 60, onClick }) => {
+export const IconCard: FC<Props> = ({ title, subTitle, Icon, href, iconSize = 50, onClick }) => {
     const { classes, theme } = useStyles();
 
     const cardContent = (
-        <Box className={clsx(classes.content, classes.centerContent, classes.hoverAnimation)}>
+        <Box className={clsx(classes.content, classes.centerContent, (onClick || href) && classes.hoverAnimation)}>
             <Icon size={iconSize} color={theme.colors.dark[8]} stroke={1.5} />
 
             <Text size="lg" className={classes.title} weight={500}>

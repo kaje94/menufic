@@ -18,6 +18,7 @@ model Restaurant {
     updatedAt   DateTime @updatedAt
     name        String
     location    String
+    contactNo   String
     isPublished Boolean
     menus       Menu[]   @relation("MenusOfRestaurant")
     image       Image?   @relation("ImageOfRestaurant", fields: [imageId], references: [id])
