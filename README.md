@@ -87,8 +87,6 @@ $ npm run lint:fix
 
 # Format other files types such as .json, .md & .css by running:
 $ npm run format-rest
-
-# These scripts will also automatically run via the pre-commit hook when you perform a commit
 ```
 
 ## Contributing
