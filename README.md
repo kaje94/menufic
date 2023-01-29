@@ -1,28 +1,101 @@
-# Create T3 App
+<br>
+<h1 align="center"> <b>Menufic</b> </h1> 
+<h4 align="center">A digital menu generator for restaurants, built using <a href="https://create.t3.gg" target="_blank">T3 stack</a></h4>
+<br>
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+<p align="center">
+  <a href="https://gitter.im/Menufic/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
+    <img src="https://badges.gitter.im/Menufic/community.svg">
+  </a>
+  <a href="https://saythanks.io/to/a.kajendran">
+    <img src="https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg">
+  </a>
+</p>
 
-## What's next? How do I make an app with this?
+<p align="center">
+  <a href="#introduction">Introduction</a> •
+  <a href="#prerequisite">Prerequisite</a> •
+  <a href="#how-to-use">How To Use</a> •
+  <a href="#contributing">Contributing</a> •
+  <a href="#license">License</a>
+</p>
+<p align="center">
+  <a href="https://menufic.com">
+    <img alt="Menufic-Preview-Image" src="public/menufic_banner.png" width="1024">
+  </a>
+</p>
+<br />
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Introduction
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+[Menufic](https://menufic.com) is a digital menu generator for restaurants that makes it simple and easy for anyone to create and share their restaurant menus. Menufic is built using [Next.js](https://nextjs.org), [NextAuth.js](https://next-auth.js.org), [Prisma](https://prisma.io), [tRPC](https://trpc.io), [Planetscale](https://planetscale.com), [Upstash](https://docs.upstash.com/redis) & [Imagekit](https://imagekit.io). Following are some of the features that Menufic provides.
 
--   [Next.js](https://nextjs.org)
--   [NextAuth.js](https://next-auth.js.org)
--   [Prisma](https://prisma.io)
--   [Tailwind CSS](https://tailwindcss.com)
--   [tRPC](https://trpc.io)
+-   Provide simple & intuitive UI to create & manage restaurant menus
+-   Generate menus that are optimized for search engines and social media crawlers
+-   Support for both light and dark themes
+-   Attach multiple banner images to menus
+-   Share generated menu using URL or QR code
+-   Responsive UI design that works well on all devices
 
-## Learn More
+## Prerequisite
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+-   [Git](https://git-scm.com)
+-   [Node.js 16+](https://nodejs.org/en/download/)
+-   [NPM 7+](http://npmjs.com)
+-   [MySQL](https://www.mysql.com) for persisting data.
+-   [Redis](https://redis.io) for storing user sessions.
+-   [Imagekit account](https://imagekit.io) for managing all the uploaded images.
 
--   [Documentation](https://create.t3.gg/)
--   [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+## How To Use
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+From your command line:
 
-## How do I deploy this?
+```bash
+# Clone this repository
+$ git clone https://github.com/kaje94/menufic
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+# Go into the repository
+$ cd menufic
+
+# Install dependencies
+$ npm install
+```
+
+Scripts related to the Next.js app:
+
+```bash
+# Start the app in development mode with hot-code reloading by running:
+$ npm run dev
+
+# Create an optimized production build of the application by running
+$ npm run build
+
+# After building the app start it in production mode by running:
+$ npm start
+```
+
+Scripts related to linting and formatting:
+
+```bash
+# Check if there are any linting issues by running:
+$ npm run lint
+
+# Check & fix fixable linting issues by running:
+$ npm run lint:fix
+
+# Format other files types such as .json, .md & .css by running:
+$ npm run format-rest
+
+# These scripts will also automatically run via the pre-commit hook when you perform a commit
+```
+
+## Contributing
+
+Please refer the [Contributing.md](.github/CONTRIBUTING.md) in order to contribute towards this project
+
+## License
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+> [a.kajendran@gmail.com](mailto:a.kajendran@gmail.com) &nbsp;&middot;&nbsp;
+> GitHub [@kaje94](https://github.com/kaje94) &nbsp;&middot;&nbsp;
