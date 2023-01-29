@@ -3,7 +3,7 @@ import Document, { Head, Html, Main, NextScript } from "next/document";
 const title = "Menufic - Digital menu generator";
 const description =
     "A digital menu generator that lets you to create the best menu for your restaurant. Menufic is packed with several features that will boost the online presence of your restaurant with ease";
-const bannerImage = "https://menufic.com/menufic_banner.png";
+const bannerImage = "https://menufic.com/menufic_banner.jpg";
 
 export default class MyDocument extends Document {
     render() {

@@ -21,7 +21,7 @@
 </p>
 <p align="center">
   <a href="https://menufic.com">
-    <img alt="Menufic-Preview-Image" src="public/menufic_banner.png" width="1024">
+    <img alt="Menufic-Preview-Image" src="public/menufic_banner.jpg" width="1024">
   </a>
 </p>
 <br />
