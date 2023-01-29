@@ -61,6 +61,8 @@ $ cd menufic
 $ npm install
 ```
 
+> You need to create a `.env` file at the root folder with the keys defined in `.env.example` before running any of the following commands.
+
 Scripts related to the Next.js app:
 
 ```bash
