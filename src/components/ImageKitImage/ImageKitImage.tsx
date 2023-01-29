@@ -1,32 +1,34 @@
-import { createStyles, clsx, Box } from "@mantine/core";
-import { Blurhash } from "react-blurhash";
-import Image from "next/image";
-import { env } from "../../env/client.mjs";
 import type { FC } from "react";
 import { useState } from "react";
 
+import { Box, clsx, createStyles } from "@mantine/core";
+import Image from "next/image";
+import { Blurhash } from "react-blurhash";
+
+import { env } from "../../env/client.mjs";
+
 const useStyles = createStyles(() => ({
-    itemImageWrap: { overflow: "hidden", position: "relative", display: "block" },
     imagePlaceholder: {
+        bottom: 0,
+        height: "100%",
+        left: 0,
         overflow: "hidden",
         position: "absolute !important" as "absolute",
-        top: 0,
         right: 0,
-        bottom: 0,
-        left: 0,
+        top: 0,
         width: "100%",
-        height: "100%",
     },
     itemImage: {
-        zIndex: 1,
-        position: "relative",
-        objectFit: "cover",
-        width: "100%",
         height: "100%",
+        objectFit: "cover",
         opacity: 0,
+        position: "relative",
         transition: "all 200ms ease",
+        width: "100%",
+        zIndex: 1,
     },
     itemImageLoaded: { opacity: 1 },
+    itemImageWrap: { display: "block", overflow: "hidden", position: "relative" },
 }));
 
 interface Props {
@@ -34,12 +36,12 @@ interface Props {
     blurhash?: string;
     /** Background color to be displayed before js hydration of if blurhash is not available */
     color?: string;
+    /** Height of the image */
+    height: number;
     /** Alt text of the image */
     imageAlt?: string;
     /** Path of the image which will be appended to imageKit base url */
     imagePath?: string;
-    /** Height of the image */
-    height: number;
     /** Width of the image */
     width: number;
 }
@@ -50,26 +52,26 @@ export const ImageKitImage: FC<Props> = ({ blurhash, color, imagePath, imageAlt,
     const [loaded, setLoaded] = useState(false);
 
     return (
-        <Box className={classes.itemImageWrap} w="100%" h="100%" bg={color}>
+        <Box bg={color} className={classes.itemImageWrap} h="100%" w="100%">
             {blurhash && (
                 <Blurhash
+                    className={clsx(classes.imagePlaceholder)}
                     hash={blurhash}
-                    width="100%"
                     height="100%"
+                    punch={1}
                     resolutionX={32}
                     resolutionY={32}
-                    punch={1}
-                    className={clsx(classes.imagePlaceholder)}
+                    width="100%"
                 />
             )}
             {imagePath && (
                 <Image
                     alt={`${imageAlt} image`}
-                    src={`${env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}/${imagePath}?tr=f-avif,w-${width}`}
-                    height={height}
-                    width={width}
                     className={clsx(classes.itemImage, loaded && classes.itemImageLoaded)}
+                    height={height}
                     onLoadingComplete={() => setLoaded(true)}
+                    src={`${env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}/${imagePath}?tr=f-avif,w-${width}`}
+                    width={width}
                 />
             )}
         </Box>

@@ -1,7 +1,7 @@
-import { type NextPage } from "next";
-import { Title, Text, Button, Container, createStyles, Group, Box, keyframes } from "@mantine/core";
-import Link from "next/link";
+import { Box, Button, Container, createStyles, Group, keyframes, Text, Title } from "@mantine/core";
 import * as Sentry from "@sentry/nextjs";
+import { type NextPage } from "next";
+import Link from "next/link";
 
 const floatingAnimation = keyframes`
 	0% { transform: translateY(0px) }
@@ -10,30 +10,30 @@ const floatingAnimation = keyframes`
 `;
 
 const useStyles = createStyles((theme) => ({
-    root: {
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: "column",
+    description: {
+        color: theme.colors.dark[6],
+        margin: "auto",
+        marginBottom: theme.spacing.xl * 1.5,
+        marginTop: theme.spacing.xl,
+        maxWidth: 500,
     },
     label: {
-        textAlign: "center",
-        fontWeight: 900,
+        animation: `${floatingAnimation} 4s ease-in-out infinite`,
+        color: theme.colors.dark[4],
         fontSize: 220,
+        fontWeight: 900,
         lineHeight: 1,
         marginBottom: theme.spacing.xl * 1.5,
-        color: theme.colors.dark[4],
         [theme.fn.smallerThan("sm")]: { fontSize: 120 },
-        animation: `${floatingAnimation} 4s ease-in-out infinite`,
+        textAlign: "center",
     },
-    title: { textAlign: "center", fontWeight: 900, fontSize: 38, [theme.fn.smallerThan("sm")]: { fontSize: 32 } },
-    description: {
-        maxWidth: 500,
-        margin: "auto",
-        marginTop: theme.spacing.xl,
-        marginBottom: theme.spacing.xl * 1.5,
-        color: theme.colors.dark[6],
+    root: {
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        justifyContent: "center",
     },
+    title: { fontSize: 38, fontWeight: 900, textAlign: "center", [theme.fn.smallerThan("sm")]: { fontSize: 32 } },
 }));
 
 /** Generic error page to handle both server side errors and client side 404 errors */
@@ -54,7 +54,7 @@ const ErrorPage: NextPage = ({ statusCode = 0 }: { statusCode?: number }) => {
                 }
             </Title>
 
-            <Text size="lg" align="center" className={classes.description}>
+            <Text align="center" className={classes.description} size="lg">
                 {
                     {
                         401: "You do not have permission to access the requested page. Please login and try again",
@@ -65,7 +65,7 @@ const ErrorPage: NextPage = ({ statusCode = 0 }: { statusCode?: number }) => {
             </Text>
             <Group position="center">
                 <Link href="/">
-                    <Button variant="subtle" size="md">
+                    <Button size="md" variant="subtle">
                         Take me back to home page
                     </Button>
                 </Link>
@@ -77,7 +77,7 @@ const ErrorPage: NextPage = ({ statusCode = 0 }: { statusCode?: number }) => {
 ErrorPage.getInitialProps = async (contextData) => {
     const { res, err, asPath } = contextData;
     await Sentry.captureUnderscoreErrorException(contextData);
-    const errorAsPath = isNaN(Number(asPath?.substring(1))) ? 0 : Number(asPath?.substring(1));
+    const errorAsPath = Number.isNaN(Number(asPath?.substring(1))) ? 0 : Number(asPath?.substring(1));
     const statusCode = res?.statusCode || err?.statusCode || errorAsPath || 404;
     return { statusCode };
 };

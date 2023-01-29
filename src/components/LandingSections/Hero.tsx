@@ -1,33 +1,35 @@
-import { Container, Title, Button, BackgroundImage, Box, Stack, Transition } from "@mantine/core";
 import type { FC } from "react";
-import { useStyles } from "./style";
-import { signIn, useSession } from "next-auth/react";
+
+import { BackgroundImage, Box, Button, Container, Stack, Title, Transition } from "@mantine/core";
 import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
+
+import { useStyles } from "./style";
 
 export const Hero: FC = () => {
     const { classes, theme } = useStyles();
     const { status } = useSession();
 
     return (
-        <BackgroundImage src="/landing-hero-bg.svg" className={classes.headerBg} mih="calc(100vh - 60px)">
-            <Container size="lg" h="100%">
+        <BackgroundImage className={classes.headerBg} mih="calc(100vh - 60px)" src="/landing-hero-bg.svg">
+            <Container h="100%" size="lg">
                 <Stack className={classes.containerStack}>
-                    <Title color={theme.colors.dark[5]} className={classes.titleText} weight="lighter">
+                    <Title className={classes.titleText} color={theme.colors.dark[5]} weight="lighter">
                         The best way to create
                     </Title>
                     <Title
-                        variant="gradient"
-                        weight="bold"
                         className={classes.titleText}
                         gradient={theme.defaultGradient}
+                        variant="gradient"
+                        weight="bold"
                     >
                         Digital Menus
                     </Title>
-                    <Title color={theme.black} className={classes.titleText} weight="normal">
+                    <Title className={classes.titleText} color={theme.black} weight="normal">
                         for your restaurant
                     </Title>
 
-                    <Box mt="xl" mih={60}>
+                    <Box mih={60} mt="xl">
                         <Transition mounted={status !== "loading"} transition="slide-up">
                             {(styles) => (
                                 <Box style={styles}>
@@ -39,9 +41,9 @@ export const Hero: FC = () => {
                                         </Link>
                                     ) : (
                                         <Button
-                                            size="xl"
                                             className={classes.getStartedButton}
                                             onClick={() => signIn("google", { callbackUrl: "/restaurant" })}
+                                            size="xl"
                                         >
                                             Get started for free
                                         </Button>

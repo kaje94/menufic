@@ -1,10 +1,11 @@
-import { z } from "zod";
-import { categoryInput, menuId, id } from "src/utils/validators";
-import { imageKit } from "src/server/imageUtil";
+import type { PrismaPromise } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+
 import { env } from "src/env/server.mjs";
 import { createTRPCRouter, protectedProcedure } from "src/server/api/trpc";
-import type { PrismaPromise } from "@prisma/client";
+import { imageKit } from "src/server/imageUtil";
+import { categoryInput, id, menuId } from "src/utils/validators";
 
 export const categoryRouter = createTRPCRouter({
     /** Create a new category under a menu of a restaurant */
@@ -12,8 +13,8 @@ export const categoryRouter = createTRPCRouter({
         const [count, lastCategoryItem] = await ctx.prisma.$transaction([
             ctx.prisma.category.count({ where: { menuId: input.menuId } }),
             ctx.prisma.category.findFirst({
-                where: { menuId: input.menuId, userId: ctx.session.user.id },
                 orderBy: { position: "desc" },
+                where: { menuId: input.menuId, userId: ctx.session.user.id },
             }),
         ]);
 
@@ -27,26 +28,20 @@ export const categoryRouter = createTRPCRouter({
 
         return ctx.prisma.category.create({
             data: {
+                menuId: input.menuId,
                 name: input.name,
                 position: lastCategoryItem ? lastCategoryItem.position + 1 : 0,
                 userId: ctx.session.user.id,
-                menuId: input.menuId,
             },
             include: { items: { include: { image: true } } },
         });
     }),
-    /** Update the details of a menu category */
-    update: protectedProcedure.input(categoryInput.merge(id)).mutation(async ({ ctx, input }) => {
-        return ctx.prisma.category.update({
-            data: { name: input.name },
-            where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
-        });
-    }),
+
     /** Delete the category of a menu along with the items and images related to it */
     delete: protectedProcedure.input(id).mutation(async ({ ctx, input }) => {
         const currentItem = await ctx.prisma.category.findUniqueOrThrow({
-            where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
             include: { items: true },
+            where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
         });
         const promiseList = [];
         const transactions: PrismaPromise<unknown>[] = [];
@@ -73,6 +68,24 @@ export const categoryRouter = createTRPCRouter({
 
         return currentItem;
     }),
+
+    /** Get all categories belonging to a restaurant menu along with the items and images related to it. */
+    getAll: protectedProcedure.input(menuId).query(({ ctx, input }) =>
+        ctx.prisma.category.findMany({
+            include: { items: { include: { image: true }, orderBy: { position: "asc" } } },
+            orderBy: { position: "asc" },
+            where: { menuId: input.menuId, userId: ctx.session.user.id },
+        })
+    ),
+
+    /** Update the details of a menu category */
+    update: protectedProcedure.input(categoryInput.merge(id)).mutation(async ({ ctx, input }) => {
+        return ctx.prisma.category.update({
+            data: { name: input.name },
+            where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
+        });
+    }),
+
     /** Update the position of the categories within a restaurant menu */
     updatePosition: protectedProcedure
         .input(z.array(id.extend({ newPosition: z.number() })))
@@ -81,18 +94,10 @@ export const categoryRouter = createTRPCRouter({
                 input.map((item) =>
                     ctx.prisma.category.update({
                         data: { position: item.newPosition },
-                        where: { id_userId: { id: item.id, userId: ctx.session.user.id } },
                         include: { items: { include: { image: true } } },
+                        where: { id_userId: { id: item.id, userId: ctx.session.user.id } },
                     })
                 )
             )
         ),
-    /** Get all categories belonging to a restaurant menu along with the items and images related to it. */
-    getAll: protectedProcedure.input(menuId).query(({ ctx, input }) =>
-        ctx.prisma.category.findMany({
-            where: { menuId: input.menuId, userId: ctx.session.user.id },
-            orderBy: { position: "asc" },
-            include: { items: { orderBy: { position: "asc" }, include: { image: true } } },
-        })
-    ),
 });

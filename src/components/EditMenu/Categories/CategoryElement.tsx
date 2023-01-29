@@ -1,16 +1,19 @@
-import { Accordion, Flex, Text, Box } from "@mantine/core";
-import type { Category, MenuItem } from "@prisma/client";
-import { IconGripVertical } from "@tabler/icons";
 import type { FC } from "react";
 import { useState } from "react";
+
+import { Accordion, Box, Flex, Text } from "@mantine/core";
+import type { Category, MenuItem } from "@prisma/client";
+import { IconGripVertical } from "@tabler/icons";
 import { Draggable } from "react-beautiful-dnd";
-import { showErrorToast, showSuccessToast } from "src/utils/helpers";
+
 import { api } from "src/utils/api";
+import { showErrorToast, showSuccessToast } from "src/utils/helpers";
+
+import { useStyles } from "./styles";
 import { DeleteConfirmModal } from "../../DeleteConfirmModal";
-import { MenuItems } from "../MenuItems/MenuItems";
 import { EditDeleteOptions } from "../../EditDeleteOptions";
 import { CategoryForm } from "../../Forms/CategoryForm";
-import { useStyles } from "./styles";
+import { MenuItems } from "../MenuItems/MenuItems";
 
 interface Props {
     /** Category which will be represented by the component */
@@ -27,6 +30,8 @@ export const CategoryElement: FC<Props> = ({ categoryItem, menuId }) => {
     const [categoryFormOpen, setCategoryFormOpen] = useState(false);
 
     const { mutate: deleteCategory, isLoading: isDeleting } = api.category.delete.useMutation({
+        onError: (err) => showErrorToast("Failed to delete category", err),
+        onSettled: () => setDeleteCategoryModalOpen(false),
         onSuccess: (data) => {
             trpcCtx.category.getAll.setData({ menuId }, (categories) =>
                 categories?.filter((item) => item.id !== data.id)
@@ -36,53 +41,51 @@ export const CategoryElement: FC<Props> = ({ categoryItem, menuId }) => {
                 `Deleted the category ${data.name} and related menu items successfully`
             );
         },
-        onError: (err) => showErrorToast("Failed to delete category", err),
-        onSettled: () => setDeleteCategoryModalOpen(false),
     });
 
     return (
         <>
-            <Draggable key={categoryItem.id} index={categoryItem.position} draggableId={categoryItem.id}>
+            <Draggable key={categoryItem.id} draggableId={categoryItem.id} index={categoryItem.position}>
                 {(provided, snapshot) => (
                     <Accordion.Item
-                        value={categoryItem.id}
                         className={cx({
                             [classes.itemDragging]: snapshot.isDragging,
                         })}
                         ref={provided.innerRef}
+                        value={categoryItem.id}
                         {...provided.draggableProps}
                     >
                         <Accordion.Control>
-                            <Flex justify="space-between" align="center">
+                            <Flex align="center" justify="space-between">
                                 <Box {...provided.dragHandleProps} className={classes.dragHandle}>
                                     <IconGripVertical size={18} stroke={1.5} />
                                 </Box>
                                 <Text sx={{ flex: 1 }}>{categoryItem.name}</Text>
                                 <EditDeleteOptions
-                                    onEditClick={() => setCategoryFormOpen(true)}
                                     onDeleteClick={() => setDeleteCategoryModalOpen(true)}
+                                    onEditClick={() => setCategoryFormOpen(true)}
                                 />
                             </Flex>
                         </Accordion.Control>
                         <Accordion.Panel bg={theme.colors.dark[0]}>
-                            <MenuItems menuItems={categoryItem?.items} categoryId={categoryItem.id} menuId={menuId} />
+                            <MenuItems categoryId={categoryItem.id} menuId={menuId} menuItems={categoryItem?.items} />
                         </Accordion.Panel>
                     </Accordion.Item>
                 )}
             </Draggable>
             <CategoryForm
-                opened={categoryFormOpen}
-                onClose={() => setCategoryFormOpen(false)}
-                menuId={menuId}
                 categoryItem={categoryItem}
+                menuId={menuId}
+                onClose={() => setCategoryFormOpen(false)}
+                opened={categoryFormOpen}
             />
             <DeleteConfirmModal
-                opened={deleteCategoryModalOpen}
+                description="Are you sure, you want to delete this category? This action will also delete all the items associated with this category and cannot be undone"
+                loading={isDeleting}
                 onClose={() => setDeleteCategoryModalOpen(false)}
                 onDelete={() => deleteCategory({ id: categoryItem?.id })}
-                loading={isDeleting}
+                opened={deleteCategoryModalOpen}
                 title={`Delete ${categoryItem?.name} category`}
-                description="Are you sure, you want to delete this category? This action will also delete all the items associated with this category and cannot be undone"
             />
         </>
     );

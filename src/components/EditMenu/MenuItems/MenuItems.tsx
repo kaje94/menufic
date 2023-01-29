@@ -1,15 +1,18 @@
-import { IconPlus } from "@tabler/icons";
-import { Button, Flex, Box } from "@mantine/core";
 import type { FC } from "react";
 import { useState } from "react";
+
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { Box, Button, Flex } from "@mantine/core";
+import type { Image, MenuItem } from "@prisma/client";
+import { IconPlus } from "@tabler/icons";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { reorderList, showErrorToast } from "src/utils/helpers";
+
+import { env } from "src/env/client.mjs";
 import { api } from "src/utils/api";
-import type { MenuItem, Image } from "@prisma/client";
+import { reorderList, showErrorToast } from "src/utils/helpers";
+
 import { MenuItemElement } from "./MenuItemElement";
 import { MenuItemForm } from "../../Forms/MenuItemForm";
-import { env } from "src/env/client.mjs";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface Props {
     /** Id of the category to which the items belong to */
@@ -27,6 +30,11 @@ export const MenuItems: FC<Props> = ({ categoryId, menuItems, menuId }) => {
     const [itemsParent, enableAutoAnimate] = useAutoAnimate<HTMLElement>();
 
     const { mutate: updateMenuItemsPositions } = api.menuItem.updatePosition.useMutation({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: (err, _newItem, context: any) => {
+            showErrorToast("Failed to update menu item position", err);
+            trpcCtx.category.getAll.setData({ menuId }, context?.previousCategories);
+        },
         onMutate: async (reorderedList) => {
             await trpcCtx.category.getAll.cancel({ menuId });
             const previousCategories = trpcCtx.category.getAll.getData({ menuId });
@@ -47,10 +55,6 @@ export const MenuItems: FC<Props> = ({ categoryId, menuItems, menuId }) => {
             trpcCtx.category.getAll.setData({ menuId }, reorderedCategories);
             return { previousCategories };
         },
-        onError: (err, _newItem, context) => {
-            showErrorToast("Failed to update menu item position", err),
-                trpcCtx.category.getAll.setData({ menuId }, context?.previousCategories);
-        },
     });
 
     return (
@@ -67,7 +71,7 @@ export const MenuItems: FC<Props> = ({ categoryId, menuItems, menuId }) => {
                     setTimeout(() => enableAutoAnimate(true), 100);
                 }}
             >
-                <Droppable droppableId="dnd-list" direction="vertical">
+                <Droppable direction="vertical" droppableId="dnd-list">
                     {(provided) => (
                         <Box
                             {...provided.droppableProps}
@@ -80,9 +84,9 @@ export const MenuItems: FC<Props> = ({ categoryId, menuItems, menuId }) => {
                             {menuItems.map((item) => (
                                 <MenuItemElement
                                     key={item.id}
-                                    menuItem={item}
                                     categoryId={categoryId}
                                     menuId={menuId}
+                                    menuItem={item}
                                 />
                             ))}
                             {provided.placeholder}
@@ -97,8 +101,8 @@ export const MenuItems: FC<Props> = ({ categoryId, menuItems, menuId }) => {
                         leftIcon={<IconPlus size={14} />}
                         mt="md"
                         my={menuItems?.length === 0 ? "lg" : 0}
-                        variant={menuItems?.length === 0 ? "filled" : "default"}
                         onClick={() => setMenuItemFormOpen(true)}
+                        variant={menuItems?.length === 0 ? "filled" : "default"}
                     >
                         Add Item
                     </Button>
@@ -106,10 +110,10 @@ export const MenuItems: FC<Props> = ({ categoryId, menuItems, menuId }) => {
             )}
 
             <MenuItemForm
-                opened={menuItemFormOpen}
                 categoryId={categoryId}
-                onClose={() => setMenuItemFormOpen(false)}
                 menuId={menuId}
+                onClose={() => setMenuItemFormOpen(false)}
+                opened={menuItemFormOpen}
             />
         </>
     );

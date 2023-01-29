@@ -1,22 +1,25 @@
-import type { ModalProps } from "@mantine/core";
-import { TextInput, Textarea, Button, Stack, Group } from "@mantine/core";
-import { useForm, zodResolver } from "@mantine/form";
-import type { MenuItem, Image } from "@prisma/client";
 import type { FC } from "react";
 import { useEffect } from "react";
+
+import type { ModalProps } from "@mantine/core";
+import { Button, Group, Stack, Textarea, TextInput } from "@mantine/core";
+import { useForm, zodResolver } from "@mantine/form";
+import type { Image, MenuItem } from "@prisma/client";
+
 import { api } from "src/utils/api";
-import { menuItemInput } from "src/utils/validators";
-import { ImageUpload } from "../ImageUpload";
 import { showErrorToast, showSuccessToast } from "src/utils/helpers";
+import { menuItemInput } from "src/utils/validators";
+
+import { ImageUpload } from "../ImageUpload";
 import { Modal } from "../Modal";
 
 interface Props extends ModalProps {
+    /** Id of the category that the item belongs to */
+    categoryId: string;
     /** Id of the menu that the item belongs to */
     menuId: string;
     /** Menu item to be edited */
     menuItem?: MenuItem & { image?: Image };
-    /** Id of the category that the item belongs to */
-    categoryId: string;
 }
 
 /** Form to be used when allowing users to add or edit menu items of restaurant menus categories */
@@ -24,6 +27,7 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
     const trpcCtx = api.useContext();
 
     const { mutate: createMenuItem, isLoading: isCreating } = api.menuItem.create.useMutation({
+        onError: (err) => showErrorToast("Failed to create menu item", err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.category.getAll.setData({ menuId }, (categories) =>
@@ -31,49 +35,48 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
             );
             showSuccessToast("Successfully created", `Created a new menu item ${data.name} successfully`);
         },
-        onError: (err) => showErrorToast("Failed to create menu item", err),
     });
 
     const { mutate: updateMenuItem, isLoading: isUpdating } = api.menuItem.update.useMutation({
+        onError: (err) => showErrorToast("Failed to update menu item", err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.category.getAll.setData({ menuId }, (categories) =>
-                categories?.map((item) =>
-                    item.id === categoryId
+                categories?.map((categoryItem) =>
+                    categoryItem.id === categoryId
                         ? {
-                              ...item,
-                              items: item.items?.map((menuItem) => (menuItem.id === data.id ? data : menuItem)),
+                              ...categoryItem,
+                              items: categoryItem.items?.map((item) => (item.id === data.id ? data : item)),
                           }
-                        : item
+                        : categoryItem
                 )
             );
             showSuccessToast("Successfully updated", `Updated details of ${data.name} category successfully`);
         },
-        onError: (err) => showErrorToast("Failed to update menu item", err),
     });
 
     const { getInputProps, onSubmit, setValues, isDirty, resetDirty, values } = useForm({
         initialValues: {
-            name: menuItem?.name || "",
-            price: menuItem?.price || "",
             description: menuItem?.description || "",
             imageBase64: "",
             imagePath: menuItem?.image?.path || "",
+            name: menuItem?.name || "",
+            price: menuItem?.price || "",
         },
         validate: zodResolver(menuItemInput),
     });
 
     useEffect(() => {
         if (opened) {
-            const values = {
-                name: menuItem?.name || "",
-                price: menuItem?.price || "",
+            const newValues = {
                 description: menuItem?.description || "",
                 imageBase64: "",
                 imagePath: menuItem?.image?.path || "",
+                name: menuItem?.name || "",
+                price: menuItem?.price || "",
             };
-            setValues(values);
-            resetDirty(values);
+            setValues(newValues);
+            resetDirty(newValues);
         }
     }, [menuItem, opened]);
 
@@ -81,19 +84,19 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
 
     return (
         <Modal
-            opened={opened}
-            onClose={onClose}
-            title={menuItem ? "Update Menu Item" : "Create Menu Item"}
             loading={loading}
+            onClose={onClose}
+            opened={opened}
+            title={menuItem ? "Update Menu Item" : "Create Menu Item"}
             {...rest}
         >
             <form
-                onSubmit={onSubmit((values) => {
+                onSubmit={onSubmit((formValues) => {
                     if (isDirty()) {
                         if (menuItem) {
-                            updateMenuItem({ ...values, id: menuItem?.id });
+                            updateMenuItem({ ...formValues, id: menuItem?.id });
                         } else if (categoryId) {
-                            createMenuItem({ ...values, categoryId, menuId });
+                            createMenuItem({ ...formValues, categoryId, menuId });
                         }
                     } else {
                         onClose();
@@ -102,32 +105,32 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
             >
                 <Stack spacing="sm">
                     <TextInput
-                        withAsterisk
+                        disabled={loading}
                         label="Name"
                         placeholder="Item Name"
-                        disabled={loading}
+                        withAsterisk
                         {...getInputProps("name")}
-                        autoFocus={true}
+                        autoFocus
                     />
                     <TextInput
-                        withAsterisk
+                        disabled={loading}
                         label="Price"
                         placeholder="$10.00"
-                        disabled={loading}
+                        withAsterisk
                         {...getInputProps("price")}
                     />
-                    <Textarea label="Description" disabled={loading} {...getInputProps("description")} />
+                    <Textarea disabled={loading} label="Description" {...getInputProps("description")} />
                     <ImageUpload
-                        width={400}
-                        height={400}
-                        imageUrl={values?.imagePath}
-                        imageHash={menuItem?.image?.blurHash}
                         disabled={loading}
+                        height={400}
+                        imageHash={menuItem?.image?.blurHash}
+                        imageUrl={values?.imagePath}
                         onImageCrop={(imageBase64, imagePath) => setValues({ imageBase64, imagePath })}
                         onImageDeleteClick={() => setValues({ imageBase64: "", imagePath: "" })}
+                        width={400}
                     />
-                    <Group position="right" mt="md">
-                        <Button type="submit" loading={loading} px="xl">
+                    <Group mt="md" position="right">
+                        <Button loading={loading} px="xl" type="submit">
                             Save
                         </Button>
                     </Group>

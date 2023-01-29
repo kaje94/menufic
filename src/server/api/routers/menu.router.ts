@@ -1,10 +1,11 @@
-import { z } from "zod";
-import { restaurantId, menuInput, id } from "src/utils/validators";
-import { imageKit } from "src/server/imageUtil";
+import type { PrismaPromise } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+
 import { env } from "src/env/server.mjs";
 import { createTRPCRouter, protectedProcedure } from "src/server/api/trpc";
-import type { PrismaPromise } from "@prisma/client";
+import { imageKit } from "src/server/imageUtil";
+import { id, menuInput, restaurantId } from "src/utils/validators";
 
 export const menuRouter = createTRPCRouter({
     /** Create a new menu under a restaurant */
@@ -12,8 +13,8 @@ export const menuRouter = createTRPCRouter({
         const [count, lastMenuItem] = await ctx.prisma.$transaction([
             ctx.prisma.menu.count({ where: { restaurantId: input.restaurantId } }),
             ctx.prisma.menu.findFirst({
-                where: { restaurantId: input.restaurantId, userId: ctx.session.user.id },
                 orderBy: { position: "desc" },
+                where: { restaurantId: input.restaurantId, userId: ctx.session.user.id },
             }),
         ]);
 
@@ -27,26 +28,20 @@ export const menuRouter = createTRPCRouter({
 
         return ctx.prisma.menu.create({
             data: {
-                name: input.name,
                 availableTime: input.availableTime,
+                name: input.name,
                 position: lastMenuItem ? lastMenuItem.position + 1 : 0,
-                userId: ctx.session.user.id,
                 restaurantId: input.restaurantId,
+                userId: ctx.session.user.id,
             },
         });
     }),
-    /** Update the details of a restaurant menu */
-    update: protectedProcedure.input(menuInput.merge(id)).mutation(async ({ ctx, input }) => {
-        return ctx.prisma.menu.update({
-            data: { name: input.name, availableTime: input.availableTime },
-            where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
-        });
-    }),
+
     /** Delete a restaurant menu along with all the categories, items and images belonging to it */
     delete: protectedProcedure.input(id).mutation(async ({ ctx, input }) => {
         const currentItem = await ctx.prisma.menu.findUniqueOrThrow({
-            where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
             include: { categories: { include: { items: true } } },
+            where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
         });
 
         const imagePaths: string[] = [];
@@ -77,6 +72,23 @@ export const menuRouter = createTRPCRouter({
 
         return currentItem;
     }),
+
+    /** Get all the menus belonging toa restaurant */
+    getAll: protectedProcedure.input(restaurantId).query(({ ctx, input }) =>
+        ctx.prisma.menu.findMany({
+            orderBy: { position: "asc" },
+            where: { restaurantId: input.restaurantId, userId: ctx.session.user.id },
+        })
+    ),
+
+    /** Update the details of a restaurant menu */
+    update: protectedProcedure.input(menuInput.merge(id)).mutation(async ({ ctx, input }) => {
+        return ctx.prisma.menu.update({
+            data: { availableTime: input.availableTime, name: input.name },
+            where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
+        });
+    }),
+
     /** Update the position the menus of the restaurant */
     updatePosition: protectedProcedure
         .input(z.array(id.extend({ newPosition: z.number() })))
@@ -90,11 +102,4 @@ export const menuRouter = createTRPCRouter({
                 )
             )
         ),
-    /** Get all the menus belonging toa restaurant */
-    getAll: protectedProcedure.input(restaurantId).query(({ ctx, input }) =>
-        ctx.prisma.menu.findMany({
-            where: { restaurantId: input.restaurantId, userId: ctx.session.user.id },
-            orderBy: { position: "asc" },
-        })
-    ),
 });

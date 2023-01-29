@@ -1,12 +1,15 @@
-import type { ModalProps } from "@mantine/core";
-import { TextInput, Button, Group, Stack } from "@mantine/core";
-import { useForm, zodResolver } from "@mantine/form";
-import { api } from "src/utils/api";
-import type { Menu } from "@prisma/client";
 import type { FC } from "react";
 import { useEffect } from "react";
-import { menuInput } from "src/utils/validators";
+
+import type { ModalProps } from "@mantine/core";
+import { Button, Group, Stack, TextInput } from "@mantine/core";
+import { useForm, zodResolver } from "@mantine/form";
+import type { Menu } from "@prisma/client";
+
+import { api } from "src/utils/api";
 import { showErrorToast, showSuccessToast } from "src/utils/helpers";
+import { menuInput } from "src/utils/validators";
+
 import { Modal } from "../Modal";
 
 interface Props extends ModalProps {
@@ -21,15 +24,16 @@ export const MenuForm: FC<Props> = ({ opened, onClose, restaurantId, menu: menuI
     const trpcCtx = api.useContext();
 
     const { mutate: createMenu, isLoading: isCreating } = api.menu.create.useMutation({
+        onError: (err) => showErrorToast("Failed to create menu for restaurant", err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.menu.getAll.setData({ restaurantId }, (menus) => [...(menus || []), data]);
             showSuccessToast("Successfully created", `Created a new menu ${data.name} successfully`);
         },
-        onError: (err) => showErrorToast("Failed to create menu for restaurant", err),
     });
 
     const { mutate: updateMenu, isLoading: isUpdating } = api.menu.update.useMutation({
+        onError: (err) => showErrorToast("Failed to update menu", err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.menu.getAll.setData({ restaurantId }, (menus) =>
@@ -37,17 +41,16 @@ export const MenuForm: FC<Props> = ({ opened, onClose, restaurantId, menu: menuI
             );
             showSuccessToast("Successfully updated", `Updated details of ${data.name} menu successfully`);
         },
-        onError: (err) => showErrorToast("Failed to update menu", err),
     });
 
     const { getInputProps, onSubmit, isDirty, resetDirty, setValues } = useForm({
-        initialValues: { name: menuItem?.name || "", availableTime: menuItem?.availableTime || "" },
+        initialValues: { availableTime: menuItem?.availableTime || "", name: menuItem?.name || "" },
         validate: zodResolver(menuInput),
     });
 
     useEffect(() => {
         if (opened) {
-            const values = { name: menuItem?.name || "", availableTime: menuItem?.availableTime || "" };
+            const values = { availableTime: menuItem?.availableTime || "", name: menuItem?.name || "" };
             setValues(values);
             resetDirty(values);
         }
@@ -57,10 +60,10 @@ export const MenuForm: FC<Props> = ({ opened, onClose, restaurantId, menu: menuI
 
     return (
         <Modal
-            opened={opened}
-            onClose={onClose}
-            title={menuItem ? "Update Menu" : "Create Menu"}
             loading={loading}
+            onClose={onClose}
+            opened={opened}
+            title={menuItem ? "Update Menu" : "Create Menu"}
             {...rest}
         >
             <form
@@ -78,20 +81,20 @@ export const MenuForm: FC<Props> = ({ opened, onClose, restaurantId, menu: menuI
             >
                 <Stack spacing="sm">
                     <TextInput
-                        withAsterisk
+                        disabled={loading}
                         label="Name"
                         placeholder="Menu Name"
-                        disabled={loading}
+                        withAsterisk
                         {...getInputProps("name")}
                     />
                     <TextInput
+                        disabled={loading}
                         label="Available Time"
                         placeholder="10.00 AM - 9.00 PM"
-                        disabled={loading}
                         {...getInputProps("availableTime")}
                     />
-                    <Group position="right" mt="md">
-                        <Button type="submit" loading={loading} px="xl">
+                    <Group mt="md" position="right">
+                        <Button loading={loading} px="xl" type="submit">
                             Save
                         </Button>
                     </Group>

@@ -9,30 +9,30 @@ export const categoryInput = z.object({
     name: z.string().trim().min(1, "Name is required").max(30, "Name cannot be longer than 30 characters"),
 });
 export const menuInput = z.object({
-    name: z.string().trim().min(1, "Name is required").max(30, "Name cannot be longer than 30 characters"),
     availableTime: z.string().trim().max(20),
+    name: z.string().trim().min(1, "Name is required").max(30, "Name cannot be longer than 30 characters"),
 });
 export const menuItemInput = z.object({
-    name: z.string().trim().min(1, "Name is required").max(50, "Name cannot be longer than 50 characters"),
     description: z.string().trim().max(200),
-    price: z.string().trim().min(1, "Price is required").max(12, "Price cannot be longer than 12 characters"),
     imageBase64: z.string().optional(),
     imagePath: z.string().optional(),
+    name: z.string().trim().min(1, "Name is required").max(50, "Name cannot be longer than 50 characters"),
+    price: z.string().trim().min(1, "Price is required").max(12, "Price cannot be longer than 12 characters"),
 });
 export const restaurantInput = z.object({
-    name: z.string().trim().min(1, "Name is required").max(30, "Name cannot be longer than 30 characters"),
-    location: z.string().trim().min(1, "Location is required").max(50, "Location cannot be longer than 50 characters"),
     contactNo: z.union([
         z
             .string()
             .trim()
-            .regex(new RegExp("^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$"), "Invalid contact number"),
+            .regex(/^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/, "Invalid contact number"),
         z.literal(""),
     ]),
     imageBase64: z.string(),
     imagePath: z.string().min(1, "Image is required"),
+    location: z.string().trim().min(1, "Location is required").max(50, "Location cannot be longer than 50 characters"),
+    name: z.string().trim().min(1, "Name is required").max(30, "Name cannot be longer than 30 characters"),
 });
 export const bannerInput = z.object({
-    restaurantId: z.string().cuid(),
     imageBase64: z.string().min(1, "Image is required"),
+    restaurantId: z.string().cuid(),
 });

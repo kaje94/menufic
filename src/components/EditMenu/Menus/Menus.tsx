@@ -1,18 +1,20 @@
-import { IconCirclePlus } from "@tabler/icons";
-import { Text, Center, Box, Loader } from "@mantine/core";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { reorderList } from "src/utils/helpers";
-import { api } from "src/utils/api";
-import type { Menu } from "@prisma/client";
-import { MenuForm } from "../../Forms/MenuForm";
-import { MenuElement } from "./MenuElement";
-import { env } from "src/env/client.mjs";
-import { showErrorToast } from "src/utils/helpers";
+
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { Empty } from "../../Empty";
+import { Box, Center, Loader, Text } from "@mantine/core";
+import type { Menu } from "@prisma/client";
+import { IconCirclePlus } from "@tabler/icons";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
+
+import { env } from "src/env/client.mjs";
+import { api } from "src/utils/api";
+import { reorderList, showErrorToast } from "src/utils/helpers";
+
+import { MenuElement } from "./MenuElement";
 import { useStyles } from "./styles";
+import { Empty } from "../../Empty";
+import { MenuForm } from "../../Forms/MenuForm";
 
 interface Props {
     /** Id of the restaurant to which the menus belong to */
@@ -31,15 +33,15 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
     const [menuFormOpen, setMenuFormOpen] = useState(false);
 
     const { isLoading: menusLoading, data: menus = [] } = api.menu.getAll.useQuery(
-        { restaurantId: restaurantId },
+        { restaurantId },
         {
             enabled: !!restaurantId,
+            onError: () => showErrorToast("Failed to retrieve menus"),
             onSuccess: (menusRes) => {
                 if (!selectedMenu || !menusRes.some((item) => item.id === selectedMenu.id)) {
                     setSelectedMenu(menusRes.length > 0 ? menusRes[0] : undefined);
                 }
             },
-            onError: () => showErrorToast("Failed to retrieve menus"),
         }
     );
 
@@ -50,24 +52,24 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
     }, [selectedMenu, setSelectedMenu, menus]);
 
     const { mutate: updateMenuPositions } = api.menu.updatePosition.useMutation({
+        onError: (err, _newItem, context: { previousMenus: Menu[] | undefined } | undefined) => {
+            showErrorToast("Failed to update the position of menu", err);
+            trpcCtx.menu.getAll.setData({ restaurantId }, context?.previousMenus);
+        },
         onMutate: async (reorderedList) => {
             await trpcCtx.menu.getAll.cancel({ restaurantId });
 
             const previousMenus = trpcCtx.menu.getAll.getData({ restaurantId });
-            const reorderedMenus = [];
-            for (const item of reorderedList) {
+            const reorderedMenus: Menu[] = [];
+            reorderedList.forEach((item) => {
                 const matchingItem = previousMenus?.find((prev) => prev.id === item.id);
                 if (matchingItem) {
                     reorderedMenus.push({ ...matchingItem, position: item.newPosition });
                 }
-            }
+            });
 
             trpcCtx.menu.getAll.setData({ restaurantId }, reorderedMenus);
             return { previousMenus };
-        },
-        onError: (err, _newItem, context) => {
-            showErrorToast("Failed to update the position of menu", err);
-            trpcCtx.menu.getAll.setData({ restaurantId }, context?.previousMenus);
         },
     });
 
@@ -94,8 +96,8 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
                                     <MenuElement
                                         key={item.id}
                                         item={item}
-                                        selectedMenu={selectedMenu}
                                         restaurantId={restaurantId}
+                                        selectedMenu={selectedMenu}
                                         setSelectedMenu={setSelectedMenu}
                                     />
                                 ))}
@@ -110,7 +112,7 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
                     </Center>
                 )}
                 {!menusLoading && !selectedMenu && (
-                    <Empty text="Get started by adding the first menu for your restaurant" height={300} />
+                    <Empty height={300} text="Get started by adding the first menu for your restaurant" />
                 )}
                 {!menusLoading && menus?.length < Number(env.NEXT_PUBLIC_MAX_MENUS_PER_RESTAURANT) && (
                     <Box
@@ -126,7 +128,7 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
                 )}
             </Box>
 
-            <MenuForm opened={menuFormOpen} onClose={() => setMenuFormOpen(false)} restaurantId={restaurantId} />
+            <MenuForm onClose={() => setMenuFormOpen(false)} opened={menuFormOpen} restaurantId={restaurantId} />
         </>
     );
 };

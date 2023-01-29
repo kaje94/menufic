@@ -1,26 +1,21 @@
 import type { FC } from "react";
-import { useRef } from "react";
-import { Box, Text, SimpleGrid, Tabs, createStyles, useMantineColorScheme, ActionIcon, Flex } from "@mantine/core";
-import type { Category, Image, Menu, MenuItem, Restaurant } from "@prisma/client";
-import { useMemo, useState } from "react";
-import { ImageKitImage } from "../ImageKitImage";
-import { MenuItemCard } from "./MenuItemCard";
-import Autoplay from "embla-carousel-autoplay";
-import { Carousel } from "@mantine/carousel";
-import { IconSun, IconMoonStars, IconMapPin, IconPhone } from "@tabler/icons";
-import { Empty } from "../Empty";
+import { useMemo, useRef, useState } from "react";
+
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { Carousel } from "@mantine/carousel";
+import { ActionIcon, Box, createStyles, Flex, SimpleGrid, Tabs, Text, useMantineColorScheme } from "@mantine/core";
+import type { Category, Image, Menu, MenuItem, Restaurant } from "@prisma/client";
+import { IconMapPin, IconMoonStars, IconPhone, IconSun } from "@tabler/icons";
+import Autoplay from "embla-carousel-autoplay";
+
 import { Black, White } from "src/styles/theme";
 
+import { MenuItemCard } from "./MenuItemCard";
+import { Empty } from "../Empty";
+import { ImageKitImage } from "../ImageKitImage";
+
 const useStyles = createStyles((theme) => ({
-    headerImageBox: { borderRadius: theme.radius.lg, overflow: "hidden", position: "relative" },
     carousalOverlay: {
-        position: "absolute",
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        zIndex: 1,
         backgroundImage: theme.fn.linearGradient(
             180,
             theme.fn.rgba(Black, 0),
@@ -32,61 +27,68 @@ const useStyles = createStyles((theme) => ({
             theme.fn.rgba(Black, 0.35),
             theme.fn.rgba(Black, 0.5)
         ),
+        bottom: 0,
+        left: 0,
+        position: "absolute",
+        right: 0,
+        top: 0,
+        zIndex: 1,
+    },
+    carousalSubWrap: {
+        alignItems: "center",
+        display: "flex",
+        justifyContent: "space-between",
+        opacity: 0.65,
+        [`@media (max-width: ${theme.breakpoints.xs}px)`]: { display: "grid", gap: 2 },
     },
     carousalTitle: {
-        padding: theme.spacing.md,
-        paddingTop: theme.spacing.xl,
-        zIndex: 1,
-        position: "absolute",
         bottom: 0,
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-end",
+        padding: theme.spacing.md,
+        paddingTop: theme.spacing.xl,
+        position: "absolute",
         width: "100%",
-    },
-    carousalTitleText: {
-        color: White,
-        opacity: 0.85,
-        fontWeight: "bold",
-        fontSize: 40,
-        [`@media (max-width: ${theme.breakpoints.lg}px)`]: { fontSize: 30 },
-        [`@media (max-width: ${theme.breakpoints.sm}px)`]: { fontSize: 24 },
+        zIndex: 1,
     },
     carousalTitleSubText: {
         color: White,
-        fontSize: 22,
         flex: 1,
+        fontSize: 22,
         [`@media (max-width: ${theme.breakpoints.lg}px)`]: { fontSize: 18 },
         [`@media (max-width: ${theme.breakpoints.sm}px)`]: { fontSize: 14 },
     },
-    carousalSubWrap: {
-        opacity: 0.65,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        [`@media (max-width: ${theme.breakpoints.xs}px)`]: { display: "grid", gap: 2 },
+    carousalTitleText: {
+        color: White,
+        fontSize: 40,
+        fontWeight: "bold",
+        opacity: 0.85,
+        [`@media (max-width: ${theme.breakpoints.lg}px)`]: { fontSize: 30 },
+        [`@media (max-width: ${theme.breakpoints.sm}px)`]: { fontSize: 24 },
     },
-    themeSwitch: {
-        position: "absolute",
-        top: 10,
-        right: 12,
-        zIndex: 1,
-        color: theme.black,
-        boxShadow: theme.shadows.md,
-        backgroundColor: theme.white,
-        opacity: 0.6,
-        transition: "all 500ms ease",
-        "&:hover": { opacity: 1, backgroundColor: theme.white },
-    },
-    switchTrack: { background: `${theme.fn.darken(White, 0.1)} !important`, border: "unset" },
+    headerImageBox: { borderRadius: theme.radius.lg, overflow: "hidden", position: "relative" },
     switchThumb: { background: theme.fn.lighten(Black, 0.2) },
+    switchTrack: { background: `${theme.fn.darken(White, 0.1)} !important`, border: "unset" },
+    themeSwitch: {
+        "&:hover": { backgroundColor: theme.white, opacity: 1 },
+        backgroundColor: theme.white,
+        boxShadow: theme.shadows.md,
+        color: theme.black,
+        opacity: 0.6,
+        position: "absolute",
+        right: 12,
+        top: 10,
+        transition: "all 500ms ease",
+        zIndex: 1,
+    },
 }));
 
 interface Props {
     restaurant: Restaurant & {
-        menus: (Menu & { categories: (Category & { items: (MenuItem & { image: Image | null })[] })[] })[];
-        image: Image | null;
         banners: Image[];
+        image: Image | null;
+        menus: (Menu & { categories: (Category & { items: (MenuItem & { image: Image | null })[] })[] })[];
     };
 }
 
@@ -117,27 +119,27 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
         <Box mih="calc(100vh - 100px)">
             <Box pos="relative">
                 <Carousel
-                    mx="auto"
-                    withIndicators={images.length > 1}
-                    withControls={images.length > 1}
+                    className={classes.headerImageBox}
                     height={300}
-                    plugins={[bannerCarousalRef.current]}
+                    loop
+                    mx="auto"
                     onMouseEnter={bannerCarousalRef.current.stop}
                     onMouseLeave={bannerCarousalRef.current.reset}
-                    className={classes.headerImageBox}
+                    plugins={[bannerCarousalRef.current]}
                     slideGap="md"
-                    loop
                     styles={{ indicator: { background: White } }}
+                    withControls={images.length > 1}
+                    withIndicators={images.length > 1}
                 >
                     {images?.map((banner, index) => (
                         <Carousel.Slide key={banner.id}>
                             <ImageKitImage
-                                width={750}
-                                height={300}
-                                imagePath={banner.path}
                                 blurhash={banner.blurHash}
                                 color={banner.color}
+                                height={300}
                                 imageAlt={`${restaurant.name}-banner-${index}`}
+                                imagePath={banner.path}
+                                width={750}
                             />
                             <Box className={classes.carousalOverlay} />
                         </Carousel.Slide>
@@ -146,31 +148,31 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                 <Box className={classes.carousalTitle}>
                     <Text className={classes.carousalTitleText}>{restaurant?.name}</Text>
                     <Box className={classes.carousalSubWrap}>
-                        <Flex gap={10} align="center">
+                        <Flex align="center" gap={10}>
                             <IconMapPin color={White} />
                             <Text className={classes.carousalTitleSubText}>{restaurant?.location}</Text>
                         </Flex>
                         {restaurant?.contactNo && (
-                            <Flex gap={10} align="center">
+                            <Flex align="center" gap={10}>
                                 <IconPhone color={White} />
                                 <Text className={classes.carousalTitleSubText}>{restaurant?.contactNo}</Text>
                             </Flex>
                         )}
                     </Box>
                 </Box>
-                <ActionIcon onClick={() => toggleColorScheme()} size="lg" className={classes.themeSwitch}>
-                    {colorScheme === "dark" ? <IconSun strokeWidth={2.5} size={18} /> : <IconMoonStars size={18} />}
+                <ActionIcon className={classes.themeSwitch} onClick={() => toggleColorScheme()} size="lg">
+                    {colorScheme === "dark" ? <IconSun size={18} strokeWidth={2.5} /> : <IconMoonStars size={18} />}
                 </ActionIcon>
             </Box>
 
-            <Tabs value={selectedMenu} onTabChange={setSelectedMenu} my={40}>
+            <Tabs my={40} onTabChange={setSelectedMenu} value={selectedMenu}>
                 <Tabs.List>
                     {restaurant?.menus?.map((menu) => (
-                        <Tabs.Tab value={menu.id} key={menu.id} px="lg">
-                            <Text size="lg" weight={selectedMenu === menu.id ? "bold" : "normal"} color={theme.black}>
+                        <Tabs.Tab key={menu.id} px="lg" value={menu.id}>
+                            <Text color={theme.black} size="lg" weight={selectedMenu === menu.id ? "bold" : "normal"}>
                                 {menu.name}
                             </Text>
-                            <Text size="xs" opacity={selectedMenu === menu.id ? 1 : 0.5} color={theme.colors.dark[8]}>
+                            <Text color={theme.colors.dark[8]} opacity={selectedMenu === menu.id ? 1 : 0.5} size="xs">
                                 {menu.availableTime}
                             </Text>
                         </Tabs.Tab>
@@ -182,33 +184,33 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                     ?.filter((category) => category?.items.length)
                     ?.map((category) => (
                         <Box key={category.id}>
-                            <Text size="lg" my="lg" weight={600}>
+                            <Text my="lg" size="lg" weight={600}>
                                 {category.name}
                             </Text>
                             <SimpleGrid
                                 breakpoints={[
-                                    { minWidth: "lg", cols: 3 },
-                                    { minWidth: "sm", cols: 2 },
-                                    { minWidth: "xs", cols: 1 },
+                                    { cols: 3, minWidth: "lg" },
+                                    { cols: 2, minWidth: "sm" },
+                                    { cols: 1, minWidth: "xs" },
                                 ]}
                                 mb={30}
                             >
                                 {category.items?.map((item) => (
-                                    <MenuItemCard item={item} key={item.id} />
+                                    <MenuItemCard key={item.id} item={item} />
                                 ))}
                             </SimpleGrid>
                         </Box>
                     ))}
                 {restaurant?.menus?.length === 0 && !haveMenuItems && (
                     <Empty
-                        text="There aren't any menus available for this restaurant. Try checking out later"
                         height={400}
+                        text="There aren't any menus available for this restaurant. Try checking out later"
                     />
                 )}
                 {!!restaurant?.menus?.length && !haveMenuItems && (
                     <Empty
-                        text="There aren't any menu items for the chosen restaurant menu. Try checking out later."
                         height={400}
+                        text="There aren't any menu items for the chosen restaurant menu. Try checking out later."
                     />
                 )}
             </Box>

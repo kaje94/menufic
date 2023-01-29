@@ -1,57 +1,60 @@
-import { ActionIcon, createStyles, Text, Grid, Box } from "@mantine/core";
-import type { Image, MenuItem } from "@prisma/client";
-import { IconGripVertical, IconEdit, IconTrash } from "@tabler/icons";
 import type { FC } from "react";
 import { useState } from "react";
+
+import { ActionIcon, Box, createStyles, Grid, Text } from "@mantine/core";
+import type { Image, MenuItem } from "@prisma/client";
+import { IconEdit, IconGripVertical, IconTrash } from "@tabler/icons";
 import { Draggable } from "react-beautiful-dnd";
+
 import { api } from "src/utils/api";
+import { showErrorToast, showSuccessToast } from "src/utils/helpers";
+
 import { DeleteConfirmModal } from "../../DeleteConfirmModal";
 import { MenuItemForm } from "../../Forms/MenuItemForm";
 import { ImageKitImage } from "../../ImageKitImage";
-import { showErrorToast, showSuccessToast } from "src/utils/helpers";
 
 const useStyles = createStyles((theme) => ({
-    itemDragging: { background: theme.colors.dark[1], boxShadow: theme.shadows.sm },
-    elementItem: {
-        borderRadius: theme.radius.lg,
-        transition: "background 500ms ease",
-        [`&:hover`]: { background: theme.colors.dark[1] },
+    actionButtons: {
+        display: "flex",
+        gap: 10,
+        justifyContent: "center",
     },
     dragHandleTable: {
         ...theme.fn.focusStyles(),
-        display: "flex",
         alignItems: "center",
-        justifyContent: "center",
-        height: "100%",
         color: theme.colors.dark[6],
+        display: "flex",
+        height: "100%",
+        justifyContent: "center",
+    },
+    elementItem: {
+        [`&:hover`]: { background: theme.colors.dark[1] },
+        borderRadius: theme.radius.lg,
+        transition: "background 500ms ease",
     },
     emptyImage: {
-        height: 50,
-        width: 50,
-        borderRadius: theme.radius.md,
+        alignItems: "center",
         border: `1px solid ${theme.colors.dark[2]}`,
-        overflow: "hidden",
-        verticalAlign: "center",
-        textAlign: "center",
-        fontSize: theme.fontSizes.xs,
+        borderRadius: theme.radius.md,
         color: theme.colors.dark[5],
         display: "flex",
-        alignItems: "center",
+        fontSize: theme.fontSizes.xs,
+        height: 50,
+        overflow: "hidden",
+        textAlign: "center",
+        verticalAlign: "center",
+        width: 50,
     },
-    actionButtons: {
-        display: "flex",
-        justifyContent: "center",
-        gap: 10,
-    },
+    itemDragging: { background: theme.colors.dark[1], boxShadow: theme.shadows.sm },
 }));
 
 interface Props {
-    /** Item which will be represented by the component */
-    menuItem: MenuItem & { image?: Image };
-    /** Id of the menu to which the item belongs to  */
-    menuId: string;
     /** Id of the Category to which the item belongs to */
     categoryId: string;
+    /** Id of the menu to which the item belongs to  */
+    menuId: string;
+    /** Item which will be represented by the component */
+    menuItem: MenuItem & { image?: Image };
 }
 
 /** Individual menu item component with an option to edit or delete */
@@ -62,55 +65,55 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
     const [menuItemFormOpen, setMenuItemFormOpen] = useState(false);
 
     const { mutate: deleteMenuItem, isLoading: isDeleting } = api.menuItem.delete.useMutation({
+        onError: (err) => showErrorToast("Failed to delete menu item", err),
+        onSettled: () => setDeleteMenuItemModalOpen(false),
         onSuccess: (data) => {
             trpcCtx.category.getAll.setData({ menuId }, (categories) =>
-                categories?.map((item) =>
-                    item.id === categoryId
+                categories?.map((categoryItem) =>
+                    categoryItem.id === categoryId
                         ? {
-                              ...item,
-                              items: item.items?.filter((menuItem) => menuItem.id !== data.id),
+                              ...categoryItem,
+                              items: categoryItem.items?.filter((item) => item.id !== data.id),
                           }
-                        : item
+                        : categoryItem
                 )
             );
             showSuccessToast("Successfully deleted", `Deleted the menu item ${data.name}`);
         },
-        onError: (err) => showErrorToast("Failed to delete menu item", err),
-        onSettled: () => setDeleteMenuItemModalOpen(false),
     });
 
     return (
         <>
-            <Draggable key={menuItem.id} index={menuItem.position} draggableId={menuItem.id}>
+            <Draggable key={menuItem.id} draggableId={menuItem.id} index={menuItem.position}>
                 {(provided, snapshot) => (
                     <Grid
+                        align="center"
+                        className={cx([classes.elementItem, snapshot.isDragging && classes.itemDragging])}
                         gutter="lg"
                         my="sm"
-                        align="center"
                         ref={provided.innerRef}
-                        className={cx([classes.elementItem, snapshot.isDragging && classes.itemDragging])}
                         {...provided.draggableProps}
                     >
                         <Grid.Col
-                            span={1}
-                            sm={2}
-                            md={1}
                             className={classes.dragHandleTable}
+                            md={1}
+                            sm={2}
+                            span={1}
                             {...provided.dragHandleProps}
                         >
                             <IconGripVertical size={18} stroke={1.5} />
                         </Grid.Col>
 
-                        <Grid.Col span={2} sm={2} md={1}>
+                        <Grid.Col md={1} sm={2} span={2}>
                             <Box className={classes.emptyImage}>
                                 {menuItem.image?.path ? (
                                     <ImageKitImage
-                                        imagePath={menuItem.image?.path}
-                                        height={50}
-                                        width={50}
-                                        imageAlt={menuItem.name}
                                         blurhash={menuItem.image?.blurHash}
                                         color={menuItem.image?.color}
+                                        height={50}
+                                        imageAlt={menuItem.name}
+                                        imagePath={menuItem.image?.path}
+                                        width={50}
                                     />
                                 ) : (
                                     <Text>No Image</Text>
@@ -118,22 +121,22 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
                             </Box>
                         </Grid.Col>
 
-                        <Grid.Col span={6} sm={5} md={2}>
-                            <Text weight={700} align="center">
+                        <Grid.Col md={2} sm={5} span={6}>
+                            <Text align="center" weight={700}>
                                 {menuItem.name}
                             </Text>
                         </Grid.Col>
-                        <Grid.Col span={3} sm={3} md={2}>
+                        <Grid.Col md={2} sm={3} span={3}>
                             <Text align="center" color="red" opacity={0.8}>
                                 {menuItem.price}
                             </Text>
                         </Grid.Col>
-                        <Grid.Col span={12} sm={9} lg={5}>
+                        <Grid.Col lg={5} sm={9} span={12}>
                             <Text color={menuItem.description ? theme.colors.dark[6] : theme.colors.dark[3]}>
                                 {menuItem.description || "No Description"}
                             </Text>
                         </Grid.Col>
-                        <Grid.Col span={12} sm={3} lg={1} className={classes.actionButtons}>
+                        <Grid.Col className={classes.actionButtons} lg={1} sm={3} span={12}>
                             <ActionIcon onClick={() => setMenuItemFormOpen(true)}>
                                 <IconEdit size={18} />
                             </ActionIcon>
@@ -146,20 +149,20 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
             </Draggable>
 
             <DeleteConfirmModal
-                opened={deleteMenuItemModalOpen}
+                description="Are you sure, you want to delete this menu item? This action cannot be undone"
+                loading={isDeleting}
                 onClose={() => setDeleteMenuItemModalOpen(false)}
                 onDelete={() => deleteMenuItem({ id: menuItem?.id })}
-                loading={isDeleting}
+                opened={deleteMenuItemModalOpen}
                 title={`Delete ${menuItem?.name} item`}
-                description="Are you sure, you want to delete this menu item? This action cannot be undone"
             />
 
             <MenuItemForm
-                opened={menuItemFormOpen}
+                categoryId={categoryId}
+                menuId={menuId}
                 menuItem={menuItem}
                 onClose={() => setMenuItemFormOpen(false)}
-                menuId={menuId}
-                categoryId={categoryId}
+                opened={menuItemFormOpen}
             />
         </>
     );

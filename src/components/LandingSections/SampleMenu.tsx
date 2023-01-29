@@ -1,11 +1,13 @@
-import { Container, Title, Button, Text, BackgroundImage, Box, Center, Overlay, Stack } from "@mantine/core";
 import type { FC } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
-import { useStyles } from "./style";
-import { env } from "src/env/client.mjs";
+import { useEffect, useState } from "react";
+
+import { BackgroundImage, Box, Button, Center, Container, Overlay, Stack, Text, Title } from "@mantine/core";
 import Link from "next/link";
 import QRCode from "react-qr-code";
+
+import { env } from "src/env/client.mjs";
+
+import { useStyles } from "./style";
 
 export const SampleMenu: FC = () => {
     const { classes, theme } = useStyles();
@@ -16,17 +18,17 @@ export const SampleMenu: FC = () => {
     }, []);
 
     return (
-        <BackgroundImage src="landing-restaurant-bg.avif" className={classes.parallaxBg}>
+        <BackgroundImage className={classes.parallaxBg} src="landing-restaurant-bg.avif">
             <Center mih="65vh">
                 <Container className={classes.stepperWrap} size="xs">
-                    <Overlay opacity={0.5} color={theme.white} blur={4} zIndex={0} />
+                    <Overlay blur={4} color={theme.white} opacity={0.5} zIndex={0} />
 
-                    <Stack className={classes.stepperContents} align="center" pb="xl">
+                    <Stack align="center" className={classes.stepperContents} pb="xl">
                         <Title className={classes.sectionTitle}>What is your digital menu going to look like?</Title>
-                        <Box p="md" sx={{ borderRadius: theme.radius.lg }} bg={theme.white}>
-                            <QRCode value={sampleRestaurantLink} style={{ height: 250, width: 250 }} />
+                        <Box bg={theme.white} p="md" sx={{ borderRadius: theme.radius.lg }}>
+                            <QRCode style={{ height: 250, width: 250 }} value={sampleRestaurantLink} />
                         </Box>
-                        <Text color={theme.black} size="lg" align="center" weight="bold">
+                        <Text align="center" color={theme.black} size="lg" weight="bold">
                             Scan this QR code or click the following button to view a sample menu
                         </Text>
                         <Link href={sampleRestaurantLink} target="_blank">

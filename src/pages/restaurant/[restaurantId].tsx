@@ -1,14 +1,15 @@
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { Box, Breadcrumbs, Center, Loader, SimpleGrid, Text, useMantineTheme } from "@mantine/core";
+import { IconChartDots, IconSlideshow, IconStars, IconToolsKitchen } from "@tabler/icons";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { Box, Breadcrumbs, Center, Loader, SimpleGrid, Text, useMantineTheme } from "@mantine/core";
-import { IconCard } from "src/components/Cards";
-import { IconToolsKitchen, IconStars, IconSlideshow, IconChartDots } from "@tabler/icons";
-import { AppShell } from "src/components/AppShell";
 import { useRouter } from "next/router";
-import { api } from "src/utils/api";
+
+import { AppShell } from "src/components/AppShell";
+import { IconCard } from "src/components/Cards";
 import { PublishButton } from "src/components/PublishButton";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { api } from "src/utils/api";
 import { showErrorToast } from "src/utils/helpers";
 
 /** Page to manage all the options under the restaurant */
@@ -33,21 +34,21 @@ const RestaurantManagePage: NextPage = () => {
         <>
             <Head>
                 <title>Menufic - Manage Restaurant</title>
-                <meta name="description" content="Manage your restaurant's menus and banners" />
+                <meta content="Manage your restaurant's menus and banners" name="description" />
             </Head>
             <main>
                 <AppShell>
                     <Box ref={itemsParent}>
                         {isLoading ? (
-                            <Center w="100%" h="50vh">
+                            <Center h="50vh" w="100%">
                                 <Loader size="lg" />
                             </Center>
                         ) : (
                             <>
                                 <SimpleGrid
                                     breakpoints={[
-                                        { minWidth: "sm", cols: 2 },
-                                        { minWidth: "xs", cols: 1 },
+                                        { cols: 2, minWidth: "sm" },
+                                        { cols: 1, minWidth: "xs" },
                                     ]}
                                 >
                                     <Breadcrumbs color={theme.black}>
@@ -57,34 +58,34 @@ const RestaurantManagePage: NextPage = () => {
                                     {restaurant && <PublishButton restaurant={restaurant} />}
                                 </SimpleGrid>
                                 <SimpleGrid
-                                    mt="xl"
                                     breakpoints={[
-                                        { minWidth: "lg", cols: 3 },
-                                        { minWidth: "sm", cols: 2 },
-                                        { minWidth: "xs", cols: 1 },
+                                        { cols: 3, minWidth: "lg" },
+                                        { cols: 2, minWidth: "sm" },
+                                        { cols: 1, minWidth: "xs" },
                                     ]}
+                                    mt="xl"
                                 >
                                     <IconCard
-                                        title="Menus"
-                                        subTitle="Manage the menus, categories and individual menu items of your restaurant"
                                         Icon={IconToolsKitchen}
                                         href={`/restaurant/${router.query?.restaurantId}/edit-menu`}
+                                        subTitle="Manage the menus, categories and individual menu items of your restaurant"
+                                        title="Menus"
                                     />
                                     <IconCard
-                                        title="Banners"
-                                        subTitle="Manage banners that could be used to display promotional content in your restaurant menu"
                                         Icon={IconSlideshow}
                                         href={`/restaurant/${router.query?.restaurantId}/banners`}
+                                        subTitle="Manage banners that could be used to display promotional content in your restaurant menu"
+                                        title="Banners"
                                     />
                                     <IconCard
-                                        title="Feedback (Coming Soon)"
-                                        subTitle="View feedback received from your restaurant customers"
                                         Icon={IconStars}
+                                        subTitle="View feedback received from your restaurant customers"
+                                        title="Feedback (Coming Soon)"
                                     />
                                     <IconCard
-                                        title="Stats (Coming Soon)"
-                                        subTitle="Gain insights on how many people view your published menu and which items are most popular"
                                         Icon={IconChartDots}
+                                        subTitle="Gain insights on how many people view your published menu and which items are most popular"
+                                        title="Stats (Coming Soon)"
                                     />
                                 </SimpleGrid>
                             </>

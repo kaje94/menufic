@@ -1,9 +1,10 @@
+import { Container, List, Text, Title, useMantineTheme } from "@mantine/core";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { Container, List, Text, Title, useMantineTheme } from "@mantine/core";
-import { NavHeader } from "src/components/Header";
+
 import { Footer } from "src/components/Footer";
+import { NavHeader } from "src/components/Header";
 import { env } from "src/env/client.mjs";
 
 /**
@@ -17,14 +18,14 @@ const PrivacyPolicyPage: NextPage = () => {
             <Head>
                 <title>Menufic - Privacy Policy</title>
                 <meta
-                    name="description"
                     content="This privacy policy page contains information on how Menufic handles customer data"
+                    name="description"
                 />
             </Head>
 
-            <NavHeader showLoginButton={true} />
+            <NavHeader showLoginButton />
 
-            <Container size="xl" py="lg">
+            <Container py="lg" size="xl">
                 <Title order={1}>Privacy Policy</Title>
                 <Text color={theme.colors.dark[5]} mb="lg">
                     Last updated: January 11, 2023

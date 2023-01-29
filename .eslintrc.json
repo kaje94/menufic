@@ -3,23 +3,58 @@
     "parserOptions": {
         "project": "./tsconfig.json"
     },
-    "plugins": ["@typescript-eslint", "prettier"],
+    "plugins": ["@typescript-eslint", "react", "prettier", "sort-keys-fix", "typescript-sort-keys"],
     "extends": [
+        "airbnb",
+        "airbnb/hooks",
+        "airbnb-typescript",
         "next/core-web-vitals",
         "plugin:@typescript-eslint/recommended",
         "prettier",
-        "plugin:prettier/recommended"
+        "plugin:prettier/recommended",
+        "plugin:import/recommended"
     ],
     "rules": {
-        "@typescript-eslint/consistent-type-imports": "warn",
-        "react/no-unescaped-entities": "off",
+        "react/prop-types": "off",
+        "import/prefer-default-export": "off",
         "react-hooks/exhaustive-deps": "off",
-        "prettier/prettier": [
+        "react/jsx-props-no-spreading": "off",
+        "react/require-default-props": "off",
+        "no-promise-executor-return": "off",
+        "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+        "@typescript-eslint/no-shadow": ["warn"],
+        "prettier/prettier": ["warn", { "tabWidth": 4, "printWidth": 120 }],
+        "sort-keys-fix/sort-keys-fix": "warn",
+        "typescript-sort-keys/interface": "warn",
+        "react/jsx-sort-props": ["warn", { "reservedFirst": ["key"] }],
+        "sort-imports": ["warn", { "ignoreCase": true, "ignoreDeclarationSort": true }],
+        "import/order": [
             "warn",
             {
-                "tabWidth": 4,
-                "printWidth": 120
+                "groups": [["external", "builtin", "object", "type"], "internal", ["parent", "sibling", "index"]],
+                "pathGroups": [
+                    { "pattern": "react", "group": "external", "position": "before" },
+                    { "pattern": "@src/**", "group": "internal" }
+                ],
+                "pathGroupsExcludedImportTypes": ["internal", "react"],
+                "newlines-between": "always",
+                "alphabetize": { "order": "asc", "caseInsensitive": true }
             }
-        ]
+        ],
+        "max-lines": ["warn", 300],
+        "react/jsx-filename-extension": ["error", { "extensions": [".ts", ".tsx"] }],
+        "import/extensions": ["error", "ignorePackages", { "tsx": "never", "ts": "never" }],
+        "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+        "react/function-component-definition": [
+            "error",
+            {
+                "namedComponents": "arrow-function",
+                "unnamedComponents": "arrow-function"
+            }
+        ],
+
+        "@typescript-eslint/consistent-type-imports": "warn",
+        "react/no-unescaped-entities": "off",
+        "react/jsx-no-useless-fragment": "off"
     }
 }

@@ -1,16 +1,19 @@
-import { IconPlus } from "@tabler/icons";
-import { Button, Accordion, Box, Center, Loader } from "@mantine/core";
 import type { FC } from "react";
 import { useState } from "react";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { reorderList, showErrorToast } from "src/utils/helpers";
-import { api } from "src/utils/api";
-import { CategoryForm } from "../../Forms/CategoryForm";
-import { CategoryElement } from "./CategoryElement";
-import type { Category, MenuItem, Image } from "@prisma/client";
-import { env } from "../../../env/client.mjs";
+
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { Accordion, Box, Button, Center, Loader } from "@mantine/core";
+import type { Category, Image, MenuItem } from "@prisma/client";
+import { IconPlus } from "@tabler/icons";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
+
+import { api } from "src/utils/api";
+import { reorderList, showErrorToast } from "src/utils/helpers";
+
+import { CategoryElement } from "./CategoryElement";
 import { useStyles } from "./styles";
+import { env } from "../../../env/client.mjs";
+import { CategoryForm } from "../../Forms/CategoryForm";
 
 interface Props {
     /** Id of the menu to which the categories belong to */
@@ -27,9 +30,10 @@ export const Categories: FC<Props> = ({ menuId }) => {
     const [rootParent] = useAutoAnimate<HTMLDivElement>();
 
     const { isLoading: categoriesLoading, data: categories = [] } = api.category.getAll.useQuery(
-        { menuId: menuId },
+        { menuId },
         {
             enabled: !!menuId,
+            onError: () => showErrorToast("Failed to retrieve categories and menu items"),
             onSuccess: (data) => {
                 const newSelected = openedCategories.filter((item) =>
                     data.map((category) => category.id).includes(item)
@@ -38,11 +42,15 @@ export const Categories: FC<Props> = ({ menuId }) => {
                     setOpenedCategories(data[0] ? [data[0]?.id] : []);
                 }
             },
-            onError: () => showErrorToast("Failed to retrieve categories and menu items"),
         }
     );
 
     const { mutate: updateCategoryPositions } = api.category.updatePosition.useMutation({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: (_err, _newItem, context: any) => {
+            showErrorToast("Failed to update category position");
+            trpcCtx.category.getAll.setData({ menuId }, context?.previousCategories);
+        },
         onMutate: async (reorderedList) => {
             await trpcCtx.category.getAll.cancel({ menuId });
             const previousCategories = trpcCtx.category.getAll.getData({ menuId });
@@ -64,22 +72,18 @@ export const Categories: FC<Props> = ({ menuId }) => {
             trpcCtx.category.getAll.setData({ menuId }, reorderedCategories);
             return { previousCategories };
         },
-        onError: (_err, _newItem, context) => {
-            showErrorToast("Failed to update category position");
-            trpcCtx.category.getAll.setData({ menuId }, context?.previousCategories);
-        },
     });
 
     return (
         <>
             <Box ref={rootParent}>
                 <Accordion
-                    variant="contained"
                     chevronPosition="right"
-                    multiple={true}
-                    value={openedCategories}
-                    onChange={setOpenedCategories}
                     classNames={{ control: classes.accordionControl, item: classes.accordionItem }}
+                    multiple
+                    onChange={setOpenedCategories}
+                    value={openedCategories}
+                    variant="contained"
                 >
                     <DragDropContext
                         onBeforeDragStart={() => enableAutoAnimate(false)}
@@ -96,7 +100,7 @@ export const Categories: FC<Props> = ({ menuId }) => {
                             setTimeout(() => enableAutoAnimate(true), 100);
                         }}
                     >
-                        <Droppable droppableId={`dnd-category-list-${menuId}`} direction="vertical">
+                        <Droppable direction="vertical" droppableId={`dnd-category-list-${menuId}`}>
                             {(provided) => (
                                 <Box
                                     {...provided.droppableProps}
@@ -116,7 +120,7 @@ export const Categories: FC<Props> = ({ menuId }) => {
                     </DragDropContext>
                 </Accordion>
                 {categoriesLoading && (
-                    <Center w="100%" h="50vh">
+                    <Center h="50vh" w="100%">
                         <Loader size="lg" />
                     </Center>
                 )}
@@ -125,22 +129,22 @@ export const Categories: FC<Props> = ({ menuId }) => {
                     <Button
                         key="add-new-category"
                         leftIcon={<IconPlus size={20} />}
-                        mt={categories?.length === 0 ? 0 : "md"}
-                        variant={categories?.length === 0 ? "filled" : "default"}
-                        onClick={() => setCategoryFormOpen(true)}
                         loading={categoriesLoading}
+                        mt={categories?.length === 0 ? 0 : "md"}
+                        onClick={() => setCategoryFormOpen(true)}
                         px="lg"
                         size={categories?.length === 0 ? "lg" : "md"}
+                        variant={categories?.length === 0 ? "filled" : "default"}
                     >
                         Add Category
                     </Button>
                 )}
             </Box>
             <CategoryForm
-                opened={categoryFormOpen}
-                onClose={() => setCategoryFormOpen(false)}
                 menuId={menuId}
                 onAddSuccess={(newItem) => setOpenedCategories((items) => [...items, newItem?.id])}
+                onClose={() => setCategoryFormOpen(false)}
+                opened={categoryFormOpen}
             />
         </>
     );

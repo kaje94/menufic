@@ -1,28 +1,29 @@
-import NextAuth, { type NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
 import { UpstashRedisAdapter } from "@next-auth/upstash-redis-adapter";
 import { Redis } from "@upstash/redis";
+import NextAuth, { type NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "src/env/server.mjs";
 
 const redis = new Redis({
-    url: env.UPSTASH_REDIS_URL,
     token: env.UPSTASH_REDIS_TOKEN,
+    url: env.UPSTASH_REDIS_URL,
 });
 
 export const authOptions: NextAuthOptions = {
+    adapter: UpstashRedisAdapter(redis, {
+        baseKeyPrefix: `menuApp-${env.NODE_ENV}:`,
+    }),
     // Include user.id on session
     callbacks: {
         session({ session, user }) {
             if (session.user) {
+                // eslint-disable-next-line no-param-reassign
                 session.user.id = user.id;
             }
             return session;
         },
     },
-    adapter: UpstashRedisAdapter(redis, {
-        baseKeyPrefix: `menuApp-${env.NODE_ENV}:`,
-    }),
     // Configure one or more authentication providers
     providers: [
         GoogleProvider({

@@ -1,4 +1,5 @@
 import { createStyles } from "@mantine/core";
+
 import { Black } from "src/styles/theme";
 
 export const useStyles = createStyles((theme, _params, getRef) => {
@@ -6,33 +7,42 @@ export const useStyles = createStyles((theme, _params, getRef) => {
 
     return {
         card: {
-            position: "relative",
-            height: 200,
-            cursor: "pointer",
-            transition: "background 500ms ease",
+            "&:hover": { backgroundColor: theme.colors.dark[0], boxShadow: theme.shadows.xs },
             backgroundColor: theme.white,
             borderColor: theme.colors.dark[3],
+            cursor: "pointer",
+            height: 200,
+            position: "relative",
             [`&:hover .${image}`]: { transform: "scale(1.03)" },
-            "&:hover": { backgroundColor: theme.colors.dark[0], boxShadow: theme.shadows.xs },
+            transition: "background 500ms ease",
         },
         cardDisabled: { cursor: "not-allowed", opacity: 0.6 },
         cardNoCursor: { cursor: "unset" },
+        centerContent: { alignItems: "center", justifyContent: "center" },
+        content: {
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            justifyContent: "flex-end",
+            position: "relative",
+            zIndex: 1,
+        },
+        hoverAnimation: {
+            [`&:hover`]: { transform: "scale(1.03)" },
+            transition: "transform 500ms ease",
+        },
+        imageSubTitle: { color: "#fff", opacity: 0.5, textAlign: "unset" },
+        imageTitle: { color: "#fff", marginBottom: 5 },
         imageWrap: {
-            transition: "all 500ms ease",
-            ref: image,
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
             bottom: 0,
+            left: 0,
+            position: "absolute",
+            ref: image,
+            right: 0,
+            top: 0,
+            transition: "all 500ms ease",
         },
         overlay: {
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 1,
             backgroundImage: theme.fn.linearGradient(
                 180,
                 theme.fn.rgba(Black, 0),
@@ -40,23 +50,14 @@ export const useStyles = createStyles((theme, _params, getRef) => {
                 theme.fn.rgba(Black, 0.4),
                 theme.fn.rgba(Black, 0.85)
             ),
-        },
-        content: {
-            height: "100%",
-            position: "relative",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
+            bottom: 0,
+            left: 0,
+            position: "absolute",
+            right: 0,
+            top: 0,
             zIndex: 1,
         },
-        centerContent: { justifyContent: "center", alignItems: "center" },
-        hoverAnimation: {
-            transition: "transform 500ms ease",
-            [`&:hover`]: { transform: "scale(1.03)" },
-        },
-        imageTitle: { color: "#fff", marginBottom: 5 },
-        title: { color: theme.colors.dark[8], marginTop: 5, marginBottom: 5 },
-        imageSubTitle: { color: "#fff", textAlign: "unset", opacity: 0.5 },
         subTitle: { color: theme.colors.dark[8], opacity: 0.7, textAlign: "center" },
+        title: { color: theme.colors.dark[8], marginBottom: 5, marginTop: 5 },
     };
 });

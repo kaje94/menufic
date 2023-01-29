@@ -1,15 +1,18 @@
-import { Center, Text, Box } from "@mantine/core";
-import type { Menu } from "@prisma/client";
-import { IconGripVertical } from "@tabler/icons";
 import type { FC } from "react";
 import { useState } from "react";
+
+import { Box, Center, Text } from "@mantine/core";
+import type { Menu } from "@prisma/client";
+import { IconGripVertical } from "@tabler/icons";
 import { Draggable } from "react-beautiful-dnd";
+
 import { api } from "src/utils/api";
+import { showErrorToast, showSuccessToast } from "src/utils/helpers";
+
+import { useStyles } from "./styles";
 import { DeleteConfirmModal } from "../../DeleteConfirmModal";
 import { EditDeleteOptions } from "../../EditDeleteOptions";
 import { MenuForm } from "../../Forms/MenuForm";
-import { showErrorToast, showSuccessToast } from "src/utils/helpers";
-import { useStyles } from "./styles";
 
 interface Props {
     /** Menu which will be represented by the component */
@@ -30,10 +33,12 @@ export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSe
     const [menuFormOpen, setMenuFormOpen] = useState(false);
 
     const { mutate: deleteMenu, isLoading: isDeleting } = api.menu.delete.useMutation({
+        onError: (err) => showErrorToast("Failed to delete restaurant menu", err),
+        onSettled: () => setDeleteMenuModalOpen(false),
         onSuccess: (data) => {
             const filteredMenuData = trpcCtx.menu.getAll
                 .getData({ restaurantId })
-                ?.filter((item) => item.id !== data.id);
+                ?.filter((menuItem) => menuItem.id !== data.id);
             trpcCtx.menu.getAll.setData({ restaurantId }, filteredMenuData);
 
             if (data.id === selectedMenu?.id && filteredMenuData) {
@@ -42,15 +47,13 @@ export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSe
 
             showSuccessToast("Successfully deleted", `Deleted the menu ${data.name} and related details successfully`);
         },
-        onError: (err) => showErrorToast("Failed to delete restaurant menu", err),
-        onSettled: () => setDeleteMenuModalOpen(false),
     });
 
     const isSelected = item.id === selectedMenu?.id;
 
     return (
         <>
-            <Draggable key={item.id} index={item.position} draggableId={item.id}>
+            <Draggable key={item.id} draggableId={item.id} index={item.position}>
                 {(provided, snapshot) => (
                     <Box
                         className={cx(classes.item, {
@@ -63,8 +66,8 @@ export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSe
                     >
                         <Center {...provided.dragHandleProps} className={classes.dragHandle}>
                             <IconGripVertical
-                                size={18}
                                 color={isSelected ? theme.colors.primary[7] : theme.colors.dark[6]}
+                                size={18}
                             />
                         </Center>
                         <Box sx={{ flex: 1 }}>
@@ -72,27 +75,27 @@ export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSe
                             <Text className={classes.itemSubTitle}>{item.availableTime}</Text>
                         </Box>
                         <EditDeleteOptions
-                            onEditClick={() => setMenuFormOpen(true)}
-                            onDeleteClick={() => setDeleteMenuModalOpen(true)}
                             color={isSelected ? theme.colors.primary[7] : theme.colors.dark[6]}
                             hoverColor={isSelected ? theme.black : theme.colors.primary[5]}
+                            onDeleteClick={() => setDeleteMenuModalOpen(true)}
+                            onEditClick={() => setMenuFormOpen(true)}
                         />
                     </Box>
                 )}
             </Draggable>
             <MenuForm
-                opened={menuFormOpen}
-                onClose={() => setMenuFormOpen(false)}
-                restaurantId={restaurantId}
                 menu={item}
+                onClose={() => setMenuFormOpen(false)}
+                opened={menuFormOpen}
+                restaurantId={restaurantId}
             />
             <DeleteConfirmModal
-                opened={deleteMenuModalOpen}
+                description="Are you sure, you want to delete this menu? This action will also delete all the categories & items associated with this menu and cannot be undone"
+                loading={isDeleting}
                 onClose={() => setDeleteMenuModalOpen(false)}
                 onDelete={() => deleteMenu({ id: item.id })}
-                loading={isDeleting}
+                opened={deleteMenuModalOpen}
                 title={`Delete ${item.name} menu`}
-                description="Are you sure, you want to delete this menu? This action will also delete all the categories & items associated with this menu and cannot be undone"
             />
         </>
     );

@@ -1,11 +1,14 @@
-import type { ModalProps } from "@mantine/core";
-import { Stack, Button, Group, Text, useMantineTheme } from "@mantine/core";
-import { useForm, zodResolver } from "@mantine/form";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
-import { showErrorToast, showSuccessToast } from "src/utils/helpers";
+
+import type { ModalProps } from "@mantine/core";
+import { Button, Group, Stack, Text, useMantineTheme } from "@mantine/core";
+import { useForm, zodResolver } from "@mantine/form";
+
 import { api } from "src/utils/api";
+import { showErrorToast, showSuccessToast } from "src/utils/helpers";
 import { bannerInput } from "src/utils/validators";
+
 import { ImageUpload } from "../ImageUpload";
 import { Modal } from "../Modal";
 
@@ -21,30 +24,30 @@ export const BannerForm: FC<Props> = ({ opened, onClose, restaurantId, ...rest }
     const [imagePath, setImagePath] = useState("");
 
     const { mutate: addBanner, isLoading: isCreating } = api.restaurant.addBanner.useMutation({
+        onError: (err) => showErrorToast("Failed to create banner for restaurant", err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.restaurant.getBanners.setData({ id: restaurantId }, (banners = []) => [...banners, data]);
             showSuccessToast("Successfully created", `Successfully created new banner for the restaurant`);
         },
-        onError: (err) => showErrorToast("Failed to create banner for restaurant", err),
     });
 
     const { onSubmit, setValues, isDirty, resetDirty, errors } = useForm({
-        initialValues: { restaurantId: restaurantId, imageBase64: "" },
+        initialValues: { imageBase64: "", restaurantId },
         validate: zodResolver(bannerInput),
     });
 
     useEffect(() => {
         if (opened) {
             setImagePath("");
-            const values = { restaurantId: restaurantId, imageBase64: "" };
+            const values = { imageBase64: "", restaurantId };
             setValues(values);
             resetDirty(values);
         }
     }, [restaurantId, opened]);
 
     return (
-        <Modal opened={opened} onClose={onClose} title="Add Banner" loading={isCreating} {...rest}>
+        <Modal loading={isCreating} onClose={onClose} opened={opened} title="Add Banner" {...rest}>
             <form
                 onSubmit={onSubmit((values) => {
                     if (isDirty()) {
@@ -56,26 +59,26 @@ export const BannerForm: FC<Props> = ({ opened, onClose, restaurantId, ...rest }
             >
                 <Stack spacing="sm">
                     <ImageUpload
-                        width={750}
-                        height={300}
-                        imageUrl={imagePath}
-                        error={!!errors.imageBase64}
-                        imageRequired
                         disabled={isCreating}
-                        onImageCrop={(imageBase64, imagePath) => {
+                        error={!!errors.imageBase64}
+                        height={300}
+                        imageRequired
+                        imageUrl={imagePath}
+                        onImageCrop={(imageBase64, newImagePath) => {
                             setValues({ imageBase64 });
-                            setImagePath(imagePath);
+                            setImagePath(newImagePath);
                         }}
                         onImageDeleteClick={() => {
                             setValues({ imageBase64: "" });
                             setImagePath("");
                         }}
+                        width={750}
                     />
                     <Text color={theme.colors.red[7]} size="xs">
                         {errors.imageBase64}
                     </Text>
-                    <Group position="right" mt="md">
-                        <Button type="submit" loading={isCreating} px="xl">
+                    <Group mt="md" position="right">
+                        <Button loading={isCreating} px="xl" type="submit">
                             Save
                         </Button>
                     </Group>

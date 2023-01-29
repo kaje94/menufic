@@ -1,15 +1,18 @@
-import type { ModalProps } from "@mantine/core";
-import { TextInput, Stack, Button, Group, Text, useMantineTheme } from "@mantine/core";
-import { useForm, zodResolver } from "@mantine/form";
-import type { Restaurant, Image } from "@prisma/client";
 import type { FC } from "react";
 import { useEffect } from "react";
-import { showErrorToast, showSuccessToast } from "src/utils/helpers";
+
+import type { ModalProps } from "@mantine/core";
+import { Button, Group, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
+import { useForm, zodResolver } from "@mantine/form";
+import type { Image, Restaurant } from "@prisma/client";
+import { IconMapPin, IconPhone } from "@tabler/icons";
+
 import { api } from "src/utils/api";
+import { showErrorToast, showSuccessToast } from "src/utils/helpers";
 import { restaurantInput } from "src/utils/validators";
+
 import { ImageUpload } from "../ImageUpload";
 import { Modal } from "../Modal";
-import { IconMapPin, IconPhone } from "@tabler/icons";
 
 interface Props extends ModalProps {
     /** Restaurant to be edited */
@@ -22,15 +25,16 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
     const theme = useMantineTheme();
 
     const { mutate: createRestaurant, isLoading: isCreating } = api.restaurant.create.useMutation({
+        onError: (err) => showErrorToast("Failed to create restaurant", err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.restaurant.getAll.setData(undefined, (restaurants) => [...(restaurants || []), data]);
             showSuccessToast("Successfully created", `Created new ${data.name} restaurant successfully`);
         },
-        onError: (err) => showErrorToast("Failed to create restaurant", err),
     });
 
     const { mutate: updatedRestaurant, isLoading: isUpdating } = api.restaurant.update.useMutation({
+        onError: (err) => showErrorToast("Failed to update restaurant", err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.restaurant.getAll.setData(undefined, (restaurants) =>
@@ -38,31 +42,30 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
             );
             showSuccessToast("Successfully updated", `Created restaurant ${data.name}, successfully`);
         },
-        onError: (err) => showErrorToast("Failed to update restaurant", err),
     });
 
     const { getInputProps, onSubmit, setValues, isDirty, resetDirty, values, errors } = useForm({
         initialValues: {
-            name: restaurant?.name || "",
-            location: restaurant?.location || "",
             contactNo: restaurant?.contactNo || "",
             imageBase64: "",
             imagePath: restaurant?.image?.path || "",
+            location: restaurant?.location || "",
+            name: restaurant?.name || "",
         },
         validate: zodResolver(restaurantInput),
     });
 
     useEffect(() => {
         if (opened) {
-            const values = {
-                name: restaurant?.name || "",
-                location: restaurant?.location || "",
+            const formValues = {
                 contactNo: restaurant?.contactNo || "",
                 imageBase64: "",
                 imagePath: restaurant?.image?.path || "",
+                location: restaurant?.location || "",
+                name: restaurant?.name || "",
             };
-            setValues(values);
-            resetDirty(values);
+            setValues(formValues);
+            resetDirty(formValues);
         }
     }, [restaurant, opened]);
 
@@ -70,19 +73,19 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
 
     return (
         <Modal
-            opened={opened}
-            onClose={onClose}
-            title={restaurant ? "Edit Restaurant" : "Add Restaurant"}
             loading={loading}
+            onClose={onClose}
+            opened={opened}
+            title={restaurant ? "Edit Restaurant" : "Add Restaurant"}
             {...rest}
         >
             <form
-                onSubmit={onSubmit((values) => {
+                onSubmit={onSubmit((formValues) => {
                     if (isDirty()) {
                         if (restaurant) {
-                            updatedRestaurant({ ...values, id: restaurant?.id });
+                            updatedRestaurant({ ...formValues, id: restaurant?.id });
                         } else {
-                            createRestaurant(values);
+                            createRestaurant(formValues);
                         }
                     } else {
                         onClose();
@@ -91,44 +94,44 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
             >
                 <Stack spacing="sm">
                     <TextInput
-                        withAsterisk
+                        disabled={loading}
                         label="Name"
                         placeholder="Restaurant Name"
-                        disabled={loading}
+                        withAsterisk
                         {...getInputProps("name")}
-                        autoFocus={true}
+                        autoFocus
                     />
                     <TextInput
-                        withAsterisk
-                        label="Location"
-                        placeholder="No 05, Road Name, City"
                         disabled={loading}
                         icon={<IconMapPin color={theme.colors.dark[4]} />}
+                        label="Location"
+                        placeholder="No 05, Road Name, City"
+                        withAsterisk
                         {...getInputProps("location")}
                     />
                     <TextInput
-                        label="Contact Number"
-                        placeholder="+919367788755"
                         disabled={loading}
                         icon={<IconPhone color={theme.colors.dark[4]} />}
+                        label="Contact Number"
+                        placeholder="+919367788755"
                         {...getInputProps("contactNo")}
                     />
                     <ImageUpload
-                        width={750}
-                        height={300}
-                        imageUrl={values?.imagePath}
-                        imageHash={restaurant?.image?.blurHash}
-                        error={!!errors.imagePath}
-                        imageRequired
                         disabled={loading}
+                        error={!!errors.imagePath}
+                        height={300}
+                        imageHash={restaurant?.image?.blurHash}
+                        imageRequired
+                        imageUrl={values?.imagePath}
                         onImageCrop={(imageBase64, imagePath) => setValues({ imageBase64, imagePath })}
                         onImageDeleteClick={() => setValues({ imageBase64: "", imagePath: "" })}
+                        width={750}
                     />
                     <Text color={theme.colors.red[7]} size="xs">
                         {errors.imagePath}
                     </Text>
-                    <Group position="right" mt="md">
-                        <Button type="submit" loading={loading} px="xl">
+                    <Group mt="md" position="right">
+                        <Button loading={loading} px="xl" type="submit">
                             Save
                         </Button>
                     </Group>

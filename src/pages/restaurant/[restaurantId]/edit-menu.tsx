@@ -1,16 +1,18 @@
+import { useState } from "react";
+
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { Box, Breadcrumbs, Center, Grid, Loader, SimpleGrid, Text } from "@mantine/core";
+import type { Menu } from "@prisma/client";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { Breadcrumbs, Grid, Text, SimpleGrid, Box, Center, Loader } from "@mantine/core";
-import { AppShell } from "src/components/AppShell";
-import { useState } from "react";
-import { useRouter } from "next/router";
-import { api } from "src/utils/api";
 import Link from "next/link";
-import type { Menu } from "@prisma/client";
-import { Menus } from "src/components/EditMenu/Menus";
+import { useRouter } from "next/router";
+
+import { AppShell } from "src/components/AppShell";
 import { Categories } from "src/components/EditMenu/Categories";
+import { Menus } from "src/components/EditMenu/Menus";
 import { PublishButton } from "src/components/PublishButton";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { api } from "src/utils/api";
 import { showErrorToast } from "src/utils/helpers";
 
 /** Page to manage all the menus and related items of a selected restaurant */
@@ -36,21 +38,21 @@ const EditMenuPage: NextPage = () => {
         <>
             <Head>
                 <title>Menufic - Edit Menu</title>
-                <meta name="description" content="Manage the menus of your restaurant" />
+                <meta content="Manage the menus of your restaurant" name="description" />
             </Head>
             <main>
                 <AppShell>
                     <Box ref={rootParent}>
                         {isLoading ? (
-                            <Center w="100%" h="50vh">
+                            <Center h="50vh" w="100%">
                                 <Loader size="lg" />
                             </Center>
                         ) : (
                             <>
                                 <SimpleGrid
                                     breakpoints={[
-                                        { minWidth: "sm", cols: 2 },
-                                        { minWidth: "xs", cols: 1 },
+                                        { cols: 2, minWidth: "sm" },
+                                        { cols: 1, minWidth: "xs" },
                                     ]}
                                 >
                                     <Breadcrumbs>
@@ -60,8 +62,8 @@ const EditMenuPage: NextPage = () => {
                                     </Breadcrumbs>
                                     {restaurant && <PublishButton restaurant={restaurant} />}
                                 </SimpleGrid>
-                                <Grid gutter="lg" mt="xl" justify="center" ref={gridItemParent}>
-                                    <Grid.Col sm={12} md={4} lg={3}>
+                                <Grid gutter="lg" justify="center" mt="xl" ref={gridItemParent}>
+                                    <Grid.Col lg={3} md={4} sm={12}>
                                         {router.query?.restaurantId && (
                                             <Menus
                                                 restaurantId={restaurantId}
@@ -71,7 +73,7 @@ const EditMenuPage: NextPage = () => {
                                         )}
                                     </Grid.Col>
                                     {selectedMenu && (
-                                        <Grid.Col sm={12} md={8} lg={9}>
+                                        <Grid.Col lg={9} md={8} sm={12}>
                                             <Categories menuId={selectedMenu?.id} />
                                         </Grid.Col>
                                     )}

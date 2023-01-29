@@ -1,9 +1,10 @@
+import { useScrollIntoView } from "@mantine/hooks";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { NavHeader } from "src/components/Header";
-import { useScrollIntoView } from "@mantine/hooks";
+
 import { Footer } from "src/components/Footer";
-import { AboutUs, ContactUs, Pricing, SampleMenu, Features, Steps, Hero } from "src/components/LandingSections";
+import { NavHeader } from "src/components/Header";
+import { AboutUs, ContactUs, Features, Hero, Pricing, SampleMenu, Steps } from "src/components/LandingSections";
 
 /** Landing page to showcase what menufic is and what are the features that menufic provides */
 const LandingPage: NextPage = () => {
@@ -14,10 +15,8 @@ const LandingPage: NextPage = () => {
             <Head>
                 <title>Menufic - Digital menu generator</title>
                 <meta
+                    content="A digital menu generator that lets you to create the best menu for your restaurant. Menufic is packed with several features that will boost the online presence of your restaurant with ease"
                     name="description"
-                    content={
-                        "A digital menu generator that lets you to create the best menu for your restaurant. Menufic is packed with several features that will boost the online presence of your restaurant with ease"
-                    }
                 />
             </Head>
 

@@ -5,30 +5,30 @@ const description =
     "A digital menu generator that lets you to create the best menu for your restaurant. Menufic is packed with several features that will boost the online presence of your restaurant with ease";
 const bannerImage = "https://menufic.com/menufic_banner.png";
 
-export default class _Document extends Document {
+export default class MyDocument extends Document {
     render() {
         return (
             <Html lang="en">
                 <Head>
-                    <link rel="icon" href="/favicon.ico" />
-                    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-                    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-                    <meta name="theme-color" content="#c24152" />
+                    <link href="/favicon.ico" rel="icon" />
+                    <link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
+                    <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
+                    <meta content="#c24152" name="theme-color" />
 
-                    <meta name="title" content={title} />
-                    <meta name="description" content={description} />
+                    <meta content={title} name="title" />
+                    <meta content={description} name="description" />
 
-                    <meta property="og:title" content={title} />
-                    <meta property="og:site_name" content="menufic.com" />
-                    <meta property="og:url" content="https://menufic.com" />
-                    <meta property="og:description" content={description} />
-                    <meta property="og:image" content={bannerImage} />
+                    <meta content={title} property="og:title" />
+                    <meta content="menufic.com" property="og:site_name" />
+                    <meta content="https://menufic.com" property="og:url" />
+                    <meta content={description} property="og:description" />
+                    <meta content={bannerImage} property="og:image" />
 
-                    <meta property="twitter:card" content="summary_large_image" />
-                    <meta property="twitter:url" content="https://menufic.com" />
-                    <meta property="twitter:title" content={title} />
-                    <meta property="twitter:description" content={description} />
-                    <meta property="twitter:image" content={bannerImage} />
+                    <meta content="summary_large_image" property="twitter:card" />
+                    <meta content="https://menufic.com" property="twitter:url" />
+                    <meta content={title} property="twitter:title" />
+                    <meta content={description} property="twitter:description" />
+                    <meta content={bannerImage} property="twitter:image" />
                 </Head>
                 <body>
                     <Main />

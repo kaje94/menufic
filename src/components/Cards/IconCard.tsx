@@ -1,22 +1,24 @@
-import { Box, clsx, Card, Text } from "@mantine/core";
+import type { FC, MouseEventHandler } from "react";
+
+import { Box, Card, clsx, Text } from "@mantine/core";
 import type { TablerIcon } from "@tabler/icons";
 import Link from "next/link";
-import type { MouseEventHandler, FC } from "react";
+
 import { useStyles } from "./styles";
 
 interface Props {
-    /** Title of the card */
-    title: string;
-    /** Subtitle of the card */
-    subTitle?: string;
     /** Tabler icon that is displayed in the card */
     Icon: TablerIcon;
-    /** Size of the icon displayed in the card */
-    iconSize?: number;
     /** Path that needs to be opened, when clicked */
     href?: string;
+    /** Size of the icon displayed in the card */
+    iconSize?: number;
     /** Onclick event handler if href props is not provided */
     onClick?: MouseEventHandler<HTMLDivElement>;
+    /** Subtitle of the card */
+    subTitle?: string;
+    /** Title of the card */
+    title: string;
 }
 
 /** Card item with an icon in the middle  */
@@ -25,13 +27,13 @@ export const IconCard: FC<Props> = ({ title, subTitle, Icon, href, iconSize = 50
 
     const cardContent = (
         <Box className={clsx(classes.content, classes.centerContent, (onClick || href) && classes.hoverAnimation)}>
-            <Icon size={iconSize} color={theme.colors.dark[8]} stroke={1.5} />
+            <Icon color={theme.colors.dark[8]} size={iconSize} stroke={1.5} />
 
-            <Text size="lg" className={classes.title} weight={500}>
+            <Text className={classes.title} size="lg" weight={500}>
                 {title}
             </Text>
 
-            <Text size="sm" px="xl" className={classes.subTitle}>
+            <Text className={classes.subTitle} px="xl" size="sm">
                 {subTitle}
             </Text>
         </Box>
@@ -39,14 +41,14 @@ export const IconCard: FC<Props> = ({ title, subTitle, Icon, href, iconSize = 50
 
     if (href) {
         return (
-            <Card p="lg" className={classes.card} withBorder>
+            <Card className={classes.card} p="lg" withBorder>
                 <Link href={href}>{cardContent}</Link>
             </Card>
         );
     }
 
     return (
-        <Card p="lg" className={clsx(classes.card, !onClick && classes.cardDisabled)} withBorder onClick={onClick}>
+        <Card className={clsx(classes.card, !onClick && classes.cardDisabled)} onClick={onClick} p="lg" withBorder>
             {cardContent}
         </Card>
     );

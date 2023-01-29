@@ -1,12 +1,13 @@
-import { Text, Center, useMantineTheme, keyframes, Box } from "@mantine/core";
-import { IconAtom2 } from "@tabler/icons";
 import type { FC } from "react";
 
+import { Box, Center, keyframes, Text, useMantineTheme } from "@mantine/core";
+import { IconAtom2 } from "@tabler/icons";
+
 interface Props {
-    /** Text to be display in the empty component */
-    text: string;
     /** Height of the empty component */
     height?: string | number;
+    /** Text to be display in the empty component */
+    text: string;
 }
 
 const floatingAnimation = keyframes`
@@ -19,14 +20,14 @@ const floatingAnimation = keyframes`
 export const Empty: FC<Props> = ({ text, height }) => {
     const theme = useMantineTheme();
     return (
-        <Center p="lg" h={height} sx={{ flexDirection: "column", color: theme.colors.dark[5] }}>
+        <Center h={height} p="lg" sx={{ color: theme.colors.dark[5], flexDirection: "column" }}>
             <Box sx={{ animation: `${floatingAnimation} 6s ease-in-out infinite` }}>
-                <IconAtom2 size={100} strokeWidth={1.5} color={theme.colors.dark[3]} />
+                <IconAtom2 color={theme.colors.dark[3]} size={100} strokeWidth={1.5} />
             </Box>
-            <Text size="lg" mt="lg" weight="bolder" align="center" maw={400}>
+            <Text align="center" maw={400} mt="lg" size="lg" weight="bolder">
                 whoops, nothing to see here ...
             </Text>
-            <Text align="center" mt="xs" maw={500} weight="lighter">
+            <Text align="center" maw={500} mt="xs" weight="lighter">
                 {text}
             </Text>
         </Center>

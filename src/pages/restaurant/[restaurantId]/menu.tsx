@@ -1,19 +1,19 @@
-import type { GetStaticPropsContext } from "next";
-import { type NextPage } from "next";
-import Head from "next/head";
 import { Container, useMantineTheme } from "@mantine/core";
-import { useRouter } from "next/router";
-import { api } from "src/utils/api";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import { appRouter } from "src/server/api/root";
-import superjson from "superjson";
-import { RestaurantMenu } from "src/components/RestaurantMenu";
-import { useSession } from "next-auth/react";
-import { Footer } from "src/components/Footer";
-import { Empty } from "src/components/Empty";
 import { useMediaQuery } from "@mantine/hooks";
-import { createInnerTRPCContext } from "src/server/api/trpc";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import type { GetStaticPropsContext, NextPage } from "next";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import superjson from "superjson";
+
+import { Empty } from "src/components/Empty";
+import { Footer } from "src/components/Footer";
+import { RestaurantMenu } from "src/components/RestaurantMenu";
 import { env } from "src/env/client.mjs";
+import { appRouter } from "src/server/api/root";
+import { createInnerTRPCContext } from "src/server/api/trpc";
+import { api } from "src/utils/api";
 
 /** Restaurant menu page that will be shared publicly */
 const RestaurantMenuPage: NextPage = () => {
@@ -29,33 +29,35 @@ const RestaurantMenuPage: NextPage = () => {
     );
 
     const titleTag = `${restaurant?.name} Menu`;
-    const descriptionTag = `Menu of restaurant ${restaurant?.name} created using Menufic`;
+    const descriptionTag = `Menu of restaurant ${restaurant?.name}. Location: ${restaurant?.location}. ${
+        restaurant?.contactNo ? `Contact Number: ${restaurant.contactNo}.` : ""
+    } This menu was generated using Menufic.com`;
     const imageTag = `${env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}/${restaurant?.image?.path}`;
 
     return (
         <>
             <Head>
                 <title>{titleTag}</title>
-                <meta name="description" content={descriptionTag} />
-                <meta name="title" content={titleTag} />
+                <meta content={descriptionTag} name="description" />
+                <meta content={titleTag} name="title" />
 
-                <meta property="og:title" content={titleTag} />
-                <meta property="og:description" content={descriptionTag} />
-                <meta property="og:image" content={imageTag} />
-                <meta property="og:type" content="restaurant.menu" />
+                <meta content={titleTag} property="og:title" />
+                <meta content={descriptionTag} property="og:description" />
+                <meta content={imageTag} property="og:image" />
+                <meta content="restaurant.menu" property="og:type" />
 
-                <meta property="twitter:title" content={titleTag} />
-                <meta property="twitter:description" content={descriptionTag} />
-                <meta property="twitter:image" content={imageTag} />
+                <meta content={titleTag} property="twitter:title" />
+                <meta content={descriptionTag} property="twitter:description" />
+                <meta content={imageTag} property="twitter:image" />
             </Head>
             <main>
-                <Container size="xl" py="lg">
+                <Container py="lg" size="xl">
                     {restaurant && restaurant?.isPublished === true ? (
                         <RestaurantMenu restaurant={restaurant} />
                     ) : (
                         <Empty
-                            text="This restaurant details are unavailable at the moment. We are sorry for the inconvenience. Please try again in a while"
                             height={`calc(100vh - ${isNotMobile ? 100 : 135}px)`}
+                            text="This restaurant details are unavailable at the moment. We are sorry for the inconvenience. Please try again in a while"
                         />
                     )}
                 </Container>
@@ -69,8 +71,8 @@ export default RestaurantMenuPage;
 
 export async function getStaticProps(context: GetStaticPropsContext<{ restaurantId: string }>) {
     const ssg = createProxySSGHelpers({
-        router: appRouter,
         ctx: createInnerTRPCContext({ session: null }),
+        router: appRouter,
         transformer: superjson,
     });
     const restaurantId = context.params?.restaurantId as string;
@@ -78,7 +80,7 @@ export async function getStaticProps(context: GetStaticPropsContext<{ restaurant
         const restaurant = await ssg.restaurant.getDetails.fetch({ id: restaurantId });
         if (restaurant.isPublished) {
             // Only return restaurants that are published
-            return { props: { trpcState: ssg.dehydrate(), restaurantId }, revalidate: 1800 }; // revalidate in 30 mins
+            return { props: { restaurantId, trpcState: ssg.dehydrate() }, revalidate: 1800 }; // revalidate in 30 mins
         }
         return { props: { restaurantId }, revalidate: 60 };
     } catch {
@@ -88,5 +90,5 @@ export async function getStaticProps(context: GetStaticPropsContext<{ restaurant
 
 export async function getStaticPaths() {
     // Skip building pages during build time
-    return { paths: [], fallback: "blocking" };
+    return { fallback: "blocking", paths: [] };
 }

@@ -25,12 +25,6 @@ export const api = createTRPCNext<AppRouter>({
     config() {
         return {
             /**
-             * Transformer used for data de-serialization from the server
-             * @see https://trpc.io/docs/data-transformers
-             **/
-            transformer: superjson,
-
-            /**
              * Links used to determine request flow from client to server
              * @see https://trpc.io/docs/links
              * */
@@ -44,12 +38,18 @@ export const api = createTRPCNext<AppRouter>({
                     url: `${getBaseUrl()}/api/trpc`,
                 }),
             ],
+
             queryClientConfig: {
                 defaultOptions: {
-                    queries: { refetchOnWindowFocus: false, retry: false },
                     mutations: { retry: false },
+                    queries: { refetchOnWindowFocus: false, retry: false },
                 },
             },
+            /**
+             * Transformer used for data de-serialization from the server
+             * @see https://trpc.io/docs/data-transformers
+             * */
+            transformer: superjson,
         };
     },
     /**
@@ -62,10 +62,10 @@ export const api = createTRPCNext<AppRouter>({
 /**
  * Inference helper for inputs
  * @example type HelloInput = RouterInputs['example']['hello']
- **/
+ * */
 export type RouterInputs = inferRouterInputs<AppRouter>;
 /**
  * Inference helper for outputs
  * @example type HelloOutput = RouterOutputs['example']['hello']
- **/
+ * */
 export type RouterOutputs = inferRouterOutputs<AppRouter>;

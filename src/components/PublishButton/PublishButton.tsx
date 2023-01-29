@@ -1,15 +1,18 @@
+import type { FC } from "react";
+import { useState } from "react";
+
 import {
+    ActionIcon,
     Alert,
-    Button,
     Box,
+    Button,
+    Center,
+    CopyButton,
+    Flex,
     Switch,
     Text,
-    Flex,
-    useMantineTheme,
-    CopyButton,
-    ActionIcon,
     Tooltip,
-    Center,
+    useMantineTheme,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import type { Restaurant } from "@prisma/client";
@@ -17,10 +20,10 @@ import { IconAlertCircle, IconCheck, IconCopy, IconDownload, IconEye, IconEyeOff
 import downloadjs from "downloadjs";
 import html2canvas from "html2canvas";
 import Link from "next/link";
-import type { FC } from "react";
-import { useState } from "react";
 import QRCode from "react-qr-code";
+
 import { api } from "src/utils/api";
+
 import { showErrorToast } from "../../utils/helpers";
 import { Modal } from "../Modal";
 
@@ -40,6 +43,10 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
     const origin = typeof window !== "undefined" ? window.location.origin : "";
 
     const { mutate: setPublished } = api.restaurant.setPublished.useMutation({
+        onError: (err, _newItem, context: { previousRestaurant: Restaurant | undefined } | undefined) => {
+            showErrorToast("Failed to update status of the restaurant menu", err);
+            trpcCtx.restaurant.get.setData({ id }, context?.previousRestaurant);
+        },
         onMutate: async (setPublishedReq) => {
             await trpcCtx.restaurant.get.cancel({ id });
             const previousRestaurant = trpcCtx.restaurant.get.getData({ id });
@@ -51,10 +58,6 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
             }
 
             return { previousRestaurant };
-        },
-        onError: (err, _newItem, context) => {
-            showErrorToast("Failed to update status of the restaurant menu", err);
-            trpcCtx.restaurant.get.setData({ id }, context?.previousRestaurant);
         },
     });
 
@@ -73,25 +76,25 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
     return (
         <>
             <Button
-                onClick={() => setModalVisible(true)}
                 leftIcon={isPublished ? <IconEye /> : <IconEyeOff />}
-                variant={isPublished ? "filled" : "light"}
+                onClick={() => setModalVisible(true)}
                 sx={{ justifySelf: isNotMobile ? "flex-end" : "auto" }}
+                variant={isPublished ? "filled" : "light"}
             >
                 {isPublished ? "Published" : "Not Published"}
             </Button>
             <Modal
-                size="lg"
-                opened={modelVisible}
                 onClose={() => setModalVisible(false)}
+                opened={modelVisible}
+                size="lg"
                 title="Publish and share your menu"
             >
                 <Alert
-                    icon={isPublished ? <IconTrophy /> : <IconAlertCircle />}
-                    title={isPublished ? "Menu is published" : "Menu is not published"}
                     color={isPublished ? "green" : "orange"}
+                    icon={isPublished ? <IconTrophy /> : <IconAlertCircle />}
                     mb="lg"
                     radius="lg"
+                    title={isPublished ? "Menu is published" : "Menu is not published"}
                 >
                     {isPublished ? (
                         <>
@@ -99,10 +102,10 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                                 Changes to the menu could take around 30 minutes to be reflected in the published menu
                                 page
                             </Text>
-                            <Text weight="bold" mt="sm" color={theme.black}>
+                            <Text color={theme.black} mt="sm" weight="bold">
                                 Published menu URL
                             </Text>
-                            <Flex justify="space-between" align="center">
+                            <Flex align="center" justify="space-between">
                                 <Link href={menuUrl} target="_blank">
                                     <Text color={theme.colors.green[9]}>{menuUrl}</Text>
                                 </Link>
@@ -110,12 +113,12 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                                 <CopyButton value={menuUrl}>
                                     {({ copied, copy }) => (
                                         <Tooltip
-                                            label={copied ? "URL copied" : "Copy URL"}
                                             color={copied ? "green" : theme.black}
+                                            label={copied ? "URL copied" : "Copy URL"}
                                             position="left"
                                             withArrow
                                         >
-                                            <ActionIcon onClick={copy} disabled={copied}>
+                                            <ActionIcon disabled={copied} onClick={copy}>
                                                 {copied ? <IconCheck /> : <IconCopy />}
                                             </ActionIcon>
                                         </Tooltip>
@@ -132,11 +135,11 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                 </Alert>
 
                 <Flex
-                    justify="space-between"
                     align="center"
                     bg={theme.colors.dark[1]}
-                    sx={{ borderRadius: theme.radius.lg }}
+                    justify="space-between"
                     p="md"
+                    sx={{ borderRadius: theme.radius.lg }}
                 >
                     <Text color={theme.black}>Publish Menu</Text>
                     <Switch
@@ -148,12 +151,12 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
 
                 {isPublished && (
                     <>
-                        <Box className="qr-code" p="md" mt="sm">
-                            <QRCode value={menuUrl} style={{ height: "auto", maxWidth: "100%", width: "100%" }} />
+                        <Box className="qr-code" mt="sm" p="md">
+                            <QRCode style={{ height: "auto", maxWidth: "100%", width: "100%" }} value={menuUrl} />
                         </Box>
 
                         <Center>
-                            <Button variant="light" onClick={handleCaptureClick} leftIcon={<IconDownload />}>
+                            <Button leftIcon={<IconDownload />} onClick={handleCaptureClick} variant="light">
                                 Download QR code
                             </Button>
                         </Center>
@@ -162,10 +165,10 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
 
                 <Box
                     bg={theme.colors.dark[1]}
-                    sx={{ borderRadius: theme.radius.lg }}
-                    p="md"
                     mt="lg"
                     opacity={restaurant.isPublished ? 0.75 : 1}
+                    p="md"
+                    sx={{ borderRadius: theme.radius.lg }}
                 >
                     <Text color={theme.black}>Preview URL</Text>
                     <Text color={theme.colors.dark[7]} size="sm">
@@ -173,7 +176,7 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                         while also updating in real time
                     </Text>
 
-                    <Flex justify="space-between" align="center" mt="sm">
+                    <Flex align="center" justify="space-between" mt="sm">
                         <Link href={previewMenuUrl} target="_blank">
                             <Text color={theme.colors.dark[9]} size="sm">
                                 {previewMenuUrl}
@@ -183,12 +186,12 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                         <CopyButton value={previewMenuUrl}>
                             {({ copied, copy }) => (
                                 <Tooltip
-                                    label={copied ? "URL copied" : "Copy URL"}
                                     color={copied ? "green" : theme.black}
+                                    label={copied ? "URL copied" : "Copy URL"}
                                     position="left"
                                     withArrow
                                 >
-                                    <ActionIcon onClick={copy} disabled={copied}>
+                                    <ActionIcon disabled={copied} onClick={copy}>
                                         {copied ? <IconCheck /> : <IconCopy />}
                                     </ActionIcon>
                                 </Tooltip>

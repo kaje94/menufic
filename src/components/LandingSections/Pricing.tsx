@@ -1,8 +1,10 @@
-import { Container, Title, Button, SimpleGrid, Text, Card, Flex } from "@mantine/core";
 import type { FC } from "react";
-import { useStyles } from "./style";
+
+import { Button, Card, Container, Flex, SimpleGrid, Text, Title } from "@mantine/core";
 import { IconCheckbox } from "@tabler/icons";
 import { signIn, useSession } from "next-auth/react";
+
+import { useStyles } from "./style";
 
 const pricingFreeCard = [
     "Create upto 5 restaurants",
@@ -27,18 +29,18 @@ export const Pricing: FC<{ scrollToContactUs: () => void }> = ({ scrollToContact
     const { status } = useSession();
 
     return (
-        <Container size="md" py={theme.spacing.xl * 3}>
+        <Container py={theme.spacing.xl * 3} size="md">
             <Title className={classes.sectionTitle}>Pricing</Title>
 
-            <SimpleGrid cols={2} spacing="xl" mt={50} breakpoints={[{ maxWidth: "md", cols: 1 }]}>
-                <Card shadow="md" radius="md" className={classes.card} p="xl">
-                    <Text size="lg" weight={500} className={classes.cardTitle} color={theme.black} mt="md">
+            <SimpleGrid breakpoints={[{ cols: 1, maxWidth: "md" }]} cols={2} mt={50} spacing="xl">
+                <Card className={classes.card} p="xl" radius="md" shadow="md">
+                    <Text className={classes.cardTitle} color={theme.black} mt="md" size="lg" weight={500}>
                         Free
                     </Text>
                     {pricingFreeCard.map((item) => (
-                        <Flex gap={10} align="center" key={item} mt="sm">
+                        <Flex key={item} align="center" gap={10} mt="sm">
                             <IconCheckbox color={theme.black} />
-                            <Text size="md" color={theme.black} opacity={0.8}>
+                            <Text color={theme.black} opacity={0.8} size="md">
                                 {item}
                             </Text>
                         </Flex>
@@ -47,27 +49,27 @@ export const Pricing: FC<{ scrollToContactUs: () => void }> = ({ scrollToContact
                         <Button
                             fullWidth
                             mt="xl"
+                            onClick={() => signIn("google", { callbackUrl: "/restaurant" })}
                             size="lg"
                             variant="outline"
-                            onClick={() => signIn("google", { callbackUrl: "/restaurant" })}
                         >
                             Get Started
                         </Button>
                     )}
                 </Card>
-                <Card shadow="md" radius="md" className={classes.card} p="xl">
-                    <Text size="lg" weight={500} className={classes.cardTitle} color={theme.black} mt="md">
+                <Card className={classes.card} p="xl" radius="md" shadow="md">
+                    <Text className={classes.cardTitle} color={theme.black} mt="md" size="lg" weight={500}>
                         Enterprise
                     </Text>
                     {pricingEnterpriseCard.map((item) => (
-                        <Flex gap={10} align="center" key={item} mt="sm">
+                        <Flex key={item} align="center" gap={10} mt="sm">
                             <IconCheckbox color={theme.black} />
-                            <Text size="md" color={theme.black} opacity={0.8}>
+                            <Text color={theme.black} opacity={0.8} size="md">
                                 {item}
                             </Text>
                         </Flex>
                     ))}
-                    <Button fullWidth mt="xl" size="lg" onClick={() => scrollToContactUs()}>
+                    <Button fullWidth mt="xl" onClick={() => scrollToContactUs()} size="lg">
                         Contact us
                     </Button>
                 </Card>

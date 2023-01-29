@@ -1,12 +1,15 @@
-import type { ModalProps } from "@mantine/core";
-import { TextInput, Button, Group, Stack } from "@mantine/core";
-import { useForm, zodResolver } from "@mantine/form";
-import { api } from "src/utils/api";
-import type { Category } from "@prisma/client";
 import type { FC } from "react";
 import { useEffect } from "react";
-import { categoryInput } from "src/utils/validators";
+
+import type { ModalProps } from "@mantine/core";
+import { Button, Group, Stack, TextInput } from "@mantine/core";
+import { useForm, zodResolver } from "@mantine/form";
+import type { Category } from "@prisma/client";
+
+import { api } from "src/utils/api";
 import { showErrorToast, showSuccessToast } from "src/utils/helpers";
+import { categoryInput } from "src/utils/validators";
+
 import { Modal } from "../Modal";
 
 interface Props extends ModalProps {
@@ -23,6 +26,7 @@ export const CategoryForm: FC<Props> = ({ opened, onClose, menuId, categoryItem,
     const trpcCtx = api.useContext();
 
     const { mutate: createCategory, isLoading: isCreating } = api.category.create.useMutation({
+        onError: (err) => showErrorToast("Failed to create new category", err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.category.getAll.setData({ menuId }, (categories) => [...(categories || []), data]);
@@ -31,10 +35,10 @@ export const CategoryForm: FC<Props> = ({ opened, onClose, menuId, categoryItem,
             }
             showSuccessToast("Successfully created", `Created a new category ${data.name} successfully`);
         },
-        onError: (err) => showErrorToast("Failed to create new category", err),
     });
 
     const { mutate: updateCategory, isLoading: isUpdating } = api.category.update.useMutation({
+        onError: (err) => showErrorToast("Failed to update category", err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.category.getAll.setData({ menuId }, (categories) =>
@@ -42,7 +46,6 @@ export const CategoryForm: FC<Props> = ({ opened, onClose, menuId, categoryItem,
             );
             showSuccessToast("Successfully updated", `Updated details of ${data.name} category successfully`);
         },
-        onError: (err) => showErrorToast("Failed to update category", err),
     });
 
     const { getInputProps, onSubmit, isDirty, resetDirty, setValues } = useForm({
@@ -62,10 +65,10 @@ export const CategoryForm: FC<Props> = ({ opened, onClose, menuId, categoryItem,
 
     return (
         <Modal
-            opened={opened}
-            onClose={onClose}
-            title={categoryItem ? "Update Category" : "Create Category"}
             loading={loading}
+            onClose={onClose}
+            opened={opened}
+            title={categoryItem ? "Update Category" : "Create Category"}
             {...rest}
         >
             <form
@@ -83,14 +86,14 @@ export const CategoryForm: FC<Props> = ({ opened, onClose, menuId, categoryItem,
             >
                 <Stack spacing="sm">
                     <TextInput
-                        withAsterisk
+                        disabled={loading}
                         label="Name"
                         placeholder="Category Name"
-                        disabled={loading}
+                        withAsterisk
                         {...getInputProps("name")}
                     />
-                    <Group position="right" mt="md">
-                        <Button type="submit" loading={loading} px="xl">
+                    <Group mt="md" position="right">
+                        <Button loading={loading} px="xl" type="submit">
                             Save
                         </Button>
                     </Group>

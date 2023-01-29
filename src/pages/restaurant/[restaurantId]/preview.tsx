@@ -1,17 +1,17 @@
-import type { GetServerSidePropsContext } from "next";
-import { type NextPage } from "next";
-import Head from "next/head";
-import { Container, Text, Alert, useMantineTheme } from "@mantine/core";
-import { useRouter } from "next/router";
-import { api } from "src/utils/api";
-import { getSession } from "next-auth/react";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import { appRouter } from "src/server/api/root";
-import superjson from "superjson";
+import { Alert, Container, Text, useMantineTheme } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons";
-import { RestaurantMenu } from "src/components/RestaurantMenu";
-import { createInnerTRPCContext } from "src/server/api/trpc";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import type { GetServerSidePropsContext, NextPage } from "next";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
+import superjson from "superjson";
+
 import { Footer } from "src/components/Footer";
+import { RestaurantMenu } from "src/components/RestaurantMenu";
+import { appRouter } from "src/server/api/root";
+import { createInnerTRPCContext } from "src/server/api/trpc";
+import { api } from "src/utils/api";
 
 /** Page that can be used to preview how the published menu would look like */
 const RestaurantMenuPreviewPage: NextPage = () => {
@@ -26,12 +26,12 @@ const RestaurantMenuPreviewPage: NextPage = () => {
         <>
             <Head>
                 <title>Menufic - Restaurant Preview</title>
-                <meta name="description" content="Preview how the published restaurant menu would look like" />
+                <meta content="Preview how the published restaurant menu would look like" name="description" />
             </Head>
             <main>
-                <Container size="xl" py="lg">
-                    <Alert icon={<IconAlertCircle size={16} />} title="Preview mode" color="red" mb="lg" radius="lg">
-                        <Text weight="bold" color={theme.black}>
+                <Container py="lg" size="xl">
+                    <Alert color="red" icon={<IconAlertCircle size={16} />} mb="lg" radius="lg" title="Preview mode">
+                        <Text color={theme.black} weight="bold">
                             This preview URL is not meant to be shared with anyone.
                         </Text>
                         <Text color={theme.black}>
@@ -56,8 +56,8 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<{ re
         return { redirect: { destination: "/" } };
     }
     const ssg = createProxySSGHelpers({
-        router: appRouter,
         ctx: createInnerTRPCContext({ session }),
+        router: appRouter,
         transformer: superjson,
     });
     const restaurantId = context.params?.restaurantId as string;

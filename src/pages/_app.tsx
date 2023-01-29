@@ -1,20 +1,21 @@
+import type { ColorScheme } from "@mantine/core";
+import { ColorSchemeProvider, MantineProvider } from "@mantine/core";
+import { useColorScheme, useLocalStorage } from "@mantine/hooks";
+import { NotificationsProvider } from "@mantine/notifications";
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import type { ColorScheme } from "@mantine/core";
-import { NotificationsProvider } from "@mantine/notifications";
-import { ColorSchemeProvider, MantineProvider } from "@mantine/core";
-import { api } from "src/utils/api";
-import { useColorScheme, useLocalStorage } from "@mantine/hooks";
+
 import { getMantineTheme } from "src/styles/theme";
+import { api } from "src/utils/api";
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
     const preferredColorScheme = useColorScheme();
 
     const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
-        key: "mantine-color-scheme",
         defaultValue: preferredColorScheme,
         getInitialValueInEffect: true,
+        key: "mantine-color-scheme",
     });
 
     const toggleColorScheme = (value?: ColorScheme) =>
@@ -22,7 +23,7 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
 
     return (
         <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-            <MantineProvider withGlobalStyles withNormalizeCSS theme={getMantineTheme(colorScheme)}>
+            <MantineProvider theme={getMantineTheme(colorScheme)} withGlobalStyles withNormalizeCSS>
                 <NotificationsProvider>
                     <SessionProvider session={session}>
                         <Component {...pageProps} />

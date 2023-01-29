@@ -4,15 +4,15 @@ import type { Area } from "react-easy-crop";
 
 export const showErrorToast = (title: string, err?: { message: string }) => {
     showNotification({
-        title,
-        message: err?.message,
         color: "red",
         icon: <IconAlertCircle />,
+        message: err?.message,
+        title,
     });
 };
 
 export const showSuccessToast = (title: string, message?: string) => {
-    showNotification({ title, message, icon: <IconCheck />, color: "green" });
+    showNotification({ color: "green", icon: <IconCheck />, message, title });
 };
 
 export function reorderList<T>(current: T[], from: number, to: number) {
@@ -49,17 +49,17 @@ const rotateSize = (width: number, height: number, rotation: number) => {
     const rotRad = getRadianAngle(rotation);
 
     return {
-        width: Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
         height: Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height),
+        width: Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
     };
 };
 
-interface getCroppedImgArgs {
+interface GetCroppedImgArgs {
+    fileType?: string;
+    flip?: { horizontal: boolean; vertical: boolean };
     imageSrc: string;
     pixelCrop: Area;
     rotation?: number;
-    flip?: { horizontal: boolean; vertical: boolean };
-    fileType?: string;
 }
 
 export const getCroppedImg = async ({
@@ -68,7 +68,7 @@ export const getCroppedImg = async ({
     rotation = 0,
     flip = { horizontal: false, vertical: false },
     fileType = "image/jpeg",
-}: getCroppedImgArgs): Promise<Blob | null> => {
+}: GetCroppedImgArgs): Promise<Blob | null> => {
     const image = await createImage(imageSrc);
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");

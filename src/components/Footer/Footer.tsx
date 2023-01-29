@@ -1,29 +1,30 @@
-import { createStyles, Group, Container, Footer } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
-import Link from "next/link";
 import type { FC } from "react";
 
+import { Container, createStyles, Footer, Group } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import Link from "next/link";
+
 const useStyles = createStyles((theme) => ({
+    copyRights: { color: theme.colors.dark[8], fontSize: theme.fontSizes.sm },
     footer: {
         background: theme.colors.dark[0],
         height: "100%",
     },
     inner: {
-        display: "flex",
-        justifyContent: "space-between",
         alignItems: "center",
-        paddingTop: theme.spacing.md,
-        paddingBottom: theme.spacing.md,
-        opacity: 0.6,
+        display: "flex",
         fontSize: theme.fontSizes.sm,
+        justifyContent: "space-between",
+        opacity: 0.6,
+        paddingBottom: theme.spacing.md,
+        paddingTop: theme.spacing.md,
         [theme.fn.smallerThan("xs")]: { flexDirection: "column" },
     },
+    linkItem: { marginLeft: 10, marginRight: 10 },
     links: {
         color: theme.colors.dark[8],
         [theme.fn.smallerThan("xs")]: { marginTop: theme.spacing.md },
     },
-    linkItem: { marginLeft: 10, marginRight: 10 },
-    copyRights: { fontSize: theme.fontSizes.sm, color: theme.colors.dark[8] },
 }));
 
 const footerLinks = [
@@ -37,15 +38,15 @@ export const CustomFooter: FC = () => {
     const isNotMobile = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px)`);
 
     const items = footerLinks.map((link) => (
-        <Link key={link.label} href={link.link} className={classes.linkItem}>
+        <Link key={link.label} className={classes.linkItem} href={link.link}>
             {link.label}
         </Link>
     ));
 
     return (
-        <Footer height={isNotMobile ? 50 : 90} className={classes.footer}>
+        <Footer className={classes.footer} height={isNotMobile ? 50 : 90}>
             <Container className={classes.inner} size="xl">
-                <Link href="/" className={classes.copyRights}>
+                <Link className={classes.copyRights} href="/">
                     © 2023 Copyright: Menufic
                 </Link>
                 <Group className={classes.links}>{items}</Group>

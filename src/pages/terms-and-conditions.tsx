@@ -1,8 +1,9 @@
+import { Container, List, Text, Title, useMantineTheme } from "@mantine/core";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { Container, List, Text, Title, useMantineTheme } from "@mantine/core";
-import { NavHeader } from "src/components/Header";
+
 import { Footer } from "src/components/Footer";
+import { NavHeader } from "src/components/Header";
 import { env } from "src/env/client.mjs";
 
 /** Term & Conditions generated using https://policymaker.io/ */
@@ -13,14 +14,14 @@ const TermsAndConditionsPage: NextPage = () => {
             <Head>
                 <title>Menufic - Terms & Conditions</title>
                 <meta
-                    name="description"
                     content="The Terms and conditions that needs to be agreed before using Menufic"
+                    name="description"
                 />
             </Head>
 
-            <NavHeader showLoginButton={true} />
+            <NavHeader showLoginButton />
 
-            <Container size="xl" py="lg">
+            <Container py="lg" size="xl">
                 <Title order={1}>Terms and Conditions</Title>
 
                 <Text color={theme.colors.dark[5]} mb="lg">

@@ -1,11 +1,12 @@
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { Box, Center, Loader, SimpleGrid, Text, Title, useMantineTheme } from "@mantine/core";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { SimpleGrid, Title, Text, Loader, Center, Box, useMantineTheme } from "@mantine/core";
+
 import { AppShell } from "src/components/AppShell";
 import { ImageCard } from "src/components/Cards";
-import { api } from "src/utils/api";
 import { Empty } from "src/components/Empty";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { api } from "src/utils/api";
 import { showErrorToast } from "src/utils/helpers";
 
 /** Page that will allow logged in users to view all of the published restaurant menus */
@@ -19,7 +20,7 @@ const ExplorePage: NextPage = () => {
         <>
             <Head>
                 <title>Menufic - Explore restaurants</title>
-                <meta name="description" content="Explore restaurants created and published by others" />
+                <meta content="Explore restaurants created and published by others" name="description" />
             </Head>
             <main>
                 <AppShell>
@@ -27,31 +28,31 @@ const ExplorePage: NextPage = () => {
                     <Text color={theme.colors.dark[6]}>Following are the restaurants published by all users</Text>
                     <Box ref={itemsParent}>
                         <SimpleGrid
-                            mt="xl"
                             breakpoints={[
-                                { minWidth: "lg", cols: 3 },
-                                { minWidth: "sm", cols: 2 },
-                                { minWidth: "xs", cols: 1 },
+                                { cols: 3, minWidth: "lg" },
+                                { cols: 2, minWidth: "sm" },
+                                { cols: 1, minWidth: "xs" },
                             ]}
+                            mt="xl"
                         >
                             {restaurants?.map((item) => (
                                 <ImageCard
                                     key={item.id}
-                                    image={item.image}
                                     href={`/restaurant/${item.id}/menu`}
-                                    title={item.name}
+                                    image={item.image}
                                     subTitle={item.location}
                                     target="_blank"
+                                    title={item.name}
                                 />
                             ))}
                         </SimpleGrid>
                         {isLoading && (
-                            <Center w="100%" h="50vh">
+                            <Center h="50vh" w="100%">
                                 <Loader size="lg" />
                             </Center>
                         )}
                         {!isLoading && restaurants?.length === 0 && (
-                            <Empty text="There aren't any published restaurants" height="50vh" />
+                            <Empty height="50vh" text="There aren't any published restaurants" />
                         )}
                     </Box>
                 </AppShell>

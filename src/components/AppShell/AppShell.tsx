@@ -1,9 +1,11 @@
-import { AppShell, Center, Container, Loader, Overlay, useMantineTheme } from "@mantine/core";
 import type { FC, PropsWithChildren } from "react";
 import { useState } from "react";
+
+import { AppShell, Center, Container, Loader, Overlay, useMantineTheme } from "@mantine/core";
+import { useSession } from "next-auth/react";
+
 import { Footer } from "../Footer";
 import { NavHeader } from "../Header";
-import { useSession } from "next-auth/react";
 
 /** Shell to hold all the contents for all of the dashboard views */
 export const CustomAppShell: FC<PropsWithChildren> = ({ children }) => {
@@ -20,13 +22,13 @@ export const CustomAppShell: FC<PropsWithChildren> = ({ children }) => {
     }
     return (
         <AppShell
-            navbarOffsetBreakpoint="sm"
             asideOffsetBreakpoint="sm"
-            header={<NavHeader opened={opened} setOpened={setOpened} showInternalLinks />}
             footer={<Footer />}
+            header={<NavHeader opened={opened} setOpened={setOpened} showInternalLinks />}
+            navbarOffsetBreakpoint="sm"
         >
-            <Container size="xl" pos="relative" py="md">
-                {opened && <Overlay color={theme.white} blur={5} zIndex={2} />}
+            <Container pos="relative" py="md" size="xl">
+                {opened && <Overlay blur={5} color={theme.white} zIndex={2} />}
                 {children}
             </Container>
         </AppShell>

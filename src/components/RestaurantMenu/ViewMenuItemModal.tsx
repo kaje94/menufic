@@ -1,8 +1,10 @@
-import type { ModalProps } from "@mantine/core";
-import { Text, Box, Stack, useMantineTheme } from "@mantine/core";
-import type { MenuItem, Image } from "@prisma/client";
 import type { FC } from "react";
 import { useMemo } from "react";
+
+import type { ModalProps } from "@mantine/core";
+import { Box, Stack, Text, useMantineTheme } from "@mantine/core";
+import type { Image, MenuItem } from "@prisma/client";
+
 import { ImageKitImage } from "../ImageKitImage";
 import { Modal } from "../Modal";
 
@@ -27,7 +29,7 @@ export const ViewMenuItemModal: FC<Props> = ({ menuItem, ...rest }) => {
     return (
         <Modal
             title={
-                <Text size="xl" weight="bold" color={theme.black}>
+                <Text color={theme.black} size="xl" weight="bold">
                     {menuItem?.name}
                 </Text>
             }
@@ -36,20 +38,20 @@ export const ViewMenuItemModal: FC<Props> = ({ menuItem, ...rest }) => {
         >
             <Stack spacing="sm">
                 {menuItem?.image?.path && (
-                    <Box sx={{ overflow: "hidden", borderRadius: theme.radius.lg }}>
+                    <Box sx={{ borderRadius: theme.radius.lg, overflow: "hidden" }}>
                         <ImageKitImage
-                            height={400}
-                            width={400}
-                            imagePath={menuItem?.image?.path}
                             blurhash={menuItem?.image?.blurHash}
+                            height={400}
                             imageAlt={menuItem?.name}
+                            imagePath={menuItem?.image?.path}
+                            width={400}
                         />
                     </Box>
                 )}
-                <Text size="lg" color="red" mt="sm">
+                <Text color="red" mt="sm" size="lg">
                     {menuItem?.price}
                 </Text>
-                <Text opacity={0.6} color={theme.black}>
+                <Text color={theme.black} opacity={0.6}>
                     {menuItem?.description}
                 </Text>
             </Stack>

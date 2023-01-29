@@ -1,4 +1,5 @@
 import { createStyles, keyframes } from "@mantine/core";
+
 import { Black } from "src/styles/theme";
 
 export const useStyles = createStyles((theme) => {
@@ -8,155 +9,136 @@ export const useStyles = createStyles((theme) => {
         100% { box-shadow: 0 0 0 0 ${theme.fn.rgba(Black, 0.01)}; }
     `;
     return {
+        card: {
+            [`&:hover`]: { transform: "scale(1.03)" },
+            background: theme.white,
+            border: `1px solid ${theme.colors.dark[5]}`,
+            transition: "transform 500ms ease",
+        },
+        cardIcon: {
+            color: theme.colors.primary[4],
+            height: 50,
+            width: 50,
+        },
+        cardTitle: {
+            "&::after": {
+                backgroundColor: theme.fn.primaryColor(),
+                content: '""',
+                display: "block",
+                height: 2,
+                marginTop: theme.spacing.sm,
+                width: 45,
+            },
+        },
+        contactUsContainer: {
+            width: 700,
+            [`@media (max-width: ${theme.breakpoints.sm}px)`]: { width: "100%" },
+        },
+        containerStack: {
+            alignItems: "center",
+            gap: 10,
+            height: "100%",
+            padding: theme.spacing.xl,
+        },
+        description: {
+            "&::after": {
+                backgroundColor: theme.fn.primaryColor(),
+                content: '""',
+                display: "block",
+                height: 2,
+                marginLeft: "auto",
+                marginRight: "auto",
+                marginTop: theme.spacing.sm,
+                width: 45,
+            },
+            color: theme.black,
+            margin: "auto",
+            marginTop: theme.spacing.md,
+            maxWidth: 600,
+            opacity: 0.6,
+            textAlign: "center",
+        },
+        getStartedButton: { animation: `${pulseAnimation} 2s ease-in-out infinite` },
+        githubContent: {
+            flexDirection: "column",
+            height: "100%",
+            padding: theme.spacing.md,
+            textAlign: "center",
+        },
+        githubLink: {
+            alignItems: "center",
+            color: theme.colors.dark[6],
+            display: "flex",
+            fontSize: 20,
+            fontWeight: "bold",
+            gap: 16,
+            marginBottom: theme.spacing.lg,
+            [`@media (max-width: ${theme.breakpoints.lg}px)`]: { marginTop: theme.spacing.lg * 2 },
+        },
         headerBg: {
-            display: "flex !important",
             alignItems: "center !important",
+            display: "flex !important",
             justifyContent: "center !important",
             p: 50,
         },
-
+        parallaxBg: {
+            alignItems: "center",
+            backgroundAttachment: "fixed",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            display: "flex !important",
+            justifyContent: "center",
+            minHeight: "65vh",
+            position: "relative",
+        },
+        parallaxText: {
+            position: "relative",
+            textAlign: "center",
+            zIndex: 2,
+        },
+        sectionTitle: {
+            "&::after": {
+                backgroundColor: theme.fn.primaryColor(),
+                content: '""',
+                display: "block",
+                height: 2,
+                marginLeft: "auto",
+                marginRight: "auto",
+                marginTop: theme.spacing.sm,
+                width: 45,
+            },
+            color: theme.black,
+            margin: "auto",
+            marginBottom: theme.spacing.md,
+            marginTop: theme.spacing.md,
+            textAlign: "center",
+        },
+        stepIcon: { background: theme.white, borderColor: theme.colors.primary[4], color: theme.black },
+        stepSeparator: { background: theme.black },
+        stepperContents: { position: "relative", zIndex: 2 },
+        stepperDesc: { color: theme.black, opacity: 0.7 },
+        stepperLabel: { color: theme.black, opacity: 0.9 },
+        stepperWrap: {
+            borderRadius: theme.radius.lg,
+            marginBottom: theme.spacing.xl * 2,
+            marginLeft: theme.spacing.md,
+            marginRight: theme.spacing.md,
+            marginTop: theme.spacing.xl * 2,
+            overflow: "hidden",
+            padding: theme.spacing.lg,
+            position: "relative",
+        },
+        title: {
+            fontSize: 34,
+            fontWeight: 900,
+            [theme.fn.smallerThan("sm")]: { fontSize: 24 },
+        },
         titleText: {
             fontSize: 90,
             textAlign: "center",
             [`@media (max-width: ${theme.breakpoints.lg}px)`]: { fontSize: 65 },
             [`@media (max-width: ${theme.breakpoints.sm}px)`]: { fontSize: 50 },
-        },
-
-        getStartedButton: {
-            animation: `${pulseAnimation} 2s ease-in-out infinite`,
-        },
-
-        parallaxBg: {
-            backgroundAttachment: "fixed",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            position: "relative",
-
-            minHeight: "65vh",
-
-            display: "flex !important",
-            justifyContent: "center",
-            alignItems: "center",
-            // flex-direction: column;
-        },
-        parallaxText: {
-            position: "relative",
-            zIndex: 2,
-            textAlign: "center",
-        },
-
-        containerStack: {
-            alignItems: "center",
-            height: "100%",
-            gap: 10,
-            padding: theme.spacing.xl,
-        },
-
-        stepperWrap: {
-            position: "relative",
-            padding: theme.spacing.lg,
-            borderRadius: theme.radius.lg,
-            overflow: "hidden",
-            marginTop: theme.spacing.xl * 2,
-            marginBottom: theme.spacing.xl * 2,
-            marginRight: theme.spacing.md,
-            marginLeft: theme.spacing.md,
-        },
-        stepperContents: { zIndex: 2, position: "relative" },
-        stepperLabel: { color: theme.black, opacity: 0.9 },
-        stepperDesc: { color: theme.black, opacity: 0.7 },
-        stepSeparator: { background: theme.black },
-        stepIcon: { background: theme.white, color: theme.black, borderColor: theme.colors.primary[4] },
-
-        githubLink: {
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-            marginBottom: theme.spacing.lg,
-            color: theme.colors.dark[6],
-            fontWeight: "bold",
-            fontSize: 20,
-            [`@media (max-width: ${theme.breakpoints.lg}px)`]: { marginTop: theme.spacing.lg * 2 },
-        },
-        githubContent: {
-            padding: theme.spacing.md,
-            flexDirection: "column",
-            textAlign: "center",
-            height: "100%",
-        },
-
-        //features
-        title: {
-            fontSize: 34,
-            fontWeight: 900,
-            [theme.fn.smallerThan("sm")]: {
-                fontSize: 24,
-            },
-        },
-        description: {
-            maxWidth: 600,
-            margin: "auto",
-            color: theme.black,
-            opacity: 0.6,
-            textAlign: "center",
-            marginTop: theme.spacing.md,
-
-            "&::after": {
-                content: '""',
-                display: "block",
-                backgroundColor: theme.fn.primaryColor(),
-                width: 45,
-                height: 2,
-                marginTop: theme.spacing.sm,
-                marginLeft: "auto",
-                marginRight: "auto",
-            },
-        },
-        card: {
-            border: `1px solid ${theme.colors.dark[5]}`,
-            transition: "transform 500ms ease",
-            [`&:hover`]: { transform: "scale(1.03)" },
-            background: theme.white,
-        },
-        cardTitle: {
-            "&::after": {
-                content: '""',
-                display: "block",
-                backgroundColor: theme.fn.primaryColor(),
-                width: 45,
-                height: 2,
-                marginTop: theme.spacing.sm,
-            },
-        },
-        cardIcon: {
-            width: 50,
-            height: 50,
-            color: theme.colors.primary[4],
-        },
-
-        sectionTitle: {
-            color: theme.black,
-            textAlign: "center",
-            margin: "auto",
-            marginTop: theme.spacing.md,
-            marginBottom: theme.spacing.md,
-
-            "&::after": {
-                content: '""',
-                display: "block",
-                backgroundColor: theme.fn.primaryColor(),
-                width: 45,
-                height: 2,
-                marginTop: theme.spacing.sm,
-                marginLeft: "auto",
-                marginRight: "auto",
-            },
-        },
-
-        contactUsContainer: {
-            width: 700,
-            [`@media (max-width: ${theme.breakpoints.sm}px)`]: { width: "100%" },
         },
     };
 });

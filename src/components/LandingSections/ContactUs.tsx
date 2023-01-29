@@ -1,39 +1,42 @@
+import type { FC, MutableRefObject } from "react";
+
 import {
-    Container,
-    Title,
     BackgroundImage,
     Box,
     Button,
+    Container,
     Group,
     Overlay,
     SimpleGrid,
     Textarea,
     TextInput,
+    Title,
 } from "@mantine/core";
-import type { FC, MutableRefObject } from "react";
-import { useStyles } from "./style";
-import { z } from "zod";
-import { env } from "src/env/client.mjs";
 import { useForm, zodResolver } from "@mantine/form";
 import { useMutation } from "@tanstack/react-query";
-import { showSuccessToast, showErrorToast } from "src/utils/helpers";
+import { z } from "zod";
+
+import { env } from "src/env/client.mjs";
+import { showErrorToast, showSuccessToast } from "src/utils/helpers";
+
+import { useStyles } from "./style";
 
 export const ContactUs: FC<{ contactUsRef: MutableRefObject<HTMLDivElement> }> = ({ contactUsRef }) => {
     const { classes, theme, cx } = useStyles();
 
     const form = useForm({
         initialValues: {
-            name: "",
             email: "",
-            subject: "",
             message: "",
+            name: "",
+            subject: "",
         },
         validate: zodResolver(
             z.object({
-                name: z.string().min(1, "Name is required"),
                 email: z.string().email(),
-                subject: z.string().min(1, "Subject is required"),
                 message: z.string().min(1, "Message is required"),
+                name: z.string().min(1, "Name is required"),
+                subject: z.string().min(1, "Subject is required"),
             })
         ),
     });
@@ -41,79 +44,79 @@ export const ContactUs: FC<{ contactUsRef: MutableRefObject<HTMLDivElement> }> =
     const { mutate: submitContactUs, isLoading: submittingContactUs } = useMutation(
         async (data: string) => {
             const formResponse = await fetch("https://api.web3forms.com/submit", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
                 body: data,
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                method: "POST",
             });
             return formResponse.json();
         },
         {
+            onError: () => showErrorToast("Failed to submit your message", { message: "Please try again in a while" }),
             onSuccess: () => {
                 showSuccessToast("Successfully submitted your message", "Our team will get in touch with you soon.");
                 form.reset();
             },
-            onError: () => showErrorToast("Failed to submit your message", { message: "Please try again in a while" }),
         }
     );
 
     return (
-        <BackgroundImage src="landing-restaurant-bg.avif" className={classes.parallaxBg}>
-            <Container className={cx(classes.stepperWrap, classes.contactUsContainer)} size="xl" ref={contactUsRef}>
-                <Overlay opacity={0.7} color={theme.white} blur={5} zIndex={0} />
+        <BackgroundImage className={classes.parallaxBg} src="landing-restaurant-bg.avif">
+            <Container className={cx(classes.stepperWrap, classes.contactUsContainer)} ref={contactUsRef} size="xl">
+                <Overlay blur={5} color={theme.white} opacity={0.7} zIndex={0} />
                 <Box className={classes.stepperContents}>
                     <form
                         onSubmit={form.onSubmit((values) => {
                             submitContactUs(
                                 JSON.stringify({
-                                    email: values.email,
-                                    name: values.name,
-                                    message: values.message,
-                                    subject: `Menufic | ${values.subject}`,
                                     access_key: env.NEXT_PUBLIC_FORM_API_KEY,
+                                    email: values.email,
+                                    message: values.message,
+                                    name: values.name,
+                                    subject: `Menufic | ${values.subject}`,
                                 })
                             );
                         })}
                     >
                         <Title className={classes.sectionTitle}>Get in touch</Title>
 
-                        <SimpleGrid cols={2} mt="xl" breakpoints={[{ maxWidth: "sm", cols: 1 }]}>
+                        <SimpleGrid breakpoints={[{ cols: 1, maxWidth: "sm" }]} cols={2} mt="xl">
                             <TextInput
                                 label="Name"
-                                placeholder="Your name"
                                 name="name"
+                                placeholder="Your name"
                                 {...form.getInputProps("name")}
                             />
                             <TextInput
                                 label="Email"
-                                placeholder="Your email"
                                 name="email"
+                                placeholder="Your email"
                                 {...form.getInputProps("email")}
                             />
                         </SimpleGrid>
 
                         <TextInput
                             label="Subject"
-                            placeholder="Subject"
                             mt="md"
                             name="subject"
+                            placeholder="Subject"
                             {...form.getInputProps("subject")}
                         />
                         <Textarea
-                            mt="md"
+                            autosize
                             label="Message"
-                            placeholder="Your message"
                             maxRows={10}
                             minRows={5}
-                            autosize
+                            mt="md"
                             name="message"
+                            placeholder="Your message"
                             {...form.getInputProps("message")}
                         />
 
-                        <Group position="center" mt="xl">
-                            <Button type="submit" size="md" loading={submittingContactUs}>
+                        <Group mt="xl" position="center">
+                            <Button loading={submittingContactUs} size="md" type="submit">
                                 Send message
                             </Button>
                         </Group>
