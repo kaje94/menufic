@@ -4,18 +4,22 @@ import { withSentryConfig } from "@sentry/nextjs";
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
  * This is especially useful for Docker builds.
  */
-!process.env.SKIP_ENV_VALIDATION && (await import("./src/env/server.mjs"));
+if (!process.env.SKIP_ENV_VALIDATION) {
+    await import("./src/env/server.mjs");
+}
 
 /** @type {import("next").NextConfig} */
 const config = {
-    reactStrictMode: false,
-    swcMinify: true,
-    i18n: { locales: ["en"], defaultLocale: "en" },
-    images: {
-        unoptimized: true,
-        formats: ["image/avif", "image/webp"],
-        remotePatterns: [{ protocol: "https", hostname: "ik.imagekit.io", pathname: "/**" }],
+    experimental: {
+        nextScriptWorkers: true,
     },
+    i18n: { defaultLocale: "en", locales: ["en"] },
+    images: {
+        formats: ["image/avif", "image/webp"],
+        remotePatterns: [{ hostname: "ik.imagekit.io", pathname: "/**", protocol: "https" }],
+        unoptimized: true,
+    },
+    reactStrictMode: false,
     sentry: {
         // Use `hidden-source-map` rather than `source-map` as the Webpack `devtool`
         // for client-side builds. (This will be the default starting in
@@ -25,6 +29,7 @@ const config = {
         // for more information.
         hideSourceMaps: true,
     },
+    swcMinify: true,
 };
 
 const sentryWebpackPluginOptions = {

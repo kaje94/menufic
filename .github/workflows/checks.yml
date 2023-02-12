@@ -5,30 +5,7 @@ jobs:
         name: Lint
         runs-on: ubuntu-latest
         env:
-            DATABASE_URL: mysql://user:password@localhost:3306/db_name
-            NEXTAUTH_URL: http://localhost:3000
-            NEXTAUTH_SECRET: r+v39Wl3NjeYP9pLKd089r+HdDKQzXy7yslc9KcXEW0= # A fake secret
-            UPSTASH_REDIS_URL: ""
-            UPSTASH_REDIS_TOKEN: ""
-            GOOGLE_CLIENT_ID: ""
-            GOOGLE_CLIENT_SECRET: ""
-            IMAGEKIT_PUBLIC_KEY: ""
-            IMAGEKIT_PRIVATE_KEY: ""
-            NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT: ""
-            IMAGEKIT_BASE_FOLDER: ""
-            NEXT_PUBLIC_MAX_RESTAURANTS_PER_USER: 5
-            NEXT_PUBLIC_MAX_MENUS_PER_RESTAURANT: 5
-            NEXT_PUBLIC_MAX_CATEGORIES_PER_MENU: 10
-            NEXT_PUBLIC_MAX_MENU_ITEMS_PER_CATEGORY: 20
-            NEXT_PUBLIC_MAX_BANNERS_PER_RESTAURANT: 5
-            NEXT_PUBLIC_SAMPLE_MENU_ID: clcyj0sqj0000rf4x4ca21ezz
-            NEXT_PUBLIC_FORM_API_KEY: ""
-            NEXT_PUBLIC_CONTACT_EMAIL: ""
-            NEXT_PUBLIC_SENTRY_DSN: ""
-            SENTRY_URL: ""
-            SENTRY_ORG: ""
-            SENTRY_PROJECT: ""
-            SENTRY_AUTH_TOKEN: ""
+            SKIP_ENV_VALIDATION: true
         steps:
             - uses: actions/checkout@v3
             - uses: actions/setup-node@v3
