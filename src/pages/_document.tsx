@@ -1,5 +1,4 @@
 import Document, { Head, Html, Main, NextScript } from "next/document";
-import Script from "next/script";
 
 const title = "Menufic - Digital menu generator";
 const description =
@@ -30,15 +29,6 @@ export default class MyDocument extends Document {
                     <meta content={title} property="twitter:title" />
                     <meta content={description} property="twitter:description" />
                     <meta content={bannerImage} property="twitter:image" />
-                    <Script id="initiate-microsoft-clarity" strategy="worker">
-                        {`
-                            (function(c,l,a,r,i,t,y){
-                                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-                            })(window, document, "clarity", "script", "fsx1a9zo7v");
-                        `}
-                    </Script>
                 </Head>
                 <body>
                     <Main />
