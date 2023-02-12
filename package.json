@@ -34,6 +34,7 @@
         "@trpc/react-query": "^10.8.1",
         "@trpc/server": "^10.8.1",
         "@upstash/redis": "^1.19.1",
+        "@vercel/analytics": "^0.1.8",
         "blurhash": "^2.0.4",
         "browser-image-compression": "^2.0.0",
         "downloadjs": "^1.4.7",

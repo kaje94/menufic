@@ -2,6 +2,7 @@ import type { ColorScheme } from "@mantine/core";
 import { ColorSchemeProvider, MantineProvider } from "@mantine/core";
 import { useColorScheme, useLocalStorage } from "@mantine/hooks";
 import { NotificationsProvider } from "@mantine/notifications";
+import { Analytics } from "@vercel/analytics/react";
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
@@ -27,6 +28,7 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
                 <NotificationsProvider>
                     <SessionProvider session={session}>
                         <Component {...pageProps} />
+                        <Analytics />
                     </SessionProvider>
                 </NotificationsProvider>
             </MantineProvider>
