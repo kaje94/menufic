@@ -6,8 +6,8 @@ import GoogleProvider from "next-auth/providers/google";
 import { env } from "src/env/server.mjs";
 
 const redis = new Redis({
-    token: env.UPSTASH_REDIS_TOKEN,
-    url: env.UPSTASH_REDIS_URL,
+    token: env.UPSTASH_REDIS_REST_TOKEN,
+    url: env.UPSTASH_REDIS_REST_URL,
 });
 
 export const authOptions: NextAuthOptions = {

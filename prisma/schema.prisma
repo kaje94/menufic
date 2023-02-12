@@ -9,6 +9,8 @@ datasource db {
     provider = "mysql"
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
+
+    relationMode = "prisma"
 }
 
 model Restaurant {
@@ -21,7 +23,7 @@ model Restaurant {
     contactNo   String
     isPublished Boolean
     menus       Menu[]   @relation("MenusOfRestaurant")
-    image       Image?   @relation("ImageOfRestaurant", fields: [imageId], references: [id])
+    image       Image?   @relation("ImageOfRestaurant", fields: [imageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
     imageId     String?  @unique
     banners     Image[]  @relation("BannersOfRestaurant")
 
@@ -42,6 +44,7 @@ model Menu {
     restaurantId  String?
 
     @@id([id, userId])
+    @@index([restaurantId])
 }
 
 model Category {
@@ -56,6 +59,7 @@ model Category {
     menuId    String?
 
     @@id([id, userId])
+    @@index([menuId])
 }
 
 model MenuItem {
@@ -73,6 +77,7 @@ model MenuItem {
     imageId     String?   @unique
 
     @@id([id, userId])
+    @@index([categoryId])
 }
 
 model Image {
@@ -84,4 +89,6 @@ model Image {
     restaurant       Restaurant? @relation("ImageOfRestaurant")
     restaurantBanner Restaurant? @relation("BannersOfRestaurant", fields: [restaurantId], references: [id])
     restaurantId     String?
+
+    @@index([restaurantId])
 }

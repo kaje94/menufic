@@ -28,6 +28,7 @@ CREATE TABLE `Menu` (
     `restaurantId` VARCHAR(191) NULL,
 
     UNIQUE INDEX `Menu_id_key`(`id`),
+    INDEX `Menu_restaurantId_idx`(`restaurantId`),
     PRIMARY KEY (`id`, `userId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -42,6 +43,7 @@ CREATE TABLE `Category` (
     `menuId` VARCHAR(191) NULL,
 
     UNIQUE INDEX `Category_id_key`(`id`),
+    INDEX `Category_menuId_idx`(`menuId`),
     PRIMARY KEY (`id`, `userId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -60,6 +62,7 @@ CREATE TABLE `MenuItem` (
 
     UNIQUE INDEX `MenuItem_id_key`(`id`),
     UNIQUE INDEX `MenuItem_imageId_key`(`imageId`),
+    INDEX `MenuItem_categoryId_idx`(`categoryId`),
     PRIMARY KEY (`id`, `userId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -71,23 +74,6 @@ CREATE TABLE `Image` (
     `color` VARCHAR(191) NOT NULL,
     `restaurantId` VARCHAR(191) NULL,
 
-    UNIQUE INDEX `Image_id_key`(`id`)
+    UNIQUE INDEX `Image_id_key`(`id`),
+    INDEX `Image_restaurantId_idx`(`restaurantId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- AddForeignKey
-ALTER TABLE `Restaurant` ADD CONSTRAINT `Restaurant_imageId_fkey` FOREIGN KEY (`imageId`) REFERENCES `Image`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Menu` ADD CONSTRAINT `Menu_restaurantId_fkey` FOREIGN KEY (`restaurantId`) REFERENCES `Restaurant`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Category` ADD CONSTRAINT `Category_menuId_fkey` FOREIGN KEY (`menuId`) REFERENCES `Menu`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `MenuItem` ADD CONSTRAINT `MenuItem_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `Category`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `MenuItem` ADD CONSTRAINT `MenuItem_imageId_fkey` FOREIGN KEY (`imageId`) REFERENCES `Image`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Image` ADD CONSTRAINT `Image_restaurantId_fkey` FOREIGN KEY (`restaurantId`) REFERENCES `Restaurant`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
