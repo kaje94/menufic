@@ -35,15 +35,15 @@ export const serverSchema = z.object({
  * To expose them to the client, prefix them with `NEXT_PUBLIC_`.
  */
 export const clientSchema = z.object({
-    NEXT_PUBLIC_CONTACT_EMAIL: z.string(),
-    NEXT_PUBLIC_FORM_API_KEY: z.string(),
+    NEXT_PUBLIC_CONTACT_EMAIL: z.string().optional().default("bob@email.com"),
+    NEXT_PUBLIC_FORM_API_KEY: z.string().optional(),
     NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT: z.string(),
-    NEXT_PUBLIC_MAX_BANNERS_PER_RESTAURANT: z.string().regex(/^\d+$/),
-    NEXT_PUBLIC_MAX_CATEGORIES_PER_MENU: z.string().regex(/^\d+$/),
-    NEXT_PUBLIC_MAX_MENUS_PER_RESTAURANT: z.string().regex(/^\d+$/),
-    NEXT_PUBLIC_MAX_MENU_ITEMS_PER_CATEGORY: z.string().regex(/^\d+$/),
-    NEXT_PUBLIC_MAX_RESTAURANTS_PER_USER: z.string().regex(/^\d+$/),
-    NEXT_PUBLIC_SAMPLE_MENU_ID: z.string(),
+    NEXT_PUBLIC_MAX_BANNERS_PER_RESTAURANT: z.string().regex(/^\d+$/).default("5"),
+    NEXT_PUBLIC_MAX_CATEGORIES_PER_MENU: z.string().regex(/^\d+$/).default("10"),
+    NEXT_PUBLIC_MAX_MENUS_PER_RESTAURANT: z.string().regex(/^\d+$/).default("5"),
+    NEXT_PUBLIC_MAX_MENU_ITEMS_PER_CATEGORY: z.string().regex(/^\d+$/).default("20"),
+    NEXT_PUBLIC_MAX_RESTAURANTS_PER_USER: z.string().regex(/^\d+$/).default("5"),
+    NEXT_PUBLIC_SAMPLE_MENU_ID: z.string().optional(),
     NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
 });
 

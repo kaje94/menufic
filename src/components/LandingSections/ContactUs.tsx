@@ -43,15 +43,18 @@ export const ContactUs: FC<{ contactUsRef: MutableRefObject<HTMLDivElement> }> =
 
     const { mutate: submitContactUs, isLoading: submittingContactUs } = useMutation(
         async (data: string) => {
-            const formResponse = await fetch("https://api.web3forms.com/submit", {
-                body: data,
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                method: "POST",
-            });
-            return formResponse.json();
+            if (env.NEXT_PUBLIC_FORM_API_KEY) {
+                const formResponse = await fetch("https://api.web3forms.com/submit", {
+                    body: data,
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    method: "POST",
+                });
+                return formResponse.json();
+            }
+            return null;
         },
         {
             onError: () => showErrorToast("Failed to submit your message", { message: "Please try again in a while" }),
