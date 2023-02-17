@@ -1,14 +1,17 @@
 import type { FC } from "react";
 
 import { BackgroundImage, Box, Button, Container, Stack, Title, Transition } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import Link from "next/link";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 import { useStyles } from "./style";
+import { LoginOptions } from "../LoginOptions";
 
 export const Hero: FC = () => {
     const { classes, theme } = useStyles();
     const { status } = useSession();
+    const isNotMobile = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px)`);
 
     return (
         <BackgroundImage className={classes.headerBg} mih="calc(100vh - 60px)" src="/landing-hero-bg.svg">
@@ -40,13 +43,11 @@ export const Hero: FC = () => {
                                             </Button>
                                         </Link>
                                     ) : (
-                                        <Button
-                                            className={classes.getStartedButton}
-                                            onClick={() => signIn("google", { callbackUrl: "/restaurant" })}
-                                            size="xl"
-                                        >
-                                            Get started for free
-                                        </Button>
+                                        <LoginOptions position={isNotMobile ? "bottom" : "top"}>
+                                            <Button className={classes.getStartedButton} size="xl">
+                                                Get started for free
+                                            </Button>
+                                        </LoginOptions>
                                     )}
                                 </Box>
                             )}

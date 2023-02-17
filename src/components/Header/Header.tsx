@@ -23,7 +23,9 @@ import { IconEyeglass2, IconHome, IconLogin, IconLogout, IconMoonStars, IconPizz
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+
+import { LoginOptions } from "../LoginOptions";
 
 interface Props {
     /** Whether or not the hamburger menu is open when on mobile device */
@@ -184,13 +186,11 @@ export const NavHeader: FC<Props> = ({
                                                 )}
                                             </Link>
                                         ) : (
-                                            <Button
-                                                leftIcon={<IconLogin />}
-                                                onClick={() => signIn("google", { callbackUrl: "/restaurant" })}
-                                                size={isNotMobile ? "md" : "sm"}
-                                            >
-                                                Login
-                                            </Button>
+                                            <LoginOptions>
+                                                <Button leftIcon={<IconLogin />} size={isNotMobile ? "md" : "sm"}>
+                                                    Login
+                                                </Button>
+                                            </LoginOptions>
                                         )}
                                     </>
                                 )}

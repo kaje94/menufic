@@ -31,7 +31,7 @@
         "import/order": [
             "warn",
             {
-                "groups": [["external", "builtin", "object", "type"], "internal", ["parent", "sibling", "index"]],
+                "groups": [["external", "builtin", "object"], "type", ["internal","parent", "sibling", "index"]],
                 "pathGroups": [
                     { "pattern": "react", "group": "external", "position": "before" },
                     { "pattern": "@src/**", "group": "internal" }

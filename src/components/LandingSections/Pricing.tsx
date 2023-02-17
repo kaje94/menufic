@@ -2,9 +2,10 @@ import type { FC } from "react";
 
 import { Button, Card, Container, Flex, SimpleGrid, Text, Title } from "@mantine/core";
 import { IconCheckbox } from "@tabler/icons";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 import { useStyles } from "./style";
+import { LoginOptions } from "../LoginOptions";
 
 const pricingFreeCard = [
     "Create upto 5 restaurants",
@@ -46,15 +47,11 @@ export const Pricing: FC<{ scrollToContactUs: () => void }> = ({ scrollToContact
                         </Flex>
                     ))}
                     {status === "unauthenticated" && (
-                        <Button
-                            fullWidth
-                            mt="xl"
-                            onClick={() => signIn("google", { callbackUrl: "/restaurant" })}
-                            size="lg"
-                            variant="outline"
-                        >
-                            Get Started
-                        </Button>
+                        <LoginOptions position="top">
+                            <Button fullWidth mt="xl" size="lg" variant="outline">
+                                Get Started
+                            </Button>
+                        </LoginOptions>
                     )}
                 </Card>
                 <Card className={classes.card} p="xl" radius="md" shadow="md">
