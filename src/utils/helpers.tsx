@@ -1,5 +1,6 @@
 import { showNotification } from "@mantine/notifications";
 import { IconAlertCircle, IconCheck } from "@tabler/icons";
+
 import type { Area } from "react-easy-crop";
 
 export const showErrorToast = (title: string, err?: { message: string }) => {

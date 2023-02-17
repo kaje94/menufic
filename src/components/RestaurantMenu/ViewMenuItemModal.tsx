@@ -1,8 +1,9 @@
 import type { FC } from "react";
 import { useMemo } from "react";
 
-import type { ModalProps } from "@mantine/core";
 import { Box, Stack, Text, useMantineTheme } from "@mantine/core";
+
+import type { ModalProps } from "@mantine/core";
 import type { Image, MenuItem } from "@prisma/client";
 
 import { ImageKitImage } from "../ImageKitImage";

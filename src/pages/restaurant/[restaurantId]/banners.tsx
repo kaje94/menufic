@@ -3,12 +3,13 @@ import { useState } from "react";
 
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Box, Breadcrumbs, Center, Loader, SimpleGrid, Text } from "@mantine/core";
-import type { Image } from "@prisma/client";
 import { IconCirclePlus } from "@tabler/icons";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+
+import type { Image } from "@prisma/client";
 
 import { AppShell } from "src/components/AppShell";
 import { IconCard, ImageCard } from "src/components/Cards";

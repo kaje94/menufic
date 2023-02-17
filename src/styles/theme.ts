@@ -1,5 +1,6 @@
-import type { ColorScheme, MantineThemeOverride, Tuple } from "@mantine/core";
 import { Expletus_Sans } from "@next/font/google";
+
+import type { ColorScheme, MantineThemeOverride, Tuple } from "@mantine/core";
 
 import { getStyles } from "./styles";
 

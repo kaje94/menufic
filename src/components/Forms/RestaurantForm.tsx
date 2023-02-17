@@ -1,11 +1,12 @@
 import type { FC } from "react";
 import { useEffect } from "react";
 
-import type { ModalProps } from "@mantine/core";
 import { Button, Group, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
-import type { Image, Restaurant } from "@prisma/client";
 import { IconMapPin, IconPhone } from "@tabler/icons";
+
+import type { ModalProps } from "@mantine/core";
+import type { Image, Restaurant } from "@prisma/client";
 
 import { api } from "src/utils/api";
 import { showErrorToast, showSuccessToast } from "src/utils/helpers";

@@ -1,4 +1,3 @@
-import type { ColorScheme } from "@mantine/core";
 import { ColorSchemeProvider, MantineProvider } from "@mantine/core";
 import { useColorScheme, useLocalStorage } from "@mantine/hooks";
 import { NotificationsProvider } from "@mantine/notifications";
@@ -6,6 +5,8 @@ import { Analytics } from "@vercel/analytics/react";
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+
+import type { ColorScheme } from "@mantine/core";
 
 import { getMantineTheme } from "src/styles/theme";
 import { api } from "src/utils/api";

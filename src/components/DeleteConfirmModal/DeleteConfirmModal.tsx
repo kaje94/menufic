@@ -1,7 +1,8 @@
 import type { FC } from "react";
 
-import type { ModalProps } from "@mantine/core";
 import { Button, Group, Text, useMantineTheme } from "@mantine/core";
+
+import type { ModalProps } from "@mantine/core";
 
 import { Modal } from "../Modal";
 

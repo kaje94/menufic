@@ -4,9 +4,10 @@ import { useMemo, useRef, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Carousel } from "@mantine/carousel";
 import { ActionIcon, Box, createStyles, Flex, SimpleGrid, Tabs, Text, useMantineColorScheme } from "@mantine/core";
-import type { Category, Image, Menu, MenuItem, Restaurant } from "@prisma/client";
 import { IconMapPin, IconMoonStars, IconPhone, IconSun } from "@tabler/icons";
 import Autoplay from "embla-carousel-autoplay";
+
+import type { Category, Image, Menu, MenuItem, Restaurant } from "@prisma/client";
 
 import { Black, White } from "src/styles/theme";
 

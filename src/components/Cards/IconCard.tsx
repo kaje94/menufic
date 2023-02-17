@@ -1,8 +1,9 @@
 import type { FC, MouseEventHandler } from "react";
 
 import { Box, Card, clsx, Text } from "@mantine/core";
-import type { TablerIcon } from "@tabler/icons";
 import Link from "next/link";
+
+import type { TablerIcon } from "@tabler/icons";
 
 import { useStyles } from "./styles";
 

@@ -1,11 +1,12 @@
 import type { FC } from "react";
 import { useCallback, useState } from "react";
 
-import type { ModalProps } from "@mantine/core";
 import { Box, Button, createStyles, Group, Slider, Stack, Text } from "@mantine/core";
 import { useMutation } from "@tanstack/react-query";
-import type { Area, Point } from "react-easy-crop";
 import Cropper from "react-easy-crop";
+
+import type { ModalProps } from "@mantine/core";
+import type { Area, Point } from "react-easy-crop";
 
 import { getCroppedImg } from "src/utils/helpers";
 

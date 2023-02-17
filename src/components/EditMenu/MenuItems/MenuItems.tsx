@@ -3,9 +3,10 @@ import { useState } from "react";
 
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Box, Button, Flex } from "@mantine/core";
-import type { Image, MenuItem } from "@prisma/client";
 import { IconPlus } from "@tabler/icons";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+
+import type { Image, MenuItem } from "@prisma/client";
 
 import { env } from "src/env/client.mjs";
 import { api } from "src/utils/api";

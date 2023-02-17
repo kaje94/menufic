@@ -1,7 +1,8 @@
 import type { FC } from "react";
 
-import type { ModalProps } from "@mantine/core";
 import { Modal as MantineModal, useMantineTheme } from "@mantine/core";
+
+import type { ModalProps } from "@mantine/core";
 
 interface Props extends ModalProps {
     loading?: boolean;

@@ -6,8 +6,9 @@ import { signIn } from "next-auth/react";
 
 import type { ButtonProps as MantineButtonProps, PopoverBaseProps } from "@mantine/core";
 
-import { GoogleIcon } from "./GoogleIcon";
 import { White } from "src/styles/theme";
+
+import { GoogleIcon } from "./GoogleIcon";
 
 interface ButtonProps extends MantineButtonProps {
     onClick?: MouseEventHandler<HTMLButtonElement>;

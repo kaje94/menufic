@@ -2,9 +2,10 @@ import type { FC } from "react";
 import { useState } from "react";
 
 import { Accordion, Box, Flex, Text } from "@mantine/core";
-import type { Category, MenuItem } from "@prisma/client";
 import { IconGripVertical } from "@tabler/icons";
 import { Draggable } from "react-beautiful-dnd";
+
+import type { Category, MenuItem } from "@prisma/client";
 
 import { api } from "src/utils/api";
 import { showErrorToast, showSuccessToast } from "src/utils/helpers";

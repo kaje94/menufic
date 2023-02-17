@@ -2,11 +2,12 @@ import { useState } from "react";
 
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Box, Breadcrumbs, Center, Grid, Loader, SimpleGrid, Text } from "@mantine/core";
-import type { Menu } from "@prisma/client";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+
+import type { Menu } from "@prisma/client";
 
 import { AppShell } from "src/components/AppShell";
 import { Categories } from "src/components/EditMenu/Categories";

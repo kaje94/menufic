@@ -1,9 +1,10 @@
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 
-import type { ModalProps } from "@mantine/core";
 import { Button, Group, Stack, Text, useMantineTheme } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
+
+import type { ModalProps } from "@mantine/core";
 
 import { api } from "src/utils/api";
 import { showErrorToast, showSuccessToast } from "src/utils/helpers";

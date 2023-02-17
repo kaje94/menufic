@@ -2,6 +2,7 @@ import type { FC } from "react";
 import { useMemo, useState } from "react";
 
 import { Box, createStyles, Paper, Stack, Text } from "@mantine/core";
+
 import type { Image, MenuItem } from "@prisma/client";
 
 import { ViewMenuItemModal } from "./ViewMenuItemModal";

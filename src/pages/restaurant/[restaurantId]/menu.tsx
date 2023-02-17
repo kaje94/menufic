@@ -1,11 +1,12 @@
 import { Container, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import type { GetStaticPropsContext, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import superjson from "superjson";
+
+import type { GetStaticPropsContext, NextPage } from "next";
 
 import { Empty } from "src/components/Empty";
 import { Footer } from "src/components/Footer";

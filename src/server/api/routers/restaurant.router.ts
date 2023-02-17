@@ -1,6 +1,7 @@
-import type { Image, Prisma, PrismaPromise, Restaurant } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+
+import type { Image, Prisma, PrismaPromise, Restaurant } from "@prisma/client";
 
 import { env } from "src/env/server.mjs";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "src/server/api/trpc";

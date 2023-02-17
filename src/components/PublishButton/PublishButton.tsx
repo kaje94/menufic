@@ -15,12 +15,13 @@ import {
     useMantineTheme,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import type { Restaurant } from "@prisma/client";
 import { IconAlertCircle, IconCheck, IconCopy, IconDownload, IconEye, IconEyeOff, IconTrophy } from "@tabler/icons";
 import downloadjs from "downloadjs";
 import html2canvas from "html2canvas";
 import Link from "next/link";
 import QRCode from "react-qr-code";
+
+import type { Restaurant } from "@prisma/client";
 
 import { api } from "src/utils/api";
 

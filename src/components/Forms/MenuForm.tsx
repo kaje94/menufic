@@ -1,9 +1,10 @@
 import type { FC } from "react";
 import { useEffect } from "react";
 
-import type { ModalProps } from "@mantine/core";
 import { Button, Group, Stack, TextInput } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
+
+import type { ModalProps } from "@mantine/core";
 import type { Menu } from "@prisma/client";
 
 import { api } from "src/utils/api";

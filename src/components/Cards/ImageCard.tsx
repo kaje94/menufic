@@ -1,9 +1,10 @@
 import type { FC, HTMLAttributeAnchorTarget } from "react";
 
-import type { EditDeleteOptionsProps } from "../EditDeleteOptions";
 import { Box, Card, clsx, Flex, Text } from "@mantine/core";
-import type { Image } from "@prisma/client";
 import Link from "next/link";
+
+import type { EditDeleteOptionsProps } from "../EditDeleteOptions";
+import type { Image } from "@prisma/client";
 
 import { White } from "src/styles/theme";
 

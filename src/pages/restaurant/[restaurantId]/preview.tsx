@@ -1,11 +1,12 @@
 import { Alert, Container, Text, useMantineTheme } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import type { GetServerSidePropsContext, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import superjson from "superjson";
+
+import type { GetServerSidePropsContext, NextPage } from "next";
 
 import { Footer } from "src/components/Footer";
 import { RestaurantMenu } from "src/components/RestaurantMenu";

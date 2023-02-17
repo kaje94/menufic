@@ -18,9 +18,10 @@
  */
 import { initTRPC, TRPCError } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import type { NextApiResponse } from "next/types";
 import { type Session } from "next-auth";
 import superjson from "superjson";
+
+import type { NextApiResponse } from "next/types";
 
 import { getServerAuthSession } from "src/server/auth";
 import { prisma } from "src/server/db";

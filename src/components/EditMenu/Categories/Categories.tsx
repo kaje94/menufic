@@ -3,9 +3,10 @@ import { useState } from "react";
 
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Accordion, Box, Button, Center, Loader } from "@mantine/core";
-import type { Category, Image, MenuItem } from "@prisma/client";
 import { IconPlus } from "@tabler/icons";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+
+import type { Category, Image, MenuItem } from "@prisma/client";
 
 import { api } from "src/utils/api";
 import { reorderList, showErrorToast } from "src/utils/helpers";
