@@ -18,7 +18,6 @@ export default class MyDocument extends Document {
                     <link href="/favicon.ico" rel="icon" />
                     <link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
                     <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
-                    <meta content="minimum-scale=1, initial-scale=1, width=device-width" name="viewport" />
                     <meta content="#c24152" name="theme-color" />
                     <meta content={title} name="title" />
                     <meta content={description} name="description" />
