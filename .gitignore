@@ -43,6 +43,9 @@ yarn-error.log*
 
 # Sentry
 .sentryclirc
+
+# Tests
 /test-results/
 /playwright-report/
 /playwright/.cache/
+/.nyc_output

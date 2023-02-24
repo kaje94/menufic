@@ -32,6 +32,12 @@ export default defineConfig({
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         trace: "on-first-retry",
     },
+    webServer: {
+        command: "npm run dev",
+        reuseExistingServer: !process.env.CI,
+        timeout: 5 * 1000,
+        url: "http://localhost:3000",
+    },
     /* Opt out of parallel tests on CI. */
     workers: process.env.CI ? 1 : undefined,
 });

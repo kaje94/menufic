@@ -1,15 +1,6 @@
-import { Expletus_Sans } from "@next/font/google";
-
 import type { ColorScheme, MantineThemeOverride, Tuple } from "@mantine/core";
 
 import { getStyles } from "./styles";
-
-const font = Expletus_Sans({
-    display: "swap",
-    fallback: ["Helvetica", "Arial", "sans-serif"],
-    subsets: [],
-    variable: "--expletus-sans-font",
-});
 
 export const Black = "#000000";
 export const White = "#ffffff";
@@ -76,7 +67,7 @@ export const getMantineTheme = (colorScheme: ColorScheme): MantineThemeOverride 
     colors: theme[colorScheme],
     defaultGradient: { deg: 180, from: theme.light.primary[5], to: theme.light.primary[7] },
     defaultRadius: "lg",
-    fontFamily: `${font.style.fontFamily} !important`,
+    fontFamily: `ExpletusSans, Helvetica, Arial, sans-serif !important`,
     globalStyles: getStyles,
     loader: "dots",
     primaryColor: "primary",

@@ -1,4 +1,5 @@
-import { expect, test } from "@playwright/test";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { expect, test } from "playwright-test-coverage";
 
 import type { Page } from "@playwright/test";
 

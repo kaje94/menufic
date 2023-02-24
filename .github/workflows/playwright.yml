@@ -1,0 +1,41 @@
+name: Playwright Tests
+"on":
+    - workflow_dispatch
+jobs:
+    test:
+        timeout-minutes: 60
+        runs-on: ubuntu-latest
+        env:
+            SKIP_ENV_VALIDATION: true
+            DATABASE_URL: "mysql://user:password@localhost:3306/menufic_db"
+            NEXTAUTH_URL: "http://localhost:3000"
+            NEXTAUTH_SECRET: r+v39W_FAKE_SECRET_lc9KcXEW0=
+            IMAGEKIT_PUBLIC_KEY: ${{secrets.TEST_IMAGEKIT_PUBLIC_KEY}}
+            IMAGEKIT_PRIVATE_KEY: ${{secrets.TEST_IMAGEKIT_PRIVATE_KEY}}
+            NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT: ${{secrets.TEST_NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}}
+            IMAGEKIT_BASE_FOLDER: ${{secrets.TEST_IMAGEKIT_BASE_FOLDER}}
+            TEST_MENUFIC_USER_LOGIN_KEY: l+C9A_FAKE_LOGIN_KEY_KZK7w==
+            TEST_MENUFIC_BASE_URL: http://localhost:3000
+        steps:
+            - uses: mirromutth/mysql-action@v1.1
+              with:
+                mysql version: '8.0' # Optional, default value is "latest". The version of the MySQL
+                mysql database: 'menufic_db' # Optional, default value is "test". The specified database which will be create
+                mysql user: 'user' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+                mysql password: password # Required if "mysql user" exists. The password for the "mysql user"
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 16
+            - name: Install dependencies
+              run: npm ci
+            - name: Install Playwright Browsers
+              run: npx playwright install --with-deps
+            - name: Run Playwright tests
+              run: npx playwright test
+            - uses: actions/upload-artifact@v3
+              if: always()
+              with:
+                  name: playwright-report
+                  path: playwright-report/
+                  retention-days: 30
