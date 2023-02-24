@@ -5,7 +5,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import Link from "next/link";
 
 const useStyles = createStyles((theme) => ({
-    copyRights: { color: theme.colors.dark[8], fontSize: theme.fontSizes.sm },
+    copyRights: { color: theme.colors.dark[9], fontSize: theme.fontSizes.sm },
     footer: {
         background: theme.colors.dark[0],
         height: "100%",
@@ -22,7 +22,7 @@ const useStyles = createStyles((theme) => ({
     },
     linkItem: { marginLeft: 10, marginRight: 10 },
     links: {
-        color: theme.colors.dark[8],
+        color: theme.colors.dark[9],
         [theme.fn.smallerThan("xs")]: { marginTop: theme.spacing.md },
     },
 }));

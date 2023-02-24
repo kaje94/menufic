@@ -187,6 +187,7 @@ export const NavHeader: FC<Props> = ({
                                 )}
 
                                 <ActionIcon
+                                    aria-label="theme-switch"
                                     className={classes.themeSwitch}
                                     data-testid="theme-toggle-button"
                                     onClick={() => toggleColorScheme()}
