@@ -1,5 +1,3 @@
-import { UpstashRedisAdapter } from "@next-auth/upstash-redis-adapter";
-import { Redis } from "@upstash/redis";
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
@@ -7,16 +5,7 @@ import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "src/env/server.mjs";
 
-export const redis = new Redis({
-    token: env.UPSTASH_REDIS_REST_TOKEN,
-    url: env.UPSTASH_REDIS_REST_URL,
-});
-
 export const authOptions: NextAuthOptions = {
-    // todo: check what happens when flush redis data
-    adapter: UpstashRedisAdapter(redis, {
-        baseKeyPrefix: `menuApp-${env.NODE_ENV}:`,
-    }),
     // Include user.id on session
     callbacks: {
         session({ session, token }) {
@@ -30,12 +19,10 @@ export const authOptions: NextAuthOptions = {
     pages: { signIn: "/auth/signin" },
     providers: [
         GoogleProvider({
-            allowDangerousEmailAccountLinking: true,
             clientId: env.GOOGLE_CLIENT_ID,
             clientSecret: env.GOOGLE_CLIENT_SECRET,
         }),
         GitHubProvider({
-            allowDangerousEmailAccountLinking: true,
             clientId: env.GITHUB_CLIENT_ID,
             clientSecret: env.GITHUB_CLIENT_SECRET,
         }),

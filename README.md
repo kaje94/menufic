@@ -28,7 +28,7 @@
 
 ## Introduction
 
-[Menufic](https://menufic.com) is a digital menu generator for restaurants that makes it simple and easy for anyone to create and share their restaurant menus. Menufic is built using [Next.js](https://nextjs.org), [NextAuth.js](https://next-auth.js.org), [Prisma](https://prisma.io), [tRPC](https://trpc.io), [Planetscale](https://planetscale.com), [Upstash](https://docs.upstash.com/redis) & [Imagekit](https://imagekit.io). Following are some of the features that Menufic provides.
+[Menufic](https://menufic.com) is a digital menu generator for restaurants that makes it simple and easy for anyone to create and share their restaurant menus. Menufic is built using [Next.js](https://nextjs.org), [NextAuth.js](https://next-auth.js.org), [Prisma](https://prisma.io), [tRPC](https://trpc.io), [Planetscale](https://planetscale.com) & [Imagekit](https://imagekit.io). Following are some of the features that Menufic provides.
 
 -   Provide simple & intuitive UI to create & manage restaurant menus
 -   Generate menus that are optimized for search engines and social media crawlers
@@ -43,7 +43,6 @@
 -   [Node.js 16+](https://nodejs.org/en/download/)
 -   [NPM 7+](http://npmjs.com)
 -   [MySQL](https://www.mysql.com) for persisting data.
--   [Redis](https://redis.io) for storing user sessions.
 -   [Imagekit account](https://imagekit.io) for managing all the uploaded images.
 
 ## How To Use
