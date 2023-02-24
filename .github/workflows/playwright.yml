@@ -16,6 +16,10 @@ jobs:
             IMAGEKIT_BASE_FOLDER: ${{secrets.TEST_IMAGEKIT_BASE_FOLDER}}
             TEST_MENUFIC_USER_LOGIN_KEY: l+C9A_FAKE_LOGIN_KEY_KZK7w==
             TEST_MENUFIC_BASE_URL: http://localhost:3000
+            GITHUB_CLIENT_ID: ''
+            GITHUB_CLIENT_SECRET: ''
+            GOOGLE_CLIENT_ID: ''
+            GOOGLE_CLIENT_SECRET: ''
         steps:
             - uses: mirromutth/mysql-action@v1.1
               with:

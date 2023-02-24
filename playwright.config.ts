@@ -15,7 +15,7 @@ export default defineConfig({
     /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!process.env.CI,
     /* Run tests in files in parallel */
-    fullyParallel: true,
+    fullyParallel: false,
     /* Configure projects for major browsers */
     projects: [{ name: "firefox", use: { ...devices["Desktop Firefox"] } }],
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
