@@ -1,12 +1,14 @@
 import type { FC, MouseEventHandler, PropsWithChildren } from "react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
-import { Button, Popover, Stack } from "@mantine/core";
+import { Button, LoadingOverlay, Popover, Stack } from "@mantine/core";
 import { IconBrandGithub } from "@tabler/icons";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 
 import type { ButtonProps as MantineButtonProps, PopoverBaseProps } from "@mantine/core";
+import type { BuiltInProviderType } from "next-auth/providers";
+import type { LiteralUnion } from "next-auth/react";
 
 import { White } from "src/styles/theme";
 
@@ -14,6 +16,11 @@ import { GoogleIcon } from "./GoogleIcon";
 
 interface ButtonProps extends MantineButtonProps {
     onClick?: MouseEventHandler<HTMLButtonElement>;
+}
+
+interface LoginOptionsProps {
+    loading?: boolean;
+    setLoading?: (loading: boolean) => void;
 }
 
 const GoogleButton = (props: ButtonProps) => {
@@ -25,6 +32,7 @@ const GoogleButton = (props: ButtonProps) => {
             leftIcon={<GoogleIcon />}
             radius="sm"
             size="lg"
+            sx={(theme) => ({ "&:hover": { boxShadow: theme.shadows.md } })}
             variant="default"
         />
     );
@@ -38,7 +46,7 @@ const GithubButton = (props: ButtonProps) => {
             leftIcon={<IconBrandGithub size={16} />}
             size="lg"
             sx={(theme) => ({
-                "&:hover": { backgroundColor: theme.colors.gray[8] },
+                "&:hover": { backgroundColor: theme.colors.gray[7], boxShadow: theme.shadows.md },
                 backgroundColor: theme.colors.gray[8],
                 borderRadius: theme.radius.sm,
                 color: White,
@@ -47,7 +55,7 @@ const GithubButton = (props: ButtonProps) => {
     );
 };
 
-export const LoginOptionsContent: FC = () => {
+export const LoginOptionsContent: FC<LoginOptionsProps> = ({ loading = false, setLoading }) => {
     const router = useRouter();
     const callbackUrl = useMemo(() => {
         if (typeof router.query?.callbackUrl === "string" && !router.query?.callbackUrl?.includes("auth/signin")) {
@@ -56,22 +64,31 @@ export const LoginOptionsContent: FC = () => {
         }
         return "/restaurant";
     }, [router.query]);
-    // todo: add a loading local state. Use mutation not good
+
+    const clickLoginOption = (provider: LiteralUnion<BuiltInProviderType, string>) => {
+        signIn(provider, { callbackUrl });
+        if (setLoading) {
+            setLoading(true);
+        }
+    };
+
     return (
         <Stack px="xl" py="md" sx={{ gap: 20 }}>
-            <GoogleButton onClick={() => signIn("google", { callbackUrl })}>Sign in with Google</GoogleButton>
-            <GithubButton onClick={() => signIn("github", { callbackUrl })}>Sign in with GitHub</GithubButton>
+            <LoadingOverlay overlayBlur={2} visible={loading} />
+            <GoogleButton onClick={() => clickLoginOption("google")}>Sign in with Google</GoogleButton>
+            <GithubButton onClick={() => clickLoginOption("github")}>Sign in with GitHub</GithubButton>
         </Stack>
     );
 };
 
 /** Popover component to allow users to login using multiple providers */
 export const LoginOptions: FC<PopoverBaseProps & PropsWithChildren> = ({ children, ...rest }) => {
+    const [loading, setLoading] = useState(false);
     return (
-        <Popover shadow="xl" withArrow {...rest}>
+        <Popover onOpen={() => setLoading(false)} shadow="xl" withArrow {...rest}>
             <Popover.Target>{children}</Popover.Target>
             <Popover.Dropdown>
-                <LoginOptionsContent />
+                <LoginOptionsContent loading={loading} setLoading={setLoading} />
             </Popover.Dropdown>
         </Popover>
     );
