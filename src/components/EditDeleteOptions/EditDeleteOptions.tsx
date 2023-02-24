@@ -34,6 +34,7 @@ export const EditDeleteOptions: FC<EditDeleteOptionsProps> = ({
             <Menu.Target>
                 <ActionIcon
                     component="span"
+                    data-testid="edit-delete-options"
                     onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                         event.stopPropagation();
                         event.preventDefault();
@@ -52,6 +53,7 @@ export const EditDeleteOptions: FC<EditDeleteOptionsProps> = ({
                 {onEditClick && (
                     <Menu.Item
                         color={theme.black}
+                        data-testid="menu-item-edit"
                         icon={<IconEdit size={14} />}
                         onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                             event.stopPropagation();
@@ -65,6 +67,7 @@ export const EditDeleteOptions: FC<EditDeleteOptionsProps> = ({
                 {onDeleteClick && (
                     <Menu.Item
                         color="red"
+                        data-testid="menu-item-delete"
                         icon={<IconTrash size={14} />}
                         onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                             event.stopPropagation();

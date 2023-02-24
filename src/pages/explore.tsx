@@ -42,6 +42,7 @@ const ExplorePage: NextPage = () => {
                                     image={item.image}
                                     subTitle={item.location}
                                     target="_blank"
+                                    testId={`explore-card ${item.name}`}
                                     title={item.name}
                                 />
                             ))}

@@ -52,6 +52,7 @@ export const CategoryElement: FC<Props> = ({ categoryItem, menuId }) => {
                         className={cx({
                             [classes.itemDragging]: snapshot.isDragging,
                         })}
+                        data-testid={`category-item ${categoryItem.name}`}
                         ref={provided.innerRef}
                         value={categoryItem.id}
                         {...provided.draggableProps}

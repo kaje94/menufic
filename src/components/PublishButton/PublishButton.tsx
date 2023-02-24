@@ -77,6 +77,7 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
     return (
         <>
             <Button
+                data-testid="publish-button"
                 leftIcon={isPublished ? <IconEye /> : <IconEyeOff />}
                 onClick={() => setModalVisible(true)}
                 sx={{ justifySelf: isNotMobile ? "flex-end" : "auto" }}
@@ -107,7 +108,7 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                                 Published menu URL
                             </Text>
                             <Flex align="center" justify="space-between">
-                                <Link href={menuUrl} target="_blank">
+                                <Link data-testid="restaurant-menu-url" href={menuUrl} target="_blank">
                                     <Text color={theme.colors.green[9]}>{menuUrl}</Text>
                                 </Link>
 
@@ -145,6 +146,7 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                     <Text color={theme.black}>Publish Menu</Text>
                     <Switch
                         checked={isPublished}
+                        data-testid="publish-menu-switch"
                         onChange={(event) => setPublished({ id, isPublished: event.target.checked })}
                         size="lg"
                     />
@@ -178,7 +180,7 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                     </Text>
 
                     <Flex align="center" justify="space-between" mt="sm">
-                        <Link href={previewMenuUrl} target="_blank">
+                        <Link data-testid="restaurant-preview-url" href={previewMenuUrl} target="_blank">
                             <Text color={theme.colors.dark[9]} size="sm">
                                 {previewMenuUrl}
                             </Text>

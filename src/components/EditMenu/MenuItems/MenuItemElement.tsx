@@ -90,6 +90,7 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
                     <Grid
                         align="center"
                         className={cx([classes.elementItem, snapshot.isDragging && classes.itemDragging])}
+                        data-testid={`menu-item ${menuItem.name}`}
                         gutter="lg"
                         my="sm"
                         ref={provided.innerRef}
@@ -138,10 +139,17 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
                             </Text>
                         </Grid.Col>
                         <Grid.Col className={classes.actionButtons} lg={1} sm={3} span={12}>
-                            <ActionIcon onClick={() => setMenuItemFormOpen(true)}>
+                            <ActionIcon
+                                data-testid={`menu-item-edit ${menuItem.name}`}
+                                onClick={() => setMenuItemFormOpen(true)}
+                            >
                                 <IconEdit size={18} />
                             </ActionIcon>
-                            <ActionIcon color="red" onClick={() => setDeleteMenuItemModalOpen(true)}>
+                            <ActionIcon
+                                color="red"
+                                data-testid={`menu-item-delete ${menuItem.name}`}
+                                onClick={() => setDeleteMenuItemModalOpen(true)}
+                            >
                                 <IconTrash size={18} />
                             </ActionIcon>
                         </Grid.Col>

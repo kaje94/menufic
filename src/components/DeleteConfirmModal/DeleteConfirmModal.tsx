@@ -24,7 +24,7 @@ export const DeleteConfirmModal: FC<Props> = ({ title, description, loading, onD
                 {description}
             </Text>
             <Group mt="md" position="right">
-                <Button color="red" loading={loading} onClick={onDelete} px="xl">
+                <Button color="red" data-testid="confirm-delete-modal-btn" loading={loading} onClick={onDelete} px="xl">
                     Confirm Delete
                 </Button>
             </Group>

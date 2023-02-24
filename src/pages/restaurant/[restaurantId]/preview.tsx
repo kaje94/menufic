@@ -31,7 +31,14 @@ const RestaurantMenuPreviewPage: NextPage = () => {
             </Head>
             <main>
                 <Container py="lg" size="xl">
-                    <Alert color="red" icon={<IconAlertCircle size={16} />} mb="lg" radius="lg" title="Preview mode">
+                    <Alert
+                        color="red"
+                        data-testid="preview-mode-banner"
+                        icon={<IconAlertCircle size={16} />}
+                        mb="lg"
+                        radius="lg"
+                        title="Preview mode"
+                    >
                         <Text color={theme.black} weight="bold">
                             This preview URL is not meant to be shared with anyone.
                         </Text>

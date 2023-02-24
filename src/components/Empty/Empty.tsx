@@ -20,7 +20,12 @@ const floatingAnimation = keyframes`
 export const Empty: FC<Props> = ({ text, height }) => {
     const theme = useMantineTheme();
     return (
-        <Center h={height} p="lg" sx={{ color: theme.colors.dark[5], flexDirection: "column" }}>
+        <Center
+            data-testid="empty-placeholder"
+            h={height}
+            p="lg"
+            sx={{ color: theme.colors.dark[5], flexDirection: "column" }}
+        >
             <Box sx={{ animation: `${floatingAnimation} 6s ease-in-out infinite` }}>
                 <IconAtom2 color={theme.colors.dark[3]} size={100} strokeWidth={1.5} />
             </Box>

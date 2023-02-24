@@ -99,6 +99,7 @@ export const MenuItems: FC<Props> = ({ categoryId, menuItems, menuId }) => {
                 <Flex justify="center">
                     <Button
                         key="add-new-menu-item"
+                        data-testid="add-new-menu-item-button"
                         leftIcon={<IconPlus size={14} />}
                         mt="md"
                         my={menuItems?.length === 0 ? "lg" : 0}

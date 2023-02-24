@@ -94,7 +94,7 @@ export const CategoryForm: FC<Props> = ({ opened, onClose, menuId, categoryItem,
                         {...getInputProps("name")}
                     />
                     <Group mt="md" position="right">
-                        <Button loading={loading} px="xl" type="submit">
+                        <Button data-testid="save-category-form" loading={loading} px="xl" type="submit">
                             Save
                         </Button>
                     </Group>

@@ -119,6 +119,7 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
                     <Box
                         key="add-new-menu"
                         className={cx(classes.item, classes.addItem, menus?.length === 0 && classes.initialAdd)}
+                        data-testid="add-new-menu-button"
                         onClick={() => setMenuFormOpen(true)}
                     >
                         <Center p="sm">

@@ -106,6 +106,7 @@ export const ImageUpload: FC<Props> = ({
                 ) : (
                     <Dropzone
                         accept={[MIME_TYPES.jpeg]}
+                        data-testid="image-upload-dropzone"
                         disabled={disabled}
                         multiple={false}
                         onDrop={(files) => {

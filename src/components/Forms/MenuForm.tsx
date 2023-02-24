@@ -95,7 +95,7 @@ export const MenuForm: FC<Props> = ({ opened, onClose, restaurantId, menu: menuI
                         {...getInputProps("availableTime")}
                     />
                     <Group mt="md" position="right">
-                        <Button loading={loading} px="xl" type="submit">
+                        <Button data-testid="save-menu-form" loading={loading} px="xl" type="submit">
                             Save
                         </Button>
                     </Group>

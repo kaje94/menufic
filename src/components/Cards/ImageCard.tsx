@@ -25,12 +25,14 @@ interface Props {
     subTitle?: string;
     /** To decided whether the link needs to be opened in the same tab or different one */
     target?: HTMLAttributeAnchorTarget;
+    /** Test Id to be used in testing */
+    testId?: string;
     /** Title of the card */
     title?: string;
 }
 
 /** Card item with an image as its background */
-export const ImageCard: FC<Props> = ({ image, title, subTitle, editDeleteOptions, target, href }) => {
+export const ImageCard: FC<Props> = ({ image, title, subTitle, editDeleteOptions, target, href, testId, imageAlt }) => {
     const { classes } = useStyles();
 
     const content = (
@@ -40,7 +42,7 @@ export const ImageCard: FC<Props> = ({ image, title, subTitle, editDeleteOptions
                     blurhash={image?.blurHash}
                     color={image?.color}
                     height={150}
-                    imageAlt={title}
+                    imageAlt={imageAlt}
                     imagePath={image?.path}
                     width={450}
                 />
@@ -69,7 +71,7 @@ export const ImageCard: FC<Props> = ({ image, title, subTitle, editDeleteOptions
 
     if (href && editDeleteOptions?.loading !== true) {
         return (
-            <Card className={classes.card} p="lg" withBorder>
+            <Card className={classes.card} data-testid={testId} p="lg" withBorder>
                 <Link href={href} target={target}>
                     {content}
                 </Link>
@@ -78,7 +80,7 @@ export const ImageCard: FC<Props> = ({ image, title, subTitle, editDeleteOptions
     }
 
     return (
-        <Card className={clsx(classes.card, classes.cardNoCursor)} p="lg" withBorder>
+        <Card className={clsx(classes.card, classes.cardNoCursor)} data-testid={testId} p="lg" withBorder>
             {content}
         </Card>
     );

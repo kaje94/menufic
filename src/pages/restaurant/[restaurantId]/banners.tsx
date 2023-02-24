@@ -44,6 +44,7 @@ const BannerCard: FC<{ index?: number; item: Image; restaurantName?: string }> =
                 editDeleteOptions={{ onDeleteClick: () => setDeleteFormOpen(true) }}
                 image={item}
                 imageAlt={`${restaurantName}-banner-${index}`}
+                testId={`banner-card-${index}`}
             />
             <DeleteConfirmModal
                 description="Are you sure, you want to delete this restaurant banner? This action action cannot be undone"
@@ -135,6 +136,7 @@ const BannersPage: NextPage = () => {
                                                 Icon={IconCirclePlus}
                                                 onClick={() => setBannerFormOpen(true)}
                                                 subTitle="Start creating a new restaurant menu by adding a new restaurant"
+                                                testId="add-new-banner"
                                                 title="Add new banner"
                                             />
                                         )}

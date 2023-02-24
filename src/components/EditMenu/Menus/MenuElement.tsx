@@ -61,6 +61,7 @@ export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSe
                             [classes.itemDragging]: snapshot.isDragging,
                             [classes.itemSelected]: isSelected,
                         })}
+                        data-testid={`menu-item ${item.name}`}
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         onClick={() => setSelectedMenu(item)}

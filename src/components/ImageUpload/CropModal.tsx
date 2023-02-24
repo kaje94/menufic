@@ -90,7 +90,7 @@ export const CropModal: FC<Props> = ({ imageUrl, onCrop, aspect = 1, onClose, ..
                 <Button disabled={cropping} onClick={onClose} variant="subtle">
                     Cancel
                 </Button>
-                <Button loading={cropping} onClick={finishCropImage}>
+                <Button data-testid="crop-image" loading={cropping} onClick={finishCropImage}>
                     Crop
                 </Button>
             </Group>

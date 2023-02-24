@@ -19,7 +19,9 @@ export const useStyles = createStyles((theme) => ({
         marginBottom: theme.spacing.sm,
         padding: theme.spacing.sm,
         position: "relative",
-        transition: "all 500ms ease",
+        transitionDuration: "0.5s",
+        transitionProperty: "box-shadow,background-color,color,border",
+        transitionTimingFunction: "ease",
     },
     itemDragging: { boxShadow: theme.shadows.sm },
     itemSelected: {

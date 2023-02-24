@@ -129,6 +129,7 @@ export const Categories: FC<Props> = ({ menuId }) => {
                 {!categoriesLoading && categories?.length < Number(env.NEXT_PUBLIC_MAX_CATEGORIES_PER_MENU) && (
                     <Button
                         key="add-new-category"
+                        data-testid="add-new-category-button"
                         leftIcon={<IconPlus size={20} />}
                         loading={categoriesLoading}
                         mt={categories?.length === 0 ? 0 : "md"}

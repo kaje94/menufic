@@ -18,16 +18,21 @@ interface Props {
     onClick?: MouseEventHandler<HTMLDivElement>;
     /** Subtitle of the card */
     subTitle?: string;
+    /** Test Id to be used in testing */
+    testId?: string;
     /** Title of the card */
     title: string;
 }
 
 /** Card item with an icon in the middle  */
-export const IconCard: FC<Props> = ({ title, subTitle, Icon, href, iconSize = 50, onClick }) => {
+export const IconCard: FC<Props> = ({ title, subTitle, Icon, href, testId, iconSize = 50, onClick }) => {
     const { classes, theme } = useStyles();
 
     const cardContent = (
-        <Box className={clsx(classes.content, classes.centerContent, (onClick || href) && classes.hoverAnimation)}>
+        <Box
+            className={clsx(classes.content, classes.centerContent, (onClick || href) && classes.hoverAnimation)}
+            data-testid={testId}
+        >
             <Icon color={theme.colors.dark[8]} size={iconSize} stroke={1.5} />
 
             <Text className={classes.title} size="lg" weight={500}>

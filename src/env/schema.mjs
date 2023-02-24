@@ -25,8 +25,8 @@ export const serverSchema = z.object({
     NODE_ENV: z.enum(["development", "test", "production"]),
     SENTRY_AUTH_TOKEN: z.string().optional(),
     SENTRY_ORG: z.string().optional(),
-
     SENTRY_PROJECT: z.string().optional(),
+    TEST_MENUFIC_USER_LOGIN_KEY: z.string().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string(),
     UPSTASH_REDIS_REST_URL: z.string(),
 });

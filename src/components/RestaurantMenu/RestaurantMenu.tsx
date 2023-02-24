@@ -39,7 +39,7 @@ const useStyles = createStyles((theme) => ({
         alignItems: "center",
         display: "flex",
         justifyContent: "space-between",
-        opacity: 0.65,
+        opacity: 0.8,
         [`@media (max-width: ${theme.breakpoints.xs}px)`]: { display: "grid", gap: 2 },
     },
     carousalTitle: {
@@ -50,6 +50,7 @@ const useStyles = createStyles((theme) => ({
         padding: theme.spacing.md,
         paddingTop: theme.spacing.xl,
         position: "absolute",
+        textShadow: `0px 0px 2px ${Black}`,
         width: "100%",
         zIndex: 1,
     },
@@ -121,6 +122,7 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
             <Box pos="relative">
                 <Carousel
                     className={classes.headerImageBox}
+                    data-testid="restaurant-banner"
                     height={300}
                     loop
                     mx="auto"
@@ -129,7 +131,7 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                     plugins={[bannerCarousalRef.current]}
                     slideGap="md"
                     styles={{ indicator: { background: White } }}
-                    withControls={images.length > 1}
+                    withControls={false}
                     withIndicators={images.length > 1}
                 >
                     {images?.map((banner, index) => (

@@ -35,6 +35,7 @@ export const ViewMenuItemModal: FC<Props> = ({ menuItem, ...rest }) => {
                 </Text>
             }
             {...rest}
+            data-testid="menu-item-card-modal"
             styles={{ modal: { background: bgColor } }}
         >
             <Stack spacing="sm">

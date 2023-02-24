@@ -132,7 +132,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                         {errors.imagePath}
                     </Text>
                     <Group mt="md" position="right">
-                        <Button loading={loading} px="xl" type="submit">
+                        <Button data-testid="save-restaurant-form" loading={loading} px="xl" type="submit">
                             Save
                         </Button>
                     </Group>

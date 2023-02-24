@@ -21,13 +21,10 @@ const useStyles = createStyles(() => ({
     itemImage: {
         height: "100%",
         objectFit: "cover",
-        opacity: 0,
         position: "relative",
-        transition: "all 200ms ease",
         width: "100%",
         zIndex: 1,
     },
-    itemImageLoaded: { opacity: 1 },
     itemImageWrap: { display: "block", overflow: "hidden", position: "relative" },
 }));
 
@@ -49,7 +46,6 @@ interface Props {
 /** Optimized image component to display images stored in imageKit. */
 export const ImageKitImage: FC<Props> = ({ blurhash, color, imagePath, imageAlt, height, width }) => {
     const { classes } = useStyles();
-    const [loaded, setLoaded] = useState(false);
 
     return (
         <Box bg={color} className={classes.itemImageWrap} h="100%" w="100%">
@@ -67,9 +63,8 @@ export const ImageKitImage: FC<Props> = ({ blurhash, color, imagePath, imageAlt,
             {imagePath && (
                 <Image
                     alt={`${imageAlt} image`}
-                    className={clsx(classes.itemImage, loaded && classes.itemImageLoaded)}
+                    className={classes.itemImage}
                     height={height}
-                    onLoadingComplete={() => setLoaded(true)}
                     src={`${env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}/${imagePath}?tr=f-avif,w-${width}`}
                     width={width}
                 />

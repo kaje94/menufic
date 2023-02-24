@@ -46,6 +46,7 @@ const RestaurantCard: FC<{ item: Restaurant & { image: Image | null } }> = ({ it
                 href={`/restaurant/${item.id}`}
                 image={item.image}
                 subTitle={item.location}
+                testId={`restaurant-card-${item.name}`}
                 title={item.name}
             />
             <RestaurantForm
@@ -110,6 +111,7 @@ const RestaurantsListPage: NextPage = () => {
                                             Icon={IconCirclePlus}
                                             onClick={() => setRestaurantFormOpen(true)}
                                             subTitle="Start creating a new digital menu by adding a new restaurant"
+                                            testId="add-new-restaurant"
                                             title="Add new restaurant"
                                         />
                                     )}

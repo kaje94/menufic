@@ -9,11 +9,11 @@ export const categoryInput = z.object({
     name: z.string().trim().min(1, "Name is required").max(30, "Name cannot be longer than 30 characters"),
 });
 export const menuInput = z.object({
-    availableTime: z.string().trim().max(20),
+    availableTime: z.string().trim().max(20, "Available time cannot be longer than 20 characters"),
     name: z.string().trim().min(1, "Name is required").max(30, "Name cannot be longer than 30 characters"),
 });
 export const menuItemInput = z.object({
-    description: z.string().trim().max(200),
+    description: z.string().trim().max(300, "Description cannot be longer than 300 characters"),
     imageBase64: z.string().optional(),
     imagePath: z.string().optional(),
     name: z.string().trim().min(1, "Name is required").max(50, "Name cannot be longer than 50 characters"),
@@ -29,8 +29,8 @@ export const restaurantInput = z.object({
     ]),
     imageBase64: z.string(),
     imagePath: z.string().min(1, "Image is required"),
-    location: z.string().trim().min(1, "Location is required").max(50, "Location cannot be longer than 50 characters"),
-    name: z.string().trim().min(1, "Name is required").max(30, "Name cannot be longer than 30 characters"),
+    location: z.string().trim().min(1, "Location is required").max(75, "Location cannot be longer than 75 characters"),
+    name: z.string().trim().min(1, "Name is required").max(40, "Name cannot be longer than 40 characters"),
 });
 export const bannerInput = z.object({
     imageBase64: z.string().min(1, "Image is required"),

@@ -79,7 +79,7 @@ export const BannerForm: FC<Props> = ({ opened, onClose, restaurantId, ...rest }
                         {errors.imageBase64}
                     </Text>
                     <Group mt="md" position="right">
-                        <Button loading={isCreating} px="xl" type="submit">
+                        <Button data-testid="save-banner-form" loading={isCreating} px="xl" type="submit">
                             Save
                         </Button>
                     </Group>

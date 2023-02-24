@@ -74,7 +74,12 @@ export const MenuItemCard: FC<Props> = ({ item }) => {
     const [modalVisible, setModalVisible] = useState(false);
     return (
         <>
-            <Paper className={classes.cardItem} h={150} onClick={() => setModalVisible(true)}>
+            <Paper
+                className={classes.cardItem}
+                data-testid="menu-item-card"
+                h={150}
+                onClick={() => setModalVisible(true)}
+            >
                 {item?.image?.path && (
                     <Box className={classes.cardImageWrap}>
                         <Box className={classes.cardImage}>

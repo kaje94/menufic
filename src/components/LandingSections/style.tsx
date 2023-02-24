@@ -79,7 +79,7 @@ export const useStyles = createStyles((theme) => {
             alignItems: "center !important",
             display: "flex !important",
             justifyContent: "center !important",
-            p: 50,
+            padding: 50,
         },
         parallaxBg: {
             alignItems: "center",

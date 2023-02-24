@@ -69,12 +69,14 @@ const RestaurantManagePage: NextPage = () => {
                                         Icon={IconToolsKitchen}
                                         href={`/restaurant/${router.query?.restaurantId}/edit-menu`}
                                         subTitle="Manage the menus, categories and individual menu items of your restaurant"
+                                        testId="manage-menus-card"
                                         title="Menus"
                                     />
                                     <IconCard
                                         Icon={IconSlideshow}
                                         href={`/restaurant/${router.query?.restaurantId}/banners`}
                                         subTitle="Manage banners that could be used to display promotional content in your restaurant menu"
+                                        testId="manage-banners-card"
                                         title="Banners"
                                     />
                                     <IconCard

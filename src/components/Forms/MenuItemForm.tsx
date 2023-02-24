@@ -131,7 +131,7 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
                         width={400}
                     />
                     <Group mt="md" position="right">
-                        <Button loading={loading} px="xl" type="submit">
+                        <Button data-testid="save-menu-item-form" loading={loading} px="xl" type="submit">
                             Save
                         </Button>
                     </Group>
