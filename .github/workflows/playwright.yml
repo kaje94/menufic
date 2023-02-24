@@ -16,23 +16,25 @@ jobs:
             IMAGEKIT_BASE_FOLDER: ${{secrets.TEST_IMAGEKIT_BASE_FOLDER}}
             TEST_MENUFIC_USER_LOGIN_KEY: l+C9A_FAKE_LOGIN_KEY_KZK7w==
             TEST_MENUFIC_BASE_URL: http://localhost:3000
-            GITHUB_CLIENT_ID: ''
-            GITHUB_CLIENT_SECRET: ''
-            GOOGLE_CLIENT_ID: ''
-            GOOGLE_CLIENT_SECRET: ''
+            GITHUB_CLIENT_ID: ""
+            GITHUB_CLIENT_SECRET: ""
+            GOOGLE_CLIENT_ID: ""
+            GOOGLE_CLIENT_SECRET: ""
         steps:
             - uses: mirromutth/mysql-action@v1.1
               with:
-                mysql version: '8.0' # Optional, default value is "latest". The version of the MySQL
-                mysql database: 'menufic_db' # Optional, default value is "test". The specified database which will be create
-                mysql user: 'user' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
-                mysql password: password # Required if "mysql user" exists. The password for the "mysql user"
+                  mysql database: menufic_db
+                  mysql user: user
+                  mysql password: password
             - uses: actions/checkout@v3
             - uses: actions/setup-node@v3
               with:
                   node-version: 16
+                  cache: "npm"
             - name: Install dependencies
               run: npm ci
+            - name: Deploy Migrations
+              run: npx prisma migrate deploy
             - name: Install Playwright Browsers
               run: npx playwright install --with-deps
             - name: Run Playwright tests
