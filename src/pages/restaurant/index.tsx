@@ -45,6 +45,7 @@ const RestaurantCard: FC<{ item: Restaurant & { image: Image | null } }> = ({ it
                 }}
                 href={`/restaurant/${item.id}`}
                 image={item.image}
+                imageAlt={item.name}
                 subTitle={item.location}
                 testId={`restaurant-card-${item.name}`}
                 title={item.name}
