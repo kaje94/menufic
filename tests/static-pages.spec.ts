@@ -26,3 +26,17 @@ test("should render terms and conditions page", async ({ page }) => {
     await expect(page).toHaveURL(`${process.env.TEST_MENUFIC_BASE_URL}/terms-and-conditions`);
     await expect(page).toHaveScreenshot("terms-and-conditions.png", { fullPage: true, maxDiffPixelRatio: 0.8 });
 });
+
+test("should open google login page", async ({ page }) => {
+    await page.goto(`${process.env.TEST_MENUFIC_BASE_URL}`);
+    await page.click("text=Login");
+    await page.getByTestId("google-login-button").click();
+    expect(page.url()).not.toContain("authError");
+});
+
+test("should open github page", async ({ page }) => {
+    await page.goto(`${process.env.TEST_MENUFIC_BASE_URL}`);
+    await page.click("text=Login");
+    await page.getByTestId("github-login-button").click();
+    expect(page.url()).not.toContain("error");
+});
