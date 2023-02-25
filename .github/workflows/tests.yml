@@ -1,4 +1,4 @@
-name: E2E test with Playwright
+name: tests
 on:
     push:
         branches:
@@ -8,7 +8,8 @@ on:
         types: [opened, synchronize, reopened]
     workflow_dispatch:
 jobs:
-    e2eTest:
+    tests:
+        name: Playwright tests
         timeout-minutes: 10
         runs-on: ubuntu-latest
         env:
