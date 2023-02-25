@@ -12,10 +12,12 @@ export const AboutUs: FC = () => {
     return (
         <Container size="lg">
             <Grid gutter={0}>
-                <Grid.Col md={6} order={2} orderMd={1} sm={12}>
-                    <Image alt="menufic-open-source" src="/landing-about-us.svg" width="100%" />
+                <Grid.Col md={5} order={2} orderMd={1} sm={12}>
+                    <Center>
+                        <Image alt="menufic-open-source" height={350} src="/landing-about-us.svg" width={350} />
+                    </Center>
                 </Grid.Col>
-                <Grid.Col md={6} order={1} orderMd={2} sm={12}>
+                <Grid.Col md={7} order={1} orderMd={2} sm={12}>
                     <Center className={classes.githubContent}>
                         <Title className={classes.sectionTitle}>About Us</Title>
                         <Text mb="sm" size="xl">

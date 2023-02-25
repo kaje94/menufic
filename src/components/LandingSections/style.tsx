@@ -79,7 +79,6 @@ export const useStyles = createStyles((theme) => {
             alignItems: "center !important",
             display: "flex !important",
             justifyContent: "center !important",
-            padding: 50,
         },
         parallaxBg: {
             alignItems: "center",
@@ -138,7 +137,7 @@ export const useStyles = createStyles((theme) => {
             fontSize: 90,
             textAlign: "center",
             [`@media (max-width: ${theme.breakpoints.lg}px)`]: { fontSize: 65 },
-            [`@media (max-width: ${theme.breakpoints.sm}px)`]: { fontSize: 50 },
+            [`@media (max-width: ${theme.breakpoints.sm}px)`]: { fontSize: 45 },
         },
     };
 });

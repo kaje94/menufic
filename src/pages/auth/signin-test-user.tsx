@@ -69,7 +69,6 @@ const SignInTestUser: NextPage = () => {
         <BackgroundImage className={classes.background} src="/landing-hero-bg.svg">
             <Center h="100%">
                 <Box className={classes.contentWrap}>
-                    <Text>{(error as Error)?.message}</Text>
                     <Box mb={10}>
                         <Logo />
                     </Box>

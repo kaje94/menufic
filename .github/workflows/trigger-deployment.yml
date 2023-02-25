@@ -1,0 +1,13 @@
+name: Trigger deployment
+on:
+    workflow_dispatch:
+        branches: ["main"]
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Trigger production deployment
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: ${{ secrets.VERCEL_MAIN_BRANCH_DEPLOY_HOOK_URL }}
+        method: 'GET'
