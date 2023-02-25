@@ -1,4 +1,4 @@
-name: tests
+name: E2E Tests
 on:
     push:
         branches:
@@ -9,7 +9,7 @@ on:
     workflow_dispatch:
 jobs:
     tests:
-        name: Playwright tests
+        name: Playwright E2E tests
         timeout-minutes: 10
         runs-on: ubuntu-latest
         env:
