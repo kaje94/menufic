@@ -8,7 +8,7 @@ import { useStyles } from "./style";
 
 export const AboutUs: FC = () => {
     const { classes, theme } = useStyles();
-
+    // todo: give width and height to the image
     return (
         <Container size="lg">
             <Grid gutter={0}>
