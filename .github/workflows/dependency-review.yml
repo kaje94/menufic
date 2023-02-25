@@ -6,12 +6,8 @@
 # Public documentation: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-enforcement
 name: "Dependency Review"
 on:
-    push:
-        branches:
-            - main
     pull_request:
         branches: ["main"]
-        types: [opened, synchronize, reopened]
     workflow_dispatch:
 
 permissions:
