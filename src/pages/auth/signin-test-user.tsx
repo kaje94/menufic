@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { Alert, BackgroundImage, Box, Button, Center, createStyles, PasswordInput, Stack, Text } from "@mantine/core";
+import { Alert, BackgroundImage, Box, Button, Center, createStyles, PasswordInput, Stack } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import { IconAlertCircle } from "@tabler/icons";
 import { useMutation } from "@tanstack/react-query";

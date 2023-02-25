@@ -1,5 +1,4 @@
 import type { FC } from "react";
-import { useState } from "react";
 
 import { Box, clsx, createStyles } from "@mantine/core";
 import Image from "next/image";
