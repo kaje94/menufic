@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { expect, test } from "playwright-test-coverage";
+import { expect, test } from "@playwright/test";
 
 test("should ping health check endpoint", async ({ request }) => {
     const healthResponse = await request.get(`${process.env.TEST_MENUFIC_BASE_URL}/api/health`);

@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { expect, test } from "playwright-test-coverage";
+import { expect, test } from "@playwright/test";
 
 test.describe.configure({ mode: "serial" });
 

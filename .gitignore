@@ -5,9 +5,6 @@
 /.pnp
 .pnp.js
 
-# testing
-/coverage
-
 # database
 /prisma/db.sqlite
 /prisma/db.sqlite-journal
@@ -45,7 +42,10 @@ yarn-error.log*
 .sentryclirc
 
 # Tests
+/coverage
 /test-results/
 /playwright-report/
 /playwright/.cache/
 /.nyc_output
+/.nyc_coverage
+/.scannerwork

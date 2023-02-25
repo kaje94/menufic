@@ -10,9 +10,6 @@ if (!process.env.SKIP_ENV_VALIDATION) {
 
 /** @type {import("next").NextConfig} */
 const config = {
-    experimental: {
-        swcPlugins: [["swc-plugin-coverage-instrument", {}]],
-    },
     i18n: { defaultLocale: "en", locales: ["en"] },
     images: {
         formats: ["image/avif", "image/webp"],
