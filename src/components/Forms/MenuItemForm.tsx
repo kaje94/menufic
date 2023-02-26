@@ -120,7 +120,7 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
                         withAsterisk
                         {...getInputProps("price")}
                     />
-                    <Textarea disabled={loading} label="Description" {...getInputProps("description")} />
+                    <Textarea disabled={loading} label="Description" minRows={3} {...getInputProps("description")} />
                     <ImageUpload
                         disabled={loading}
                         height={400}

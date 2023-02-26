@@ -29,14 +29,15 @@ export const ViewMenuItemModal: FC<Props> = ({ menuItem, ...rest }) => {
 
     return (
         <Modal
+            centered
+            data-testid="menu-item-card-modal"
+            styles={{ modal: { background: bgColor } }}
             title={
                 <Text color={theme.black} size="xl" weight="bold">
                     {menuItem?.name}
                 </Text>
             }
             {...rest}
-            data-testid="menu-item-card-modal"
-            styles={{ modal: { background: bgColor } }}
         >
             <Stack spacing="sm">
                 {menuItem?.image?.path && (

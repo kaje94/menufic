@@ -110,6 +110,7 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
                             <Box className={classes.emptyImage}>
                                 {menuItem.image?.path ? (
                                     <ImageKitImage
+                                        key={`${menuItem.image?.id}-item-image`}
                                         blurhash={menuItem.image?.blurHash}
                                         color={menuItem.image?.color}
                                         height={50}

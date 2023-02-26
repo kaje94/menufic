@@ -13,6 +13,10 @@
 </p>
 
 <p align="center">
+  <img src="https://api.checklyhq.com/v1/badges/checks/b9184fcc-aba1-47be-ab53-6a6e44bfe47c?style=flat&theme=default">
+</p>
+
+<p align="center">
   <a href="#introduction">Introduction</a> •
   <a href="#prerequisite">Prerequisite</a> •
   <a href="#how-to-use">How To Use</a> •

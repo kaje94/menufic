@@ -37,7 +37,7 @@ export const ImageCard: FC<Props> = ({ image, title, subTitle, editDeleteOptions
 
     const content = (
         <>
-            <Box className={classes.imageWrap}>
+            <Box key={`${image?.id}-card-image`} className={classes.imageWrap}>
                 <ImageKitImage
                     blurhash={image?.blurHash}
                     color={image?.color}

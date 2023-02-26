@@ -51,10 +51,11 @@ const useStyles = createStyles((theme, { imageColor }: StyleProps, getRef) => {
             transition: "all 500ms ease",
             [`&:hover .${image}`]: { transform: "scale(1.05)" },
         },
-        cardItemDesc: {
+        cardItemDesc: { WebkitLineClamp: 3 },
+        cardItemTitle: { WebkitLineClamp: 1 },
+        cardText: {
             WebkitBoxOrient: "vertical",
-            WebkitLineClamp: 3,
-            color: theme.colors.dark[7],
+            color: theme.black,
             display: "-webkit-box",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -70,7 +71,7 @@ interface Props {
 
 /** Display each menu item as a card in the full restaurant menu */
 export const MenuItemCard: FC<Props> = ({ item }) => {
-    const { classes, theme } = useStyles({ imageColor: item?.image?.color });
+    const { classes, cx } = useStyles({ imageColor: item?.image?.color });
     const [modalVisible, setModalVisible] = useState(false);
     return (
         <>
@@ -96,13 +97,13 @@ export const MenuItemCard: FC<Props> = ({ item }) => {
                 )}
 
                 <Stack className={classes.cardDescWrap}>
-                    <Text size="lg" weight={700}>
+                    <Text className={cx(classes.cardText, classes.cardItemTitle)} size="lg" weight={700}>
                         {item.name}
                     </Text>
                     <Text color="red" size="sm">
                         {item.price}
                     </Text>
-                    <Text className={classes.cardItemDesc} color={theme.black} opacity={0.7} size="xs">
+                    <Text className={cx(classes.cardText, classes.cardItemDesc)} opacity={0.7} size="xs">
                         {item.description}
                     </Text>
                 </Stack>

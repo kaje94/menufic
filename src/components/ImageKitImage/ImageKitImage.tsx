@@ -64,6 +64,7 @@ export const ImageKitImage: FC<Props> = ({ blurhash, color, imagePath, imageAlt,
                     alt={`${imageAlt} image`}
                     className={classes.itemImage}
                     height={height}
+                    loading="lazy"
                     src={`${env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}/${imagePath}?tr=f-avif,w-${width}`}
                     width={width}
                 />
