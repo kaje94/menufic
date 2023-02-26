@@ -14,7 +14,6 @@ import {
     Tooltip,
     useMantineTheme,
 } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
 import { IconAlertCircle, IconCheck, IconCopy, IconDownload, IconEye, IconEyeOff, IconTrophy } from "@tabler/icons";
 import downloadjs from "downloadjs";
 import html2canvas from "html2canvas";
@@ -38,7 +37,6 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
     const trpcCtx = api.useContext();
     const theme = useMantineTheme();
     const { isPublished, id, name } = restaurant;
-    const isNotMobile = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px)`);
 
     const [modelVisible, setModalVisible] = useState(false);
     const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -80,7 +78,7 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                 data-testid="publish-button"
                 leftIcon={isPublished ? <IconEye /> : <IconEyeOff />}
                 onClick={() => setModalVisible(true)}
-                sx={{ justifySelf: isNotMobile ? "flex-end" : "auto" }}
+                sx={{ justifySelf: "flex-end" }}
                 variant={isPublished ? "filled" : "light"}
             >
                 {isPublished ? "Published" : "Not Published"}

@@ -96,7 +96,7 @@ export const menuItemRouter = createTRPCRouter({
 
         if (input.imageBase64) {
             const [uploadedResponse, blurHash, color] = await Promise.all([
-                uploadImage(input.imageBase64, "menu"),
+                uploadImage(input.imageBase64, `user/${ctx.session.user.id}/restaurant/menu/${input.id}`),
                 encodeImageToBlurhash(input.imageBase64),
                 getColor(input.imageBase64),
             ]);

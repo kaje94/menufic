@@ -208,20 +208,14 @@ export const restaurantRouter = createTRPCRouter({
             name: input.name,
         };
 
-        const promiseList = [];
         const transactions: (Prisma.Prisma__ImageClient<Image> | Prisma.Prisma__RestaurantClient<Restaurant>)[] = [];
 
-        // If image is being changed, then delete the previous image from imageKit and database
-        if (currentItem.imageId && input.imageBase64) {
-            promiseList.push(imageKit.deleteFile(currentItem.imageId));
-            transactions.push(ctx.prisma.image.delete({ where: { id: currentItem.imageId } }));
-        }
-
-        if (input.imageBase64) {
+        if (input.imageBase64 && currentItem.imageId) {
             const [uploadedResponse, blurHash, color] = await Promise.all([
-                uploadImage(input.imageBase64, "restaurant"),
+                uploadImage(input.imageBase64, `user/${ctx.session.user.id}/restaurant`),
                 encodeImageToBlurhash(input.imageBase64),
                 getColor(input.imageBase64),
+                imageKit.deleteFile(currentItem.imageId),
             ]);
 
             transactions.push(
@@ -244,7 +238,12 @@ export const restaurantRouter = createTRPCRouter({
                 where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
             })
         );
-        const [transactionRes] = await Promise.all([ctx.prisma.$transaction(transactions), promiseList]);
+
+        const transactionRes = await ctx.prisma.$transaction(transactions);
+
+        if (currentItem.imageId && input.imageBase64) {
+            await ctx.prisma.image.delete({ where: { id: currentItem.imageId } });
+        }
 
         return transactionRes.pop() as Restaurant & { image: Image | null };
     }),
