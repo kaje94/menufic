@@ -1,9 +1,9 @@
 import { Container, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import { NextSeo } from "next-seo";
 import superjson from "superjson";
 
 import type { GetStaticPropsContext, NextPage } from "next";
@@ -29,28 +29,20 @@ const RestaurantMenuPage: NextPage = () => {
         { enabled: status === "authenticated" && !!restaurantId }
     );
 
-    const titleTag = `${restaurant?.name} Menu`;
-    const descriptionTag = `Menu of restaurant ${restaurant?.name}. Location: ${restaurant?.location}. ${
-        restaurant?.contactNo ? `Contact Number: ${restaurant.contactNo}.` : ""
-    } This menu was generated using Menufic.com`;
-    const imageTag = `${env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}/${restaurant?.image?.path}`;
-
     return (
         <>
-            <Head>
-                <title>{titleTag}</title>
-                <meta content={descriptionTag} name="description" />
-                <meta content={titleTag} name="title" />
-
-                <meta content={titleTag} property="og:title" />
-                <meta content={descriptionTag} property="og:description" />
-                <meta content={imageTag} property="og:image" />
-                <meta content="restaurant.menu" property="og:type" />
-
-                <meta content={titleTag} property="twitter:title" />
-                <meta content={descriptionTag} property="twitter:description" />
-                <meta content={imageTag} property="twitter:image" />
-            </Head>
+            <NextSeo
+                defaultTitle="dasd"
+                description={`Menu of restaurant ${restaurant?.name}. Location: ${restaurant?.location}. ${
+                    restaurant?.contactNo ? `Contact Number: ${restaurant.contactNo}.` : ""
+                } This menu was generated using Menufic.com`}
+                openGraph={{
+                    images: [{ url: `${env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}/${restaurant?.image?.path}` }],
+                    type: "restaurant.menu",
+                }}
+                themeColor={restaurant?.image?.color}
+                title={`${restaurant?.name} Menu`}
+            />
             <main>
                 <Container py="lg" size="xl">
                     {restaurant && restaurant?.isPublished === true ? (

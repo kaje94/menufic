@@ -1,6 +1,6 @@
 import { useScrollIntoView } from "@mantine/hooks";
 import { type NextPage } from "next";
-import Head from "next/head";
+import { NextSeo } from "next-seo";
 
 import { Footer } from "src/components/Footer";
 import { NavHeader } from "src/components/Header";
@@ -12,14 +12,10 @@ const LandingPage: NextPage = () => {
 
     return (
         <>
-            <Head>
-                <title>Menufic - Digital menu generator</title>
-                <meta
-                    content="A digital menu generator that lets you to create the best menu for your restaurant. Menufic is packed with several features that will boost the online presence of your restaurant with ease"
-                    name="description"
-                />
-            </Head>
-
+            <NextSeo
+                description="A digital menu generator that lets you to create the best menu for your restaurant. Menufic is packed with several features that will boost the online presence of your restaurant with ease"
+                title="Digital menu generator"
+            />
             <NavHeader showLoginButton withShadow />
             <Hero />
             <Steps />

@@ -1,9 +1,9 @@
 import { Alert, Container, Text, useMantineTheme } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
+import { NextSeo } from "next-seo";
 import superjson from "superjson";
 
 import type { GetServerSidePropsContext, NextPage } from "next";
@@ -25,10 +25,10 @@ const RestaurantMenuPreviewPage: NextPage = () => {
 
     return (
         <>
-            <Head>
-                <title>Menufic - Restaurant Preview</title>
-                <meta content="Preview how the published restaurant menu would look like" name="description" />
-            </Head>
+            <NextSeo
+                description="Preview how the published restaurant menu would look like"
+                title="Restaurant Preview"
+            />
             <main>
                 <Container py="lg" size="xl">
                     <Alert

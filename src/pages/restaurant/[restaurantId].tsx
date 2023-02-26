@@ -2,9 +2,9 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Box, Breadcrumbs, Center, Loader, SimpleGrid, Text, useMantineTheme } from "@mantine/core";
 import { IconChartDots, IconSlideshow, IconStars, IconToolsKitchen } from "@tabler/icons";
 import { type NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { NextSeo } from "next-seo";
 
 import { AppShell } from "src/components/AppShell";
 import { IconCard } from "src/components/Cards";
@@ -32,10 +32,7 @@ const RestaurantManagePage: NextPage = () => {
 
     return (
         <>
-            <Head>
-                <title>Menufic - Manage Restaurant</title>
-                <meta content="Manage your restaurant's menus and banners" name="description" />
-            </Head>
+            <NextSeo description="Manage your restaurant's menus and banners" title="Manage Restaurant" />
             <main>
                 <AppShell>
                     <Box ref={itemsParent}>

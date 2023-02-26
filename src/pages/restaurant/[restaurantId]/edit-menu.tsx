@@ -3,9 +3,9 @@ import { useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Box, Breadcrumbs, Center, Grid, Loader, SimpleGrid, Text } from "@mantine/core";
 import { type NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { NextSeo } from "next-seo";
 
 import type { Menu } from "@prisma/client";
 
@@ -37,10 +37,7 @@ const EditMenuPage: NextPage = () => {
 
     return (
         <>
-            <Head>
-                <title>Menufic - Edit Menu</title>
-                <meta content="Manage the menus of your restaurant" name="description" />
-            </Head>
+            <NextSeo description="Manage the menus of your restaurant" title="Edit Menu" />
             <main>
                 <AppShell>
                     <Box ref={rootParent}>

@@ -5,7 +5,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Box, Center, Flex, Loader, SimpleGrid, Title } from "@mantine/core";
 import { IconCirclePlus } from "@tabler/icons";
 import { type NextPage } from "next";
-import Head from "next/head";
+import { NextSeo } from "next-seo";
 
 import type { Image, Restaurant } from "@prisma/client";
 
@@ -78,10 +78,7 @@ const RestaurantsListPage: NextPage = () => {
 
     return (
         <>
-            <Head>
-                <title>Menufic - Restaurants</title>
-                <meta content="Manage all of the restaurants that you've created" name="description" />
-            </Head>
+            <NextSeo description="Manage all of the restaurants that you've created" title="Restaurants" />
             <main>
                 <AppShell>
                     <Flex align="center" justify="space-between">

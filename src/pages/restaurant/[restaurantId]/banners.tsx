@@ -5,9 +5,9 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Box, Breadcrumbs, Center, Loader, SimpleGrid, Text } from "@mantine/core";
 import { IconCirclePlus } from "@tabler/icons";
 import { type NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { NextSeo } from "next-seo";
 
 import type { Image } from "@prisma/client";
 
@@ -86,10 +86,7 @@ const BannersPage: NextPage = () => {
 
     return (
         <>
-            <Head>
-                <title>Menufic - Banners</title>
-                <meta content="Manage the banners of your restaurant" name="description" />
-            </Head>
+            <NextSeo description="Manage the banners of your restaurant" title="Banners" />
             <main>
                 <AppShell>
                     <Box>

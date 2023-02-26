@@ -1,7 +1,7 @@
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Box, Center, Loader, SimpleGrid, Text, Title, useMantineTheme } from "@mantine/core";
 import { type NextPage } from "next";
-import Head from "next/head";
+import { NextSeo } from "next-seo";
 
 import { AppShell } from "src/components/AppShell";
 import { ImageCard } from "src/components/Cards";
@@ -18,10 +18,7 @@ const ExplorePage: NextPage = () => {
     const [itemsParent] = useAutoAnimate<HTMLDivElement>();
     return (
         <>
-            <Head>
-                <title>Menufic - Explore restaurants</title>
-                <meta content="Explore restaurants created and published by others" name="description" />
-            </Head>
+            <NextSeo description="Explore restaurants created and published by others" title="Explore restaurants" />
             <main>
                 <AppShell>
                     <Title order={1}>Explore Restaurants</Title>

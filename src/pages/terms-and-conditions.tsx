@@ -1,6 +1,6 @@
 import { Container, List, Text, Title, useMantineTheme } from "@mantine/core";
 import { type NextPage } from "next";
-import Head from "next/head";
+import { NextSeo } from "next-seo";
 
 import { Footer } from "src/components/Footer";
 import { NavHeader } from "src/components/Header";
@@ -11,13 +11,10 @@ const TermsAndConditionsPage: NextPage = () => {
     const theme = useMantineTheme();
     return (
         <>
-            <Head>
-                <title>Menufic - Terms & Conditions</title>
-                <meta
-                    content="The Terms and conditions that needs to be agreed before using Menufic"
-                    name="description"
-                />
-            </Head>
+            <NextSeo
+                description="The Terms and conditions that needs to be agreed before using Menufic"
+                title="Terms & Conditions"
+            />
 
             <NavHeader showLoginButton />
 
