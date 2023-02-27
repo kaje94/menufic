@@ -156,10 +156,10 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                             <ImageKitImage
                                 blurhash={banner.blurHash}
                                 color={banner.color}
-                                height={300}
+                                height={400}
                                 imageAlt={`${restaurant.name}-banner-${index}`}
                                 imagePath={banner.path}
-                                width={750}
+                                width={1000}
                             />
                             <Box className={classes.carousalOverlay} />
                         </Carousel.Slide>

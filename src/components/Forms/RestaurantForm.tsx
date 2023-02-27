@@ -120,13 +120,13 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                     <ImageUpload
                         disabled={loading}
                         error={!!errors.imagePath}
-                        height={300}
+                        height={400}
                         imageHash={restaurant?.image?.blurHash}
                         imageRequired
                         imageUrl={values?.imagePath}
                         onImageCrop={(imageBase64, imagePath) => setValues({ imageBase64, imagePath })}
                         onImageDeleteClick={() => setValues({ imageBase64: "", imagePath: "" })}
-                        width={750}
+                        width={1000}
                     />
                     <Text color={theme.colors.red[7]} size="xs">
                         {errors.imagePath}

@@ -62,7 +62,7 @@ export const BannerForm: FC<Props> = ({ opened, onClose, restaurantId, ...rest }
                     <ImageUpload
                         disabled={isCreating}
                         error={!!errors.imageBase64}
-                        height={300}
+                        height={400}
                         imageRequired
                         imageUrl={imagePath}
                         onImageCrop={(imageBase64, newImagePath) => {
@@ -73,7 +73,7 @@ export const BannerForm: FC<Props> = ({ opened, onClose, restaurantId, ...rest }
                             setValues({ imageBase64: "" });
                             setImagePath("");
                         }}
-                        width={750}
+                        width={1000}
                     />
                     <Text color={theme.colors.red[7]} size="xs">
                         {errors.imageBase64}
