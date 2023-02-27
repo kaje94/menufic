@@ -35,7 +35,7 @@ const footerLinks = [
 /** Footer to be shown throughout the app */
 export const CustomFooter: FC = () => {
     const { classes, theme } = useStyles();
-    const isNotMobile = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px)`);
+    const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
 
     const items = footerLinks.map((link) => (
         <Link key={link.label} className={classes.linkItem} href={link.link}>
@@ -44,7 +44,7 @@ export const CustomFooter: FC = () => {
     ));
 
     return (
-        <Footer className={classes.footer} height={isNotMobile ? 50 : 90}>
+        <Footer className={classes.footer} height={isMobile ? 90 : 50}>
             <Container className={classes.inner} size="xl">
                 <Link className={classes.copyRights} href="/">
                     © 2023 Copyright: Menufic

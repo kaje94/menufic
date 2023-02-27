@@ -1,5 +1,4 @@
-import { Container, useMantineTheme } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { Container } from "@mantine/core";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -21,8 +20,6 @@ const RestaurantMenuPage: NextPage = () => {
     const router = useRouter();
     const { status } = useSession();
     const restaurantId = router.query?.restaurantId as string;
-    const theme = useMantineTheme();
-    const isNotMobile = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px)`);
 
     const { data: restaurant } = api.restaurant.getDetails.useQuery(
         { id: restaurantId },
@@ -32,7 +29,6 @@ const RestaurantMenuPage: NextPage = () => {
     return (
         <>
             <NextSeo
-                defaultTitle="dasd"
                 description={`Menu of restaurant ${restaurant?.name}. Location: ${restaurant?.location}. ${
                     restaurant?.contactNo ? `Contact Number: ${restaurant.contactNo}.` : ""
                 } This menu was generated using Menufic.com`}
@@ -49,7 +45,7 @@ const RestaurantMenuPage: NextPage = () => {
                         <RestaurantMenu restaurant={restaurant} />
                     ) : (
                         <Empty
-                            height={`calc(100vh - ${isNotMobile ? 100 : 135}px)`}
+                            height="calc(100vh - 100px)"
                             text="This restaurant details are unavailable at the moment. We are sorry for the inconvenience. Please try again in a while"
                         />
                     )}

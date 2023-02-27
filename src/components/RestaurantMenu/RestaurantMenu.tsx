@@ -3,7 +3,18 @@ import { useMemo, useRef, useState } from "react";
 
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Carousel } from "@mantine/carousel";
-import { ActionIcon, Box, createStyles, Flex, SimpleGrid, Tabs, Text, useMantineColorScheme } from "@mantine/core";
+import {
+    ActionIcon,
+    Box,
+    createStyles,
+    Flex,
+    MediaQuery,
+    SimpleGrid,
+    Stack,
+    Tabs,
+    Text,
+    useMantineColorScheme,
+} from "@mantine/core";
 import { IconMapPin, IconMoonStars, IconPhone, IconSun } from "@tabler/icons";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -40,10 +51,10 @@ const useStyles = createStyles((theme) => ({
         display: "flex",
         justifyContent: "space-between",
         opacity: 0.8,
-        [`@media (max-width: ${theme.breakpoints.xs}px)`]: { display: "grid", gap: 2 },
     },
     carousalTitle: {
         bottom: 0,
+        color: White,
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-end",
@@ -55,21 +66,27 @@ const useStyles = createStyles((theme) => ({
         zIndex: 1,
     },
     carousalTitleSubText: {
-        color: White,
         flex: 1,
         fontSize: 22,
         [`@media (max-width: ${theme.breakpoints.lg}px)`]: { fontSize: 18 },
         [`@media (max-width: ${theme.breakpoints.sm}px)`]: { fontSize: 14 },
     },
     carousalTitleText: {
-        color: White,
         fontSize: 40,
         fontWeight: "bold",
-        opacity: 0.85,
         [`@media (max-width: ${theme.breakpoints.lg}px)`]: { fontSize: 30 },
         [`@media (max-width: ${theme.breakpoints.sm}px)`]: { fontSize: 24 },
     },
-    headerImageBox: { borderRadius: theme.radius.lg, overflow: "hidden", position: "relative" },
+    darkFontColor: { color: theme.colors.dark[7] },
+    headerImageBox: {
+        aspectRatio: "3",
+        borderRadius: theme.radius.lg,
+        overflow: "hidden",
+        position: "relative",
+        [theme.fn.smallerThan("md")]: { aspectRatio: "2.5" },
+        [theme.fn.smallerThan("sm")]: { aspectRatio: "2" },
+    },
+    mobileTitleWrap: { color: theme.black, gap: 8, marginTop: theme.spacing.lg },
     switchThumb: { background: theme.fn.lighten(Black, 0.2) },
     switchTrack: { background: `${theme.fn.darken(White, 0.1)} !important`, border: "unset" },
     themeSwitch: {
@@ -123,7 +140,7 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                 <Carousel
                     className={classes.headerImageBox}
                     data-testid="restaurant-banner"
-                    height={300}
+                    height="100%"
                     loop
                     mx="auto"
                     onMouseEnter={bannerCarousalRef.current.stop}
@@ -148,26 +165,43 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                         </Carousel.Slide>
                     ))}
                 </Carousel>
-                <Box className={classes.carousalTitle}>
-                    <Text className={classes.carousalTitleText}>{restaurant?.name}</Text>
-                    <Box className={classes.carousalSubWrap}>
-                        <Flex align="center" gap={10}>
-                            <IconMapPin color={White} />
-                            <Text className={classes.carousalTitleSubText}>{restaurant?.location}</Text>
-                        </Flex>
-                        {restaurant?.contactNo && (
+                <MediaQuery smallerThan="xs" styles={{ display: "none" }}>
+                    <Box className={classes.carousalTitle}>
+                        <Text className={classes.carousalTitleText}>{restaurant?.name}</Text>
+                        <Box className={classes.carousalSubWrap}>
                             <Flex align="center" gap={10}>
-                                <IconPhone color={White} />
-                                <Text className={classes.carousalTitleSubText}>{restaurant?.contactNo}</Text>
+                                <IconMapPin />
+                                <Text className={classes.carousalTitleSubText}>{restaurant?.location}</Text>
                             </Flex>
-                        )}
+                            {restaurant?.contactNo && (
+                                <Flex align="center" gap={10}>
+                                    <IconPhone />
+                                    <Text className={classes.carousalTitleSubText}>{restaurant?.contactNo}</Text>
+                                </Flex>
+                            )}
+                        </Box>
                     </Box>
-                </Box>
+                </MediaQuery>
                 <ActionIcon className={classes.themeSwitch} onClick={() => toggleColorScheme()} size="lg">
                     {colorScheme === "dark" ? <IconSun size={18} strokeWidth={2.5} /> : <IconMoonStars size={18} />}
                 </ActionIcon>
             </Box>
 
+            <MediaQuery largerThan="xs" styles={{ display: "none" }}>
+                <Stack className={classes.mobileTitleWrap}>
+                    <Text className={classes.carousalTitleText}>{restaurant?.name}</Text>
+                    <Flex align="center" gap={10} opacity={0.6}>
+                        <IconMapPin />
+                        <Text className={classes.carousalTitleSubText}>{restaurant?.location}</Text>
+                    </Flex>
+                    {restaurant?.contactNo && (
+                        <Flex align="center" gap={10} opacity={0.6}>
+                            <IconPhone />
+                            <Text className={classes.carousalTitleSubText}>{restaurant?.contactNo}</Text>
+                        </Flex>
+                    )}
+                </Stack>
+            </MediaQuery>
             <Tabs my={40} onTabChange={setSelectedMenu} value={selectedMenu}>
                 <Tabs.List>
                     {restaurant?.menus?.map((menu) => (

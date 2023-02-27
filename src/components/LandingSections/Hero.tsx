@@ -11,7 +11,7 @@ import { LoginOptions } from "../LoginOptions";
 export const Hero: FC = () => {
     const { classes, theme } = useStyles();
     const { status } = useSession();
-    const isNotMobile = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px)`);
+    const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
 
     return (
         <BackgroundImage className={classes.headerBg} mih="calc(100vh - 60px)" src="/landing-hero-bg.svg">
@@ -43,7 +43,7 @@ export const Hero: FC = () => {
                                             </Button>
                                         </Link>
                                     ) : (
-                                        <LoginOptions position={isNotMobile ? "bottom" : "top"}>
+                                        <LoginOptions position={isMobile ? "top" : "bottom"}>
                                             <Button className={classes.getStartedButton} size="xl">
                                                 Get started for free
                                             </Button>

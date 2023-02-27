@@ -152,7 +152,7 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
 
                 {isPublished && (
                     <>
-                        <Box className="qr-code" mt="sm" p="md">
+                        <Box className="qr-code" mt="sm" p={50}>
                             <QRCode style={{ height: "auto", maxWidth: "100%", width: "100%" }} value={menuUrl} />
                         </Box>
 

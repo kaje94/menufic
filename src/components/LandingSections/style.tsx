@@ -112,6 +112,7 @@ export const useStyles = createStyles((theme) => {
             marginBottom: theme.spacing.md,
             marginTop: theme.spacing.md,
             textAlign: "center",
+            [theme.fn.smallerThan("sm")]: { fontSize: 28 },
         },
         stepIcon: { background: theme.white, borderColor: theme.colors.primary[4], color: theme.black },
         stepSeparator: { background: theme.black },

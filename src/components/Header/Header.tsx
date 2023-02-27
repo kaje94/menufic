@@ -90,7 +90,7 @@ export const NavHeader: FC<Props> = ({
 }) => {
     const theme = useMantineTheme();
     const { data: sessionData, status } = useSession();
-    const isNotMobile = useMediaQuery(`(min-width: ${theme.breakpoints.xs}px)`);
+    const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
     const { classes, cx } = useStyles({ withShadow });
     const router = useRouter();
@@ -168,17 +168,17 @@ export const NavHeader: FC<Props> = ({
                                     <>
                                         {status === "authenticated" ? (
                                             <Link href="/restaurant">
-                                                {isNotMobile ? (
-                                                    <Button size="md">Go to Dashboard</Button>
-                                                ) : (
+                                                {isMobile ? (
                                                     <ActionIcon className={classes.dashboardActionIcon} size={36}>
                                                         <IconHome />
                                                     </ActionIcon>
+                                                ) : (
+                                                    <Button size="md">Go to Dashboard</Button>
                                                 )}
                                             </Link>
                                         ) : (
                                             <LoginOptions>
-                                                <Button leftIcon={<IconLogin />} size={isNotMobile ? "md" : "sm"}>
+                                                <Button leftIcon={<IconLogin />} size={isMobile ? "sm" : "md"}>
                                                     Login
                                                 </Button>
                                             </LoginOptions>
