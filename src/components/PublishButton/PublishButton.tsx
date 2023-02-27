@@ -78,7 +78,10 @@ export const PublishButton: FC<Props> = ({ restaurant }: Props) => {
                 data-testid="publish-button"
                 leftIcon={isPublished ? <IconEye /> : <IconEyeOff />}
                 onClick={() => setModalVisible(true)}
-                sx={{ justifySelf: "flex-end" }}
+                sx={{
+                    justifySelf: "auto",
+                    [`@media (min-width: ${theme.breakpoints.xs}px)`]: { justifySelf: "flex-end" },
+                }}
                 variant={isPublished ? "filled" : "light"}
             >
                 {isPublished ? "Published" : "Not Published"}
