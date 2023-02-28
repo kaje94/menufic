@@ -1,7 +1,7 @@
 import type { FC, MouseEventHandler, PropsWithChildren } from "react";
 import { useMemo, useState } from "react";
 
-import { Button, LoadingOverlay, Popover, Stack } from "@mantine/core";
+import { Button, LoadingOverlay, Popover, Stack, useMantineTheme } from "@mantine/core";
 import { IconBrandGithub } from "@tabler/icons";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
@@ -27,12 +27,12 @@ const GoogleButton = (props: ButtonProps) => {
     return (
         <Button
             {...props}
-            color="gray"
+            bg={White}
             data-testid="google-login-button"
             leftIcon={<GoogleIcon />}
             radius="sm"
             size="lg"
-            sx={(theme) => ({ "&:hover": { boxShadow: theme.shadows.md } })}
+            sx={(theme) => ({ "&:hover": { backgroundColor: theme.colors.gray[2], boxShadow: theme.shadows.md } })}
             variant="default"
         />
     );
@@ -84,8 +84,15 @@ export const LoginOptionsContent: FC<LoginOptionsProps> = ({ loading = false, se
 /** Popover component to allow users to login using multiple providers */
 export const LoginOptions: FC<PopoverBaseProps & PropsWithChildren> = ({ children, ...rest }) => {
     const [loading, setLoading] = useState(false);
+    const theme = useMantineTheme();
     return (
-        <Popover onOpen={() => setLoading(false)} shadow="xl" withArrow {...rest}>
+        <Popover
+            onOpen={() => setLoading(false)}
+            shadow="xl"
+            styles={{ dropdown: { background: theme.white } }}
+            withArrow
+            {...rest}
+        >
             <Popover.Target>{children}</Popover.Target>
             <Popover.Dropdown>
                 <LoginOptionsContent loading={loading} setLoading={setLoading} />
