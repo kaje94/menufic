@@ -95,8 +95,9 @@ test("should add & delete second banner", async () => {
 });
 
 test("should add & edit menu", async () => {
-    await page.getByText(`${restaurantName}`).click();
-    await page.goto(`${page.url()}/edit-menu`);
+    await page.goto(`${process.env.TEST_MENUFIC_BASE_URL}/restaurant`);
+    await page.getByTestId(`restaurant-card-${restaurantName}`).click();
+    await page.getByTestId("manage-menus-card").click();
     await page.getByTestId("add-new-menu-button").click();
     await page.getByLabel("Name").fill("menu");
     await page.getByLabel("Available Time").fill("All day");
