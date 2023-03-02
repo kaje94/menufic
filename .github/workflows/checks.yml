@@ -14,6 +14,19 @@ jobs:
                   cache: "npm"
             - run: npm install
             - run: npm run lint
+    tsc:
+        name: Tsc
+        runs-on: ubuntu-latest
+        env:
+            SKIP_ENV_VALIDATION: true
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 16
+                  cache: "npm"
+            - run: npm install
+            - run: npm run tsc
     # sonar:
     #     name: Sonar scan
     #     runs-on: ubuntu-latest
