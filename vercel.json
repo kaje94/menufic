@@ -1,6 +1,6 @@
 {
     "framework": "nextjs",
     "git": {
-      "deploymentEnabled": false
+        "deploymentEnabled": false
     }
-  }
+}

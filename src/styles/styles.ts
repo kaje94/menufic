@@ -5,6 +5,7 @@ export const getStyles = (theme: MantineTheme): CSSObject => ({
     ".mantine-1n2375h:disabled": { backgroundColor: "unset", color: "unset" },
     ".mantine-Breadcrumbs-separator": { color: theme.colors.dark[6] },
     ".mantine-Button-root,.mantine-ActionIcon-root": { transition: "all 500ms ease" },
+    ".mantine-List-item": { color: theme.black },
     ".mantine-Modal-title": { color: theme.colors.dark[9] },
     ".mantine-Notification-root": { backgroundColor: theme.white },
     ".mantine-Notification-title,.mantine-Notification-description,.mantine-Textarea-label,.mantine-TextInput-label": {

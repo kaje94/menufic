@@ -38,13 +38,13 @@ const TermsAndConditionsPage: NextPage = () => {
                 ))}
                 <Title order={2}>{t("prohibitedUses.title")}</Title>
                 <Text>{t("prohibitedUses.desc")}</Text>
-                <List styles={{ item: { color: theme.black } }}>
+                <List>
                     {t.raw("prohibitedUses.items").map((item: string, index: number) => (
                         <List.Item key={`${index}`}>{item}</List.Item>
                     ))}
                 </List>
                 <Text>{t("prohibitedUses.additionalDesc")}</Text>
-                <List styles={{ item: { color: theme.black } }}>
+                <List>
                     {t.raw("prohibitedUses.additionalItems").map((item: string, index: number) => (
                         <List.Item key={`${index}`}>{item}</List.Item>
                     ))}
@@ -65,7 +65,7 @@ const TermsAndConditionsPage: NextPage = () => {
                 <Text>{t("copyrightPolicy.line3")}</Text>
                 <Title order={2}>{t("copyrightInfringement.title")}</Title>
                 <Text>{t("copyrightInfringement.desc")}</Text>
-                <List styles={{ item: { color: theme.black } }}>
+                <List>
                     {t.raw("copyrightInfringement.items").map((item: string, index: number) => (
                         <List.Item key={`${index}`}>{item}</List.Item>
                     ))}

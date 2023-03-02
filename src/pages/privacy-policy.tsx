@@ -34,7 +34,7 @@ const PrivacyPolicyPage: NextPage = () => {
                 <Text>{t("interpretationAndDefinitions.interpretation.content")}</Text>
                 <Title order={3}>{t("interpretationAndDefinitions.definitions.title")}</Title>
                 <Text>{t("interpretationAndDefinitions.definitions.subTitle")}</Text>
-                <List styles={{ item: { color: theme.black } }}>
+                <List>
                     {t
                         .raw("interpretationAndDefinitions.definitions.items")
                         .map((definition: { key: string; rest: string }) => (
@@ -54,7 +54,7 @@ const PrivacyPolicyPage: NextPage = () => {
                 <Title order={3}>{t("collectingPersonalData.dataTypes.title")}</Title>
                 <Title order={4}>{t("collectingPersonalData.dataTypes.personalData.title")}</Title>
                 <Text>{t("collectingPersonalData.dataTypes.personalData.desc")}</Text>
-                <List styles={{ item: { color: theme.black } }}>
+                <List>
                     {t.raw("collectingPersonalData.dataTypes.personalData.types").map((item: string) => (
                         <List.Item key={item}>
                             <Text>{item}</Text>
@@ -68,7 +68,7 @@ const PrivacyPolicyPage: NextPage = () => {
                 ))}
                 <Title order={4}>{t("collectingPersonalData.dataTypes.trackingCookies.title")}</Title>
                 <Text>{t("collectingPersonalData.dataTypes.trackingCookies.desc")}</Text>
-                <List styles={{ item: { color: theme.black } }}>
+                <List>
                     {t
                         .raw("collectingPersonalData.dataTypes.trackingCookies.cookieTypes")
                         .map((item: { key: string; rest: string }) => (
@@ -79,7 +79,7 @@ const PrivacyPolicyPage: NextPage = () => {
                 </List>
                 <Text>{t("collectingPersonalData.dataTypes.trackingCookies.cookieDesc")}</Text>
                 <Text>{t("collectingPersonalData.dataTypes.trackingCookies.purposeHeader")}</Text>
-                <List styles={{ item: { color: theme.black } }}>
+                <List>
                     {t
                         .raw("collectingPersonalData.dataTypes.trackingCookies.purposeList")
                         .map((item: { administeredBy: string; key: string; purpose: string; type: string }) => (
@@ -96,7 +96,7 @@ const PrivacyPolicyPage: NextPage = () => {
                 <Text>{t("collectingPersonalData.dataTypes.trackingCookies.moreInfo")}</Text>
                 <Title order={3}>{t("collectingPersonalData.useOfPersonalData.title")}</Title>
                 <Text>{t("collectingPersonalData.useOfPersonalData.purposeDesc")}</Text>
-                <List styles={{ item: { color: theme.black } }}>
+                <List>
                     {t
                         .raw("collectingPersonalData.useOfPersonalData.purposeList")
                         .map((item: { key: string; rest: string }) => (
@@ -108,7 +108,7 @@ const PrivacyPolicyPage: NextPage = () => {
                         ))}
                 </List>
                 <Text>{t("collectingPersonalData.useOfPersonalData.situationDesc")}</Text>
-                <List styles={{ item: { color: theme.black } }}>
+                <List>
                     {t
                         .raw("collectingPersonalData.useOfPersonalData.situationList")
                         .map((item: { key: string; rest: string }) => (
@@ -138,7 +138,7 @@ const PrivacyPolicyPage: NextPage = () => {
                 <Text>{t("collectingPersonalData.dataDisclosure.lawEnforcement.content")}</Text>
                 <Title order={4}>{t("collectingPersonalData.dataDisclosure.otherLegalRequirements.title")}</Title>
                 <Text>{t("collectingPersonalData.dataDisclosure.otherLegalRequirements.desc")}</Text>
-                <List styles={{ item: { color: theme.black } }}>
+                <List>
                     {t
                         .raw("collectingPersonalData.dataDisclosure.otherLegalRequirements.items")
                         .map((item: string, index: number) => (
@@ -161,7 +161,7 @@ const PrivacyPolicyPage: NextPage = () => {
                 ))}
                 <Title order={2}>{t("contactUs.title")}</Title>
                 <Text>{t("contactUs.desc")}</Text>
-                <List styles={{ item: { color: theme.black } }}>
+                <List>
                     <List.Item>
                         <Text>{t("contactUs.byEmail", { email: env.NEXT_PUBLIC_CONTACT_EMAIL })}</Text>
                     </List.Item>
