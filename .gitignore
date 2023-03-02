@@ -49,3 +49,5 @@ yarn-error.log*
 /.nyc_output
 /.nyc_coverage
 /.scannerwork
+
+TODO.md
