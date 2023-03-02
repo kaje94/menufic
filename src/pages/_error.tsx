@@ -2,6 +2,7 @@ import { Box, Button, Container, createStyles, Group, keyframes, Text, Title } f
 import * as Sentry from "@sentry/nextjs";
 import { type NextPage } from "next";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const floatingAnimation = keyframes`
 	0% { transform: translateY(0px) }
@@ -39,6 +40,7 @@ const useStyles = createStyles((theme) => ({
 /** Generic error page to handle both server side errors and client side 404 errors */
 const ErrorPage: NextPage = ({ statusCode = 0 }: { statusCode?: number }) => {
     const { classes } = useStyles();
+    const t = useTranslations("errorPage");
 
     return (
         <Container className={classes.root}>
@@ -46,10 +48,10 @@ const ErrorPage: NextPage = ({ statusCode = 0 }: { statusCode?: number }) => {
             <Title className={classes.title}>
                 {
                     {
-                        401: "No authorization found",
-                        404: "You have found a secret place.",
-                        500: "Internal server error",
-                        default: "Aaaah! Something went wrong",
+                        401: t("401.title"),
+                        404: t("404.title"),
+                        500: t("500.title"),
+                        default: t("defaultMessage"),
                     }[statusCode]
                 }
             </Title>
@@ -57,16 +59,16 @@ const ErrorPage: NextPage = ({ statusCode = 0 }: { statusCode?: number }) => {
             <Text align="center" className={classes.description} size="lg">
                 {
                     {
-                        401: "You do not have permission to access the requested page. Please login and try again",
-                        404: "Unfortunately, this is only a 404 page. You may have mistyped the address, or the page has been moved to another URL.",
-                        500: "Oops, something went wrong in the server",
+                        401: t("401.description"),
+                        404: t("404.description"),
+                        500: t("500.description"),
                     }[statusCode]
                 }
             </Text>
             <Group position="center">
                 <Link href="/">
                     <Button size="md" variant="subtle">
-                        Take me back to home page
+                        {t("homePageButtonLabel")}
                     </Button>
                 </Link>
             </Group>
@@ -79,7 +81,8 @@ ErrorPage.getInitialProps = async (contextData) => {
     await Sentry.captureUnderscoreErrorException(contextData);
     const errorAsPath = Number.isNaN(Number(asPath?.substring(1))) ? 0 : Number(asPath?.substring(1));
     const statusCode = res?.statusCode || err?.statusCode || errorAsPath || 404;
-    return { statusCode };
+    const messages = (await import("src/lang/en.json")).default;
+    return { messages, statusCode };
 };
 
 export default ErrorPage;

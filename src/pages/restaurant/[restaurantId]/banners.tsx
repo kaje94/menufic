@@ -7,6 +7,7 @@ import { IconCirclePlus } from "@tabler/icons";
 import { type NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useTranslations } from "next-intl";
 import { NextSeo } from "next-seo";
 
 import type { Image } from "@prisma/client";
@@ -26,15 +27,17 @@ const BannerCard: FC<{ index?: number; item: Image; restaurantName?: string }> =
     const router = useRouter();
     const [deleteFormOpen, setDeleteFormOpen] = useState(false);
     const restaurantId = router.query?.restaurantId as string;
+    const t = useTranslations("dashboard.banner");
+    const tCommon = useTranslations("common");
 
     const { mutate: deleteRestaurant, isLoading: isDeleting } = api.restaurant.deleteBanner.useMutation({
-        onError: (err) => showErrorToast("Failed to create banner", err),
+        onError: (err) => showErrorToast(t("deleteError"), err),
         onSettled: () => setDeleteFormOpen(false),
         onSuccess: (data) => {
             trpcCtx.restaurant.getBanners.setData({ id: restaurantId }, (banners = []) =>
                 banners.filter((bannerItem) => bannerItem.id !== data.id)
             );
-            showSuccessToast("Successfully deleted", `Deleted the banner of the restaurant successfully`);
+            showSuccessToast(tCommon("deleteSuccess"), t("deleteSuccessDesc"));
         },
     });
 
@@ -47,12 +50,12 @@ const BannerCard: FC<{ index?: number; item: Image; restaurantName?: string }> =
                 testId={`banner-card-${index}`}
             />
             <DeleteConfirmModal
-                description="Are you sure, you want to delete this restaurant banner? This action action cannot be undone"
+                description={t("deleteModalDesc")}
                 loading={isDeleting}
                 onClose={() => setDeleteFormOpen(false)}
                 onDelete={() => deleteRestaurant({ id: item.id, restaurantId })}
                 opened={deleteFormOpen}
-                title="Delete restaurant banner?"
+                title={t("deleteModalTitle")}
             />
         </>
     );
@@ -64,13 +67,12 @@ const BannersPage: NextPage = () => {
     const [bannerFormOpen, setBannerFormOpen] = useState(false);
     const restaurantId = router.query?.restaurantId as string;
     const [gridItemParent] = useAutoAnimate<HTMLDivElement>();
+    const t = useTranslations("dashboard.banner");
+    const tRestaurant = useTranslations("dashboard.restaurantManage");
 
     const { data: banners = [], isLoading: loadingBanners } = api.restaurant.getBanners.useQuery(
         { id: restaurantId },
-        {
-            enabled: !!restaurantId,
-            onError: () => showErrorToast("Failed to retrieve banners"),
-        }
+        { enabled: !!restaurantId, onError: () => showErrorToast(t("fetchError")) }
     );
 
     const { data: restaurant, isLoading } = api.restaurant.get.useQuery(
@@ -78,7 +80,7 @@ const BannersPage: NextPage = () => {
         {
             enabled: !!restaurantId,
             onError: () => {
-                showErrorToast("Failed to retrieve restaurant details");
+                showErrorToast(tRestaurant("restaurantFetchError"));
                 router.push("/restaurant");
             },
         }
@@ -86,7 +88,7 @@ const BannersPage: NextPage = () => {
 
     return (
         <>
-            <NextSeo description="Manage the banners of your restaurant" title="Banners" />
+            <NextSeo description={t("seoDescription")} title={t("seoTitle")} />
             <main>
                 <AppShell>
                     <Box>
@@ -103,9 +105,9 @@ const BannersPage: NextPage = () => {
                                     ]}
                                 >
                                     <Breadcrumbs>
-                                        <Link href="/restaurant">Restaurant</Link>
+                                        <Link href="/restaurant">{tRestaurant("breadcrumb")}</Link>
                                         <Link href={`/restaurant/${restaurant?.id}`}>{restaurant?.name}</Link>
-                                        <Text>Banners</Text>
+                                        <Text>{t("breadcrumb")}</Text>
                                     </Breadcrumbs>
                                     {restaurant && <PublishButton restaurant={restaurant} />}
                                 </SimpleGrid>
@@ -132,9 +134,9 @@ const BannersPage: NextPage = () => {
                                                 key="add-new-banner"
                                                 Icon={IconCirclePlus}
                                                 onClick={() => setBannerFormOpen(true)}
-                                                subTitle="Start creating a new restaurant menu by adding a new restaurant"
+                                                subTitle={t("addNewCardSubTitle")}
                                                 testId="add-new-banner"
-                                                title="Add new banner"
+                                                title={t("addNewCardTitle")}
                                             />
                                         )}
                                 </SimpleGrid>
@@ -154,5 +156,9 @@ const BannersPage: NextPage = () => {
         </>
     );
 };
+
+export const getStaticProps = async () => ({ props: { messages: (await import("src/lang/en.json")).default } });
+
+export const getStaticPaths = async () => ({ fallback: "blocking", paths: [] });
 
 export default BannersPage;

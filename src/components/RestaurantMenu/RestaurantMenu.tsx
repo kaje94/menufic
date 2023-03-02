@@ -17,6 +17,7 @@ import {
 } from "@mantine/core";
 import { IconMapPin, IconMoonStars, IconPhone, IconSun } from "@tabler/icons";
 import Autoplay from "embla-carousel-autoplay";
+import { useTranslations } from "next-intl";
 
 import type { Category, Image, Menu, MenuItem, Restaurant } from "@prisma/client";
 
@@ -118,6 +119,7 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
     const [menuParent] = useAutoAnimate<HTMLDivElement>();
     const [selectedMenu, setSelectedMenu] = useState<string | null | undefined>(restaurant?.menus?.[0]?.id);
+    const t = useTranslations("menu");
 
     const menuDetails = useMemo(
         () => restaurant?.menus?.find((item) => item.id === selectedMenu),
@@ -239,17 +241,9 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                         </Box>
                     ))}
                 {restaurant?.menus?.length === 0 && !haveMenuItems && (
-                    <Empty
-                        height={400}
-                        text="There aren't any menus available for this restaurant. Try checking out later"
-                    />
+                    <Empty height={400} text={t("noMenusForRestaurant")} />
                 )}
-                {!!restaurant?.menus?.length && !haveMenuItems && (
-                    <Empty
-                        height={400}
-                        text="There aren't any menu items for the chosen restaurant menu. Try checking out later."
-                    />
-                )}
+                {!!restaurant?.menus?.length && !haveMenuItems && <Empty height={400} text={t("noItemsForMenu")} />}
             </Box>
         </Box>
     );

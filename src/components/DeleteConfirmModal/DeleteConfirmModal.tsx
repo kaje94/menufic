@@ -1,6 +1,7 @@
 import type { FC } from "react";
 
 import { Button, Group, Text, useMantineTheme } from "@mantine/core";
+import { useTranslations } from "next-intl";
 
 import type { ModalProps } from "@mantine/core";
 
@@ -18,6 +19,8 @@ interface Props extends ModalProps {
 /** Modal to be shown in order to get confirmation from user before deleting any data */
 export const DeleteConfirmModal: FC<Props> = ({ title, description, loading, onDelete, ...rest }) => {
     const theme = useMantineTheme();
+    const t = useTranslations("common");
+
     return (
         <Modal loading={loading} size="sm" title={title} {...rest}>
             <Text color={theme.black} component="p">
@@ -25,7 +28,7 @@ export const DeleteConfirmModal: FC<Props> = ({ title, description, loading, onD
             </Text>
             <Group mt="md" position="right">
                 <Button color="red" data-testid="confirm-delete-modal-btn" loading={loading} onClick={onDelete} px="xl">
-                    Confirm Delete
+                    {t("confirmDelete")}
                 </Button>
             </Group>
         </Modal>

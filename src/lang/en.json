@@ -1,0 +1,746 @@
+{
+    "common": {
+        "title": "Menufic",
+        "edit": "Edit",
+        "save": "Save",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "confirmDelete": "Confirm Delete",
+        "deleteSuccess": "Successfully deleted",
+        "createSuccess": "Successfully created",
+        "updateSuccess": "Successfully updated",
+        "privacyPolicy": "Privacy Policy",
+        "terms&Conditions": "Terms & Conditions",
+        "footerCopyright": "© 2023 Copyright: Menufic",
+        "login": "Login",
+        "logout": "Logout",
+        "openDashboard": "Go to Dashboard",
+        "googleSignIn": "Sign in with Google",
+        "githubSignIn": "Sign in with GitHub"
+    },
+    "errorPage": {
+        "defaultMessage": "Aaaah! Something went wrong",
+        "homePageButtonLabel": "Take me back to home page",
+        "401": {
+            "title": "No authorization found",
+            "description": "You do not have permission to access the requested page. Please login and try again"
+        },
+        "404": {
+            "title": "You have found a secret place.",
+            "description": "Unfortunately, this is only a 404 page. You may have mistyped the address, or the page has been moved to another URL."
+        },
+        "500": {
+            "title": "Internal server error",
+            "description": "Oops, something went wrong in the server"
+        }
+    },
+    "landing": {
+        "hero": {
+            "tagLine1": "The best way to create",
+            "tagLine2": "Digital Menus",
+            "tagLine3": "for your restaurant",
+            "getStarted": "Get started for free"
+        },
+        "steps": {
+            "title": "How it works?",
+            "stepItems": [
+                {
+                    "title": "Create restaurant",
+                    "description": "Create your restaurant with basic details"
+                },
+                {
+                    "title": "Add content",
+                    "description": "Add menu related content to your restaurant"
+                },
+                {
+                    "title": "Publish restaurant",
+                    "description": "Publish your restaurant in order to make it accessible by anyone"
+                },
+                {
+                    "title": "Share",
+                    "description": "Share the generated QR code or the menu URL with the rest of the world"
+                }
+            ]
+        },
+        "features": {
+            "tagLine": "Why Menufic?",
+            "title": "Build your restaurant's menu with ease",
+            "subTitle": " Menufic has several awesome features that makes it perfect to take your restaurant's menu to the next level",
+            "featuresItems": [
+                {
+                    "key": "webOptimized",
+                    "title": "Optimized for the web",
+                    "description": "The generated menu page has been optimized for search engines as well as for social media crawlers and this will assure that your restaurant menu has a higher reach."
+                },
+                {
+                    "key": "themeSupport",
+                    "title": "Dark and Light themes",
+                    "description": "As Menufic supports both Light and dark themes, you and your restaurant customers will have the independence to switch between these two modes."
+                },
+                {
+                    "key": "banners",
+                    "title": "Promotions using banners",
+                    "description": "Add multiple banners to your restaurant which can help you to convey details such as offers or promotions to your customers."
+                },
+                {
+                    "key": "organize",
+                    "title": "Organize your data easily",
+                    "description": "Menufic provides an intuitive interface to easily manage your menus. Each restaurant can have multiple menus with multiple sub categories."
+                },
+                {
+                    "key": "responsiveDesign",
+                    "title": "View from any device",
+                    "description": "Customers can view your digital menu from the safety of their personal devices at any time, without any app install. The menu is built to adapt its layout based on the user's device."
+                },
+                {
+                    "key": "qrCode",
+                    "title": "QR code",
+                    "description": "Generate a QR code, print and share it with your customers by simply placing it on your restaurant tables, entrance, food packaging or delivery vehicles."
+                }
+            ]
+        },
+        "sampleMenu": {
+            "title": "What is your digital menu going to look like?",
+            "subTitle": "Scan this QR code or click the following button to view a sample menu",
+            "buttonLabel": "Sample Menu"
+        },
+        "pricing": {
+            "title": "Pricing",
+            "freeTier": {
+                "label": "Free",
+                "maxRestaurantCount": "Create up to {count} restaurants",
+                "maxMenuCount": "Add up to {count} menus per restaurant",
+                "maxCategoryCount": "Add up to {count} categories per menu",
+                "maxMenuItemCount": "Add up to {count} items per category",
+                "maxBannerCount": "Add up to {count} banners per restaurant",
+                "supportType": "Basic support",
+                "getStartedBtnLabel": "Get Started"
+            },
+            "enterpriseTier": {
+                "label": "Enterprise",
+                "maxRestaurantCount": "Create any number of restaurants",
+                "maxMenuCount": "Add any number of menus per restaurant",
+                "maxCategoryCount": "Add any number of categories per menu",
+                "maxMenuItemCount": "Add any number of items per category",
+                "maxBannerCount": "Add any number of banners per restaurant",
+                "supportType": "Basic support",
+                "contactUsButtonLabel": "Contact us"
+            }
+        },
+        "contactUs": {
+            "title": "Get in touch",
+            "name": { "label": "Name", "placeholder": "Your name" },
+            "email": { "label": "Email", "placeholder": "user@email.com" },
+            "subject": { "label": "Subject", "placeholder": "Subject" },
+            "message": { "label": "Message", "placeholder": "Your message" },
+            "submitButtonLabel": "Send message"
+        },
+        "aboutUs": {
+            "title": "About Us",
+            "subtitle": {
+                "line1": "Menufic is an ",
+                "line2": "open source ",
+                "line3": "project built with "
+            },
+            "goal": "Our goal is to provide a simple and effective solution that restaurants could use to improve their reach and enhance how their customers interact with them.",
+            "appreciation": "We highly appreciate any feedback or contribution that could help us improve.",
+            "githubButtonLabel": "Github"
+        }
+    },
+    "menu": {
+        "noMenusForRestaurant": "There aren't any menus available for this restaurant. Try checking out later",
+        "noItemsForMenu": "There aren't any menu items for the chosen restaurant menu. Try checking out later.",
+        "noDetailsAvailable": "This restaurant details are unavailable at the moment. We are sorry for the inconvenience. Please try again in a while",
+        "seoTitle": "{name} Menu",
+        "seoDescription": {
+            "restaurantName": "Menu of restaurant {name}",
+            "restaurantLocation": "Location: {location}.",
+            "restaurantContactNo": " Contact Number: {contactNo}.",
+            "menufic": "This menu was generated using Menufic.com"
+        }
+    },
+    "preview": {
+        "seoTitle": "Restaurant Preview",
+        "seoDescription": "Preview how the published restaurant menu would look like",
+        "alertTitle": "Preview mode",
+        "alertContent": "This preview URL is not meant to be shared with anyone.",
+        "alertDesc": " Once you have finalized your changes, you will be able to publish your restaurant menu and generate a sharable URL which can then be shared with your customers."
+    },
+    "dashboard": {
+        "noContent": "whoops, nothing to see here ...",
+        "imageUpload": {
+            "titleLabel": "Image",
+            "uploadHelperText": "Drag a jpeg image here or click to select a jpeg image file",
+            "zoom": "Zoom",
+            "rotation": "Rotation",
+            "crop": "Crop",
+            "cropModalTitle": "Crop Image"
+        },
+        "publishButton": {
+            "statusUpdateError": "Failed to update status of the restaurant menu",
+            "publishedBtnLabel": "Published",
+            "notPublishedBtnLabel": "Not Published",
+            "modalTitle": "Publish and share your menu",
+            "modalAlertPublishedTitle": "Menu is published",
+            "modalAlertNotPublishedTitle": "Menu is not published",
+            "publishedMenuDesc": "Changes to the menu could take around 30 minutes to be reflected in the published menu page",
+            "publishedMenuUrlLabel": "Published menu URL",
+            "copyUrlTooltip": "Copy URL",
+            "copiedUrlTooltip": "URL copied",
+            "notPublishedMenuDesc": "Please publish the menu once you have finalized your changes. Once published, you will be able to either share the direct URL or the QR code for your menu, with your customers",
+            "publishSwitchLabel": "Publish Menu",
+            "downloadQrButtonLabel": "Download QR code",
+            "previewUrlAlertTitle": "Preview URL",
+            "previewUrlAlertDesc": "The following URL can be used for testing purposes as it will mimic the interface of actual menu while also updating in real time"
+        },
+        "editMenu": {
+            "seoTitle": "Edit Menu",
+            "seoDescription": "Manage the menus of your restaurant",
+            "breadcrumb": "Menu",
+            "menu": {
+                "fetchError": "Failed to retrieve menus",
+                "positionUpdateError": "Failed to update the position of menu",
+                "deleteMenuError": "Failed to delete restaurant menu",
+                "addMenuLabel": "Add Menu",
+                "deleteConfirmTitle": "Delete {name} menu",
+                "deleteConfirmDesc": "Are you sure, you want to delete this menu? This action will also delete all the categories & items associated with this menu and cannot be undone",
+                "deleteSuccessToast": "Deleted the menu {name} and related details successfully",
+                "createModalTitle": "Create Menu",
+                "createError": "Failed to create menu for restaurant",
+                "createSuccessDesc": "Created a new menu {name} successfully",
+                "updateModalTitle": "Update Menu",
+                "updateError": "Failed to update menu",
+                "updateSuccessDesc": "Updated details of ${data.name} menu successfully",
+                "inputNameLabel": "Name",
+                "inputNamePlaceholder": "Menu Name",
+                "inputTimeLabel": "Available Time",
+                "inputTimePlaceholder": "10.00 AM - 9.00 PM"
+            },
+            "category": {
+                "fetchError": "Failed to retrieve categories and menu items",
+                "positionUpdateError": "Failed to update category position",
+                "deleteCategoryError": "Failed to delete category",
+                "addCategoryLabel": "Add Category",
+                "deleteConfirmTitle": "Delete {name} category",
+                "deleteConfirmDesc": "Are you sure, you want to delete this category? This action will also delete all the items associated with this category and cannot be undone",
+                "deleteSuccessToast": "Deleted the category {name} and related menu items successfully",
+                "createModalTitle": "Create Category",
+                "createError": "Failed to create new category",
+                "createSuccessDesc": "Created a new category {name} successfully",
+                "updateModalTitle": "Update Category",
+                "updateError": "Failed to update category",
+                "updateSuccessDesc": "Updated details of {name} category successfully",
+                "inputNameLabel": "Name",
+                "inputNamePlaceholder": "Category Name"
+            },
+            "menuItem": {
+                "positionUpdateError": "Failed to update menu item position",
+                "deleteMenuItemError": "Failed to delete menu item",
+                "addMenuItemLabel": "Add Item",
+                "noImage": "No Image",
+                "noDescription": "No Description",
+                "deleteConfirmTitle": "Delete {name} item",
+                "deleteConfirmDesc": "Are you sure, you want to delete this menu item? This action cannot be undone",
+                "deleteSuccessToast": "Deleted the menu item {name} successfully",
+                "createModalTitle": "Create Menu Item",
+                "createError": "Failed to create menu item",
+                "createSuccessDesc": "Created a new menu item {name} successfully",
+                "updateModalTitle": "Update Menu Item",
+                "updateError": "Failed to update menu item",
+                "updateSuccessDesc": "Updated details of {name} category successfully",
+                "inputNameLabel": "Name",
+                "inputNamePlaceholder": "Item Name",
+                "inputPriceLabel": "Price",
+                "inputPricePlaceholder": "$10.00",
+                "inputDescriptionLabel": "Description"
+            }
+        },
+        "restaurant": {
+            "seoTitle": "Restaurants",
+            "seoDescription": "Manage all of the restaurants that you've created",
+            "navTitle": "Restaurants",
+            "addNewCardTitle": "Add new restaurant",
+            "addNewCardSubTitle": "Start creating a new digital menu by adding a new restaurant",
+            "headerTitle": "My Restaurants",
+            "createModalTitle": "Add Restaurant",
+            "createError": "Failed to create restaurant",
+            "createSuccessDesc": "Created new {name} restaurant successfully",
+            "updateModalTitle": "Edit Restaurant",
+            "updateError": "Failed to update restaurant",
+            "updateSuccessDesc": "Created restaurant {name}, successfully",
+            "inputNameLabel": "Name",
+            "inputNamePlaceholder": "Restaurant Name",
+            "inputLocationLabel": "Location",
+            "inputLocationPlaceholder": "No 05, Road Name, City",
+            "inputContactNoLabel": "Contact Number",
+            "inputContactNoPlaceholder": "+919367788755",
+            "fetchRestaurantsError": "Failed to retrieve restaurants",
+            "deleteModalTitle": "Delete restaurant {name}",
+            "deleteModalDesc": "Are you sure, you want to delete this restaurant? This action will also delete all the items associated with this restaurant and cannot be undone",
+            "deleteSuccessDesc": "Deleted the {name} restaurant and related details successfully",
+            "deleteError": "Failed to delete restaurant"
+        },
+        "restaurantManage": {
+            "seoTitle": "Manage Restaurant",
+            "seoDescription": "Manage your restaurant's menus and banners",
+            "restaurantFetchError": "Failed to retrieve restaurant details",
+            "breadcrumb": "Restaurant",
+            "menuCardTitle": "Menus",
+            "menuCardSubTitle": "Manage the menus, categories and individual menu items of your restaurant",
+            "bannersCardTitle": "Banners",
+            "bannersCardSubTitle": "Manage banners that could be used to display promotional content in your restaurant menu",
+            "feedbackCardTitle": "Feedback (Coming Soon)",
+            "feedbackCardSubTitle": "View feedback received from your restaurant customers",
+            "statsCardTitle": "Stats (Coming Soon)",
+            "statsCardSubTitle": "Gain insights on how many people view your published menu and which items are most popular"
+        },
+        "banner": {
+            "seoTitle": "Banners",
+            "seoDescription": "Manage the banners of your restaurant",
+            "breadcrumb": "Banners",
+            "fetchError": "Failed to retrieve banners",
+            "createError": "Failed to create banner for restaurant",
+            "createSuccessDesc": "Successfully created new banner for the restaurant",
+            "addModalTitle": "Add Banner",
+            "addNewCardTitle": "Add new banner",
+            "addNewCardSubTitle": "Start creating a new restaurant menu by adding a new restaurant",
+            "deleteError": "Failed to delete banner",
+            "deleteSuccessDesc": "Deleted the banner of the restaurant successfully",
+            "deleteModalTitle": "Delete restaurant banner?",
+            "deleteModalDesc": "Are you sure, you want to delete this restaurant banner? This action action cannot be undone"
+        },
+        "explore": {
+            "seoTitle": "Explore restaurants",
+            "seoDescription": "Explore restaurants created and published by others",
+            "navTitle": "Explore",
+            "pageTitle": "Explore Restaurants",
+            "pageSubTitle": "Following are the restaurants published by all users",
+            "fetchError": "Failed to retrieve published restaurants",
+            "noContent": "There aren't any published restaurants"
+        }
+    },
+    "privacyPolicy": {
+        "seoDescription": "This privacy policy page contains information on how Menufic handles customer data",
+        "lastUpdated": "Last updated: {date}",
+        "desc1": "This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.",
+        "desc2": "We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.",
+        "interpretationAndDefinitions": {
+            "title": "Interpretation and Definitions",
+            "interpretation": {
+                "title": "Interpretation",
+                "content": "The words of which the initial letter is capitalized have meanings defined under the following conditions. The following definitions shall have the same meaning regardless of whether they appear in singular or in plural."
+            },
+            "definitions": {
+                "title": "Definitions",
+                "subTitle": "For the purposes of this Privacy Policy:",
+                "items": [
+                    {
+                        "key": "Account",
+                        "rest": "means a unique account created for You to access our Service or parts of our Service."
+                    },
+                    {
+                        "key": "Company",
+                        "rest": "(referred to as either 'the Company', 'We', 'Us' or 'Our' in this Agreement) refers to Menufic."
+                    },
+                    {
+                        "key": "Cookies",
+                        "rest": "are small files that are placed on Your computer, mobile device or any other device by a website, containing the details of Your browsing history on that website among its many uses."
+                    },
+                    {
+                        "key": "Country",
+                        "rest": "refers to: Sri Lanka"
+                    },
+                    {
+                        "key": "Device",
+                        "rest": "means any device that can access the Service such as a computer, a cellphone or a digital tablet."
+                    },
+                    {
+                        "key": "Personal Data",
+                        "rest": "is any information that relates to an identified or identifiable individual."
+                    },
+                    {
+                        "key": "Service",
+                        "rest": "refers to the Website."
+                    },
+                    {
+                        "key": "Service Provider",
+                        "rest": "means any natural or legal person who processes the data on behalf of the Company. It refers to third-party companies or individuals employed by the Company to facilitate the Service, to provide the Service on behalf of the Company, to perform services related to the Service or to assist the Company in analyzing how the Service is used."
+                    },
+                    {
+                        "key": "Usage Data",
+                        "rest": "refers to data collected automatically, either generated by the use of the Service or from the Service infrastructure itself (for example, the duration of a page visit)."
+                    },
+                    {
+                        "key": "Website",
+                        "rest": "refers to Menufic, accessible from "
+                    },
+                    {
+                        "key": "You",
+                        "rest": "means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable."
+                    }
+                ]
+            }
+        },
+        "collectingPersonalData": {
+            "title": "Collecting and Using Your Personal Data",
+            "dataTypes": {
+                "title": "Types of Data Collected",
+                "personalData": {
+                    "title": "Personal Data",
+                    "desc": "While using Our Service, We may ask You to provide Us with certain personally identifiable information that can be used to contact or identify You. Personally identifiable information may include, but is not limited to:",
+                    "types": ["Email address", "First name and last name", "Usage Data"]
+                },
+                "usageData": {
+                    "title": "Usage Data",
+                    "desc": "Usage Data is collected automatically when using the Service.",
+                    "items": [
+                        "Usage Data may include information such as Your Device's Internet Protocol address (e.g. IP address), browser type, browser version, the pages of our Service that You visit, the time and date of Your visit, the time spent on those pages, unique device identifiers and other diagnostic data.",
+                        "When You access the Service by or through a mobile device, We may collect certain information automatically, including, but not limited to, the type of mobile device You use, Your mobile device unique ID, the IP address of Your mobile device, Your mobile operating system, the type of mobile Internet browser You use, unique device identifiers and other diagnostic data.",
+                        "We may also collect information that Your browser sends whenever You visit our Service or when You access the Service by or through a mobile device."
+                    ]
+                },
+                "trackingCookies": {
+                    "title": "Tracking Technologies and Cookies",
+                    "desc": "We use Cookies and similar tracking technologies to track the activity on Our Service and store certain information. Tracking technologies used are beacons, tags, and scripts to collect and track information and to improve and analyze Our Service. The technologies We use may include:",
+                    "cookieTypes": [
+                        {
+                            "key": "Cookies or Browser Cookies.",
+                            "rest": "A cookie is a small file placed on Your Device. You can instruct Your browser to refuse all Cookies or to indicate when a Cookie is being sent. However, if You do not accept Cookies, You may not be able to use some parts of our Service. Unless you have adjusted Your browser setting so that it will refuse Cookies, our Service may use Cookies."
+                        },
+                        {
+                            "key": "Web Beacons.",
+                            "rest": "Certain sections of our Service and our emails may contain small electronic files known as web beacons (also referred to as clear gifs, pixel tags, and single-pixel gifs) that permit the Company, for example, to count users who have visited those pages or opened an email and for other related website statistics (for example, recording the popularity of a certain section and verifying system and server integrity)."
+                        }
+                    ],
+                    "cookieDesc": "Cookies can be 'Persistent' or 'Session' Cookies. Persistent Cookies remain on Your personal computer or mobile device when You go offline, while Session Cookies are deleted as soon as You close.",
+                    "purposeHeader": "We use both Session and Persistent Cookies for the purposes set out below:",
+                    "purposeList": [
+                        {
+                            "key": "Necessary / Essential Cookies",
+                            "type": "Type: Session Cookies",
+                            "administeredBy": "Administered by: Us",
+                            "purpose": "Purpose: These Cookies are essential to provide You with services available through the Website and to enable You to use some of its features. They help to authenticate users and prevent fraudulent use of user accounts. Without these Cookies, the services that You have asked for cannot be provided, and We only use these Cookies to provide You with those services."
+                        },
+                        {
+                            "key": "Cookies Policy / Notice Acceptance Cookies",
+                            "type": "Type: Persistent Cookies",
+                            "administeredBy": "Administered by: Us",
+                            "purpose": "Purpose: These Cookies identify if users have accepted the use of cookies on the Website."
+                        },
+                        {
+                            "key": "Functionality Cookies",
+                            "type": "Type: Persistent Cookies",
+                            "administeredBy": "Administered by: Us",
+                            "purpose": " Purpose: These Cookies allow us to remember choices You make when You use the Website, such as remembering your login details or language preference. The purpose of these Cookies is to provide You with a more personal experience and to avoid You having to re-enter your preferences every time You use the Website."
+                        }
+                    ],
+                    "moreInfo": "For more information about the cookies we use and your choices regarding cookies, please visit our Cookies Policy or the Cookies section of our Privacy Policy."
+                }
+            },
+            "useOfPersonalData": {
+                "title": "Use of Your Personal Data",
+                "purposeDesc": "The Company may use Personal Data for the following purposes:",
+                "purposeList": [
+                    {
+                        "key": "To provide and maintain our Service",
+                        "rest": "including to monitor the usage of our Service."
+                    },
+                    {
+                        "key": "To manage Your Account:",
+                        "rest": "to manage Your registration as a user of the Service. The Personal Data You provide can give You access to different functionalities of the Service that are available to You as a registered user."
+                    },
+                    {
+                        "key": "For the performance of a contract:",
+                        "rest": "the development, compliance and undertaking of the purchase contract for the products, items or services You have purchased or of any other contract with Us through the Service."
+                    },
+                    {
+                        "key": "To contact You:",
+                        "rest": "To contact You by email, telephone calls, SMS, or other equivalent forms of electronic communication, such as a mobile application's push notifications regarding updates or informative communications related to the functionalities, products or contracted services, including the security updates, when necessary or reasonable for their implementation."
+                    },
+                    {
+                        "key": "To provide You",
+                        "rest": "with news, special offers and general information about other goods, services and events which we offer that are similar to those that you have already purchased or enquired about unless You have opted not to receive such information."
+                    },
+                    {
+                        "key": "To manage Your requests:",
+                        "rest": "To attend and manage Your requests to Us."
+                    },
+                    {
+                        "key": "For business transfers:",
+                        "rest": "We may use Your information to evaluate or conduct a merger, divestiture, restructuring, reorganization, dissolution, or other sale or transfer of some or all of Our assets, whether as a going concern or as part of bankruptcy, liquidation, or similar proceeding, in which Personal Data held by Us about our Service users is among the assets transferred."
+                    },
+                    {
+                        "key": "For other purposes:",
+                        "rest": "We may use Your information for other purposes, such as data analysis, identifying usage trends, determining the effectiveness of our promotional campaigns and to evaluate and improve our Service, products, services, marketing and your experience."
+                    }
+                ],
+                "situationDesc": "We may share Your personal information in the following situations:",
+                "situationList": [
+                    {
+                        "key": "With Service Providers:",
+                        "rest": "We may share Your personal information with Service Providers to monitor and analyze the use of our Service, to contact You."
+                    },
+                    {
+                        "key": "For business transfers:",
+                        "rest": "We may share or transfer Your personal information in connection with, or during negotiations of, any merger, sale of Company assets, financing, or acquisition of all or a portion of Our business to another company."
+                    },
+                    {
+                        "key": "With Affiliates:",
+                        "rest": "We may share Your information with Our affiliates, in which case we will require those affiliates to honor this Privacy Policy. Affiliates include Our parent company and any other subsidiaries, joint venture partners or other companies that We control or that are under common control with Us."
+                    },
+                    {
+                        "key": "For business transfers:",
+                        "rest": "We may share or transfer Your personal information in connection with, or during negotiations of, any merger, sale of Company assets, financing, or acquisition of all or a portion of Our business to another company."
+                    },
+                    {
+                        "key": "With other users:",
+                        "rest": "when You share personal information or otherwise interact in the public areas with other users, such information may be viewed by all users and may be publicly distributed outside."
+                    },
+                    {
+                        "key": "With Your consent:",
+                        "rest": "We may disclose Your personal information for any other purpose with Your consent."
+                    }
+                ]
+            },
+            "retentionOfData": {
+                "title": "Retention of Your Personal Data",
+                "items": [
+                    "The Company will retain Your Personal Data only for as long as is necessary for the purposes set out in this Privacy Policy. We will retain and use Your Personal Data to the extent necessary to comply with our legal obligations (for example, if we are required to retain your data to comply with applicable laws), resolve disputes, and enforce our legal agreements and policies.",
+                    "The Company will also retain Usage Data for internal analysis purposes. Usage Data is generally retained for a shorter period of time, except when this data is used to strengthen the security or to improve the functionality of Our Service, or We are legally obligated to retain this data for longer time periods."
+                ]
+            },
+            "transferOfData": {
+                "title": "Transfer of Your Personal Data",
+                "items": [
+                    "Your information, including Personal Data, is processed at the Company's operating offices and in any other places where the parties involved in the processing are located. It means that this information may be transferred to — and maintained on — computers located outside of Your state, province, country or other governmental jurisdiction where the data protection laws may differ than those from Your jurisdiction.",
+                    "Your consent to this Privacy Policy followed by Your submission of such information represents Your agreement to that transfer.",
+                    "The Company will take all steps reasonably necessary to ensure that Your data is treated securely and in accordance with this Privacy Policy and no transfer of Your Personal Data will take place to an organization or a country unless there are adequate controls in place including the security of Your data and other personal information."
+                ]
+            },
+            "deleteData": {
+                "title": "Delete Your Personal Data",
+                "items": [
+                    "You have the right to delete or request that We assist in deleting the Personal Data that We have collected about You.",
+                    "Our Service may give You the ability to delete certain information about You from within the Service.",
+                    "You may update, amend, or delete Your information at any time by signing in to Your Account, if you have one, and visiting the account settings section that allows you to manage Your personal information. You may also contact Us to request access to, correct, or delete any personal information that You have provided to Us.",
+                    "Please note, however, that We may need to retain certain information when we have a legal obligation or lawful basis to do so."
+                ]
+            },
+            "dataDisclosure": {
+                "title": "Disclosure of Your Personal Data",
+                "businessTransactions": {
+                    "title": "Business Transactions",
+                    "content": "If the Company is involved in a merger, acquisition or asset sale, Your Personal Data may be transferred. We will provide notice before Your Personal Data is transferred and becomes subject to a different Privacy Policy."
+                },
+                "lawEnforcement": {
+                    "title": "Law enforcement",
+                    "content": "Under certain circumstances, the Company may be required to disclose Your Personal Data if required  to do so by law or in response to valid requests by public authorities (e.g. a court or a government agency)."
+                },
+                "otherLegalRequirements": {
+                    "title": "Other legal requirements",
+                    "desc": "The Company may disclose Your Personal Data in the good faith belief that such action is necessary to:",
+                    "items": [
+                        "Comply with a legal obligation",
+                        "Protect and defend the rights or property of the Company",
+                        "Prevent or investigate possible wrongdoing in connection with the Service",
+                        "Protect the personal safety of Users of the Service or the public",
+                        "Protect against legal liability"
+                    ]
+                }
+            },
+            "dataSecurity": {
+                "title": "Security of Your Personal Data",
+                "content": "The security of Your Personal Data is important to Us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While We strive to use commercially acceptable means to protect Your Personal Data, We cannot guarantee its absolute security."
+            }
+        },
+        "childrenPrivacy": {
+            "title": "Children's Privacy",
+            "items": [
+                "Our Service does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from anyone under the age of 13. If You are a parent or guardian and You are aware that Your child has provided Us with Personal Data, please contact Us. If We become aware that We have collected Personal Data from anyone under the age of 13 without verification of parental consent, We take steps to remove that information from Our servers.",
+                "If We need to rely on consent as a legal basis for processing Your information and Your country requires consent from a parent, We may require Your parent's consent before We collect and use that information."
+            ]
+        },
+        "websiteLinks": {
+            "title": "Links to Other Websites",
+            "items": [
+                "Our Service may contain links to other websites that are not operated by Us. If You click on a third party link, You will be directed to that third party's site. We strongly advise You to review the Privacy Policy of every site You visit.",
+                "We have no control over and assume no responsibility for the content, privacy policies or practices of any third party sites or services."
+            ]
+        },
+        "changesToPolicy": {
+            "title": "Changes to this Privacy Policy",
+            "items": [
+                "We may update Our Privacy Policy from time to time. We will notify You of any changes by posting the new Privacy Policy on this page.",
+                "We will let You know via email and/or a prominent notice on Our Service, prior to the change becoming effective and update the 'Last updated' date at the top of this Privacy Policy.",
+                "You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page."
+            ]
+        },
+        "contactUs": {
+            "title": "Contact Us",
+            "desc": "If you have any questions about this Privacy Policy, You can contact us:",
+            "byEmail": "By email: {email}",
+            "viaWebsite": "By visiting this page on our website: "
+        }
+    },
+    "termsAndConditions": {
+        "seoDescription": "The Terms and conditions that needs to be agreed before using Menufic",
+        "lastUpdated": "Last updated: {date}",
+        "introduction": {
+            "title": "Introduction",
+            "line1": "These Terms of Service govern your use of our website located at {url} operated by Menufic.",
+            "line2": "Our Privacy Policy also governs your use of our Service and explains how we collect, safeguard and disclose information that results from your use of our web pages.",
+            "line3": "Your agreement with us includes these Terms and our Privacy Policy (“Agreements”). You acknowledge that you have read and understood Agreements, and agree to be bound of them.",
+            "line4": "If you do not agree with (or cannot comply with) Agreements, then you may not use the Service, but please let us know by emailing at {email} so we can try to find a solution. These Terms apply to all visitors, users and others who wish to access or use Service."
+        },
+        "communication": {
+            "title": "Communications",
+            "content": "By using our Service, you agree to subscribe to newsletters, marketing or promotional materials and other information we may send. However, you may opt out of receiving any, or all, of these communications from us by following the unsubscribe link or by emailing at {email}."
+        },
+        "promotions": {
+            "title": "Contests, Sweepstakes and Promotions",
+            "content": "Any contests, sweepstakes or other promotions (collectively, “Promotions”) made available through Service may be governed by rules that are separate from these Terms of Service. If you participate in any Promotions, please review the applicable rules as well as our Privacy Policy. If the rules for a Promotion conflict with these Terms of Service, Promotion rules will apply."
+        },
+        "content": {
+            "title": "Content",
+            "items": [
+                "Our Service allows you to post, link, store, share and otherwise make available certain information, text, graphics, videos, or other material (“Content”). You are responsible for Content that you post on or through Service, including its legality, reliability, and appropriateness.",
+                "By posting Content on or through Service, You represent and warrant that: (i) Content is yours (you own it) and/or you have the right to use it and the right to grant us the rights and license as provided in these Terms, and (ii) that the posting of your Content on or through Service does not violate the privacy rights, publicity rights, copyrights, contract rights or any other rights of any person or entity. We reserve the right to terminate the account of anyone found to be infringing on a copyright.",
+                "You retain any and all of your rights to any Content you submit, post or display on or through Service and you are responsible for protecting those rights. We take no responsibility and assume no liability for Content you or any third party posts on or through Service. However, by posting Content using Service you grant us the right and license to use, modify, publicly perform, publicly display, reproduce, and distribute such Content on and through Service. You agree that this license includes the right for us to make your Content available to other users of Service, who may also use your Content subject to these Terms.",
+                "Menufic has the right but not the obligation to monitor and edit all Content provided by users.",
+                "In addition, Content found on or through this Service are the property of Menufic or used with permission. You may not distribute, modify, transmit, reuse, download, repost, copy, or use said Content, whether in whole or in part, for commercial purposes or for personal gain, without express advance written permission from us."
+            ]
+        },
+        "prohibitedUses": {
+            "title": "Prohibited Uses",
+            "desc": "You may use Service only for lawful purposes and in accordance with Terms. You agree not to use Service:",
+            "items": [
+                "In any way that violates any applicable national or international law or regulation.",
+                "For the purpose of exploiting, harming, or attempting to exploit or harm minors in any way by exposing them to inappropriate content or otherwise.",
+                "To transmit, or procure the sending of, any advertising or promotional material, including any “junk mail”, “chain letter,” “spam,” or any other similar solicitation.",
+                "To impersonate or attempt to impersonate Company, a Company employee, another user, or any other person or entity.",
+                "In any way that infringes upon the rights of others, or in any way is illegal, threatening, fraudulent, or harmful, or in connection with any unlawful, illegal, fraudulent, or harmful purpose or activity.",
+                "To engage in any other conduct that restricts or inhibits anyone’s use or enjoyment of Service, or which, as determined by us, may harm or offend Company or users of Service or expose them to liability."
+            ],
+            "additionalDesc": "Additionally, you agree not to:",
+            "additionalItems": [
+                "Use Service in any manner that could disable, overburden, damage, or impair Service or interfere with any other party’s use of Service, including their ability to engage in real time activities through Service.",
+                "Use any robot, spider, or other automatic device, process, or means to access Service for any purpose, including monitoring or copying any of the material on Service.",
+                "Use any manual process to monitor or copy any of the material on Service or for any other unauthorized purpose without our prior written consent.",
+                "Use any device, software, or routine that interferes with the proper working of Service.",
+                "Introduce any viruses, trojan horses, worms, logic bombs, or other material which is malicious or technologically harmful.",
+                "Attempt to gain unauthorized access to, interfere with, damage, or disrupt any parts of Service, the server on which Service is stored, or any server, computer, or database connected to Service.",
+                "Attack Service via a denial-of-service attack or a distributed denial-of-service attack.",
+                "Take any action that may damage or falsify Company rating.",
+                "Otherwise attempt to interfere with the proper working of Service."
+            ]
+        },
+        "analytics": {
+            "title": "Analytics",
+            "content": "We may use third-party Service Providers to monitor and analyze the use of our Service."
+        },
+        "usageByMinors": {
+            "title": "No Use By Minors",
+            "content": "Service is intended only for access and use by individuals at least eighteen (18) years old. By accessing or using Service, you warrant and represent that you are at least eighteen (18) years of age and with the full authority, right, and capacity to enter into this agreement and abide by all of the terms and conditions of Terms. If you are not at least eighteen (18) years old, you are prohibited from both the access and usage of Service."
+        },
+        "accounts": {
+            "title": "Accounts",
+            "items": [
+                "When you create an account with us, you guarantee that you are above the age of 18, and that the information you provide us is accurate, complete, and current at all times. Inaccurate, incomplete, or obsolete information may result in the immediate termination of your account on Service.",
+                "You are responsible for maintaining the confidentiality of your account and password, including but not limited to the restriction of access to your computer and/or account. You agree to accept responsibility for any and all activities or actions that occur under your account and/or password, whether your password is with our Service or a third-party service. You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.",
+                "You may not use as a username the name of another person or entity or that is not lawfully available for use, a name or trademark that is subject to any rights of another person or entity other than you, without appropriate authorization. You may not use as a username any name that is offensive, vulgar or obscene.",
+                "We reserve the right to refuse service, terminate accounts, remove or edit content, or cancel orders in our sole discretion."
+            ]
+        },
+        "intellectualProperty": {
+            "title": "Intellectual Property",
+            "content": "Service and its original content (excluding Content provided by users), features and functionality are and will remain the exclusive property of Menufic and its licensors. Service is protected by copyright, trademark, and other laws of and foreign countries. Our trademarks may not be used in connection with any product or service without the prior written consent of Menufic."
+        },
+        "copyrightPolicy": {
+            "title": "Copyright Policy",
+            "line1": "We respect the intellectual property rights of others. It is our policy to respond to any claim that Content posted on Service infringes on the copyright or other intellectual property rights (“Infringement”) of any person or entity.",
+            "line2": "If you are a copyright owner, or authorized on behalf of one, and you believe that the copyrighted work has been copied in a way that constitutes copyright infringement, please submit your claim via email to {email}, with the subject line: “Copyright Infringement” and include in your claim a detailed description of the alleged Infringement as detailed below, under “DMCA Notice and Procedure for Copyright Infringement Claims”",
+            "line3": "You may be held accountable for damages (including costs and attorneys’ fees) for misrepresentation or bad-faith claims on the infringement of any Content found on and/or through Service on your copyright."
+        },
+        "copyrightInfringement": {
+            "title": "DMCA Notice and Procedure for Copyright Infringement Claims",
+            "desc": "You may submit a notification pursuant to the Digital Millennium Copyright Act (DMCA) by providing our Copyright Agent with the following information in writing (see 17 U.S.C 512(c)(3) for further detail):",
+            "items": [
+                "an electronic or physical signature of the person authorized to act on behalf of the owner of the copyright’s interest;",
+                "a description of the copyrighted work that you claim has been infringed, including the URL (i.e., web page address) of the location where the copyrighted work exists or a copy of the copyrighted work;",
+                "identification of the URL or other specific location on Service where the material that you claim is infringing is located;",
+                "your address, telephone number, and email address;",
+                "a statement by you that you have a good faith belief that the disputed use is not authorized by the copyright owner, its agent, or the law;",
+                "a statement by you, made under penalty of perjury, that the above information in your notice is accurate and that you are the copyright owner or authorized to act on the copyright owner’s behalf."
+            ],
+            "contactEmail": "You can contact our Copyright Agent via email at {email}."
+        },
+        "errorReporting": {
+            "title": "Error Reporting and Feedback",
+            "content": "You may provide us either directly at {email} or via third party sites and tools with information and feedback concerning errors, suggestions for improvements, ideas, problems, complaints, and other matters related to our Service (“Feedback”). You acknowledge and agree that: (i) you shall not retain, acquire or assert any intellectual property right or other right, title or interest in or to the Feedback; (ii) Company may have development ideas similar to the Feedback; (iii) Feedback does not contain confidential information or proprietary information from you or any third party; and (iv) Company is not under any obligation of confidentiality with respect to the Feedback. In the event the transfer of the ownership to the Feedback is not possible due to applicable mandatory laws, you grant Company and its affiliates an exclusive, transferable, irrevocable, free-of-charge, sub-licensable, unlimited and perpetual right to use (including copy, modify, create derivative works, publish, distribute and commercialize) Feedback in any manner and for any purpose."
+        },
+        "otherSiteLinks": {
+            "title": "Links To Other Web Sites",
+            "items": [
+                "Our Service may contain links to third party web sites or services that are not owned or controlled by Menufic.",
+                "Menufic has no control over, and assumes no responsibility for the content, privacy policies, or practices of any third party web sites or services. We do not warrant the offerings of any of these entities/individuals or their websites.",
+                "YOU ACKNOWLEDGE AND AGREE THAT COMPANY SHALL NOT BE RESPONSIBLE OR LIABLE, DIRECTLY OR INDIRECTLY, FOR ANY DAMAGE OR LOSS CAUSED OR ALLEGED TO BE CAUSED BY OR IN CONNECTION WITH USE OF OR RELIANCE ON ANY SUCH CONTENT, GOODS OR SERVICES AVAILABLE ON OR THROUGH ANY SUCH THIRD PARTY WEB SITES OR SERVICES.",
+                "WE STRONGLY ADVISE YOU TO READ THE TERMS OF SERVICE AND PRIVACY POLICIES OF ANY THIRD PARTY WEB SITES OR SERVICES THAT YOU VISIT."
+            ]
+        },
+        "disclaimerOfWarranty": {
+            "title": "Disclaimer Of Warranty",
+            "items": [
+                "THESE SERVICES ARE PROVIDED BY COMPANY ON AN “AS IS” AND “AS AVAILABLE” BASIS. COMPANY MAKES NO REPRESENTATIONS OR WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, AS TO THE OPERATION OF THEIR SERVICES, OR THE INFORMATION, CONTENT OR MATERIALS INCLUDED THEREIN. YOU EXPRESSLY AGREE THAT YOUR USE OF THESE SERVICES, THEIR CONTENT, AND ANY SERVICES OR ITEMS OBTAINED FROM US IS AT YOUR SOLE RISK.",
+                "NEITHER COMPANY NOR ANY PERSON ASSOCIATED WITH COMPANY MAKES ANY WARRANTY OR REPRESENTATION WITH RESPECT TO THE COMPLETENESS, SECURITY, RELIABILITY, QUALITY, ACCURACY, OR AVAILABILITY OF THE SERVICES. WITHOUT LIMITING THE FOREGOING, NEITHER COMPANY NOR ANYONE ASSOCIATED WITH COMPANY REPRESENTS OR WARRANTS THAT THE SERVICES, THEIR CONTENT, OR ANY SERVICES OR ITEMS OBTAINED THROUGH THE SERVICES WILL BE ACCURATE, RELIABLE, ERROR-FREE, OR UNINTERRUPTED, THAT DEFECTS WILL BE CORRECTED, THAT THE SERVICES OR THE SERVER THAT MAKES IT AVAILABLE ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS OR THAT THE SERVICES OR ANY SERVICES OR ITEMS OBTAINED THROUGH THE SERVICES WILL OTHERWISE MEET YOUR NEEDS OR EXPECTATIONS.",
+                "COMPANY HEREBY DISCLAIMS ALL WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED, STATUTORY, OR OTHERWISE, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, NON-INFRINGEMENT, AND FITNESS FOR PARTICULAR PURPOSE.",
+                "THE FOREGOING DOES NOT AFFECT ANY WARRANTIES WHICH CANNOT BE EXCLUDED OR LIMITED UNDER APPLICABLE LAW."
+            ]
+        },
+        "limitationOfLiability": {
+            "title": "Limitation Of Liability",
+            "content": "EXCEPT AS PROHIBITED BY LAW, YOU WILL HOLD US AND OUR OFFICERS, DIRECTORS, EMPLOYEES, AND AGENTS HARMLESS FOR ANY INDIRECT, PUNITIVE, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGE, HOWEVER IT ARISES (INCLUDING ATTORNEYS’ FEES AND ALL RELATED COSTS AND EXPENSES OF LITIGATION AND ARBITRATION, OR AT TRIAL OR ON APPEAL, IF ANY, WHETHER OR NOT LITIGATION OR ARBITRATION IS INSTITUTED), WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE, OR OTHER TORTIOUS ACTION, OR ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT, INCLUDING WITHOUT LIMITATION ANY CLAIM FOR PERSONAL INJURY OR PROPERTY DAMAGE, ARISING FROM THIS AGREEMENT AND ANY VIOLATION BY YOU OF ANY FEDERAL, STATE, OR LOCAL LAWS, STATUTES, RULES, OR REGULATIONS, EVEN IF COMPANY HAS BEEN PREVIOUSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. EXCEPT AS PROHIBITED BY LAW, IF THERE IS LIABILITY FOUND ON THE PART OF COMPANY, IT WILL BE LIMITED TO THE AMOUNT PAID FOR THE PRODUCTS AND/OR SERVICES, AND UNDER NO CIRCUMSTANCES WILL THERE BE CONSEQUENTIAL OR PUNITIVE DAMAGES. SOME STATES DO NOT ALLOW THE EXCLUSION OR LIMITATION OF PUNITIVE, INCIDENTAL OR CONSEQUENTIAL DAMAGES, SO THE PRIOR LIMITATION OR EXCLUSION MAY NOT APPLY TO YOU."
+        },
+        "termination": {
+            "title": "Termination",
+            "items": [
+                "We may terminate or suspend your account and bar access to Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation, including but not limited to a breach of Terms.",
+                "If you wish to terminate your account, you may simply discontinue using Service.",
+                "All provisions of Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability."
+            ]
+        },
+        "governingLaw": {
+            "title": "Governing Law",
+            "items": [
+                "These Terms shall be governed and construed in accordance with the laws of Sri Lanka, which governing law applies to agreement without regard to its conflict of law provisions.",
+                "Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights. If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining provisions of these Terms will remain in effect. These Terms constitute the entire agreement between us regarding our Service and supersede and replace any prior agreements we might have had between us regarding Service."
+            ]
+        },
+        "changesToService": {
+            "title": "Changes To Service",
+            "content": "We reserve the right to withdraw or amend our Service, and any service or material we provide via Service, in our sole discretion without notice. We will not be liable if for any reason all or any part of Service is unavailable at any time or for any period. From time to time, we may restrict access to some parts of Service, or the entire Service, to users, including registered users."
+        },
+        "amendmentsToTerms": {
+            "title": "Amendments To Terms",
+            "items": [
+                "We may amend Terms at any time by posting the amended terms on this site. It is your responsibility to review these Terms periodically.",
+                "Your continued use of the Platform following the posting of revised Terms means that you accept and agree to the changes. You are expected to check this page frequently so you are aware of any changes, as they are binding on you.",
+                "By continuing to access or use our Service after any revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, you are no longer authorized to use Service."
+            ]
+        },
+        "waiverAndSeverability": {
+            "title": "Waiver And Severability",
+            "items": [
+                "No waiver by Company of any term or condition set forth in Terms shall be deemed a further or continuing waiver of such term or condition or a waiver of any other term or condition, and any failure of Company to assert a right or provision under Terms shall not constitute a waiver of such right or provision.",
+                "If any provision of Terms is held by a court or other tribunal of competent jurisdiction to be invalid, illegal or unenforceable for any reason, such provision shall be eliminated or limited to the minimum extent such that the remaining provisions of Terms will continue in full force and effect."
+            ]
+        },
+        "acknowledgement": {
+            "title": "Acknowledgement",
+            "content": "BY USING SERVICE OR OTHER SERVICES PROVIDED BY US, YOU ACKNOWLEDGE THAT YOU HAVE READ THESE TERMS OF SERVICE AND AGREE TO BE BOUND BY THEM."
+        },
+        "contactUs": {
+            "title": "Contact Us",
+            "content": " Please send your feedback, comments, requests for technical support by email: {email}"
+        }
+    }
+}

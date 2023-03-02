@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 import { Button, Group, Stack, TextInput } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
+import { useTranslations } from "next-intl";
 
 import type { ModalProps } from "@mantine/core";
 import type { Menu } from "@prisma/client";
@@ -23,24 +24,26 @@ interface Props extends ModalProps {
 /** Form to be used when allowing users to add or edit menus of restaurant */
 export const MenuForm: FC<Props> = ({ opened, onClose, restaurantId, menu: menuItem, ...rest }) => {
     const trpcCtx = api.useContext();
+    const t = useTranslations("dashboard.editMenu.menu");
+    const tCommon = useTranslations("common");
 
     const { mutate: createMenu, isLoading: isCreating } = api.menu.create.useMutation({
-        onError: (err) => showErrorToast("Failed to create menu for restaurant", err),
+        onError: (err) => showErrorToast(t("createError"), err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.menu.getAll.setData({ restaurantId }, (menus) => [...(menus || []), data]);
-            showSuccessToast("Successfully created", `Created a new menu ${data.name} successfully`);
+            showSuccessToast(tCommon("createSuccess"), t("createSuccessDesc", { name: data.name }));
         },
     });
 
     const { mutate: updateMenu, isLoading: isUpdating } = api.menu.update.useMutation({
-        onError: (err) => showErrorToast("Failed to update menu", err),
+        onError: (err) => showErrorToast(t("updateError"), err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.menu.getAll.setData({ restaurantId }, (menus) =>
                 menus?.map((item) => (item.id === data.id ? { ...item, ...data } : item))
             );
-            showSuccessToast("Successfully updated", `Updated details of ${data.name} menu successfully`);
+            showSuccessToast(tCommon("updateSuccess"), t("updateSuccessDesc", { name: data.name }));
         },
     });
 
@@ -64,7 +67,7 @@ export const MenuForm: FC<Props> = ({ opened, onClose, restaurantId, menu: menuI
             loading={loading}
             onClose={onClose}
             opened={opened}
-            title={menuItem ? "Update Menu" : "Create Menu"}
+            title={menuItem ? t("updateModalTitle") : t("createModalTitle")}
             {...rest}
         >
             <form
@@ -83,20 +86,20 @@ export const MenuForm: FC<Props> = ({ opened, onClose, restaurantId, menu: menuI
                 <Stack spacing="sm">
                     <TextInput
                         disabled={loading}
-                        label="Name"
-                        placeholder="Menu Name"
+                        label={t("inputNameLabel")}
+                        placeholder={t("inputNamePlaceholder")}
                         withAsterisk
                         {...getInputProps("name")}
                     />
                     <TextInput
                         disabled={loading}
-                        label="Available Time"
-                        placeholder="10.00 AM - 9.00 PM"
+                        label={t("inputTimeLabel")}
+                        placeholder={t("inputTimePlaceholder")}
                         {...getInputProps("availableTime")}
                     />
                     <Group mt="md" position="right">
                         <Button data-testid="save-menu-form" loading={loading} px="xl" type="submit">
-                            Save
+                            {tCommon("save")}
                         </Button>
                     </Group>
                 </Stack>

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 import { Button, Group, Stack, TextInput } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
+import { useTranslations } from "next-intl";
 
 import type { ModalProps } from "@mantine/core";
 import type { Category } from "@prisma/client";
@@ -25,27 +26,29 @@ interface Props extends ModalProps {
 /** Form to be used when allowing users to add or edit categories of restaurant menus */
 export const CategoryForm: FC<Props> = ({ opened, onClose, menuId, categoryItem, onAddSuccess, ...rest }) => {
     const trpcCtx = api.useContext();
+    const t = useTranslations("dashboard.editMenu.category");
+    const tCommon = useTranslations("common");
 
     const { mutate: createCategory, isLoading: isCreating } = api.category.create.useMutation({
-        onError: (err) => showErrorToast("Failed to create new category", err),
+        onError: (err) => showErrorToast(t("createError"), err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.category.getAll.setData({ menuId }, (categories) => [...(categories || []), data]);
             if (onAddSuccess) {
                 onAddSuccess(data);
             }
-            showSuccessToast("Successfully created", `Created a new category ${data.name} successfully`);
+            showSuccessToast(tCommon("createSuccess"), t("createSuccessDesc", { name: data.name }));
         },
     });
 
     const { mutate: updateCategory, isLoading: isUpdating } = api.category.update.useMutation({
-        onError: (err) => showErrorToast("Failed to update category", err),
+        onError: (err) => showErrorToast(t("updateError"), err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.category.getAll.setData({ menuId }, (categories) =>
                 categories?.map((item) => (item.id === data.id ? { ...item, ...data } : item))
             );
-            showSuccessToast("Successfully updated", `Updated details of ${data.name} category successfully`);
+            showSuccessToast(tCommon("updateSuccess"), t("updateSuccessDesc", { name: data.name }));
         },
     });
 
@@ -69,7 +72,7 @@ export const CategoryForm: FC<Props> = ({ opened, onClose, menuId, categoryItem,
             loading={loading}
             onClose={onClose}
             opened={opened}
-            title={categoryItem ? "Update Category" : "Create Category"}
+            title={categoryItem ? t("updateModalTitle") : t("createModalTitle")}
             {...rest}
         >
             <form
@@ -88,14 +91,14 @@ export const CategoryForm: FC<Props> = ({ opened, onClose, menuId, categoryItem,
                 <Stack spacing="sm">
                     <TextInput
                         disabled={loading}
-                        label="Name"
-                        placeholder="Category Name"
+                        label={t("inputNameLabel")}
+                        placeholder={t("inputNamePlaceholder")}
                         withAsterisk
                         {...getInputProps("name")}
                     />
                     <Group mt="md" position="right">
                         <Button data-testid="save-category-form" loading={loading} px="xl" type="submit">
-                            Save
+                            {tCommon("save")}
                         </Button>
                     </Group>
                 </Stack>

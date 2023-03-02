@@ -5,15 +5,20 @@ import { Analytics } from "@vercel/analytics/react";
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import { NextIntlProvider } from "next-intl";
 import { DefaultSeo } from "next-seo";
 
 import type { ColorScheme } from "@mantine/core";
+import type { AbstractIntlMessages } from "next-intl";
 
 import { CustomFonts } from "src/styles/CustomFonts";
 import { getMantineTheme } from "src/styles/theme";
 import { api } from "src/utils/api";
 
-const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
+const MyApp: AppType<{ messages?: AbstractIntlMessages | undefined; session: Session | null }> = ({
+    Component,
+    pageProps: { session, ...pageProps },
+}) => {
     const preferredColorScheme = useColorScheme();
 
     const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
@@ -28,10 +33,12 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
     return (
         <>
             <DefaultSeo
+                // todo add i18n
                 additionalMetaTags={[
                     { content: "minimum-scale=1, initial-scale=1, width=device-width", name: "viewport" },
                 ]}
-                description="A digital menu generator that lets you to create the best menu for your restaurant. Menufic is packed with several features that will boost the online presence of your restaurant with ease"
+                // todo: remove below
+                // description="A digital menu generator that lets you to create the best menu for your restaurant. Menufic is packed with several features that will boost the online presence of your restaurant with ease"
                 openGraph={{
                     images: [{ url: "https://menufic.com/menufic_banner.jpg" }],
                     siteName: "menufic.com",
@@ -39,7 +46,6 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
                     url: "https://menufic.com",
                 }}
                 themeColor="#c24152"
-                // title="Digital menu generator"
                 titleTemplate="Menufic - %s"
                 twitter={{ cardType: "summary_large_image" }}
             />
@@ -48,7 +54,9 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
                     <CustomFonts />
                     <NotificationsProvider>
                         <SessionProvider session={session}>
-                            <Component {...pageProps} />
+                            <NextIntlProvider messages={pageProps.messages}>
+                                <Component {...pageProps} />
+                            </NextIntlProvider>
                             <Analytics />
                         </SessionProvider>
                     </NotificationsProvider>

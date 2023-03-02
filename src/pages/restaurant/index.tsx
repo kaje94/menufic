@@ -5,6 +5,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Box, Center, Flex, Loader, SimpleGrid, Title } from "@mantine/core";
 import { IconCirclePlus } from "@tabler/icons";
 import { type NextPage } from "next";
+import { useTranslations } from "next-intl";
 import { NextSeo } from "next-seo";
 
 import type { Image, Restaurant } from "@prisma/client";
@@ -22,20 +23,20 @@ const RestaurantCard: FC<{ item: Restaurant & { image: Image | null } }> = ({ it
     const trpcCtx = api.useContext();
     const [restaurantFormOpen, setRestaurantFormOpen] = useState(false);
     const [deleteFormOpen, setDeleteFormOpen] = useState(false);
+    const t = useTranslations("dashboard.restaurant");
+    const tCommon = useTranslations("common");
 
     const { mutate: deleteRestaurant, isLoading: isDeleting } = api.restaurant.delete.useMutation({
-        onError: (err) => showErrorToast("Failed to delete restaurant", err),
+        onError: (err) => showErrorToast(t("deleteError"), err),
         onSettled: () => setDeleteFormOpen(false),
         onSuccess: (data) => {
             trpcCtx.restaurant.getAll.setData(undefined, (restaurants) =>
                 restaurants?.filter((restaurantItem) => restaurantItem.id !== data.id)
             );
-            showSuccessToast(
-                "Successfully deleted",
-                `Deleted the ${data.name} restaurant and related details successfully`
-            );
+            showSuccessToast(tCommon("deleteSuccess"), t("deleteSuccessDesc", { name: data.name }));
         },
     });
+
     return (
         <>
             <ImageCard
@@ -56,12 +57,12 @@ const RestaurantCard: FC<{ item: Restaurant & { image: Image | null } }> = ({ it
                 restaurant={item}
             />
             <DeleteConfirmModal
-                description="Are you sure, you want to delete this restaurant? This action will also delete all the items associated with this restaurant and cannot be undone"
+                description={t("deleteModalDesc")}
                 loading={isDeleting}
                 onClose={() => setDeleteFormOpen(false)}
                 onDelete={() => deleteRestaurant({ id: item.id || "" })}
                 opened={deleteFormOpen}
-                title={`Delete restaurant ${item.name}`}
+                title={t("deleteModalTitle", { name: item.name })}
             />
         </>
     );
@@ -70,19 +71,20 @@ const RestaurantCard: FC<{ item: Restaurant & { image: Image | null } }> = ({ it
 /** Page to view all the restaurants that were created by you */
 const RestaurantsListPage: NextPage = () => {
     const [restaurantFormOpen, setRestaurantFormOpen] = useState(false);
+    const t = useTranslations("dashboard.restaurant");
     const { data: restaurants, isLoading } = api.restaurant.getAll.useQuery(undefined, {
-        onError: () => showErrorToast("Failed to retrieve restaurants"),
+        onError: () => showErrorToast(t("fetchRestaurantsError")),
     });
     const [gridItemParent] = useAutoAnimate<HTMLDivElement>();
     const [rootParent] = useAutoAnimate<HTMLDivElement>();
 
     return (
         <>
-            <NextSeo description="Manage all of the restaurants that you've created" title="Restaurants" />
+            <NextSeo description={t("seoDescription")} title={t("seoTitle")} />
             <main>
                 <AppShell>
                     <Flex align="center" justify="space-between">
-                        <Title order={1}>My Restaurants</Title>
+                        <Title order={1}>{t("headerTitle")}</Title>
                     </Flex>
                     <Box mt="xl" ref={rootParent}>
                         {isLoading ? (
@@ -108,9 +110,9 @@ const RestaurantsListPage: NextPage = () => {
                                             key="add-new-restaurant"
                                             Icon={IconCirclePlus}
                                             onClick={() => setRestaurantFormOpen(true)}
-                                            subTitle="Start creating a new digital menu by adding a new restaurant"
+                                            subTitle={t("addNewCardSubTitle")}
                                             testId="add-new-restaurant"
-                                            title="Add new restaurant"
+                                            title={t("addNewCardTitle")}
                                         />
                                     )}
                             </SimpleGrid>
@@ -122,5 +124,7 @@ const RestaurantsListPage: NextPage = () => {
         </>
     );
 };
+
+export const getStaticProps = async () => ({ props: { messages: (await import("src/lang/en.json")).default } });
 
 export default RestaurantsListPage;

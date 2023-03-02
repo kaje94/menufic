@@ -2,6 +2,7 @@ import type { FC } from "react";
 
 import { Box, Center, keyframes, Text, useMantineTheme } from "@mantine/core";
 import { IconAtom2 } from "@tabler/icons";
+import { useTranslations } from "next-intl";
 
 interface Props {
     /** Height of the empty component */
@@ -19,6 +20,8 @@ const floatingAnimation = keyframes`
 /** Component to be displayed if there isn't any date to be displayed */
 export const Empty: FC<Props> = ({ text, height }) => {
     const theme = useMantineTheme();
+    const t = useTranslations("dashboard");
+
     return (
         <Center
             data-testid="empty-placeholder"
@@ -30,7 +33,7 @@ export const Empty: FC<Props> = ({ text, height }) => {
                 <IconAtom2 color={theme.colors.dark[3]} size={100} strokeWidth={1.5} />
             </Box>
             <Text align="center" maw={400} mt="lg" size="lg" weight="bolder">
-                whoops, nothing to see here ...
+                {t("noContent")}
             </Text>
             <Text align="center" maw={500} mt="xs" weight="lighter">
                 {text}

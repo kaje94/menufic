@@ -5,6 +5,7 @@ import { ActionIcon, AspectRatio, Box, Image as MantineImage, Stack, Text, useMa
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { IconPhoto, IconTrash, IconUpload, IconX } from "@tabler/icons";
 import imageCompression from "browser-image-compression";
+import { useTranslations } from "next-intl";
 
 import { toBase64 } from "src/utils/helpers";
 
@@ -47,6 +48,7 @@ export const ImageUpload: FC<Props> = ({
     const theme = useMantineTheme();
     const [imageCropModalOpen, setImageCropModalOpen] = useState(false);
     const [newUploadedImageUrl, setNewUploadedImageUrl] = useState("");
+    const t = useTranslations("dashboard.imageUpload");
 
     const onCropComplete = useCallback(
         async (croppedImageBlob: Blob) => {
@@ -68,7 +70,7 @@ export const ImageUpload: FC<Props> = ({
     return (
         <>
             <Text color={theme.black} mt="md" size="md">
-                Image
+                {t("titleLabel")}
                 {imageRequired && (
                     <Text color="red" component="span">
                         *
@@ -133,7 +135,7 @@ export const ImageUpload: FC<Props> = ({
                                     <IconPhoto color={theme.black} size={50} stroke={1.5} />
                                 </Dropzone.Idle>
                                 <Text align="center" color={theme.black} inline px="xl" size="md">
-                                    Drag a jpeg image here or click to select a jpeg image file
+                                    {t("uploadHelperText")}
                                 </Text>
                             </Stack>
                         </AspectRatio>

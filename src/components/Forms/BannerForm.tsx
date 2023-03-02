@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import { Button, Group, Stack, Text, useMantineTheme } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
+import { useTranslations } from "next-intl";
 
 import type { ModalProps } from "@mantine/core";
 
@@ -23,13 +24,15 @@ export const BannerForm: FC<Props> = ({ opened, onClose, restaurantId, ...rest }
     const trpcCtx = api.useContext();
     const theme = useMantineTheme();
     const [imagePath, setImagePath] = useState("");
+    const t = useTranslations("dashboard.banner");
+    const tCommon = useTranslations("common");
 
     const { mutate: addBanner, isLoading: isCreating } = api.restaurant.addBanner.useMutation({
-        onError: (err) => showErrorToast("Failed to create banner for restaurant", err),
+        onError: (err) => showErrorToast(t("createError"), err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.restaurant.getBanners.setData({ id: restaurantId }, (banners = []) => [...banners, data]);
-            showSuccessToast("Successfully created", `Successfully created new banner for the restaurant`);
+            showSuccessToast(tCommon("createSuccess"), t("createSuccessDesc"));
         },
     });
 
@@ -48,7 +51,7 @@ export const BannerForm: FC<Props> = ({ opened, onClose, restaurantId, ...rest }
     }, [restaurantId, opened]);
 
     return (
-        <Modal loading={isCreating} onClose={onClose} opened={opened} title="Add Banner" {...rest}>
+        <Modal loading={isCreating} onClose={onClose} opened={opened} title={t("addModalTitle")} {...rest}>
             <form
                 onSubmit={onSubmit((values) => {
                     if (isDirty()) {
@@ -80,7 +83,7 @@ export const BannerForm: FC<Props> = ({ opened, onClose, restaurantId, ...rest }
                     </Text>
                     <Group mt="md" position="right">
                         <Button data-testid="save-banner-form" loading={isCreating} px="xl" type="submit">
-                            Save
+                            {tCommon("save")}
                         </Button>
                     </Group>
                 </Stack>

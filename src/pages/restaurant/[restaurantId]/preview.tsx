@@ -3,6 +3,7 @@ import { IconAlertCircle } from "@tabler/icons";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { NextSeo } from "next-seo";
 import superjson from "superjson";
 
@@ -18,6 +19,8 @@ import { api } from "src/utils/api";
 const RestaurantMenuPreviewPage: NextPage = () => {
     const router = useRouter();
     const theme = useMantineTheme();
+    const t = useTranslations("preview");
+
     const { data: restaurant } = api.restaurant.getDetails.useQuery(
         { id: router.query?.restaurantId as string },
         { enabled: false }
@@ -25,10 +28,7 @@ const RestaurantMenuPreviewPage: NextPage = () => {
 
     return (
         <>
-            <NextSeo
-                description="Preview how the published restaurant menu would look like"
-                title="Restaurant Preview"
-            />
+            <NextSeo description={t("seoDescription")} title={t("seoTitle")} />
             <main>
                 <Container py="lg" size="xl">
                     <Alert
@@ -37,15 +37,12 @@ const RestaurantMenuPreviewPage: NextPage = () => {
                         icon={<IconAlertCircle size={16} />}
                         mb="lg"
                         radius="lg"
-                        title="Preview mode"
+                        title={t("alertTitle")}
                     >
                         <Text color={theme.black} weight="bold">
-                            This preview URL is not meant to be shared with anyone.
+                            {t("alertContent")}
                         </Text>
-                        <Text color={theme.black}>
-                            Once you have finalized your changes, you will be able to publish your restaurant menu and
-                            generate a sharable URL which can then be shared with your customers.
-                        </Text>
+                        <Text color={theme.black}>{t("alertDesc")}</Text>
                     </Alert>
                     {restaurant && <RestaurantMenu restaurant={restaurant} />}
                 </Container>
@@ -54,8 +51,6 @@ const RestaurantMenuPreviewPage: NextPage = () => {
         </>
     );
 };
-
-export default RestaurantMenuPreviewPage;
 
 export const getServerSideProps = async (context: GetServerSidePropsContext<{ restaurantId: string }>) => {
     const session = await getSession(context);
@@ -69,15 +64,19 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<{ re
         transformer: superjson,
     });
     const restaurantId = context.params?.restaurantId as string;
+    const messages = (await import("src/lang/en.json")).default;
+
     try {
         // Hydrate trpc context from server side
         const restaurant = await ssg.restaurant.getDetails.fetch({ id: restaurantId });
         if (restaurant.userId === session.user?.id) {
             // Preview page should only be accessible by the user who manages the restaurant
-            return { props: { trpcState: ssg.dehydrate() } };
+            return { props: { messages, trpcState: ssg.dehydrate() } };
         }
         return { redirect: { destination: "/" } };
     } catch {
         return { redirect: { destination: "/404" } };
     }
 };
+
+export default RestaurantMenuPreviewPage;

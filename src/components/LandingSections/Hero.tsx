@@ -4,6 +4,7 @@ import { BackgroundImage, Box, Button, Container, Stack, Title, Transition } fro
 import { useMediaQuery } from "@mantine/hooks";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 import { useStyles } from "./style";
 import { LoginOptions } from "../LoginOptions";
@@ -12,13 +13,15 @@ export const Hero: FC = () => {
     const { classes, theme } = useStyles();
     const { status } = useSession();
     const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
+    const t = useTranslations("landing.hero");
+    const tCommon = useTranslations("common");
 
     return (
         <BackgroundImage className={classes.headerBg} mih="calc(100vh - 60px)" src="/landing-hero-bg.svg">
             <Container h="100%" size="lg">
                 <Stack className={classes.containerStack}>
                     <Title className={classes.titleText} color={theme.colors.dark[5]} weight="lighter">
-                        The best way to create
+                        {t("tagLine1")}
                     </Title>
                     <Title
                         className={classes.titleText}
@@ -26,10 +29,10 @@ export const Hero: FC = () => {
                         variant="gradient"
                         weight="bold"
                     >
-                        Digital Menus
+                        {t("tagLine2")}
                     </Title>
                     <Title className={classes.titleText} color={theme.black} weight="normal">
-                        for your restaurant
+                        {t("tagLine3")}
                     </Title>
 
                     <Box mih={60} mt="xl">
@@ -39,13 +42,13 @@ export const Hero: FC = () => {
                                     {status === "authenticated" ? (
                                         <Link href="/restaurant">
                                             <Button size="xl" variant="outline">
-                                                Go to Dashboard
+                                                {tCommon("openDashboard")}
                                             </Button>
                                         </Link>
                                     ) : (
                                         <LoginOptions position={isMobile ? "top" : "bottom"}>
                                             <Button className={classes.getStartedButton} size="xl">
-                                                Get started for free
+                                                {t("getStarted")}
                                             </Button>
                                         </LoginOptions>
                                     )}

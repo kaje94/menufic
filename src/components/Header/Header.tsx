@@ -23,6 +23,7 @@ import { IconEyeglass2, IconHome, IconLogin, IconLogout, IconMoonStars, IconPizz
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 import { LoginOptions } from "../LoginOptions";
 import { Logo } from "../Logo";
@@ -54,12 +55,7 @@ const useStyles = createStyles((theme, params: { withShadow?: boolean }) => ({
         padding: theme.spacing.md,
     },
     headerContainer: { alignItems: "center", display: "flex", height: "100%" },
-    headerLinksWrap: {
-        alignItems: "center",
-        flex: 1,
-        paddingLeft: 50,
-        paddingTop: 5,
-    },
+    headerLinksWrap: { alignItems: "center", flex: 1, paddingLeft: 50, paddingTop: 5 },
     linkActive: { color: theme.colors.primary[6] },
     popoverLink: {
         paddingBottom: theme.spacing.md,
@@ -75,11 +71,6 @@ const useStyles = createStyles((theme, params: { withShadow?: boolean }) => ({
     },
 }));
 
-const linkOptions = [
-    { icon: IconPizza, label: "Restaurants", link: "/restaurant" },
-    { icon: IconEyeglass2, label: "Explore", link: "/explore" },
-];
-
 /** Header to be used throughout the app */
 export const NavHeader: FC<Props> = ({
     opened = false,
@@ -94,6 +85,12 @@ export const NavHeader: FC<Props> = ({
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
     const { classes, cx } = useStyles({ withShadow });
     const router = useRouter();
+    const t = useTranslations();
+
+    const linkOptions = [
+        { icon: IconPizza, label: t("dashboard.restaurant.navTitle"), link: "/restaurant" },
+        { icon: IconEyeglass2, label: t("dashboard.explore.navTitle"), link: "/explore" },
+    ];
 
     return (
         <Header className={classes.header} height={60}>
@@ -173,13 +170,13 @@ export const NavHeader: FC<Props> = ({
                                                         <IconHome />
                                                     </ActionIcon>
                                                 ) : (
-                                                    <Button size="md">Go to Dashboard</Button>
+                                                    <Button size="md">{t("common.openDashboard")}</Button>
                                                 )}
                                             </Link>
                                         ) : (
                                             <LoginOptions>
                                                 <Button leftIcon={<IconLogin />} size={isMobile ? "sm" : "md"}>
-                                                    Login
+                                                    {t("common.login")}
                                                 </Button>
                                             </LoginOptions>
                                         )}
@@ -207,7 +204,7 @@ export const NavHeader: FC<Props> = ({
                                                 <Avatar
                                                     className={classes.avatarIcon}
                                                     color="primary"
-                                                    imageProps={{ referrerpolicy: "no-referrer" }}
+                                                    imageProps={{ referrerPolicy: "no-referrer" }}
                                                     src={sessionData?.user?.image}
                                                 >
                                                     {sessionData?.user?.name?.[0]}
@@ -224,7 +221,7 @@ export const NavHeader: FC<Props> = ({
                                                 icon={<IconLogout stroke={1.5} />}
                                                 onClick={() => signOut({ callbackUrl: "/" })}
                                             >
-                                                Logout
+                                                {t("common.logout")}
                                             </Menu.Item>
                                         </Menu.Dropdown>
                                     </Menu>

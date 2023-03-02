@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Box, Button, Flex } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
+import { useTranslations } from "next-intl";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 import type { Image, MenuItem } from "@prisma/client";
@@ -29,11 +30,12 @@ export const MenuItems: FC<Props> = ({ categoryId, menuItems, menuId }) => {
     const trpcCtx = api.useContext();
     const [menuItemFormOpen, setMenuItemFormOpen] = useState(false);
     const [itemsParent, enableAutoAnimate] = useAutoAnimate<HTMLElement>();
+    const t = useTranslations("dashboard.editMenu.menuItem");
 
     const { mutate: updateMenuItemsPositions } = api.menuItem.updatePosition.useMutation({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (err, _newItem, context: any) => {
-            showErrorToast("Failed to update menu item position", err);
+            showErrorToast(t("positionUpdateError"), err);
             trpcCtx.category.getAll.setData({ menuId }, context?.previousCategories);
         },
         onMutate: async (reorderedList) => {
@@ -72,7 +74,7 @@ export const MenuItems: FC<Props> = ({ categoryId, menuItems, menuId }) => {
                     setTimeout(() => enableAutoAnimate(true), 100);
                 }}
             >
-                <Droppable direction="vertical" droppableId="dnd-list">
+                <Droppable direction="vertical" droppableId={`dnd-menu-item-list-${categoryId}`}>
                     {(provided) => (
                         <Box
                             {...provided.droppableProps}
@@ -106,7 +108,7 @@ export const MenuItems: FC<Props> = ({ categoryId, menuItems, menuId }) => {
                         onClick={() => setMenuItemFormOpen(true)}
                         variant={menuItems?.length === 0 ? "filled" : "default"}
                     >
-                        Add Item
+                        {t("addMenuItemLabel")}
                     </Button>
                 </Flex>
             )}

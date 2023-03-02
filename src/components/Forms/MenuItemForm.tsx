@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 import { Button, Group, Stack, Textarea, TextInput } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
+import { useTranslations } from "next-intl";
 
 import type { ModalProps } from "@mantine/core";
 import type { Image, MenuItem } from "@prisma/client";
@@ -26,20 +27,22 @@ interface Props extends ModalProps {
 /** Form to be used when allowing users to add or edit menu items of restaurant menus categories */
 export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, categoryId, ...rest }) => {
     const trpcCtx = api.useContext();
+    const t = useTranslations("dashboard.editMenu.menuItem");
+    const tCommon = useTranslations("common");
 
     const { mutate: createMenuItem, isLoading: isCreating } = api.menuItem.create.useMutation({
-        onError: (err) => showErrorToast("Failed to create menu item", err),
+        onError: (err) => showErrorToast(t("createError"), err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.category.getAll.setData({ menuId }, (categories) =>
                 categories?.map((item) => (item.id === categoryId ? { ...item, items: [...item.items, data] } : item))
             );
-            showSuccessToast("Successfully created", `Created a new menu item ${data.name} successfully`);
+            showSuccessToast(tCommon("createSuccess"), t("createSuccessDesc", { name: data.name }));
         },
     });
 
     const { mutate: updateMenuItem, isLoading: isUpdating } = api.menuItem.update.useMutation({
-        onError: (err) => showErrorToast("Failed to update menu item", err),
+        onError: (err) => showErrorToast(t("updateError"), err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.category.getAll.setData({ menuId }, (categories) =>
@@ -52,7 +55,7 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
                         : categoryItem
                 )
             );
-            showSuccessToast("Successfully updated", `Updated details of ${data.name} category successfully`);
+            showSuccessToast(tCommon("updateSuccess"), t("updateSuccessDesc", { name: data.name }));
         },
     });
 
@@ -88,7 +91,7 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
             loading={loading}
             onClose={onClose}
             opened={opened}
-            title={menuItem ? "Update Menu Item" : "Create Menu Item"}
+            title={menuItem ? t("updateModalTitle") : t("createModalTitle")}
             {...rest}
         >
             <form
@@ -107,20 +110,25 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
                 <Stack spacing="sm">
                     <TextInput
                         disabled={loading}
-                        label="Name"
-                        placeholder="Item Name"
+                        label={t("inputNameLabel")}
+                        placeholder={t("inputNamePlaceholder")}
                         withAsterisk
                         {...getInputProps("name")}
                         autoFocus
                     />
                     <TextInput
                         disabled={loading}
-                        label="Price"
-                        placeholder="$10.00"
+                        label={t("inputPriceLabel")}
+                        placeholder={t("inputPricePlaceholder")}
                         withAsterisk
                         {...getInputProps("price")}
                     />
-                    <Textarea disabled={loading} label="Description" minRows={3} {...getInputProps("description")} />
+                    <Textarea
+                        disabled={loading}
+                        label={t("inputDescriptionLabel")}
+                        minRows={3}
+                        {...getInputProps("description")}
+                    />
                     <ImageUpload
                         disabled={loading}
                         height={400}
@@ -132,7 +140,7 @@ export const MenuItemForm: FC<Props> = ({ opened, onClose, menuId, menuItem, cat
                     />
                     <Group mt="md" position="right">
                         <Button data-testid="save-menu-item-form" loading={loading} px="xl" type="submit">
-                            Save
+                            {tCommon("save")}
                         </Button>
                     </Group>
                 </Stack>

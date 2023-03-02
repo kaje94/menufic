@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Button, Group, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import { IconMapPin, IconPhone } from "@tabler/icons";
+import { useTranslations } from "next-intl";
 
 import type { ModalProps } from "@mantine/core";
 import type { Image, Restaurant } from "@prisma/client";
@@ -24,24 +25,26 @@ interface Props extends ModalProps {
 export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest }) => {
     const trpcCtx = api.useContext();
     const theme = useMantineTheme();
+    const t = useTranslations("dashboard.restaurant");
+    const tCommon = useTranslations("common");
 
     const { mutate: createRestaurant, isLoading: isCreating } = api.restaurant.create.useMutation({
-        onError: (err) => showErrorToast("Failed to create restaurant", err),
+        onError: (err) => showErrorToast(t("createError"), err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.restaurant.getAll.setData(undefined, (restaurants) => [...(restaurants || []), data]);
-            showSuccessToast("Successfully created", `Created new ${data.name} restaurant successfully`);
+            showSuccessToast(tCommon("createSuccess"), t("createSuccessDesc", { name: data.name }));
         },
     });
 
     const { mutate: updatedRestaurant, isLoading: isUpdating } = api.restaurant.update.useMutation({
-        onError: (err) => showErrorToast("Failed to update restaurant", err),
+        onError: (err) => showErrorToast(t("updateError"), err),
         onSuccess: (data) => {
             onClose();
             trpcCtx.restaurant.getAll.setData(undefined, (restaurants) =>
                 restaurants?.map((item) => (item.id === data.id ? { ...item, ...data } : item))
             );
-            showSuccessToast("Successfully updated", `Created restaurant ${data.name}, successfully`);
+            showSuccessToast(tCommon("updateSuccess"), t("updateSuccessDesc", { name: data.name }));
         },
     });
 
@@ -77,7 +80,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
             loading={loading}
             onClose={onClose}
             opened={opened}
-            title={restaurant ? "Edit Restaurant" : "Add Restaurant"}
+            title={restaurant ? t("updateModalTitle") : t("createModalTitle")}
             {...rest}
         >
             <form
@@ -96,8 +99,8 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                 <Stack spacing="sm">
                     <TextInput
                         disabled={loading}
-                        label="Name"
-                        placeholder="Restaurant Name"
+                        label={t("inputNameLabel")}
+                        placeholder={t("inputNamePlaceholder")}
                         withAsterisk
                         {...getInputProps("name")}
                         autoFocus
@@ -105,16 +108,16 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                     <TextInput
                         disabled={loading}
                         icon={<IconMapPin color={theme.colors.dark[4]} />}
-                        label="Location"
-                        placeholder="No 05, Road Name, City"
+                        label={t("inputLocationLabel")}
+                        placeholder={t("inputLocationPlaceholder")}
                         withAsterisk
                         {...getInputProps("location")}
                     />
                     <TextInput
                         disabled={loading}
                         icon={<IconPhone color={theme.colors.dark[4]} />}
-                        label="Contact Number"
-                        placeholder="+919367788755"
+                        label={t("inputContactNoLabel")}
+                        placeholder={t("inputContactNoPlaceholder")}
                         {...getInputProps("contactNo")}
                     />
                     <ImageUpload
@@ -133,7 +136,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                     </Text>
                     <Group mt="md" position="right">
                         <Button data-testid="save-restaurant-form" loading={loading} px="xl" type="submit">
-                            Save
+                            {tCommon("save")}
                         </Button>
                     </Group>
                 </Stack>

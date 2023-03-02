@@ -2,6 +2,7 @@ import type { FC } from "react";
 
 import { ActionIcon, Loader, Menu, useMantineTheme } from "@mantine/core";
 import { IconDotsVertical, IconEdit, IconTrash } from "@tabler/icons";
+import { useTranslations } from "next-intl";
 
 export interface EditDeleteOptionsProps {
     /** Color of the menu icon */
@@ -25,6 +26,7 @@ export const EditDeleteOptions: FC<EditDeleteOptionsProps> = ({
     hoverColor,
 }) => {
     const theme = useMantineTheme();
+    const t = useTranslations("common");
 
     if (loading) {
         return <Loader size="sm" variant="oval" />;
@@ -61,7 +63,7 @@ export const EditDeleteOptions: FC<EditDeleteOptionsProps> = ({
                             onEditClick();
                         }}
                     >
-                        Edit
+                        {t("edit")}
                     </Menu.Item>
                 )}
                 {onDeleteClick && (
@@ -75,7 +77,7 @@ export const EditDeleteOptions: FC<EditDeleteOptionsProps> = ({
                             onDeleteClick();
                         }}
                     >
-                        Delete
+                        {t("delete")}
                     </Menu.Item>
                 )}
             </Menu.Dropdown>

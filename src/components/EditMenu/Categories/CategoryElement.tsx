@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { Accordion, Box, Flex, Text } from "@mantine/core";
 import { IconGripVertical } from "@tabler/icons";
+import { useTranslations } from "next-intl";
 import { Draggable } from "react-beautiful-dnd";
 
 import type { Category, MenuItem } from "@prisma/client";
@@ -29,18 +30,17 @@ export const CategoryElement: FC<Props> = ({ categoryItem, menuId }) => {
     const { classes, cx, theme } = useStyles();
     const [deleteCategoryModalOpen, setDeleteCategoryModalOpen] = useState(false);
     const [categoryFormOpen, setCategoryFormOpen] = useState(false);
+    const t = useTranslations("dashboard.editMenu.category");
+    const tCommon = useTranslations("common");
 
     const { mutate: deleteCategory, isLoading: isDeleting } = api.category.delete.useMutation({
-        onError: (err) => showErrorToast("Failed to delete category", err),
+        onError: (err) => showErrorToast(t("deleteCategoryError"), err),
         onSettled: () => setDeleteCategoryModalOpen(false),
         onSuccess: (data) => {
             trpcCtx.category.getAll.setData({ menuId }, (categories) =>
                 categories?.filter((item) => item.id !== data.id)
             );
-            showSuccessToast(
-                "Successfully deleted",
-                `Deleted the category ${data.name} and related menu items successfully`
-            );
+            showSuccessToast(tCommon("deleteSuccess"), t("deleteSuccessToast", { name: data.name }));
         },
     });
 
@@ -82,12 +82,12 @@ export const CategoryElement: FC<Props> = ({ categoryItem, menuId }) => {
                 opened={categoryFormOpen}
             />
             <DeleteConfirmModal
-                description="Are you sure, you want to delete this category? This action will also delete all the items associated with this category and cannot be undone"
+                description={t("deleteConfirmDesc")}
                 loading={isDeleting}
                 onClose={() => setDeleteCategoryModalOpen(false)}
                 onDelete={() => deleteCategory({ id: categoryItem?.id })}
                 opened={deleteCategoryModalOpen}
-                title={`Delete ${categoryItem?.name} category`}
+                title={t("deleteConfirmTitle", { name: categoryItem.name })}
             />
         </>
     );

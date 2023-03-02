@@ -5,6 +5,7 @@ import { Button, LoadingOverlay, Popover, Stack, useMantineTheme } from "@mantin
 import { IconBrandGithub } from "@tabler/icons";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 import type { ButtonProps as MantineButtonProps, PopoverBaseProps } from "@mantine/core";
 import type { BuiltInProviderType } from "next-auth/providers";
@@ -57,6 +58,7 @@ const GithubButton = (props: ButtonProps) => {
 
 export const LoginOptionsContent: FC<LoginOptionsProps> = ({ loading = false, setLoading }) => {
     const router = useRouter();
+    const t = useTranslations("common");
     const callbackUrl = useMemo(() => {
         if (typeof router.query?.callbackUrl === "string" && !router.query?.callbackUrl?.includes("auth/signin")) {
             // if callbackUrl exists and its not the signin url, use it
@@ -75,8 +77,8 @@ export const LoginOptionsContent: FC<LoginOptionsProps> = ({ loading = false, se
     return (
         <Stack px="xl" py="md" sx={{ gap: 20 }}>
             <LoadingOverlay overlayBlur={2} visible={loading} />
-            <GoogleButton onClick={() => clickLoginOption("google")}>Sign in with Google</GoogleButton>
-            <GithubButton onClick={() => clickLoginOption("github")}>Sign in with GitHub</GithubButton>
+            <GoogleButton onClick={() => clickLoginOption("google")}>{t("googleSignIn")}</GoogleButton>
+            <GithubButton onClick={() => clickLoginOption("github")}>{t("githubSignIn")}</GithubButton>
         </Stack>
     );
 };
@@ -89,7 +91,7 @@ export const LoginOptions: FC<PopoverBaseProps & PropsWithChildren> = ({ childre
         <Popover
             onOpen={() => setLoading(false)}
             shadow="xl"
-            styles={{ dropdown: { background: theme.white } }}
+            styles={{ dropdown: { background: theme.white, overflow: "hidden" } }}
             withArrow
             {...rest}
         >

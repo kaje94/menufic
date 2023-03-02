@@ -1,18 +1,15 @@
 import type { FC } from "react";
 
 import { BackgroundImage, Box, Container, Overlay, Stepper, Title } from "@mantine/core";
+import { useTranslations } from "next-intl";
 
 import { useStyles } from "./style";
 
-const steps = [
-    { description: "Create your restaurant with basic details", label: "Create restaurant" },
-    { description: "Add menu related content to your restaurant", label: "Add content" },
-    { description: "Publish your restaurant in order to make it accessible by anyone", label: "Publish restaurant" },
-    { description: "Share the generated QR code or the menu URL with the rest of the world", label: "Share" },
-];
-
 export const Steps: FC = () => {
     const { classes, theme } = useStyles();
+    const t = useTranslations("landing.steps");
+
+    const steps = t.raw("stepItems");
 
     return (
         <BackgroundImage className={classes.parallaxBg} src="landing-restaurant-bg.avif">
@@ -20,7 +17,7 @@ export const Steps: FC = () => {
                 <Overlay blur={4} color={theme.white} opacity={0.5} zIndex={0} />
 
                 <Box className={classes.stepperContents}>
-                    <Title className={classes.sectionTitle}>How it works?</Title>
+                    <Title className={classes.sectionTitle}>{t("title")}</Title>
                     <Stepper
                         active={-1}
                         breakpoint="sm"
@@ -33,8 +30,8 @@ export const Steps: FC = () => {
                         mb="lg"
                         size="lg"
                     >
-                        {steps.map((step) => (
-                            <Stepper.Step key={step.label} description={step.description} label={step.label} />
+                        {steps.map((step: { description: string; title: string }) => (
+                            <Stepper.Step key={step.title} description={step.description} label={step.title} />
                         ))}
                     </Stepper>
                 </Box>

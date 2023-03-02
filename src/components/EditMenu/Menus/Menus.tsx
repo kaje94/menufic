@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Box, Center, Loader, Text } from "@mantine/core";
 import { IconCirclePlus } from "@tabler/icons";
+import { useTranslations } from "next-intl";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 import type { Menu } from "@prisma/client";
@@ -32,12 +33,13 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
     const { classes, cx } = useStyles();
     const [rootParent] = useAutoAnimate<HTMLDivElement>();
     const [menuFormOpen, setMenuFormOpen] = useState(false);
+    const t = useTranslations("dashboard.editMenu.menu");
 
     const { isLoading: menusLoading, data: menus = [] } = api.menu.getAll.useQuery(
         { restaurantId },
         {
             enabled: !!restaurantId,
-            onError: () => showErrorToast("Failed to retrieve menus"),
+            onError: () => showErrorToast(t("fetchError")),
             onSuccess: (menusRes) => {
                 if (!selectedMenu || !menusRes.some((item) => item.id === selectedMenu.id)) {
                     setSelectedMenu(menusRes.length > 0 ? menusRes[0] : undefined);
@@ -54,7 +56,7 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
 
     const { mutate: updateMenuPositions } = api.menu.updatePosition.useMutation({
         onError: (err, _newItem, context: { previousMenus: Menu[] | undefined } | undefined) => {
-            showErrorToast("Failed to update the position of menu", err);
+            showErrorToast(t("positionUpdateError"), err);
             trpcCtx.menu.getAll.setData({ restaurantId }, context?.previousMenus);
         },
         onMutate: async (reorderedList) => {
@@ -90,7 +92,7 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
                         }
                     }}
                 >
-                    <Droppable droppableId="dnd-list">
+                    <Droppable droppableId="dnd-menu-list">
                         {(provided) => (
                             <Box {...provided.droppableProps} ref={provided.innerRef}>
                                 {menus?.map((item) => (
@@ -125,7 +127,7 @@ export const Menus: FC<Props> = ({ restaurantId, selectedMenu, setSelectedMenu }
                         <Center p="sm">
                             <IconCirclePlus size={24} />
                         </Center>
-                        <Text className={classes.itemTitle}>Add Menu</Text>
+                        <Text className={classes.itemTitle}>{t("addMenuLabel")}</Text>
                     </Box>
                 )}
             </Box>

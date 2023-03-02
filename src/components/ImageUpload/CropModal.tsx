@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 
 import { Box, Button, createStyles, Group, Slider, Stack, Text } from "@mantine/core";
 import { useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import Cropper from "react-easy-crop";
 
 import type { ModalProps } from "@mantine/core";
@@ -40,6 +41,8 @@ export const CropModal: FC<Props> = ({ imageUrl, onCrop, aspect = 1, onClose, ..
     const [zoom, setZoom] = useState(1);
     const [rotation, setRotation] = useState(0);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+    const t = useTranslations("dashboard.imageUpload");
+    const tCommon = useTranslations("common");
     const { mutate, isLoading: cropping } = useMutation(getCroppedImg, {
         mutationKey: [],
         onSuccess: (croppedImage) => {
@@ -60,7 +63,7 @@ export const CropModal: FC<Props> = ({ imageUrl, onCrop, aspect = 1, onClose, ..
     }, [croppedAreaPixels, rotation, imageUrl, onCrop]);
 
     return (
-        <Modal centered loading={cropping} onClose={onClose} size="lg" title="Crop Image" {...rest}>
+        <Modal centered loading={cropping} onClose={onClose} size="lg" title={t("cropModalTitle")} {...rest}>
             <Stack spacing="md">
                 <Box className={classes.cropAreaWrap}>
                     <Cropper
@@ -77,21 +80,21 @@ export const CropModal: FC<Props> = ({ imageUrl, onCrop, aspect = 1, onClose, ..
                     />
                 </Box>
                 <Box>
-                    <Text color={theme.black}>Zoom</Text>
-                    <Slider label="Zoom" max={3} min={1} onChange={setZoom} step={0.1} value={zoom} />
+                    <Text color={theme.black}>{t("zoom")}</Text>
+                    <Slider label={t("zoom")} max={3} min={1} onChange={setZoom} step={0.1} value={zoom} />
                 </Box>
                 <Box>
-                    <Text color={theme.black}>Rotation</Text>
-                    <Slider label="Rotation" max={360} min={0} onChange={setRotation} step={1} value={rotation} />
+                    <Text color={theme.black}>{t("rotation")}</Text>
+                    <Slider label={t("rotation")} max={360} min={0} onChange={setRotation} step={1} value={rotation} />
                 </Box>
             </Stack>
 
             <Group mt="md" position="right">
                 <Button disabled={cropping} onClick={onClose} variant="subtle">
-                    Cancel
+                    {tCommon("cancel")}
                 </Button>
                 <Button data-testid="crop-image" loading={cropping} onClick={finishCropImage}>
-                    Crop
+                    {t("crop")}
                 </Button>
             </Group>
         </Modal>

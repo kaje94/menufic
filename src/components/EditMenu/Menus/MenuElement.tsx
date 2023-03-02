@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { Box, Center, Text } from "@mantine/core";
 import { IconGripVertical } from "@tabler/icons";
+import { useTranslations } from "next-intl";
 import { Draggable } from "react-beautiful-dnd";
 
 import type { Menu } from "@prisma/client";
@@ -32,9 +33,11 @@ export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSe
     const { classes, cx, theme } = useStyles();
     const [deleteMenuModalOpen, setDeleteMenuModalOpen] = useState(false);
     const [menuFormOpen, setMenuFormOpen] = useState(false);
+    const t = useTranslations("dashboard.editMenu.menu");
+    const tCommon = useTranslations("common");
 
     const { mutate: deleteMenu, isLoading: isDeleting } = api.menu.delete.useMutation({
-        onError: (err) => showErrorToast("Failed to delete restaurant menu", err),
+        onError: (err) => showErrorToast(t("deleteMenuError"), err),
         onSettled: () => setDeleteMenuModalOpen(false),
         onSuccess: (data) => {
             const filteredMenuData = trpcCtx.menu.getAll
@@ -46,7 +49,7 @@ export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSe
                 setSelectedMenu(filteredMenuData?.length > 0 ? filteredMenuData[0] : undefined);
             }
 
-            showSuccessToast("Successfully deleted", `Deleted the menu ${data.name} and related details successfully`);
+            showSuccessToast(tCommon("deleteSuccess"), t("deleteSuccessToast", { name: data.name }));
         },
     });
 
@@ -92,12 +95,12 @@ export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSe
                 restaurantId={restaurantId}
             />
             <DeleteConfirmModal
-                description="Are you sure, you want to delete this menu? This action will also delete all the categories & items associated with this menu and cannot be undone"
+                description={t("deleteConfirmDesc")}
                 loading={isDeleting}
                 onClose={() => setDeleteMenuModalOpen(false)}
                 onDelete={() => deleteMenu({ id: item.id })}
                 opened={deleteMenuModalOpen}
-                title={`Delete ${item.name} menu`}
+                title={t("deleteConfirmTitle", { name: item.name })}
             />
         </>
     );

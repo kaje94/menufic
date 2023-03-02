@@ -4,6 +4,7 @@ import { IconChartDots, IconSlideshow, IconStars, IconToolsKitchen } from "@tabl
 import { type NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useTranslations } from "next-intl";
 import { NextSeo } from "next-seo";
 
 import { AppShell } from "src/components/AppShell";
@@ -18,13 +19,14 @@ const RestaurantManagePage: NextPage = () => {
     const theme = useMantineTheme();
     const [itemsParent] = useAutoAnimate<HTMLDivElement>();
     const restaurantId = router.query?.restaurantId as string;
+    const t = useTranslations("dashboard.restaurantManage");
 
     const { data: restaurant, isLoading } = api.restaurant.get.useQuery(
         { id: restaurantId },
         {
             enabled: !!restaurantId,
             onError: () => {
-                showErrorToast("Failed to retrieve restaurant details");
+                showErrorToast(t("restaurantFetchError"));
                 router.push("/restaurant");
             },
         }
@@ -32,7 +34,7 @@ const RestaurantManagePage: NextPage = () => {
 
     return (
         <>
-            <NextSeo description="Manage your restaurant's menus and banners" title="Manage Restaurant" />
+            <NextSeo description={t("seoDescription")} title={t("seoTitle")} />
             <main>
                 <AppShell>
                     <Box ref={itemsParent}>
@@ -49,7 +51,7 @@ const RestaurantManagePage: NextPage = () => {
                                     ]}
                                 >
                                     <Breadcrumbs color={theme.black}>
-                                        <Link href="/restaurant">Restaurant</Link>
+                                        <Link href="/restaurant">{t("breadcrumb")}</Link>
                                         <Text>{restaurant?.name}</Text>
                                     </Breadcrumbs>
                                     {restaurant && <PublishButton restaurant={restaurant} />}
@@ -65,26 +67,26 @@ const RestaurantManagePage: NextPage = () => {
                                     <IconCard
                                         Icon={IconToolsKitchen}
                                         href={`/restaurant/${router.query?.restaurantId}/edit-menu`}
-                                        subTitle="Manage the menus, categories and individual menu items of your restaurant"
+                                        subTitle={t("menuCardSubTitle")}
                                         testId="manage-menus-card"
-                                        title="Menus"
+                                        title={t("menuCardTitle")}
                                     />
                                     <IconCard
                                         Icon={IconSlideshow}
                                         href={`/restaurant/${router.query?.restaurantId}/banners`}
-                                        subTitle="Manage banners that could be used to display promotional content in your restaurant menu"
+                                        subTitle={t("bannersCardSubTitle")}
                                         testId="manage-banners-card"
-                                        title="Banners"
+                                        title={t("bannersCardTitle")}
                                     />
                                     <IconCard
                                         Icon={IconStars}
-                                        subTitle="View feedback received from your restaurant customers"
-                                        title="Feedback (Coming Soon)"
+                                        subTitle={t("feedbackCardSubTitle")}
+                                        title={t("feedbackCardTitle")}
                                     />
                                     <IconCard
                                         Icon={IconChartDots}
-                                        subTitle="Gain insights on how many people view your published menu and which items are most popular"
-                                        title="Stats (Coming Soon)"
+                                        subTitle={t("statsCardSubTitle")}
+                                        title={t("statsCardTitle")}
                                     />
                                 </SimpleGrid>
                             </>
@@ -95,5 +97,9 @@ const RestaurantManagePage: NextPage = () => {
         </>
     );
 };
+
+export const getStaticProps = async () => ({ props: { messages: (await import("src/lang/en.json")).default } });
+
+export const getStaticPaths = async () => ({ fallback: "blocking", paths: [] });
 
 export default RestaurantManagePage;

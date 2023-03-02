@@ -14,6 +14,7 @@ import {
 } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import { useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 
 import { env } from "src/env/client.mjs";
@@ -23,6 +24,7 @@ import { useStyles } from "./style";
 
 export const ContactUs: FC<{ contactUsRef: MutableRefObject<HTMLDivElement> }> = ({ contactUsRef }) => {
     const { classes, theme, cx } = useStyles();
+    const t = useTranslations("landing.contactUs");
 
     const form = useForm({
         initialValues: {
@@ -83,44 +85,44 @@ export const ContactUs: FC<{ contactUsRef: MutableRefObject<HTMLDivElement> }> =
                             );
                         })}
                     >
-                        <Title className={classes.sectionTitle}>Get in touch</Title>
+                        <Title className={classes.sectionTitle}>{t("title")}</Title>
 
                         <SimpleGrid breakpoints={[{ cols: 1, maxWidth: "sm" }]} cols={2} mt="xl">
                             <TextInput
-                                label="Name"
+                                label={t("name.label")}
                                 name="name"
-                                placeholder="Your name"
+                                placeholder={t("name.placeholder")}
                                 {...form.getInputProps("name")}
                             />
                             <TextInput
-                                label="Email"
+                                label={t("email.label")}
                                 name="email"
-                                placeholder="Your email"
+                                placeholder={t("email.placeholder")}
                                 {...form.getInputProps("email")}
                             />
                         </SimpleGrid>
 
                         <TextInput
-                            label="Subject"
+                            label={t("subject.label")}
                             mt="md"
                             name="subject"
-                            placeholder="Subject"
+                            placeholder={t("subject.placeholder")}
                             {...form.getInputProps("subject")}
                         />
                         <Textarea
                             autosize
-                            label="Message"
+                            label={t("message.label")}
                             maxRows={10}
                             minRows={5}
                             mt="md"
                             name="message"
-                            placeholder="Your message"
+                            placeholder={t("message.placeholder")}
                             {...form.getInputProps("message")}
                         />
 
                         <Group mt="xl" position="center">
                             <Button loading={submittingContactUs} size="md" type="submit">
-                                Send message
+                                {t("submitButtonLabel")}
                             </Button>
                         </Group>
                     </form>

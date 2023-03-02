@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Accordion, Box, Button, Center, Loader } from "@mantine/core";
 import { IconPlus } from "@tabler/icons";
+import { useTranslations } from "next-intl";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 import type { Category, Image, MenuItem } from "@prisma/client";
@@ -29,12 +30,13 @@ export const Categories: FC<Props> = ({ menuId }) => {
     const [openedCategories, setOpenedCategories] = useState<string[]>([]);
     const [categoriesParent, enableAutoAnimate] = useAutoAnimate<HTMLElement>();
     const [rootParent] = useAutoAnimate<HTMLDivElement>();
+    const t = useTranslations("dashboard.editMenu.category");
 
     const { isLoading: categoriesLoading, data: categories = [] } = api.category.getAll.useQuery(
         { menuId },
         {
             enabled: !!menuId,
-            onError: () => showErrorToast("Failed to retrieve categories and menu items"),
+            onError: () => showErrorToast(t("fetchError")),
             onSuccess: (data) => {
                 const newSelected = openedCategories.filter((item) =>
                     data.map((category) => category.id).includes(item)
@@ -49,7 +51,7 @@ export const Categories: FC<Props> = ({ menuId }) => {
     const { mutate: updateCategoryPositions } = api.category.updatePosition.useMutation({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (_err, _newItem, context: any) => {
-            showErrorToast("Failed to update category position");
+            showErrorToast(t("positionUpdateError"));
             trpcCtx.category.getAll.setData({ menuId }, context?.previousCategories);
         },
         onMutate: async (reorderedList) => {
@@ -138,7 +140,7 @@ export const Categories: FC<Props> = ({ menuId }) => {
                         size={categories?.length === 0 ? "lg" : "md"}
                         variant={categories?.length === 0 ? "filled" : "default"}
                     >
-                        Add Category
+                        {t("addCategoryLabel")}
                     </Button>
                 )}
             </Box>

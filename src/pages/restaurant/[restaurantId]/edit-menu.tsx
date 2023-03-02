@@ -5,6 +5,7 @@ import { Box, Breadcrumbs, Center, Grid, Loader, SimpleGrid, Text } from "@manti
 import { type NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useTranslations } from "next-intl";
 import { NextSeo } from "next-seo";
 
 import type { Menu } from "@prisma/client";
@@ -23,13 +24,15 @@ const EditMenuPage: NextPage = () => {
     const [gridItemParent] = useAutoAnimate<HTMLDivElement>();
     const [rootParent] = useAutoAnimate<HTMLDivElement>();
     const restaurantId = router.query?.restaurantId as string;
+    const t = useTranslations("dashboard.editMenu");
+    const tRestaurant = useTranslations("dashboard.restaurantManage");
 
     const { data: restaurant, isLoading } = api.restaurant.get.useQuery(
         { id: restaurantId },
         {
             enabled: !!restaurantId,
             onError: () => {
-                showErrorToast("Failed to retrieve restaurant details");
+                showErrorToast(tRestaurant("restaurantFetchError"));
                 router.push("/restaurant");
             },
         }
@@ -37,7 +40,7 @@ const EditMenuPage: NextPage = () => {
 
     return (
         <>
-            <NextSeo description="Manage the menus of your restaurant" title="Edit Menu" />
+            <NextSeo description={t("seoDescription")} title={t("seoTitle")} />
             <main>
                 <AppShell>
                     <Box ref={rootParent}>
@@ -54,9 +57,9 @@ const EditMenuPage: NextPage = () => {
                                     ]}
                                 >
                                     <Breadcrumbs>
-                                        <Link href="/restaurant">Restaurant</Link>
+                                        <Link href="/restaurant">{tRestaurant("breadcrumb")}</Link>
                                         <Link href={`/restaurant/${restaurant?.id}`}>{restaurant?.name}</Link>
-                                        <Text>Menu</Text>
+                                        <Text>{t("breadcrumb")}</Text>
                                     </Breadcrumbs>
                                     {restaurant && <PublishButton restaurant={restaurant} />}
                                 </SimpleGrid>
@@ -84,5 +87,9 @@ const EditMenuPage: NextPage = () => {
         </>
     );
 };
+
+export const getStaticProps = async () => ({ props: { messages: (await import("src/lang/en.json")).default } });
+
+export const getStaticPaths = async () => ({ fallback: "blocking", paths: [] });
 
 export default EditMenuPage;

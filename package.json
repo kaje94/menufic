@@ -10,6 +10,7 @@
     "lint:fix": "next lint --fix",
     "start": "next start",
     "test:e2e": "playwright test",
+    "tsc": "tsc --noEmit --incremental",
     "format-rest": "npx prettier --ignore-path .gitignore --write \"**/*.{css,md,json,yml}\" \"!package-lock.json\""
   },
   "dependencies": {
@@ -44,6 +45,7 @@
     "nanoid": "^4.0.0",
     "next": "13.1.2",
     "next-auth": "^4.18.7",
+    "next-intl": "^2.10.4",
     "next-seo": "^5.15.0",
     "patch-package": "^6.5.1",
     "react": "18.2.0",

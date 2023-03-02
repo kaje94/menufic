@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { ActionIcon, Box, createStyles, Grid, Text } from "@mantine/core";
 import { IconEdit, IconGripVertical, IconTrash } from "@tabler/icons";
+import { useTranslations } from "next-intl";
 import { Draggable } from "react-beautiful-dnd";
 
 import type { Image, MenuItem } from "@prisma/client";
@@ -64,9 +65,11 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
     const { classes, cx, theme } = useStyles();
     const [deleteMenuItemModalOpen, setDeleteMenuItemModalOpen] = useState(false);
     const [menuItemFormOpen, setMenuItemFormOpen] = useState(false);
+    const t = useTranslations("dashboard.editMenu.menuItem");
+    const tCommon = useTranslations("common");
 
     const { mutate: deleteMenuItem, isLoading: isDeleting } = api.menuItem.delete.useMutation({
-        onError: (err) => showErrorToast("Failed to delete menu item", err),
+        onError: (err) => showErrorToast(t("deleteMenuItemError"), err),
         onSettled: () => setDeleteMenuItemModalOpen(false),
         onSuccess: (data) => {
             trpcCtx.category.getAll.setData({ menuId }, (categories) =>
@@ -79,7 +82,7 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
                         : categoryItem
                 )
             );
-            showSuccessToast("Successfully deleted", `Deleted the menu item ${data.name}`);
+            showSuccessToast(tCommon("deleteSuccess"), t("deleteSuccessToast", { name: data.name }));
         },
     });
 
@@ -119,7 +122,7 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
                                         width={50}
                                     />
                                 ) : (
-                                    <Text>No Image</Text>
+                                    <Text>{t("noImage")}</Text>
                                 )}
                             </Box>
                         </Grid.Col>
@@ -136,7 +139,7 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
                         </Grid.Col>
                         <Grid.Col lg={5} sm={9} span={12}>
                             <Text color={menuItem.description ? theme.colors.dark[6] : theme.colors.dark[3]}>
-                                {menuItem.description || "No Description"}
+                                {menuItem.description || t("noDescription")}
                             </Text>
                         </Grid.Col>
                         <Grid.Col className={classes.actionButtons} lg={1} sm={3} span={12}>
@@ -159,12 +162,12 @@ export const MenuItemElement: FC<Props> = ({ menuItem, menuId, categoryId }) => 
             </Draggable>
 
             <DeleteConfirmModal
-                description="Are you sure, you want to delete this menu item? This action cannot be undone"
+                description={t("deleteConfirmDesc")}
                 loading={isDeleting}
                 onClose={() => setDeleteMenuItemModalOpen(false)}
                 onDelete={() => deleteMenuItem({ id: menuItem?.id })}
                 opened={deleteMenuItemModalOpen}
-                title={`Delete ${menuItem?.name} item`}
+                title={t("deleteConfirmTitle", { name: menuItem.name })}
             />
 
             <MenuItemForm
