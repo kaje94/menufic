@@ -11,8 +11,9 @@ import { DefaultSeo } from "next-seo";
 import type { ColorScheme } from "@mantine/core";
 import type { AbstractIntlMessages } from "next-intl";
 
+import { env } from "src/env/client.mjs";
 import { CustomFonts } from "src/styles/CustomFonts";
-import { getMantineTheme } from "src/styles/theme";
+import { getMantineTheme, theme } from "src/styles/theme";
 import { api } from "src/utils/api";
 
 const MyApp: AppType<{ messages?: AbstractIntlMessages | undefined; session: Session | null }> = ({
@@ -40,12 +41,12 @@ const MyApp: AppType<{ messages?: AbstractIntlMessages | undefined; session: Ses
                 // todo: remove below
                 // description="A digital menu generator that lets you to create the best menu for your restaurant. Menufic is packed with several features that will boost the online presence of your restaurant with ease"
                 openGraph={{
-                    images: [{ url: "https://menufic.com/menufic_banner.jpg" }],
+                    images: [{ url: `${env.NEXT_PUBLIC_PROD_URL}/menufic_banner.jpg` }],
                     siteName: "menufic.com",
                     type: "website",
-                    url: "https://menufic.com",
+                    url: env.NEXT_PUBLIC_PROD_URL,
                 }}
-                themeColor="#c24152"
+                themeColor={theme.light.primary[6]}
                 titleTemplate="Menufic - %s"
                 twitter={{ cardType: "summary_large_image" }}
             />

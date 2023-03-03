@@ -43,6 +43,7 @@ export const clientSchema = z.object({
     NEXT_PUBLIC_MAX_MENUS_PER_RESTAURANT: z.string().regex(/^\d+$/).default("5"),
     NEXT_PUBLIC_MAX_MENU_ITEMS_PER_CATEGORY: z.string().regex(/^\d+$/).default("20"),
     NEXT_PUBLIC_MAX_RESTAURANTS_PER_USER: z.string().regex(/^\d+$/).default("5"),
+    NEXT_PUBLIC_PROD_URL: z.string().optional().default("https://menufic.com"),
     NEXT_PUBLIC_SAMPLE_MENU_ID: z.string().optional(),
     NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
 });
@@ -62,6 +63,7 @@ export const clientEnv = {
     NEXT_PUBLIC_MAX_MENUS_PER_RESTAURANT: process.env.NEXT_PUBLIC_MAX_MENUS_PER_RESTAURANT,
     NEXT_PUBLIC_MAX_MENU_ITEMS_PER_CATEGORY: process.env.NEXT_PUBLIC_MAX_MENU_ITEMS_PER_CATEGORY,
     NEXT_PUBLIC_MAX_RESTAURANTS_PER_USER: process.env.NEXT_PUBLIC_MAX_RESTAURANTS_PER_USER,
+    NEXT_PUBLIC_PROD_URL: process.env.NEXT_PUBLIC_PROD_URL,
     NEXT_PUBLIC_SAMPLE_MENU_ID: process.env.NEXT_PUBLIC_SAMPLE_MENU_ID,
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
 };

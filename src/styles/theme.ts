@@ -5,7 +5,7 @@ import { getStyles } from "./styles";
 export const Black = "#000000";
 export const White = "#ffffff";
 
-const theme: Record<ColorScheme, { dark: Tuple<string, 10>; primary: Tuple<string, 10> }> = {
+export const theme: Record<ColorScheme, { dark: Tuple<string, 10>; primary: Tuple<string, 10> }> = {
     dark: {
         dark: [
             "#0c0809",

@@ -42,8 +42,8 @@ const PrivacyPolicyPage: NextPage = () => {
                                 <Text>
                                     <strong>{definition.key}</strong> {definition.rest}
                                     {definition.key === "Website" && (
-                                        <Link href="https://menufic.com" target="_blank">
-                                            https://menufic.com
+                                        <Link href={env.NEXT_PUBLIC_PROD_URL} target="_blank">
+                                            {env.NEXT_PUBLIC_PROD_URL}
                                         </Link>
                                     )}
                                 </Text>
@@ -168,8 +168,8 @@ const PrivacyPolicyPage: NextPage = () => {
                     <List.Item>
                         <Text>
                             {t("contactUs.viaWebsite")}
-                            <Link href="https://menufic.com" target="_blank">
-                                https://menufic.com
+                            <Link href={env.NEXT_PUBLIC_PROD_URL} target="_blank">
+                                {env.NEXT_PUBLIC_PROD_URL}
                             </Link>
                         </Text>
                     </List.Item>

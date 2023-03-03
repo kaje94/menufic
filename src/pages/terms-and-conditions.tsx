@@ -24,7 +24,7 @@ const TermsAndConditionsPage: NextPage = () => {
                     {t("lastUpdated", { date: "January 11, 2023" })}
                 </Text>
                 <Title order={2}>{t("introduction.title")}</Title>
-                <Text>{t("introduction.line1", { url: "https://menufic.com" })}</Text>
+                <Text>{t("introduction.line1", { url: env.NEXT_PUBLIC_PROD_URL })}</Text>
                 <Text>{t("introduction.line2")}</Text>
                 <Text>{t("introduction.line3")}</Text>
                 <Text>{t("introduction.line4", { email: env.NEXT_PUBLIC_CONTACT_EMAIL })}</Text>
