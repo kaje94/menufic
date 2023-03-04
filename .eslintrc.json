@@ -3,7 +3,7 @@
     "parserOptions": {
         "project": "./tsconfig.json"
     },
-    "plugins": ["@typescript-eslint", "react", "prettier", "sort-keys-fix", "typescript-sort-keys"],
+    "plugins": ["@typescript-eslint", "react", "prettier", "sort-keys-fix", "typescript-sort-keys", "jsx-a11y"],
     "extends": [
         "airbnb",
         "airbnb/hooks",
@@ -12,7 +12,8 @@
         "plugin:@typescript-eslint/recommended",
         "prettier",
         "plugin:prettier/recommended",
-        "plugin:import/recommended"
+        "plugin:import/recommended",
+        "plugin:jsx-a11y/recommended"
     ],
     "rules": {
         "react/prop-types": "off",
