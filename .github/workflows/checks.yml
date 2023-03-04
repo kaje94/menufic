@@ -1,5 +1,8 @@
+---
 name: Checks
-on: [push, workflow_dispatch]
+on:
+    - push
+    - workflow_dispatch
 jobs:
     lint:
         name: Lint
@@ -11,7 +14,7 @@ jobs:
             - uses: actions/setup-node@v3
               with:
                   node-version: 16
-                  cache: "npm"
+                  cache: npm
             - run: npm install
             - run: npm run lint
     tsc:
@@ -24,7 +27,7 @@ jobs:
             - uses: actions/setup-node@v3
               with:
                   node-version: 16
-                  cache: "npm"
+                  cache: npm
             - run: npm install
             - run: npm run tsc
     sonar:
@@ -32,15 +35,13 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-            with:
-                # Disabling shallow clone is recommended for improving relevancy of reporting
-                fetch-depth: 0
+              with:
+                  fetch-depth: 0
             - name: SonarCloud Scan
-            uses: sonarsource/sonarcloud-github-action@master
-            with:
-                  args: >
-                      -Dsonar.organization=kaje94_menufic
-                      -Dsonar.projectKey=my-kajendran
-            env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+              uses: sonarsource/sonarcloud-github-action@master
+              with:
+                  args: |
+                      -Dsonar.organization=kaje94_menufic -Dsonar.projectKey=my-kajendran
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
