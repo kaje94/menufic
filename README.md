@@ -34,7 +34,7 @@
 
 [Menufic](https://menufic.com) is a digital menu generator for restaurants that makes it simple and easy for anyone to create and share their restaurant menus. Menufic is built using [Next.js](https://nextjs.org), [NextAuth.js](https://next-auth.js.org), [Prisma](https://prisma.io), [tRPC](https://trpc.io), [Planetscale](https://planetscale.com) & [Imagekit](https://imagekit.io). Following are some of the features that Menufic provides.
 
--   Provide simple & intuitive UI to create & manage restaurant menus
+-   Simple & intuitive UI to create & manage restaurant menus
 -   Generate menus that are optimized for search engines and social media crawlers
 -   Support for both light and dark themes
 -   Attach multiple banner images to menus
@@ -48,6 +48,7 @@
 -   [NPM 7+](http://npmjs.com)
 -   [MySQL](https://www.mysql.com) for persisting data.
 -   [Imagekit account](https://imagekit.io) for managing all the uploaded images.
+-   [Google](https://next-auth.js.org/providers/google) / [GitHub](https://next-auth.js.org/providers/github) for authenticating users
 
 ## How To Use
 
@@ -91,6 +92,15 @@ $ npm run lint:fix
 # Format other files types such as .json, .md & .css by running:
 $ npm run format-rest
 ```
+
+Scripts related to playwright tests:
+> Before running playwright tests, make sure that you have added TEST_MENUFIC_USER_LOGIN_KEY and TEST_MENUFIC_BASE_URL to your .env file 
+
+```bash
+# Start dev server(If its not already running) & run all e2e tests
+$ npm run test:e2e
+```
+
 
 ## Contributing
 

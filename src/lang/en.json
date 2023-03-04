@@ -14,9 +14,17 @@
         "footerCopyright": "© 2023 Copyright: Menufic",
         "login": "Login",
         "logout": "Logout",
-        "openDashboard": "Go to Dashboard",
+        "openDashboard": "Go to Dashboard"
+    },
+    "auth": {
         "googleSignIn": "Sign in with Google",
-        "githubSignIn": "Sign in with GitHub"
+        "githubSignIn": "Sign in with GitHub",
+        "keyRequired": "Key is required",
+        "loginFailed": "Failed to sign in",
+        "testLoginDesc": "Login key is only used for testing purposes",
+        "loginKeyInputLabel": "Login Key",
+        "loginKeyInputPlaceholder": "Paste login key here",
+        "loginButtonLabel": "Login"
     },
     "errorPage": {
         "defaultMessage": "Aaaah! Something went wrong",

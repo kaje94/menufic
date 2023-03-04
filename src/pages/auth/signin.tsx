@@ -50,7 +50,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                 : "/restaurant";
         return { redirect: { destination: callbackUrl } };
     }
-    return { props: {} };
+    return { props: { messages: (await import("src/lang/en.json")).default } };
 }
 
 export default SignIn;

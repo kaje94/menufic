@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { unstable_getServerSession } from "next-auth/next";
 import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { z } from "zod";
 
 import type { GetServerSidePropsContext, NextPage } from "next";
@@ -34,6 +35,7 @@ const useStyles = createStyles((theme) => {
 const SignInTestUser: NextPage = () => {
     const { classes } = useStyles();
     const router = useRouter();
+    const t = useTranslations("auth");
 
     const callbackUrl = useMemo(() => {
         if (
@@ -48,7 +50,7 @@ const SignInTestUser: NextPage = () => {
 
     const { getInputProps, onSubmit } = useForm({
         initialValues: { loginKey: "" },
-        validate: zodResolver(z.object({ loginKey: z.string().min(1, "Key is required") })),
+        validate: zodResolver(z.object({ loginKey: z.string().min(1, t("keyRequired")) })),
     });
 
     const { mutate, isLoading, error } = useMutation(
@@ -56,7 +58,7 @@ const SignInTestUser: NextPage = () => {
         {
             onSettled: (data, err) => {
                 if (data?.error || err) {
-                    throw new Error("Failed to sign in");
+                    throw new Error(t("loginFailed"));
                 }
                 if (data?.ok && data.url) {
                     router.push(data.url);
@@ -83,15 +85,15 @@ const SignInTestUser: NextPage = () => {
                             </>
 
                             <PasswordInput
-                                description="Login key is only used for testing purposes"
-                                label="Login Key"
-                                placeholder="Paste login key here"
+                                description={t("testLoginDesc")}
+                                label={t("loginKeyInputLabel")}
+                                placeholder={t("loginKeyInputPlaceholder")}
                                 withAsterisk
                                 {...getInputProps("loginKey")}
                                 autoFocus
                             />
                             <Button data-testid="submit-test-login" loading={isLoading} px="xl" type="submit">
-                                Login
+                                {t("loginButtonLabel")}
                             </Button>
                         </Stack>
                     </form>
@@ -111,7 +113,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                 : "/restaurant";
         return { redirect: { destination: callbackUrl } };
     }
-    return { props: {} };
+    return { props: { messages: (await import("src/lang/en.json")).default } };
 }
 
 export default SignInTestUser;

@@ -58,7 +58,7 @@ const GithubButton = (props: ButtonProps) => {
 
 export const LoginOptionsContent: FC<LoginOptionsProps> = ({ loading = false, setLoading }) => {
     const router = useRouter();
-    const t = useTranslations("common");
+    const t = useTranslations("auth");
     const callbackUrl = useMemo(() => {
         if (typeof router.query?.callbackUrl === "string" && !router.query?.callbackUrl?.includes("auth/signin")) {
             // if callbackUrl exists and its not the signin url, use it
