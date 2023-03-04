@@ -16,7 +16,7 @@ import { CustomFonts } from "src/styles/CustomFonts";
 import { getMantineTheme, theme } from "src/styles/theme";
 import { api } from "src/utils/api";
 
-const MyApp: AppType<{ messages?: AbstractIntlMessages | undefined; session: Session | null }> = ({
+const MyApp: AppType<{ messages?: AbstractIntlMessages; session: Session | null }> = ({
     Component,
     pageProps: { session, ...pageProps },
 }) => {
@@ -34,12 +34,9 @@ const MyApp: AppType<{ messages?: AbstractIntlMessages | undefined; session: Ses
     return (
         <>
             <DefaultSeo
-                // todo add i18n
                 additionalMetaTags={[
                     { content: "minimum-scale=1, initial-scale=1, width=device-width", name: "viewport" },
                 ]}
-                // todo: remove below
-                // description="A digital menu generator that lets you to create the best menu for your restaurant. Menufic is packed with several features that will boost the online presence of your restaurant with ease"
                 openGraph={{
                     images: [{ url: `${env.NEXT_PUBLIC_PROD_URL}/menufic_banner.jpg` }],
                     siteName: "menufic.com",

@@ -13,6 +13,33 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/kaje94/menufic/actions/workflows/checks.yml">
+    <img src="https://github.com/kaje94/menufic/actions/workflows/checks.yml/badge.svg?branch=main">
+  </a>
+  <a href="https://github.com/kaje94/menufic/actions/workflows/tests.yml">
+    <img src="https://github.com/kaje94/menufic/actions/workflows/tests.yml/badge.svg?branch=main">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://sonarcloud.io/component_measures?metric=Maintainability&id=kaje94_menufic">
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=kaje94_menufic&metric=sqale_rating">
+  </a>
+  <a href="https://sonarcloud.io/component_measures?metric=bugs&id=kaje94_menufic">
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=kaje94_menufic&metric=bugs">
+  </a>
+  <a href="https://sonarcloud.io/component_measures?metric=vulnerabilities&id=kaje94_menufic">
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=kaje94_menufic&metric=vulnerabilities">
+  </a>
+  <a href="https://sonarcloud.io/component_measures?metric=code_smells&id=kaje94_menufic">
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=kaje94_menufic&metric=code_smells">
+  </a>
+  <a href="https://sonarcloud.io/component_measures?metric=Reliability&id=kaje94_menufic">
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=kaje94_menufic&metric=reliability_rating">
+  </a>
+</p>
+
+<p align="center">
   <img src="https://api.checklyhq.com/v1/badges/checks/b9184fcc-aba1-47be-ab53-6a6e44bfe47c?style=flat&theme=default">
 </p>
 
