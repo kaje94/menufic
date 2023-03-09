@@ -141,7 +141,11 @@
             "email": { "label": "Email", "placeholder": "user@email.com" },
             "subject": { "label": "Subject", "placeholder": "Subject" },
             "message": { "label": "Message", "placeholder": "Your message" },
-            "submitButtonLabel": "Send message"
+            "submitButtonLabel": "Send message",
+            "successToastTitle":"Successfully submitted your message",
+            "successToastDesc":"Our team will get in touch with you soon.",
+            "errorToastTitle":"Failed to submit your message",
+            "errorToastDesc":"Please try again in a while"
         },
         "aboutUs": {
             "title": "About Us",

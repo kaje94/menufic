@@ -27,12 +27,7 @@ export const ContactUs: FC<{ contactUsRef: MutableRefObject<HTMLDivElement> }> =
     const t = useTranslations("landing.contactUs");
 
     const form = useForm({
-        initialValues: {
-            email: "",
-            message: "",
-            name: "",
-            subject: "",
-        },
+        initialValues: { email: "", message: "", name: "", subject: "" },
         validate: zodResolver(
             z.object({
                 email: z.string().email(),
@@ -48,10 +43,7 @@ export const ContactUs: FC<{ contactUsRef: MutableRefObject<HTMLDivElement> }> =
             if (env.NEXT_PUBLIC_FORM_API_KEY) {
                 const formResponse = await fetch("https://api.web3forms.com/submit", {
                     body: data,
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                    },
+                    headers: { Accept: "application/json", "Content-Type": "application/json" },
                     method: "POST",
                 });
                 return formResponse.json();
@@ -59,9 +51,9 @@ export const ContactUs: FC<{ contactUsRef: MutableRefObject<HTMLDivElement> }> =
             return null;
         },
         {
-            onError: () => showErrorToast("Failed to submit your message", { message: "Please try again in a while" }),
+            onError: () => showErrorToast(t("errorToastTitle"), { message: t("errorToastDesc") }),
             onSuccess: () => {
-                showSuccessToast("Successfully submitted your message", "Our team will get in touch with you soon.");
+                showSuccessToast(t("successToastTitle"), t("successToastDesc"));
                 form.reset();
             },
         }
