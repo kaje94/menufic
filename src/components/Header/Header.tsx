@@ -175,9 +175,15 @@ export const NavHeader: FC<Props> = ({
                                             </Link>
                                         ) : (
                                             <LoginOptions>
-                                                <Button leftIcon={<IconLogin />} size={isMobile ? "sm" : "md"}>
-                                                    {t("common.login")}
-                                                </Button>
+                                                {isMobile ? (
+                                                    <ActionIcon className={classes.dashboardActionIcon} size={36}>
+                                                        <IconLogin />
+                                                    </ActionIcon>
+                                                ) : (
+                                                    <Button leftIcon={<IconLogin />} size="md">
+                                                        {t("common.login")}
+                                                    </Button>
+                                                )}
                                             </LoginOptions>
                                         )}
                                     </>
