@@ -94,6 +94,10 @@ $ npm install
 Scripts related to the Next.js app:
 
 ```bash
+# To migrate the Database (Make sure that you have a valid DATABASE_URL in your .env file). 
+# This is needed if you are planning to run Menufic locally
+$ npx prisma db push
+
 # Start the app in development mode with hot-code reloading by running:
 $ npm run dev
 
