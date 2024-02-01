@@ -4,11 +4,12 @@
     "private": true,
     "scripts": {
         "build": "next build",
-        "dev": "next dev",
+        "dev": "npm run migrate && next dev",
+        "migrate": "npx prisma db push",
         "postinstall": "patch-package && prisma generate",
         "lint": "next lint",
         "lint:fix": "next lint --fix",
-        "start": "next start",
+        "start": "npm run migrate && next start",
         "test:e2e": "playwright test",
         "tsc": "tsc --noEmit --incremental",
         "format-rest": "npx prettier --ignore-path .gitignore --write \"**/*.{css,md,json,yml}\" \"!package-lock.json\""
