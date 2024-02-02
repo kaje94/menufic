@@ -29,12 +29,19 @@
 
 ## Prerequisite
 
+General:
+-   [Imagekit account](https://imagekit.io) for managing all the uploaded images.
+-   [Google](https://next-auth.js.org/providers/google) / [GitHub](https://next-auth.js.org/providers/github) for authenticating users
+
+Barebone Installation:
 -   [Git](https://git-scm.com)
 -   [Node.js 16+](https://nodejs.org/en/download/)
 -   [NPM 7+](http://npmjs.com)
 -   [MySQL](https://www.mysql.com) for persisting data.
--   [Imagekit account](https://imagekit.io) for managing all the uploaded images.
--   [Google](https://next-auth.js.org/providers/google) / [GitHub](https://next-auth.js.org/providers/github) for authenticating users
+
+Docker Installation:
+- Docker CE
+- Docker Compose
 
 ## How To Use
 
