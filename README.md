@@ -1,44 +1,6 @@
 <br>
 <h1 align="center"> <b>Menufic</b> </h1> 
 <h4 align="center">A digital menu generator for restaurants, built using <a href="https://create.t3.gg" target="_blank">T3 stack</a></h4>
-<br>
-
-<p align="center">
-  <a href="https://gitter.im/Menufic/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
-    <img src="https://badges.gitter.im/Menufic/community.svg">
-  </a>
-  <a href="https://saythanks.io/to/a.kajendran">
-    <img src="https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg">
-  </a>
-</p>
-
-<p align="center">
-  <img src="https://api.checklyhq.com/v1/badges/checks/b9184fcc-aba1-47be-ab53-6a6e44bfe47c?style=flat&theme=default">
-</p>
-
-<p align="center">
-  <a href="https://github.com/kaje94/menufic/actions/workflows/checks.yml">
-    <img src="https://github.com/kaje94/menufic/actions/workflows/checks.yml/badge.svg?branch=main">
-  </a>
-  <a href="https://github.com/kaje94/menufic/actions/workflows/tests.yml">
-    <img src="https://github.com/kaje94/menufic/actions/workflows/tests.yml/badge.svg?branch=main">
-  </a>
-  <a href="https://sonarcloud.io/component_measures?metric=Maintainability&id=kaje94_menufic">
-    <img src="https://sonarcloud.io/api/project_badges/measure?project=kaje94_menufic&metric=sqale_rating">
-  </a>
-  <a href="https://sonarcloud.io/component_measures?metric=bugs&id=kaje94_menufic">
-    <img src="https://sonarcloud.io/api/project_badges/measure?project=kaje94_menufic&metric=bugs">
-  </a>
-  <a href="https://sonarcloud.io/component_measures?metric=vulnerabilities&id=kaje94_menufic">
-    <img src="https://sonarcloud.io/api/project_badges/measure?project=kaje94_menufic&metric=vulnerabilities">
-  </a>
-  <a href="https://sonarcloud.io/component_measures?metric=code_smells&id=kaje94_menufic">
-    <img src="https://sonarcloud.io/api/project_badges/measure?project=kaje94_menufic&metric=code_smells">
-  </a>
-  <a href="https://sonarcloud.io/component_measures?metric=Reliability&id=kaje94_menufic">
-    <img src="https://sonarcloud.io/api/project_badges/measure?project=kaje94_menufic&metric=reliability_rating">
-  </a>
-</p>
 
 <p align="center">
   <a href="#introduction">Introduction</a> •
@@ -75,6 +37,20 @@
 -   [Google](https://next-auth.js.org/providers/google) / [GitHub](https://next-auth.js.org/providers/github) for authenticating users
 
 ## How To Use
+
+### Docker
+
+````
+# copy env file and adjust to your needs
+cp .env.example .env
+
+# spawn the docker stack
+docker compose up
+````
+
+The web application will be accessible on http://127.0.0.1:3000.
+
+### Barebone
 
 From your command line:
 
