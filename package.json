@@ -5,7 +5,7 @@
     "scripts": {
         "build": "next build",
         "dev": "npm run migrate && next dev",
-        "prod": "npm run postinstall && npm run start",
+        "prod": "npm run postinstall && npm run build && npm run start",
         "migrate": "npx prisma db push",
         "postinstall": "patch-package && prisma generate",
         "lint": "next lint",
