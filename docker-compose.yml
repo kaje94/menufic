@@ -1,0 +1,25 @@
+version: "3.6"
+
+services:
+
+  menufic:
+    image: l4rm4nd/menufic:latest
+    container_name: menufic
+    env_file:
+      - .env
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+
+  mariadb:
+    image: lscr.io/linuxserver/mariadb:latest
+    container_name: menufic-db
+    env_file:
+      - .env
+    expose:
+      - 3306
+    volumes:
+      - ${DOCKER_VOLUME_STORAGE:-/mnt/docker-volumes}/menufic/mariadb:/config
+    restart: unless-stopped
