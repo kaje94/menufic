@@ -8,13 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 
 # Clear npm cache (optional)
-RUN npm cache clean --force
-
 # Update npm to the latest version (optional)
-RUN npm install -g npm@latest
-
 # Install project dependencies
-RUN npm install
+RUN npm cache clean --force && npm install -g npm@latest && npm install
 
 # Copy the rest of the project files to the container
 COPY . .
@@ -23,4 +19,4 @@ COPY . .
 EXPOSE 3000
 
 # Start your application
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "prod"]
