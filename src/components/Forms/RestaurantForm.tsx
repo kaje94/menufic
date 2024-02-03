@@ -55,6 +55,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
             imagePath: restaurant?.image?.path || "",
             location: restaurant?.location || "",
             name: restaurant?.name || "",
+            opening_times: restaurant?.opening_hours || "",
         },
         validate: zodResolver(restaurantInput),
     });
@@ -67,6 +68,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                 imagePath: restaurant?.image?.path || "",
                 location: restaurant?.location || "",
                 name: restaurant?.name || "",
+                opening_times: restaurant?.opening_hours || "",
             };
             setValues(formValues);
             resetDirty(formValues);
@@ -119,6 +121,14 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                         label={t("inputContactNoLabel")}
                         placeholder={t("inputContactNoPlaceholder")}
                         {...getInputProps("contactNo")}
+                    />
+                    <TextInput
+                        disabled={loading}
+                        icon={<IconMapPin color={theme.colors.dark[4]} />}
+                        label={t("inputOpeningTimesLabel")}
+                        placeholder={t("inputOpeningTimesPlaceholder")}
+                        withAsterisk
+                        {...getInputProps("openingTimes")}
                     />
                     <ImageUpload
                         disabled={loading}
