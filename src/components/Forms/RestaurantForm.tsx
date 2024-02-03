@@ -55,7 +55,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
             imagePath: restaurant?.image?.path || "",
             location: restaurant?.location || "",
             name: restaurant?.name || "",
-            opening_times: restaurant?.opening_hours || "",
+            openingTimes: restaurant?.openingTimes || "",
         },
         validate: zodResolver(restaurantInput),
     });
@@ -68,7 +68,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                 imagePath: restaurant?.image?.path || "",
                 location: restaurant?.location || "",
                 name: restaurant?.name || "",
-                opening_times: restaurant?.opening_hours || "",
+                openingTimes: restaurant?.openingTimes || "",
             };
             setValues(formValues);
             resetDirty(formValues);
