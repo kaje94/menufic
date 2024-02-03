@@ -189,6 +189,12 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                                     </a>
                                 </Flex>
                             )}
+                            {restaurant?.openingTimes && (
+                                <Flex align="center" gap={10}>
+                                    <IconSun />
+                                        <Text className={classes.carousalTitleSubText}>{restaurant?.OpeningTimes}</Text>
+                                </Flex>
+                            )}
                         </Box>
                     </Box>
                 </MediaQuery>
@@ -216,6 +222,12 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                             <a href={`tel:${restaurant?.contactNo.replace(/\s/g, '')}`}>
                                 <Text className={classes.carousalTitleSubText}>{restaurant?.contactNo}</Text>
                             </a>
+                        </Flex>
+                    )}
+                    {restaurant?.OpeningTimes && (
+                        <Flex align="center" gap={10} opacity={0.6}>
+                            <IconSun />
+                                <Text className={classes.carousalTitleSubText}>{restaurant?.openingTimes}</Text>
                         </Flex>
                     )}
                 </Stack>
