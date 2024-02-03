@@ -7,6 +7,7 @@ CREATE TABLE `Restaurant` (
     `name` VARCHAR(191) NOT NULL,
     `location` VARCHAR(191) NOT NULL,
     `contactNo` VARCHAR(191) NOT NULL,
+    `openingTimes` VARCHAR(191) NOT NULL,
     `isPublished` BOOLEAN NOT NULL,
     `imageId` VARCHAR(191) NULL,
 
