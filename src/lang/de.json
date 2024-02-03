@@ -1,338 +1,338 @@
 {
-    "common": {
-        "title": "Menufic",
-        "edit": "Edit",
-        "save": "Save",
-        "delete": "Delete",
-        "cancel": "Cancel",
-        "confirmDelete": "Confirm Delete",
-        "deleteSuccess": "Successfully deleted",
-        "createSuccess": "Successfully created",
-        "updateSuccess": "Successfully updated",
-        "privacyPolicy": "Privacy Policy",
-        "terms&Conditions": "Terms & Conditions",
-        "footerCopyright": "© 2023 Copyright: Menufic",
-        "login": "Login",
-        "logout": "Logout",
-        "openDashboard": "Go to Dashboard"
+  "common": {
+    "title": "Menufic",
+    "edit": "Bearbeiten",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "cancel": "Abbrechen",
+    "confirmDelete": "Löschen bestätigen",
+    "deleteSuccess": "Erfolgreich gelöscht",
+    "createSuccess": "Erfolgreich erstellt",
+    "updateSuccess": "Erfolgreich aktualisiert",
+    "privacyPolicy": "Datenschutzerklärung",
+    "terms&Conditions": "Geschäftsbedingungen",
+    "footerCopyright": "© 2024 Copyright: Menufic",
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "openDashboard": "Dashboard öffnen"
+  },
+  "auth": {
+    "googleSignIn": "Mit Google anmelden",
+    "githubSignIn": "Mit GitHub anmelden",
+    "keyRequired": "Schlüssel erforderlich",
+    "loginFailed": "Anmeldung fehlgeschlagen",
+    "testLoginDesc": "Anmeldeschlüssel wird nur zu Testzwecken verwendet",
+    "loginKeyInputLabel": "Anmeldeschlüssel",
+    "loginKeyInputPlaceholder": "Anmeldeschlüssel hier einfügen",
+    "loginButtonLabel": "Anmelden"
+  },
+  "errorPage": {
+    "defaultMessage": "Aaaah! Etwas ist schiefgelaufen",
+    "homePageButtonLabel": "Zurück zur Startseite",
+    "401": {
+      "title": "Fehlende Autorisierung",
+      "description": "Sie haben keine Berechtigung, die angeforderte Seite zu betreten. Bitte melden Sie sich an und versuchen Sie es erneut"
     },
-    "auth": {
-        "googleSignIn": "Sign in with Google",
-        "githubSignIn": "Sign in with GitHub",
-        "keyRequired": "Key is required",
-        "loginFailed": "Failed to sign in",
-        "testLoginDesc": "Login key is only used for testing purposes",
-        "loginKeyInputLabel": "Login Key",
-        "loginKeyInputPlaceholder": "Paste login key here",
-        "loginButtonLabel": "Login"
+    "404": {
+      "title": "Sie haben einen geheimen Ort gefunden.",
+      "description": "Leider ist dies nur eine 404-Seite. Möglicherweise haben Sie die Adresse falsch eingegeben oder die Seite wurde zu einer anderen URL verschoben."
     },
-    "errorPage": {
-        "defaultMessage": "Aaaah! Something went wrong",
-        "homePageButtonLabel": "Take me back to home page",
-        "401": {
-            "title": "No authorization found",
-            "description": "You do not have permission to access the requested page. Please login and try again"
+    "500": {
+      "title": "Interner Serverfehler",
+      "description": "Hoppla, auf dem Server ist ein Fehler aufgetreten"
+    }
+  },
+  "landing": {
+    "hero": {
+      "tagLine1": "Der beste Weg, um schnell und einfach",
+      "tagLine2": "Digitale Speisekarten",
+      "tagLine3": "für Ihr Restaurant zu erstellen",
+      "getStarted": "Kostenlos starten"
+    },
+    "steps": {
+      "title": "Wie funktioniert es?",
+      "stepItems": [
+        {
+          "title": "Erstellen Sie ein Restaurant",
+          "description": "Erstellen Sie Ihr Restaurant mit allen grundlegenden Details"
         },
-        "404": {
-            "title": "You have found a secret place.",
-            "description": "Unfortunately, this is only a 404 page. You may have mistyped the address, or the page has been moved to another URL."
+        {
+          "title": "Inhalt hinzufügen",
+          "description": "Fügen Sie Ihrem Restaurant menübezogene Inhalte hinzu"
         },
-        "500": {
-            "title": "Internal server error",
-            "description": "Oops, something went wrong in the server"
+        {
+          "title": "Restaurant veröffentlichen",
+          "description": "Veröffentlichen Sie Ihr Restaurant, um es für Jedermann zugänglich zu machen"
+        },
+        {
+          "title": "Teilen",
+          "description": "Teilen Sie den generierten QR-Code oder die Menü-Link-URL mit dem Rest der Welt"
         }
+      ]
     },
-    "landing": {
-        "hero": {
-            "tagLine1": "The best way to create",
-            "tagLine2": "Digital Menus",
-            "tagLine3": "for your restaurant",
-            "getStarted": "Get started for free"
+    "features": {
+      "tagLine": "Warum Menufic?",
+      "title": "Erstellen Sie Ihre Restaurant Menükarte mit Leichtigkeit",
+      "subTitle": "Menufic bietet mehrere großartige Funktionen, die es perfekt machen, um das Menü Ihres Restaurants auf die nächste Stufe zu heben",
+      "featuresItems": [
+        {
+          "key": "webOptimized",
+          "title": "Für das Web optimiert",
+          "description": "Die generierte Menüseite wurde für Suchmaschinen sowie für Social-Media-Crawler optimiert und stellt sicher, dass Ihr Restaurantmenü eine größere Reichweite erhält."
         },
-        "steps": {
-            "title": "How it works?",
-            "stepItems": [
-                {
-                    "title": "Create restaurant",
-                    "description": "Create your restaurant with basic details"
-                },
-                {
-                    "title": "Add content",
-                    "description": "Add menu related content to your restaurant"
-                },
-                {
-                    "title": "Publish restaurant",
-                    "description": "Publish your restaurant in order to make it accessible by anyone"
-                },
-                {
-                    "title": "Share",
-                    "description": "Share the generated QR code or the menu URL with the rest of the world"
-                }
-            ]
+        {
+          "key": "themeSupport",
+          "title": "Dunkle und helle Designs",
+          "description": "Da Menufic sowohl helle als auch dunkle Designs unterstützt, haben Sie und Ihre Restaurantkunden die Möglichkeit, zwischen diesen beiden Dark/Light Themes zu wechseln."
         },
-        "features": {
-            "tagLine": "Why Menufic?",
-            "title": "Build your restaurant's menu with ease",
-            "subTitle": " Menufic has several awesome features that makes it perfect to take your restaurant's menu to the next level",
-            "featuresItems": [
-                {
-                    "key": "webOptimized",
-                    "title": "Optimized for the web",
-                    "description": "The generated menu page has been optimized for search engines as well as for social media crawlers and this will assure that your restaurant menu has a higher reach."
-                },
-                {
-                    "key": "themeSupport",
-                    "title": "Dark and Light themes",
-                    "description": "As Menufic supports both Light and dark themes, you and your restaurant customers will have the independence to switch between these two modes."
-                },
-                {
-                    "key": "banners",
-                    "title": "Promotions using banners",
-                    "description": "Add multiple banners to your restaurant which can help you to convey details such as offers or promotions to your customers."
-                },
-                {
-                    "key": "organize",
-                    "title": "Organize your data easily",
-                    "description": "Menufic provides an intuitive interface to easily manage your menus. Each restaurant can have multiple menus with multiple sub categories."
-                },
-                {
-                    "key": "responsiveDesign",
-                    "title": "View from any device",
-                    "description": "Customers can view your digital menu from the safety of their personal devices at any time, without any app install. The menu is built to adapt its layout based on the user's device."
-                },
-                {
-                    "key": "qrCode",
-                    "title": "QR code",
-                    "description": "Generate a QR code, print and share it with your customers by simply placing it on your restaurant tables, entrance, food packaging or delivery vehicles."
-                }
-            ]
+        {
+          "key": "banners",
+          "title": "Werbung mit Bannern",
+          "description": "Fügen Sie Ihrem Restaurant mehrere Banner hinzu, die Ihnen helfen können, Details wie Angebote oder Werbeaktionen an Ihre Kunden zu übermitteln."
         },
-        "sampleMenu": {
-            "title": "What is your digital menu going to look like?",
-            "subTitle": "Scan this QR code or click the following button to view a sample menu",
-            "buttonLabel": "Sample Menu"
+        {
+          "key": "organize",
+          "title": "Organisieren Sie Ihre Daten einfach",
+          "description": "Menufic bietet eine intuitive Web-Schnittstelle, um Ihre Menüs leicht zu verwalten. Jedes Restaurant kann mehrere Menüs mit mehreren Unterkategorien haben."
         },
-        "pricing": {
-            "title": "Pricing",
-            "freeTier": {
-                "label": "Free",
-                "maxRestaurantCount": "Create up to {count} restaurants",
-                "maxMenuCount": "Add up to {count} menus per restaurant",
-                "maxCategoryCount": "Add up to {count} categories per menu",
-                "maxMenuItemCount": "Add up to {count} items per category",
-                "maxBannerCount": "Add up to {count} banners per restaurant",
-                "supportType": "Basic support",
-                "getStartedBtnLabel": "Get Started"
-            },
-            "enterpriseTier": {
-                "label": "Enterprise",
-                "maxRestaurantCount": "Create any number of restaurants",
-                "maxMenuCount": "Add any number of menus per restaurant",
-                "maxCategoryCount": "Add any number of categories per menu",
-                "maxMenuItemCount": "Add any number of items per category",
-                "maxBannerCount": "Add any number of banners per restaurant",
-                "supportType": "Basic support",
-                "contactUsButtonLabel": "Contact us"
-            }
+        {
+          "key": "responsiveDesign",
+          "title": "Responsive Design",
+          "description": "Kunden können Ihr digitales Menü jederzeit von einem beliebigen Gerät, ohne eine App-Installation, betrachten. Das Menü ist so gestaltet, dass es sein Layout basierend auf dem Gerät des Benutzers dynamisch anpasst."
         },
-        "contactUs": {
-            "title": "Get in touch",
-            "name": { "label": "Name", "placeholder": "Your name" },
-            "email": { "label": "Email", "placeholder": "user@email.com" },
-            "subject": { "label": "Subject", "placeholder": "Subject" },
-            "message": { "label": "Message", "placeholder": "Your message" },
-            "submitButtonLabel": "Send message",
-            "successToastTitle":"Successfully submitted your message",
-            "successToastDesc":"Our team will get in touch with you soon.",
-            "errorToastTitle":"Failed to submit your message",
-            "errorToastDesc":"Please try again in a while"
-        },
-        "aboutUs": {
-            "title": "About Us",
-            "subtitle": {
-                "line1": "Menufic is an ",
-                "line2": "open source ",
-                "line3": "project built with "
-            },
-            "goal": "Our goal is to provide a simple and effective solution that restaurants could use to improve their reach and enhance how their customers interact with them.",
-            "appreciation": "We highly appreciate any feedback or contribution that could help us improve.",
-            "githubButtonLabel": "Github"
+        {
+          "key": "qrCode",
+          "title": "QR-Code",
+          "description": "Generieren Sie einen QR-Code, drucken Sie ihn aus und teilen Sie ihn mit Ihren Kunden, indem Sie ihn einfach auf Ihren Restaurant-Tischen, am Eingang, auf Lebensmittelverpackungen oder Lieferfahrzeugen platzieren."
         }
+      ]
     },
-    "menu": {
-        "noMenusForRestaurant": "There aren't any menus available for this restaurant. Try checking out later",
-        "noItemsForMenu": "There aren't any menu items for the chosen restaurant menu. Try checking out later.",
-        "noDetailsAvailable": "This restaurant details are unavailable at the moment. We are sorry for the inconvenience. Please try again in a while",
-        "seoTitle": "{name} Menu",
-        "seoDescription": {
-            "restaurantName": "Menu of restaurant {name}",
-            "restaurantLocation": "Location: {location}.",
-            "restaurantContactNo": " Contact Number: {contactNo}.",
-            "menufic": "This menu was generated using Menufic.com"
-        }
+    "sampleMenu": {
+      "title": "Wie wird Ihr digitales Menü aussehen?",
+      "subTitle": "Scannen Sie diesen QR-Code oder klicken Sie auf den folgenden Button, um ein Beispielmenü anzusehen",
+      "buttonLabel": "Beispielmenü"
     },
-    "preview": {
-        "seoTitle": "Restaurant Preview",
-        "seoDescription": "Preview how the published restaurant menu would look like",
-        "alertTitle": "Preview mode",
-        "alertContent": "This preview URL is not meant to be shared with anyone.",
-        "alertDesc": " Once you have finalized your changes, you will be able to publish your restaurant menu and generate a sharable URL which can then be shared with your customers."
+    "pricing": {
+      "title": "Preisgestaltung",
+      "freeTier": {
+        "label": "Kostenlos",
+        "maxRestaurantCount": "Erstellen Sie bis zu {count} Restaurants",
+        "maxMenuCount": "Fügen Sie pro Restaurant bis zu {count} Menüs hinzu",
+        "maxCategoryCount": "Fügen Sie pro Menü bis zu {count} Kategorien hinzu",
+        "maxMenuItemCount": "Fügen Sie pro Kategorie bis zu {count} Artikel hinzu",
+        "maxBannerCount": "Fügen Sie pro Restaurant bis zu {count} Banner hinzu",
+        "supportType": "Grundlegender Support",
+        "getStartedBtnLabel": "Starten"
+      },
+      "enterpriseTier": {
+        "label": "Unternehmen",
+        "maxRestaurantCount": "Erstellen Sie eine beliebige Anzahl von Restaurants",
+        "maxMenuCount": "Fügen Sie eine beliebige Anzahl von Menüs pro Restaurant hinzu",
+        "maxCategoryCount": "Fügen Sie eine beliebige Anzahl von Kategorien pro Menü hinzu",
+        "maxMenuItemCount": "Fügen Sie eine beliebige Anzahl von Artikeln pro Kategorie hinzu",
+        "maxBannerCount": "Fügen Sie eine beliebige Anzahl von Bannern pro Restaurant hinzu",
+        "supportType": "Grundlegender Support",
+        "contactUsButtonLabel": "Kontaktieren Sie uns"
+      }
     },
-    "dashboard": {
-        "noContent": "whoops, nothing to see here ...",
-        "imageUpload": {
-            "titleLabel": "Image",
-            "uploadHelperText": "Drag a jpeg image here or click to select a jpeg image file",
-            "zoom": "Zoom",
-            "rotation": "Rotation",
-            "crop": "Crop",
-            "cropModalTitle": "Crop Image"
-        },
-        "publishButton": {
-            "statusUpdateError": "Failed to update status of the restaurant menu",
-            "publishedBtnLabel": "Published",
-            "notPublishedBtnLabel": "Not Published",
-            "modalTitle": "Publish and share your menu",
-            "modalAlertPublishedTitle": "Menu is published",
-            "modalAlertNotPublishedTitle": "Menu is not published",
-            "publishedMenuDesc": "Changes to the menu could take around 30 minutes to be reflected in the published menu page",
-            "publishedMenuUrlLabel": "Published menu URL",
-            "copyUrlTooltip": "Copy URL",
-            "copiedUrlTooltip": "URL copied",
-            "notPublishedMenuDesc": "Please publish the menu once you have finalized your changes. Once published, you will be able to either share the direct URL or the QR code for your menu, with your customers",
-            "publishSwitchLabel": "Publish Menu",
-            "downloadQrButtonLabel": "Download QR code",
-            "previewUrlAlertTitle": "Preview URL",
-            "previewUrlAlertDesc": "The following URL can be used for testing purposes as it will mimic the interface of actual menu while also updating in real time"
-        },
-        "editMenu": {
-            "seoTitle": "Edit Menu",
-            "seoDescription": "Manage the menus of your restaurant",
-            "breadcrumb": "Menu",
-            "menu": {
-                "fetchError": "Failed to retrieve menus",
-                "positionUpdateError": "Failed to update the position of menu",
-                "deleteMenuError": "Failed to delete restaurant menu",
-                "addMenuLabel": "Add Menu",
-                "deleteConfirmTitle": "Delete {name} menu",
-                "deleteConfirmDesc": "Are you sure, you want to delete this menu? This action will also delete all the categories & items associated with this menu and cannot be undone",
-                "deleteSuccessToast": "Deleted the menu {name} and related details successfully",
-                "createModalTitle": "Create Menu",
-                "createError": "Failed to create menu for restaurant",
-                "createSuccessDesc": "Created a new menu {name} successfully",
-                "updateModalTitle": "Update Menu",
-                "updateError": "Failed to update menu",
-                "updateSuccessDesc": "Updated details of ${data.name} menu successfully",
-                "inputNameLabel": "Name",
-                "inputNamePlaceholder": "Menu Name",
-                "inputTimeLabel": "Available Time",
-                "inputTimePlaceholder": "10.00 AM - 9.00 PM"
-            },
-            "category": {
-                "fetchError": "Failed to retrieve categories and menu items",
-                "positionUpdateError": "Failed to update category position",
-                "deleteCategoryError": "Failed to delete category",
-                "addCategoryLabel": "Add Category",
-                "deleteConfirmTitle": "Delete {name} category",
-                "deleteConfirmDesc": "Are you sure, you want to delete this category? This action will also delete all the items associated with this category and cannot be undone",
-                "deleteSuccessToast": "Deleted the category {name} and related menu items successfully",
-                "createModalTitle": "Create Category",
-                "createError": "Failed to create new category",
-                "createSuccessDesc": "Created a new category {name} successfully",
-                "updateModalTitle": "Update Category",
-                "updateError": "Failed to update category",
-                "updateSuccessDesc": "Updated details of {name} category successfully",
-                "inputNameLabel": "Name",
-                "inputNamePlaceholder": "Category Name"
-            },
-            "menuItem": {
-                "positionUpdateError": "Failed to update menu item position",
-                "deleteMenuItemError": "Failed to delete menu item",
-                "addMenuItemLabel": "Add Item",
-                "noImage": "No Image",
-                "noDescription": "No Description",
-                "deleteConfirmTitle": "Delete {name} item",
-                "deleteConfirmDesc": "Are you sure, you want to delete this menu item? This action cannot be undone",
-                "deleteSuccessToast": "Deleted the menu item {name} successfully",
-                "createModalTitle": "Create Menu Item",
-                "createError": "Failed to create menu item",
-                "createSuccessDesc": "Created a new menu item {name} successfully",
-                "updateModalTitle": "Update Menu Item",
-                "updateError": "Failed to update menu item",
-                "updateSuccessDesc": "Updated details of {name} category successfully",
-                "inputNameLabel": "Name",
-                "inputNamePlaceholder": "Item Name",
-                "inputPriceLabel": "Price",
-                "inputPricePlaceholder": "$10.00",
-                "inputDescriptionLabel": "Description"
-            }
-        },
-        "restaurant": {
-            "seoTitle": "Restaurants",
-            "seoDescription": "Manage all of the restaurants that you've created",
-            "navTitle": "Restaurants",
-            "addNewCardTitle": "Add new restaurant",
-            "addNewCardSubTitle": "Start creating a new digital menu by adding a new restaurant",
-            "headerTitle": "My Restaurants",
-            "createModalTitle": "Add Restaurant",
-            "createError": "Failed to create restaurant",
-            "createSuccessDesc": "Created new {name} restaurant successfully",
-            "updateModalTitle": "Edit Restaurant",
-            "updateError": "Failed to update restaurant",
-            "updateSuccessDesc": "Created restaurant {name}, successfully",
-            "inputNameLabel": "Name",
-            "inputNamePlaceholder": "Restaurant Name",
-            "inputLocationLabel": "Location",
-            "inputLocationPlaceholder": "No 05, Road Name, City",
-            "inputContactNoLabel": "Contact Number",
-            "inputContactNoPlaceholder": "+919367788755",
-            "inputOpeningTimesLabel": "Opening Times",
-            "inputOpeningTimesPlaceholder": "MON-SUN: 11 AM - 11 PM (TUE closed)",
-            "fetchRestaurantsError": "Failed to retrieve restaurants",
-            "deleteModalTitle": "Delete restaurant {name}",
-            "deleteModalDesc": "Are you sure, you want to delete this restaurant? This action will also delete all the items associated with this restaurant and cannot be undone",
-            "deleteSuccessDesc": "Deleted the {name} restaurant and related details successfully",
-            "deleteError": "Failed to delete restaurant"
-        },
-        "restaurantManage": {
-            "seoTitle": "Manage Restaurant",
-            "seoDescription": "Manage your restaurant's menus and banners",
-            "restaurantFetchError": "Failed to retrieve restaurant details",
-            "breadcrumb": "Restaurant",
-            "menuCardTitle": "Menus",
-            "menuCardSubTitle": "Manage the menus, categories and individual menu items of your restaurant",
-            "bannersCardTitle": "Banners",
-            "bannersCardSubTitle": "Manage banners that could be used to display promotional content in your restaurant menu",
-            "feedbackCardTitle": "Feedback (Coming Soon)",
-            "feedbackCardSubTitle": "View feedback received from your restaurant customers",
-            "statsCardTitle": "Stats (Coming Soon)",
-            "statsCardSubTitle": "Gain insights on how many people view your published menu and which items are most popular"
-        },
-        "banner": {
-            "seoTitle": "Banners",
-            "seoDescription": "Manage the banners of your restaurant",
-            "breadcrumb": "Banners",
-            "fetchError": "Failed to retrieve banners",
-            "createError": "Failed to create banner for restaurant",
-            "createSuccessDesc": "Successfully created new banner for the restaurant",
-            "addModalTitle": "Add Banner",
-            "addNewCardTitle": "Add new banner",
-            "addNewCardSubTitle": "Start creating a new restaurant menu by adding a new restaurant",
-            "deleteError": "Failed to delete banner",
-            "deleteSuccessDesc": "Deleted the banner of the restaurant successfully",
-            "deleteModalTitle": "Delete restaurant banner?",
-            "deleteModalDesc": "Are you sure, you want to delete this restaurant banner? This action action cannot be undone"
-        },
-        "explore": {
-            "seoTitle": "Explore restaurants",
-            "seoDescription": "Explore restaurants created and published by others",
-            "navTitle": "Explore",
-            "pageTitle": "Explore Restaurants",
-            "pageSubTitle": "Following are the restaurants published by all users",
-            "fetchError": "Failed to retrieve published restaurants",
-            "noContent": "There aren't any published restaurants"
-        }
+    "contactUs": {
+      "title": "Kontaktieren Sie uns",
+      "name": { "label": "Name", "placeholder": "Ihr Name" },
+      "email": { "label": "E-Mail", "placeholder": "benutzer@email.com" },
+      "subject": { "label": "Betreff", "placeholder": "Betreff" },
+      "message": { "label": "Nachricht", "placeholder": "Ihre Nachricht" },
+      "submitButtonLabel": "Nachricht senden",
+      "successToastTitle":"Ihre Nachricht wurde erfolgreich übermittelt",
+      "successToastDesc":"Unser Team wird sich bald mit Ihnen in Verbindung setzen.",
+      "errorToastTitle":"Fehler bei der Übermittlung Ihrer Nachricht",
+      "errorToastDesc":"Bitte versuchen Sie es in einer Weile erneut"
     },
+    "aboutUs": {
+      "title": "Über uns",
+      "subtitle": {
+        "line1": "Menufic ist ein ",
+        "line2": "Open-Source ",
+        "line3": "Projekt, erstellt mit "
+      },
+      "goal": "Unser Ziel ist es, eine einfache und effektive Lösung zu bieten, die Restaurants nutzen können, um ihre Reichweite zu verbessern und die Interaktion ihrer Kunden mit ihnen zu verbessern.",
+      "appreciation": "Wir schätzen jedes Feedback oder Beitrag, der uns helfen könnte, uns zu verbessern.",
+      "githubButtonLabel": "GitHub"
+    }
+  },
+  "menu": {
+    "noMenusForRestaurant": "Für dieses Restaurant sind keine Menüs verfügbar. Versuchen Sie es später noch einmal",
+    "noItemsForMenu": "Für das gewählte Restaurantmenü gibt es keine Menüartikel. Versuchen Sie es später noch einmal.",
+    "noDetailsAvailable": "Die Details dieses Restaurants sind im Moment nicht verfügbar. Wir entschuldigen uns für die Unannehmlichkeiten. Bitte versuchen Sie es in einer Weile erneut",
+    "seoTitle": "{name} Menü",
+    "seoDescription": {
+      "restaurantName": "Menü des Restaurants {name}",
+      "restaurantLocation": "Standort: {location}.",
+      "restaurantContactNo": " Kontakt Nummer: {contactNo}.",
+      "menufic": "Dieses Menü wurde mit Menufic.com erstellt"
+    }
+  },
+  "preview": {
+    "seoTitle": "Restaurantvorschau",
+    "seoDescription": "Vorschau, wie das veröffentlichte Restaurantmenü aussehen würde",
+    "alertTitle": "Vorschaumodus",
+    "alertContent": "Diese Vorschau-URL ist nicht dazu gedacht, mit jemandem geteilt zu werden.",
+    "alertDesc": " Sobald Sie Ihre Änderungen abgeschlossen haben, können Sie Ihr Restaurantmenü veröffentlichen und eine teilbare URL generieren, die dann mit Ihren Kunden geteilt werden kann."
+  },
+  "dashboard": {
+    "noContent": "Ups, hier gibt es nichts zu sehen ...",
+    "imageUpload": {
+      "titleLabel": "Bild",
+      "uploadHelperText": "Ziehen Sie ein JPEG-Bild hierher oder klicken Sie, um eine JPEG-Bilddatei auszuwählen",
+      "zoom": "Zoom",
+      "rotation": "Drehung",
+      "crop": "Zuschneiden",
+      "cropModalTitle": "Bild zuschneiden"
+    },
+    "publishButton": {
+      "statusUpdateError": "Fehler beim Aktualisieren des Status des Restaurantmenüs",
+      "publishedBtnLabel": "Veröffentlicht",
+      "notPublishedBtnLabel": "Nicht veröffentlicht",
+      "modalTitle": "Veröffentlichen und Ihr Menü teilen",
+      "modalAlertPublishedTitle": "Menü ist veröffentlicht",
+      "modalAlertNotPublishedTitle": "Menü ist nicht veröffentlicht",
+      "publishedMenuDesc": "Änderungen am Menü können etwa 30 Minuten dauern, bis sie auf der veröffentlichten Menüseite sichtbar sind",
+      "publishedMenuUrlLabel": "Veröffentlichte Menü-URL",
+      "copyUrlTooltip": "URL kopieren",
+      "copiedUrlTooltip": "URL kopiert",
+      "notPublishedMenuDesc": "Bitte veröffentlichen Sie das Menü, sobald Sie Ihre Änderungen abgeschlossen haben. Nach der Veröffentlichung können Sie entweder die direkte URL oder den QR-Code für Ihr Menü mit Ihren Kunden teilen",
+      "publishSwitchLabel": "Menü veröffentlichen",
+      "downloadQrButtonLabel": "QR-Code herunterladen",
+      "previewUrlAlertTitle": "Vorschau-URL",
+      "previewUrlAlertDesc": "Die folgende URL kann zu Testzwecken verwendet werden, da sie die Schnittstelle des tatsächlichen Menüs nachahmt und auch in Echtzeit aktualisiert wird"
+    },
+    "editMenu": {
+      "seoTitle": "Menü bearbeiten",
+      "seoDescription": "Verwalten Sie die Menüs Ihres Restaurants",
+      "breadcrumb": "Menü",
+      "menu": {
+        "fetchError": "Fehler beim Abrufen der Menüs",
+        "positionUpdateError": "Fehler beim Aktualisieren der Position des Menüs",
+        "deleteMenuError": "Fehler beim Löschen des Restaurantmenüs",
+        "addMenuLabel": "Menü hinzufügen",
+        "deleteConfirmTitle": "Löschen {name} Menü",
+        "deleteConfirmDesc": "Sind Sie sicher, dass Sie dieses Menü löschen möchten? Diese Aktion wird auch alle Kategorien & Artikel, die mit diesem Menü verbunden sind, löschen und kann nicht rückgängig gemacht werden",
+        "deleteSuccessToast": "Das Menü {name} und zugehörige Details erfolgreich gelöscht",
+        "createModalTitle": "Menü erstellen",
+        "createError": "Fehler beim Erstellen des Menüs für das Restaurant",
+        "createSuccessDesc": "Ein neues Menü {name} erfolgreich erstellt",
+        "updateModalTitle": "Menü aktualisieren",
+        "updateError": "Fehler beim Aktualisieren des Menüs",
+        "updateSuccessDesc": "Details des Menüs ${data.name} erfolgreich aktualisiert",
+        "inputNameLabel": "Name",
+        "inputNamePlaceholder": "Menüname",
+        "inputTimeLabel": "Verfügbare Zeit",
+        "inputTimePlaceholder": "10.00 Uhr - 21.00 Uhr"
+      },
+      "category": {
+        "fetchError": "Fehler beim Abrufen der Kategorien und Menüartikel",
+        "positionUpdateError": "Fehler beim Aktualisieren der Kategorieposition",
+        "deleteCategoryError": "Fehler beim Löschen der Kategorie",
+        "addCategoryLabel": "Kategorie hinzufügen",
+        "deleteConfirmTitle": "Löschen {name} Kategorie",
+        "deleteConfirmDesc": "Sind Sie sicher, dass Sie diese Kategorie löschen möchten? Diese Aktion wird auch alle Artikel, die mit dieser Kategorie verbunden sind, löschen und kann nicht rückgängig gemacht werden",
+        "deleteSuccessToast": "Die Kategorie {name} und zugehörige Menüartikel erfolgreich gelöscht",
+        "createModalTitle": "Kategorie erstellen",
+        "createError": "Fehler beim Erstellen der neuen Kategorie",
+        "createSuccessDesc": "Eine neue Kategorie {name} erfolgreich erstellt",
+        "updateModalTitle": "Kategorie aktualisieren",
+        "updateError": "Fehler beim Aktualisieren der Kategorie",
+        "updateSuccessDesc": "Details der Kategorie {name} erfolgreich aktualisiert",
+        "inputNameLabel": "Name",
+        "inputNamePlaceholder": "Kategoriename"
+      },
+      "menuItem": {
+        "positionUpdateError": "Fehler beim Aktualisieren der Position des Menüartikels",
+        "deleteMenuItemError": "Fehler beim Löschen des Menüartikels",
+        "addMenuItemLabel": "Artikel hinzufügen",
+        "noImage": "Kein Bild",
+        "noDescription": "Keine Beschreibung",
+        "deleteConfirmTitle": "Löschen {name} Artikel",
+        "deleteConfirmDesc": "Sind Sie sicher, dass Sie diesen Menüartikel löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden",
+        "deleteSuccessToast": "Den Menüartikel {name} erfolgreich gelöscht",
+        "createModalTitle": "Menüartikel erstellen",
+        "createError": "Fehler beim Erstellen des Menüartikels",
+        "createSuccessDesc": "Einen neuen Menüartikel {name} erfolgreich erstellt",
+        "updateModalTitle": "Menüartikel aktualisieren",
+        "updateError": "Fehler beim Aktualisieren des Menüartikels",
+        "updateSuccessDesc": "Details des Menüartikels {name} erfolgreich aktualisiert",
+        "inputNameLabel": "Name",
+        "inputNamePlaceholder": "Artikelname",
+        "inputPriceLabel": "Preis",
+        "inputPricePlaceholder": "10,00 €",
+        "inputDescriptionLabel": "Beschreibung"
+      }
+    },
+    "restaurant": {
+      "seoTitle": "Restaurants",
+      "seoDescription": "Verwalten Sie alle Restaurants, die Sie erstellt haben",
+      "navTitle": "Restaurants",
+      "addNewCardTitle": "Neues Restaurant hinzufügen",
+      "addNewCardSubTitle": "Beginnen Sie mit der Erstellung eines neuen digitalen Menüs, indem Sie ein neues Restaurant hinzufügen",
+      "headerTitle": "Meine Restaurants",
+      "createModalTitle": "Restaurant hinzufügen",
+      "createError": "Fehler beim Erstellen des Restaurants",
+      "createSuccessDesc": "Neues Restaurant {name} erfolgreich erstellt",
+      "updateModalTitle": "Restaurant bearbeiten",
+      "updateError": "Fehler beim Aktualisieren des Restaurants",
+      "updateSuccessDesc": "Restaurant {name} erfolgreich erstellt",
+      "inputNameLabel": "Name",
+      "inputNamePlaceholder": "Restaurantname",
+      "inputLocationLabel": "Standort",
+      "inputLocationPlaceholder": "Nr. 05, Straßenname, Stadt",
+      "inputContactNoLabel": "Kontaktnummer",
+      "inputContactNoPlaceholder": "+49123456789",
+      "inputOpeningTimesLabel": "Öffnungszeiten",
+      "inputOpeningTimesPlaceholder": "MO-SO: 11-22 Uhr (DI geschlossen)",
+      "fetchRestaurantsError": "Fehler beim Abrufen der Restaurants",
+      "deleteModalTitle": "Restaurant {name} löschen",
+      "deleteModalDesc": "Sind Sie sicher, dass Sie dieses Restaurant löschen möchten? Diese Aktion wird auch alle Artikel, die mit diesem Restaurant verbunden sind, löschen und kann nicht rückgängig gemacht werden",
+      "deleteSuccessDesc": "Das Restaurant {name} und zugehörige Details erfolgreich gelöscht",
+      "deleteError": "Fehler beim Löschen des Restaurants"
+    },
+    "restaurantManage": {
+      "seoTitle": "Restaurant verwalten",
+      "seoDescription": "Verwalten Sie die Menüs und Banner Ihres Restaurants",
+      "restaurantFetchError": "Fehler beim Abrufen der Restaurantdetails",
+      "breadcrumb": "Restaurant",
+      "menuCardTitle": "Menüs",
+      "menuCardSubTitle": "Verwalten Sie die Menüs, Kategorien und einzelnen Menüartikel Ihres Restaurants",
+      "bannersCardTitle": "Banner",
+      "bannersCardSubTitle": "Verwalten Sie Banner, die verwendet werden können, um Werbeinhalte in Ihrem Restaurantmenü anzuzeigen",
+      "feedbackCardTitle": "Feedback (Kommt bald)",
+      "feedbackCardSubTitle": "Anzeigen von Feedback, das von Ihren Restaurantkunden erhalten wurde",
+      "statsCardTitle": "Statistiken (Kommt bald)",
+      "statsCardSubTitle": "Einblicke gewinnen, wie viele Personen Ihr veröffentlichtes Menü ansehen und welche Artikel am beliebtesten sind"
+    },
+    "banner": {
+      "seoTitle": "Banner",
+      "seoDescription": "Verwalten Sie die Banner Ihres Restaurants",
+      "breadcrumb": "Banner",
+      "fetchError": "Fehler beim Abrufen der Banner",
+      "createError": "Fehler beim Erstellen des Banners für das Restaurant",
+      "createSuccessDesc": "Erfolgreich neuen Banner für das Restaurant erstellt",
+      "addModalTitle": "Banner hinzufügen",
+      "addNewCardTitle": "Neuen Banner hinzufügen",
+      "addNewCardSubTitle": "Fügen Sie einen neuen Banner zu Ihrem Restaurantmenü hinzu",
+      "deleteError": "Fehler beim Löschen des Banners",
+      "deleteSuccessDesc": "Das Banner des Restaurants erfolgreich gelöscht",
+      "deleteModalTitle": "Restaurantbanner löschen?",
+      "deleteModalDesc": "Sind Sie sicher, dass Sie dieses Restaurantbanner löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden"
+    },
+    "explore": {
+      "seoTitle": "Restaurants erkunden",
+      "seoDescription": "Erkunden Sie von anderen erstellte und veröffentlichte Restaurants",
+      "navTitle": "Erkunden",
+      "pageTitle": "Restaurants erkunden",
+      "pageSubTitle": "Folgende sind die von allen Benutzern veröffentlichten Restaurants",
+      "fetchError": "Fehler beim Abrufen der veröffentlichten Restaurants",
+      "noContent": "Es gibt keine veröffentlichten Restaurants"
+    }
+  },
     "privacyPolicy": {
         "seoDescription": "This privacy policy page contains information on how Menufic handles customer data",
         "lastUpdated": "Last updated: {date}",
@@ -757,4 +757,4 @@
             "content": " Please send your feedback, comments, requests for technical support by email: {email}"
         }
     }
-}
+}  

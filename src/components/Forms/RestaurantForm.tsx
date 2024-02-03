@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 import { Button, Group, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
-import { IconMapPin, IconPhone } from "@tabler/icons";
+import { IconMapPin, IconPhone, IconSun } from "@tabler/icons";
 import { useTranslations } from "next-intl";
 
 import type { ModalProps } from "@mantine/core";
@@ -55,6 +55,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
             imagePath: restaurant?.image?.path || "",
             location: restaurant?.location || "",
             name: restaurant?.name || "",
+            openingTimes: restaurant?.openingTimes || "",
         },
         validate: zodResolver(restaurantInput),
     });
@@ -67,6 +68,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                 imagePath: restaurant?.image?.path || "",
                 location: restaurant?.location || "",
                 name: restaurant?.name || "",
+                openingTimes: restaurant?.openingTimes || "",
             };
             setValues(formValues);
             resetDirty(formValues);
@@ -119,6 +121,14 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                         label={t("inputContactNoLabel")}
                         placeholder={t("inputContactNoPlaceholder")}
                         {...getInputProps("contactNo")}
+                    />
+                    <TextInput
+                        disabled={loading}
+                        icon={<IconSun color={theme.colors.dark[4]} />}
+                        label={t("inputOpeningTimesLabel")}
+                        placeholder={t("inputOpeningTimesPlaceholder")}
+                        withAsterisk
+                        {...getInputProps("openingTimes")}
                     />
                     <ImageUpload
                         disabled={loading}

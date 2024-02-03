@@ -5,6 +5,8 @@ services:
   menufic:
     image: l4rm4nd/menufic:latest
     container_name: menufic
+    #volumes:
+    #  - ./de.json:/app/src/lang/en.json:ro # optional, if you want to overwrite the default english language
     env_file:
       - .env
     expose:
