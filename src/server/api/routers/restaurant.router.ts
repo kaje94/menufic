@@ -62,6 +62,7 @@ export const restaurantRouter = createTRPCRouter({
         return ctx.prisma.restaurant.create({
             data: {
                 contactNo: input.contactNo,
+                openingTimes: input.openingTimes,
                 image: {
                     create: {
                         blurHash,
@@ -206,6 +207,7 @@ export const restaurantRouter = createTRPCRouter({
             contactNo: input.contactNo,
             location: input.location,
             name: input.name,
+            openingTimes: input.openingTimes,
         };
 
         const transactions: (Prisma.Prisma__ImageClient<Image> | Prisma.Prisma__RestaurantClient<Restaurant>)[] = [];
