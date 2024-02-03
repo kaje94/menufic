@@ -124,7 +124,7 @@ export const RestaurantForm: FC<Props> = ({ opened, onClose, restaurant, ...rest
                     />
                     <TextInput
                         disabled={loading}
-                        icon={<IconMapPin color={theme.colors.dark[4]} />}
+                        icon={<IconSun color={theme.colors.dark[4]} />}
                         label={t("inputOpeningTimesLabel")}
                         placeholder={t("inputOpeningTimesPlaceholder")}
                         withAsterisk
