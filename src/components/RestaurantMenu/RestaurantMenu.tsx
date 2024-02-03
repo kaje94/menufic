@@ -192,7 +192,7 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                             {restaurant?.openingTimes && (
                                 <Flex align="center" gap={10}>
                                     <IconSun />
-                                        <Text className={classes.carousalTitleSubText}>{restaurant?.OpeningTimes}</Text>
+                                        <Text className={classes.carousalTitleSubText}>{restaurant?.openingTimes}</Text>
                                 </Flex>
                             )}
                         </Box>
@@ -224,7 +224,7 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                             </a>
                         </Flex>
                     )}
-                    {restaurant?.OpeningTimes && (
+                    {restaurant?.openingTimes && (
                         <Flex align="center" gap={10} opacity={0.6}>
                             <IconSun />
                                 <Text className={classes.carousalTitleSubText}>{restaurant?.openingTimes}</Text>
