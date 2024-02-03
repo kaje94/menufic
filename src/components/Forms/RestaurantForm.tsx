@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 import { Button, Group, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
-import { IconMapPin, IconPhone } from "@tabler/icons";
+import { IconMapPin, IconPhone, IconSun } from "@tabler/icons";
 import { useTranslations } from "next-intl";
 
 import type { ModalProps } from "@mantine/core";
