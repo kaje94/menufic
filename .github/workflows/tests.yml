@@ -2,9 +2,9 @@ name: E2E Tests
 on:
     push:
         branches:
-            - main2
+            - main
     pull_request:
-        branches: ["main2"]
+        branches: ["main"]
         types: [opened, synchronize, reopened]
     workflow_dispatch:
 jobs:
