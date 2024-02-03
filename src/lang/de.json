@@ -286,6 +286,8 @@
       "inputLocationPlaceholder": "Nr. 05, Straßenname, Stadt",
       "inputContactNoLabel": "Kontaktnummer",
       "inputContactNoPlaceholder": "+49123456789",
+      "inputOpeningTimesLabel": "Öffnungszeiten",
+      "inputOpeningTimesPlaceholder": "MO-SO - 10:00 bis 22:00 Uhr (Dienstag Ruhetag)",
       "fetchRestaurantsError": "Fehler beim Abrufen der Restaurants",
       "deleteModalTitle": "Restaurant {name} löschen",
       "deleteModalDesc": "Sind Sie sicher, dass Sie dieses Restaurant löschen möchten? Diese Aktion wird auch alle Artikel, die mit diesem Restaurant verbunden sind, löschen und kann nicht rückgängig gemacht werden",
