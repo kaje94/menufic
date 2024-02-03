@@ -31,7 +31,7 @@ export const restaurantInput = z.object({
     imagePath: z.string().min(1, "Image is required"),
     location: z.string().trim().min(1, "Location is required").max(75, "Location cannot be longer than 75 characters"),
     name: z.string().trim().min(1, "Name is required").max(40, "Name cannot be longer than 40 characters"),
-    opening_times: z.string().trim().min(1, "Name is required").max(60, "Opening times cannot be longer than 60 characters"),
+    openingTimes: z.string().trim().min(1, "Name is required").max(60, "Opening times cannot be longer than 60 characters"),
 });
 export const bannerInput = z.object({
     imageBase64: z.string().min(1, "Image is required"),
