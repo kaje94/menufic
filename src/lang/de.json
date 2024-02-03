@@ -287,7 +287,7 @@
       "inputContactNoLabel": "Kontaktnummer",
       "inputContactNoPlaceholder": "+49123456789",
       "inputOpeningTimesLabel": "Öffnungszeiten",
-      "inputOpeningTimesPlaceholder": "MO-SO - 10:00 bis 22:00 Uhr (Dienstag Ruhetag)",
+      "inputOpeningTimesPlaceholder": "MO-SO: 11-22 Uhr (DI geschlossen)",
       "fetchRestaurantsError": "Fehler beim Abrufen der Restaurants",
       "deleteModalTitle": "Restaurant {name} löschen",
       "deleteModalDesc": "Sind Sie sicher, dass Sie dieses Restaurant löschen möchten? Diese Aktion wird auch alle Artikel, die mit diesem Restaurant verbunden sind, löschen und kann nicht rückgängig gemacht werden",
