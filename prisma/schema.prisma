@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-    provider = "mysql"
+    provider = "postgresql"
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
 
@@ -23,7 +23,7 @@ model Restaurant {
     contactNo   String
     isPublished Boolean
     menus       Menu[]   @relation("MenusOfRestaurant")
-    image       Image?   @relation("ImageOfRestaurant", fields: [imageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    image       Image?   @relation("ImageOfRestaurant", fields: [imageId], references: [id], onDelete: SetNull, onUpdate: SetNull)
     imageId     String?  @unique
     banners     Image[]  @relation("BannersOfRestaurant")
 
@@ -87,7 +87,7 @@ model Image {
     color            String
     menuItem         MenuItem?   @relation("ImageOfMenuItem")
     restaurant       Restaurant? @relation("ImageOfRestaurant")
-    restaurantBanner Restaurant? @relation("BannersOfRestaurant", fields: [restaurantId], references: [id])
+    restaurantBanner Restaurant? @relation("BannersOfRestaurant", fields: [restaurantId], references: [id], onDelete: Restrict, onUpdate: Restrict)
     restaurantId     String?
 
     @@index([restaurantId])
