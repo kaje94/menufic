@@ -112,11 +112,11 @@ export const restaurantRouter = createTRPCRouter({
 
         transactions.push(ctx.prisma.menu.deleteMany({ where: { restaurantId: input.id } }));
 
+        transactions.push(ctx.prisma.image.deleteMany({ where: { id: { in: imagePaths } } }));
+
         transactions.push(
             ctx.prisma.restaurant.delete({ where: { id_userId: { id: input.id, userId: ctx.session.user.id } } })
         );
-
-        transactions.push(ctx.prisma.image.deleteMany({ where: { id: { in: imagePaths } } }));
 
         await Promise.all([imageKit.bulkDeleteFiles(imagePaths), ctx.prisma.$transaction(transactions)]);
 
