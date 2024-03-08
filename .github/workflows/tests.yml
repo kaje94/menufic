@@ -14,7 +14,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
             SKIP_ENV_VALIDATION: true
-            DATABASE_URL: "mysql://user:password@localhost:3306/menufic_db"
+            DATABASE_URL: "mysql://user:password@localhost:34837/menufic_db"
             NEXTAUTH_URL: "http://localhost:3000"
             NEXTAUTH_SECRET: r+v39W_FAKE_SECRET_lc9KcXEW0=
             IMAGEKIT_PUBLIC_KEY: ${{secrets.TEST_IMAGEKIT_PUBLIC_KEY}}
@@ -28,11 +28,13 @@ jobs:
             GOOGLE_CLIENT_ID: ${{secrets.TEST_GOOGLE_CLIENT_ID}}
             GOOGLE_CLIENT_SECRET: ${{secrets.TEST_GOOGLE_CLIENT_SECRET}}
         steps:
-            - uses: mirromutth/mysql-action@v1.1
+            - uses: ikalnytskyi/action-setup-postgres@v5
               with:
-                  mysql database: menufic_db
-                  mysql user: user
-                  mysql password: password
+                username: user
+                password: password
+                database: menufic_db
+                port: 34837
+              id: postgres
             - uses: actions/checkout@v3
             - uses: actions/setup-node@v3
               with:
