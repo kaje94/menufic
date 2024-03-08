@@ -55,7 +55,7 @@
 
 ## Introduction
 
-[Menufic](https://menufic.com) is a digital menu generator for restaurants that makes it simple and easy for anyone to create and share their restaurant menus. Menufic is built using [Next.js](https://nextjs.org), [NextAuth.js](https://next-auth.js.org), [Prisma](https://prisma.io), [tRPC](https://trpc.io), [Planetscale](https://planetscale.com) & [Imagekit](https://imagekit.io). Following are some of the features that Menufic provides.
+[Menufic](https://menufic.com) is a digital menu generator for restaurants that makes it simple and easy for anyone to create and share their restaurant menus. Menufic is built using [Next.js](https://nextjs.org), [NextAuth.js](https://next-auth.js.org), [Prisma](https://prisma.io), [tRPC](https://trpc.io), [Neon](https://neon.tech) & [Imagekit](https://imagekit.io). Following are some of the features that Menufic provides.
 
 -   Simple & intuitive UI to create & manage restaurant menus
 -   Generate menus that are optimized for search engines and social media crawlers
@@ -74,7 +74,7 @@ Barebone Installation:
 -   [Git](https://git-scm.com)
 -   [Node.js 16+](https://nodejs.org/en/download/)
 -   [NPM 7+](http://npmjs.com)
--   [MySQL](https://www.mysql.com) for persisting data.
+-   [PostgreSQL](https://www.postgresql.org/) for persisting data.
 
 Docker Installation:
 - Docker CE

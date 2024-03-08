@@ -14,7 +14,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
             SKIP_ENV_VALIDATION: true
-            DATABASE_URL: "mysql://user:password@localhost:34837/menufic_db"
+            DATABASE_URL: "postgresql://user:password@localhost:34837/menufic_db"
             NEXTAUTH_URL: "http://localhost:3000"
             NEXTAUTH_SECRET: r+v39W_FAKE_SECRET_lc9KcXEW0=
             IMAGEKIT_PUBLIC_KEY: ${{secrets.TEST_IMAGEKIT_PUBLIC_KEY}}
