@@ -1,7 +1,6 @@
 <br>
 <h1 align="center"> <b>Menufic</b> </h1> 
 <h4 align="center">A digital menu generator for restaurants, built using <a href="https://create.t3.gg" target="_blank">T3 stack</a></h4>
-<br>
 
 <p align="center">
   <a href="https://gitter.im/Menufic/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
@@ -67,14 +66,41 @@
 
 ## Prerequisite
 
+General:
+-   [Imagekit account](https://imagekit.io) for managing all the uploaded images.
+-   [Google](https://next-auth.js.org/providers/google) / [GitHub](https://next-auth.js.org/providers/github) for authenticating users
+
+Barebone Installation:
 -   [Git](https://git-scm.com)
 -   [Node.js 16+](https://nodejs.org/en/download/)
 -   [NPM 7+](http://npmjs.com)
 -   [MySQL](https://www.mysql.com) for persisting data.
--   [Imagekit account](https://imagekit.io) for managing all the uploaded images.
--   [Google](https://next-auth.js.org/providers/google) / [GitHub](https://next-auth.js.org/providers/github) for authenticating users
+
+Docker Installation:
+- Docker CE
+- Docker Compose
 
 ## How To Use
+
+### Docker
+
+````
+# copy env file and adjust to your needs
+cp .env.example .env
+
+# spawn the docker stack
+docker compose up
+````
+
+The web application will be accessible on http://127.0.0.1:3000.
+
+If you do not trust our externally hosted Docker Images, feel free to build the Docker Image locally yourself:
+
+````
+docker build -t menufic .
+````
+
+### Barebone
 
 From your command line:
 
