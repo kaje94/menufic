@@ -22,18 +22,22 @@ database:
 # Next Auth GitHub Provider
 # The callback url must be http://127.0.0.1:3000/api/auth/callback/github
 # Adjust protocol, IP and port to your setup
+# https://next-auth.js.org/providers/github
+# REQUIRED
 github:
     clientId: ""
     secret: ""
 
 # Next Auth Google Provider
+# https://next-auth.js.org/providers/google
+# REQUIRED
 google:
     clientId: ""
     secret: ""
 
 imagekit:
     # Please create an account in https://imagekit.io and use the generated keys here
-    url: "https://ik.imagekit.io/xxxx"
+    # REQUIRED
     baseFolder: "menufic-local"
     publicKey: ""
     privateKey: ""
@@ -42,17 +46,17 @@ nextauth:
     url: "http://localhost:3000"
     # You can generate the secret via 'openssl rand -base64 32' on Linux
     # More info: https://next-auth.js.org/configuration/options#secret
-    secret: ""
+    # REQUIRED
 
 web3forms:
     # Contact us form relies on https://web3forms.com
     apiKey: ""
 
 sentry:
-    publicDsn:
-    org:
-    project:
-    authToken:
+    publicDsn: ""
+    org: ""
+    project: ""
+    authToken: ""
 
 appConfig:
     usageLimits:
