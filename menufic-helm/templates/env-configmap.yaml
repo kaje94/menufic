@@ -20,6 +20,6 @@ data:
   NEXT_PUBLIC_PROD_URL: {{ .Values.appConfig.publicUrl | quote }}                                                                                                             
   NEXT_PUBLIC_SAMPLE_MENU_ID: {{ .Values.appConfig.sampleMenuId | quote }}                                                                                                    
   NEXT_PUBLIC_SENTRY_DSN: {{ .Values.sentry.publicDsn | quote }}                                                                                                              
-  NODE_ENV: "development"                                                                                                                                                     
+  NODE_ENV: "production"                                                                                                                                                     
   SENTRY_ORG: {{ .Values.sentry.org | quote }}                                                                                                                                
   SENTRY_PROJECT: {{ .Values.sentry.project | quote }}
