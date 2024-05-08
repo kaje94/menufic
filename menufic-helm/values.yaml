@@ -1,0 +1,58 @@
+replicas: 1
+image:
+    repository: l4rm4nd/menufic
+    tag: latest
+    pullPolicy: IfNotPresent
+
+service:
+    type: ClusterIP
+    port: 80
+
+ingress:
+    enabled: false
+    annotations: {}
+    host: menufic.example.com
+    tls:
+        enabled: false
+        secretName: ""
+
+database:
+    url: "postgresql://user:password@localhost:34837/menufic_db"
+
+github:
+    clientId: ""
+    secret: ""
+
+google:
+    clientId: ""
+    secret: ""
+
+imagekit:
+    url: "https://ik.imagekit.io/xxxx"
+    baseFolder: "menufic-local"
+    publicKey: ""
+    privateKey: ""
+
+nextauth:
+    url: "http://localhost:3000"
+    secret: ""
+
+web3forms:
+    apiKey: ""
+
+sentry:
+    publicDsn:
+    org:
+    project:
+    authToken:
+
+appConfig:
+    usageLimits:
+        maxRestaurantsPerUser: 5
+        maxMenusPerRestaurant: 5
+        maxCategoriesPerMenu: 10
+        maxMenuItemsPerCategory: 20
+        maxBannersPerRestaurant: 5
+    sampleMenuId: 1
+    contactEmail: "example@mail.com"
+    publicUrl: "https://menufic.example.com"
