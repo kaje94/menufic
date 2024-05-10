@@ -16,9 +16,6 @@ ingress:
         enabled: false
         secretName: ""
 
-database:
-    url: "mysql://user:pass@mariadb:3306/menufic"
-
 # Next Auth GitHub Provider
 # The callback url must be http://127.0.0.1:3000/api/auth/callback/github
 # Adjust protocol, IP and port to your setup
@@ -38,6 +35,7 @@ google:
 imagekit:
     # Please create an account in https://imagekit.io and use the generated keys here
     # REQUIRED
+    url: ""
     baseFolder: "menufic-local"
     publicKey: ""
     privateKey: ""
@@ -47,7 +45,7 @@ nextauth:
     # You can generate the secret via 'openssl rand -base64 32' on Linux
     # More info: https://next-auth.js.org/configuration/options#secret
     # REQUIRED
-
+    secret: ""
 web3forms:
     # Contact us form relies on https://web3forms.com
     apiKey: ""
@@ -71,3 +69,103 @@ appConfig:
     contactEmail: "example@mail.com"
     # Deployed URL used for redirection purposes
     publicUrl: "https://menufic.example.com"
+
+## MariaDB chart configuration
+## https://github.com/bitnami/charts/blob/main/bitnami/mariadb/values.yaml
+##
+mariadb:
+    ## @param mariadb.enabled Whether to deploy a mariadb server to satisfy the applications database requirements
+    ## To use an external database set this to false and configure the externalDatabase parameters
+    ##
+    enabled: true
+    ## @param mariadb.architecture MariaDB architecture. Allowed values: `standalone` or `replication`
+    ##
+    architecture: standalone
+    ## MariaDB Authentication parameters
+    ##
+    auth:
+        ## @param mariadb.auth.rootPassword Password for the MariaDB `root` user
+        ## ref: https://github.com/bitnami/containers/tree/main/bitnami/mariadb#setting-the-root-password-on-first-run
+        ##
+        rootPassword: ""
+        ## @param mariadb.auth.database Database name to create
+        ## ref: https://github.com/bitnami/containers/blob/main/bitnami/mariadb/README.md#creating-a-database-on-first-run
+        ##
+        database: menufic
+        ## @param mariadb.auth.username Database user to create
+        ## ref: https://github.com/bitnami/containers/blob/main/bitnami/mariadb/README.md#creating-a-database-user-on-first-run
+        ##
+        username: menufic_app
+        ## @param mariadb.auth.password Password for the database
+        ##
+        password: ""
+    primary:
+        ## MariaDB primary container's resource requests and limits
+        ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+        ## We usually recommend not to specify default resources and to leave this as a conscious
+        ## choice for the user. This also increases chances charts run on environments with little
+        ## resources, such as Minikube. If you do want to specify resources, uncomment the following
+        ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+        ## @param mariadb.primary.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production).
+        ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+        ##
+        resourcesPreset: "micro"
+        ## @param mariadb.primary.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+        ## Example:
+        ## resources:
+        ##   requests:
+        ##     cpu: 2
+        ##     memory: 512Mi
+        ##   limits:
+        ##     cpu: 3
+        ##     memory: 1024Mi
+        ##
+        resources: {}
+        ## Enable persistence using Persistent Volume Claims
+        ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+        ##
+        persistence:
+            ## @param mariadb.primary.persistence.enabled Enable database persistence using PVC
+            ##
+            enabled: true
+            ## @param mariadb.primary.persistence.storageClass MariaDB primary persistent volume storage Class
+            ## If defined, storageClassName: <storageClass>
+            ## If set to "-", storageClassName: "", which disables dynamic provisioning
+            ## If undefined (the default) or set to null, no storageClassName spec is
+            ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+            ##   GKE, AWS & OpenStack)
+            ##
+            storageClass: ""
+            ## @param mariadb.primary.persistence.accessModes Database Persistent Volume Access Modes
+            ##
+            accessModes:
+                - ReadWriteOnce
+            ## @param mariadb.primary.persistence.size Database Persistent Volume Size
+            ##
+            size: 8Gi
+            ## @param mariadb.primary.persistence.hostPath Set path in case you want to use local host path volumes (not recommended in production)
+            ##
+            hostPath: ""
+            ## @param mariadb.primary.persistence.existingClaim Name of an existing `PersistentVolumeClaim` for MariaDB primary replicas
+            ##
+            existingClaim: ""
+
+## External Database Configuration
+## All of these values are only used if `mariadb.enabled=false`
+##
+externalDatabase:
+    ## @param externalDatabase.host External Database server host
+    ##
+    host: localhost
+    ## @param externalDatabase.port External Database server port
+    ##
+    port: 3306
+    ## @param externalDatabase.user External Database username
+    ##
+    user: menufic_app
+    ## @param externalDatabase.password External Database user password
+    ##
+    password: ""
+    ## @param externalDatabase.database External Database database name
+    ##
+    database: menufic

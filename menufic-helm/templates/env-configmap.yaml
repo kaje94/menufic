@@ -3,7 +3,6 @@ kind: ConfigMap
 metadata:
   name: {{ printf "%s-%s" .Release.Name .Chart.Name }}-env-config
 data:                                                                                                                                                                         
-  DATABASE_URL: {{ .Values.database.url | quote }}                                                                                                                            
   GITHUB_CLIENT_ID: {{ .Values.github.clientId | quote }}                                                                                                                     
   GOOGLE_CLIENT_ID: {{ .Values.google.clientId | quote }}                                                                                                                     
   IMAGEKIT_BASE_FOLDER: {{ .Values.imagekit.baseFolder | quote }}                                                                                                             

@@ -13,3 +13,9 @@ maintainers:
       url: haloss1.me
 sources:
     - "https://github.com/kaje94/menufic"
+
+dependencies:
+    - condition: mariadb.enabled
+      name: mariadb
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 18.x.x
