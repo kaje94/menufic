@@ -5,8 +5,9 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - name: https
+    - name: http
       port: {{ .Values.service.port }}
+      protocol: TCP
       targetPort: 3000
   selector:
     app: {{ printf "%s-%s" .Release.Name .Chart.Name }}
