@@ -1,7 +1,7 @@
 name: menufic
 type: application
 description: Menufic is a digital menu generator for restaurants that makes it simple and easy for anyone to create and share their restaurant menus.
-version: 0.1.0
+version: 1.0.0
 apiVersion: v2
 keywords:
     - menufic
