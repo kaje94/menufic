@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ printf "%s-%s" .Release.Name .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ printf "%s-%s" .Release.Name .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ printf "%s-%s" .Release.Name .Chart.Name }}
+    spec:
+      containers:
+        - name: {{ printf "%s-%s" .Release.Name .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ printf "%s-%s" .Release.Name .Chart.Name }}-env-config
+            - secretRef:
+                name: {{ printf "%s-%s" .Release.Name .Chart.Name }}-secret-env
+      restartPolicy: Always
