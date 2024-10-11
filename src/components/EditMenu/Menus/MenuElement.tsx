@@ -71,7 +71,7 @@ export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSe
                     >
                         <Center {...provided.dragHandleProps} className={classes.dragHandle}>
                             <IconGripVertical
-                                color={isSelected ? theme.colors.primary[7] : theme.colors.dark[6]}
+                                color={isSelected ? theme.colors.primary?.[7] : theme.colors.dark[6]}
                                 size={18}
                             />
                         </Center>
@@ -80,8 +80,8 @@ export const MenuElement: FC<Props> = ({ item, selectedMenu, restaurantId, setSe
                             <Text className={classes.itemSubTitle}>{item.availableTime}</Text>
                         </Box>
                         <EditDeleteOptions
-                            color={isSelected ? theme.colors.primary[7] : theme.colors.dark[6]}
-                            hoverColor={isSelected ? theme.black : theme.colors.primary[5]}
+                            color={isSelected ? theme.colors?.primary?.[7] : theme.colors.dark[6]}
+                            hoverColor={isSelected ? theme.black : theme.colors.primary?.[5]}
                             onDeleteClick={() => setDeleteMenuModalOpen(true)}
                             onEditClick={() => setMenuFormOpen(true)}
                         />

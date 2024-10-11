@@ -174,9 +174,11 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                             <Flex align="center" gap={10}>
                                 <IconMapPin />
                                 <a
-                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant?.location)}`}
-                                    target="_blank"
+                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                        restaurant?.location
+                                    )}`}
                                     rel="noopener noreferrer"
+                                    target="_blank"
                                 >
                                     <Text className={classes.carousalTitleSubText}>{restaurant?.location}</Text>
                                 </a>
@@ -184,7 +186,7 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                             {restaurant?.contactNo && (
                                 <Flex align="center" gap={10}>
                                     <IconPhone />
-                                    <a href={`tel:${restaurant?.contactNo.replace(/\s/g, '')}`}>
+                                    <a href={`tel:${restaurant?.contactNo.replace(/\s/g, "")}`}>
                                         <Text className={classes.carousalTitleSubText}>{restaurant?.contactNo}</Text>
                                     </a>
                                 </Flex>
@@ -203,9 +205,11 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                     <Flex align="center" gap={10} opacity={0.6}>
                         <IconMapPin />
                         <a
-                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant?.location)}`}
-                            target="_blank"
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                restaurant?.location
+                            )}`}
                             rel="noopener noreferrer"
+                            target="_blank"
                         >
                             <Text className={classes.carousalTitleSubText}>{restaurant?.location}</Text>
                         </a>
@@ -213,7 +217,7 @@ export const RestaurantMenu: FC<Props> = ({ restaurant }) => {
                     {restaurant?.contactNo && (
                         <Flex align="center" gap={10} opacity={0.6}>
                             <IconPhone />
-                            <a href={`tel:${restaurant?.contactNo.replace(/\s/g, '')}`}>
+                            <a href={`tel:${restaurant?.contactNo.replace(/\s/g, "")}`}>
                                 <Text className={classes.carousalTitleSubText}>{restaurant?.contactNo}</Text>
                             </a>
                         </Flex>

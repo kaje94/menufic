@@ -42,7 +42,7 @@ export const EditDeleteOptions: FC<EditDeleteOptionsProps> = ({
                         event.preventDefault();
                     }}
                     sx={{
-                        "&:hover": { background: "unset", color: hoverColor || theme.colors.primary[5] },
+                        "&:hover": { background: "unset", color: hoverColor || theme.colors.primary?.[5] },
                         color: color || theme.colors.dark[5],
                         cursor: "pointer",
                         transition: "color 500ms ease",
