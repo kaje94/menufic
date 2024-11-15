@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-%s" .Release.Name .Chart.Name }}-env-config
+data:                                                                                                                                                                         
+  GITHUB_CLIENT_ID: {{ .Values.github.clientId | quote }}                                                                                                                     
+  GOOGLE_CLIENT_ID: {{ .Values.google.clientId | quote }}                                                                                                                     
+  IMAGEKIT_BASE_FOLDER: {{ .Values.imagekit.baseFolder | quote }}                                                                                                             
+  IMAGEKIT_PUBLIC_KEY: {{ .Values.imagekit.publicKey | quote }}                                                                                                               
+  NEXTAUTH_URL: {{ .Values.nextauth.url | quote }}                                                                                                                            
+  NEXT_PUBLIC_CONTACT_EMAIL: {{ .Values.appConfig.contactEmail | quote }}                                                                                                     
+  NEXT_PUBLIC_FORM_API_KEY: {{ .Values.web3forms.apiKey | quote }}                                                                                                            
+  NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT: {{ .Values.imagekit.url | quote }}                                                                                                       
+  NEXT_PUBLIC_MAX_BANNERS_PER_RESTAURANT: {{ .Values.appConfig.usageLimits.maxBannersPerRestaurant | quote }}                                                                 
+  NEXT_PUBLIC_MAX_CATEGORIES_PER_MENU: {{ .Values.appConfig.usageLimits.maxCategoriesPerMenu | quote }}                                                                       
+  NEXT_PUBLIC_MAX_MENUS_PER_RESTAURANT: {{ .Values.appConfig.usageLimits.maxMenusPerRestaurant | quote }}                                                                     
+  NEXT_PUBLIC_MAX_MENU_ITEMS_PER_CATEGORY: {{ .Values.appConfig.usageLimits.maxMenuItemsPerCategory | quote }}                                                                
+  NEXT_PUBLIC_MAX_RESTAURANTS_PER_USER: {{ .Values.appConfig.usageLimits.maxRestaurantsPerUser | quote }}                                                                     
+  NEXT_PUBLIC_PROD_URL: {{ .Values.appConfig.publicUrl | quote }}                                                                                                             
+  NEXT_PUBLIC_SAMPLE_MENU_ID: {{ .Values.appConfig.sampleMenuId | quote }}                                                                                                    
+  NEXT_PUBLIC_SENTRY_DSN: {{ .Values.sentry.publicDsn | quote }}                                                                                                              
+  NODE_ENV: "production"                                                                                                                                                     
+  SENTRY_ORG: {{ .Values.sentry.org | quote }}                                                                                                                                
+  SENTRY_PROJECT: {{ .Values.sentry.project | quote }}
