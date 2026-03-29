@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "skills": {
+    "design-critique": {
+      "source": "anthropics/knowledge-work-plugins",
+      "sourceType": "github",
+      "computedHash": "55100e100ac2789175128df2899e8ace3c8732300cd2719df26c57b13e391ff8"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
+    },
+    "grill-me": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "computedHash": "784f0dbb7403b0f00324bce9a112f715342777a0daee7bbb7385f9c6f0a170ea"
+    },
+    "pencil-design": {
+      "source": "chiroro-jr/pencil-design-skill",
+      "sourceType": "github",
+      "computedHash": "d85c4365810524de5ef0be5684e9e267556e083856e61e837470ac4d04ba5934"
+    },
+    "system-design": {
+      "source": "anthropics/knowledge-work-plugins",
+      "sourceType": "github",
+      "computedHash": "5915b5f79ae74f20473c4922075b091f290374d26b26c927af9c767102424ac4"
+    }
+  }
+}
