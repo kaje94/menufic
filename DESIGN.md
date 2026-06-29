@@ -273,13 +273,13 @@ Radius, border, and texture are set inside the `@plugin "daisyui/theme"` block:
 | Variable | Value | Maps to |
 |---|---|---|
 | `--radius-selector` | `999px` | Pills: badges, chips |
-| `--radius-field` | `12px` | Inputs, selects (`rounded.sm`) |
-| `--radius-box` | `24px` | Cards, panels (`rounded.lg`) |
+| `--radius-field` | `12px` | Inputs, selects |
+| `--radius-box` | `24px` | Cards, panels |
 | `--border` | `1px` | Default border width |
 | `--depth` | `0` | No automatic daisyUI depth effect |
 | `--noise` | `0` | No automatic daisyUI noise texture |
 
-### 7.3 Shadow Vocabulary as @theme tokens
+### 7.3 Tailwind `@theme` tokens (Shadow Vocabulary, fonts, pill radius)
 
 Declared in the Tailwind `@theme` block so they are available as design-system-level tokens across all 13 prototype pages:
 
