@@ -18,3 +18,7 @@ The internal **Admin portal** is intentionally outside this system — utilitari
 - **Restaurant theme** — an owner's per-restaurant customization (preset + font + primary colour + corner radius) applied only to their **Public menu surface**.
 
 Say "design system" for Menufic's look; say "restaurant theme" for an owner's menu styling. They are different things and never overlap.
+
+## Colours (disambiguation)
+
+- **Brand accent** (tomato / saffron / herb-green, governed by the Two-Accent Rule) signals brand intent. **Functional state colour** (`info` / `success` / `warning` / `error`) signals UI state, not brand identity; a functional colour is never counted as a brand accent.
