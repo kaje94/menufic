@@ -73,6 +73,7 @@ p{margin:0;text-wrap:pretty}
   box-shadow:0 10px 30px -10px oklch(0.605 0.18 30 / 0.7);
 }
 .btn-primary:hover{background:var(--tomato-bright);transform:translateY(-2px);box-shadow:0 16px 40px -12px oklch(0.605 0.18 30 / 0.8)}
+.btn:active{transform:translateY(0) scale(.985);transition-duration:.08s}
 .btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}
 .btn-ghost:hover{background:oklch(0.30 0.04 60 / 0.5);transform:translateY(-2px)}
 .gicon{width:18px;height:18px;flex:none}
@@ -123,7 +124,7 @@ p{margin:0;text-wrap:pretty}
 .js .reveal{opacity:0;transform:translateY(30px)}
 .js .reveal.in{opacity:1;transform:none;transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .js .stagger{opacity:0;transform:translateY(24px)}
-.js .stagger.in{opacity:1;transform:none;transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.js .stagger.in{opacity:1;transform:none;transition:opacity .45s var(--ease),transform .45s var(--ease)}
 
 /* ============ live menu UI (shared phone component) ============ */
 .phone{
@@ -156,6 +157,31 @@ p{margin:0;text-wrap:pretty}
 .mrow .mtag{font-size:8px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--accent,var(--saffron));border:1px solid var(--accent,var(--saffron));border-radius:5px;padding:1px 5px}
 .mrow .mdesc{font-size:10px;color:var(--cream-soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mrow .mprice{font-family:"Boska";font-weight:600;font-size:14px;color:var(--cream);flex:none}
+
+/* ---- Overdrive: interactive live menu (tab morph + live theming) ---- */
+.menu-tabs .mt{border:0;cursor:pointer;font-family:inherit;-webkit-appearance:none;appearance:none;transition:background-color .4s var(--ease),color .4s var(--ease)}
+.menu-tabs .mt:focus-visible{outline:2px solid var(--saffron);outline-offset:2px}
+.menu-head .badge,.mrow .mtag{transition:background-color .4s var(--ease),color .4s var(--ease),border-color .4s var(--ease)}
+.mrow,.mrow img{transition:border-radius .4s var(--ease)}
+button.bubble{font-family:inherit;color:var(--cream);cursor:pointer;-webkit-appearance:none;appearance:none}
+button.bubble.theme:hover{background:oklch(0.30 0.045 60 / 0.96)}
+button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offset:3px}
+/* scoped View Transition: only the hero dish list cross-fades on tab change */
+#heroMenuList{view-transition-name:heroMenu}
+::view-transition-group(root){animation-duration:0s}
+::view-transition-old(heroMenu),::view-transition-new(heroMenu){animation-duration:.34s;animation-timing-function:var(--ease)}
+@media (prefers-reduced-motion: reduce){
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none !important}
+  .menu-tabs .mt,.menu-head .badge,.mrow,.mrow img,.mrow .mtag{transition:none}
+}
+/* Touch adaptation: keep the miniature's look, but give the interactive demo
+   controls a 44px+ tap target on coarse pointers (the device owners evaluate on). */
+@media (pointer: coarse){
+  button.bubble.theme::after{content:"";position:absolute;inset:-9px;border-radius:inherit}
+  .menu-tabs{overflow:visible}
+  .menu-tabs .mt{position:relative}
+  .menu-tabs .mt::after{content:"";position:absolute;left:0;right:0;top:-11px;bottom:-11px}
+}
 
 /* ============ HERO (video bg + modern composition + bubbles) ============ */
 .hero{
@@ -197,15 +223,24 @@ p{margin:0;text-wrap:pretty}
 }
 .hero-inner{
   position:relative;z-index:3;width:100%;
-  display:grid;grid-template-columns:1.05fr 0.95fr;gap:48px;align-items:center;
+  display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,0.95fr);gap:48px;align-items:center;
 }
-.hero-copy{max-width:600px}
+.hero-copy{max-width:600px;min-width:0}
 .hero h1{
   font-size:clamp(2.6rem,6.2vw,6rem);
   letter-spacing:-0.035em;line-height:0.98;color:var(--cream);
   text-shadow:0 2px 24px oklch(0.13 0.02 50 / 0.6);
+  text-wrap:balance;
 }
 .hero h1 .em{color:var(--saffron)}
+/* Signature entrance: each headline line wipes up in sequence (saffron lands last).
+   The block stays visible; the inner spans are clipped by the line's overflow. */
+.hero h1 .hl-line{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em}
+.hero h1 .hl-in{display:block}
+.js #hero-h{opacity:1;transform:none}
+.js #hero-h .hl-in{transform:translateY(110%)}
+.js #hero-h.in .hl-in{transform:translateY(0);transition:transform .55s var(--ease)}
+.js #hero-h.in .hl-in.em{transition-delay:.07s}
 .hero-sub{
   margin-top:26px;font-size:clamp(1.05rem,2vw,1.3rem);
   color:var(--cream-soft);max-width:52ch;line-height:1.55;
@@ -213,6 +248,8 @@ p{margin:0;text-wrap:pretty}
 }
 .hero-actions{margin-top:34px;display:flex;flex-wrap:wrap;align-items:center;gap:16px}
 .see-live{display:inline-flex;align-items:center;gap:8px;color:var(--cream);font-weight:500;font-size:16px;min-height:48px;padding:0 6px}
+.see-live-label{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;text-decoration-color:oklch(0.83 0.022 78 / 0.45);transition:text-decoration-color .3s var(--ease)}
+.see-live:hover .see-live-label,.see-live:focus-visible .see-live-label{text-decoration-color:var(--saffron)}
 .see-live .arr{transition:transform .3s var(--ease)}
 .see-live:hover .arr{transform:translateX(4px)}
 .hero-qr{
@@ -222,7 +259,7 @@ p{margin:0;text-wrap:pretty}
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
   box-shadow:0 18px 40px -22px oklch(0 0 0 / 0.8);
 }
-.hero-qr .chip{background:#fff;border-radius:10px;padding:7px;line-height:0;flex:none}
+.hero-qr .chip{background:#fff;border-radius:9px;padding:7px;line-height:0;flex:none}
 .hero-qr .chip img{width:62px;height:62px}
 .hero-qr .qr-text{font-size:14.5px;line-height:1.4}
 .hero-qr .qr-text b{display:block;color:var(--cream);font-weight:600;font-size:15px}
@@ -231,7 +268,7 @@ p{margin:0;text-wrap:pretty}
 /* hero composition (modern, from E2) */
 .hero-stage{position:relative;perspective:1400px;min-width:0}
 .hero-composition{
-  position:relative;width:min(380px,82%);margin:0 auto;
+  position:relative;width:min(356px,80%);margin:0 auto;
   transform-style:preserve-3d;
   transition:transform .35s var(--ease);
 }
@@ -244,21 +281,21 @@ p{margin:0;text-wrap:pretty}
 .hero-dish{
   position:absolute;z-index:4;width:172px;height:172px;border-radius:24px;
   left:-58px;bottom:-26px;object-fit:cover;
-  border:5px solid oklch(0.22 0.02 60);
+  border:5px solid var(--surface);
   box-shadow:0 30px 60px -24px oklch(0 0 0 /0.85), 0 2px 0 oklch(0.85 0.13 78 /0.2);
   transform:translateZ(60px);
 }
 .hero-chip{
-  position:absolute;z-index:5;right:-30px;top:42px;
+  position:absolute;z-index:5;right:-30px;top:-30px;
   display:flex;align-items:center;gap:9px;
   background:oklch(0.30 0.04 60 / 0.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
-  border:1px solid var(--line);border-radius:14px;padding:10px 14px;
+  border:1px solid var(--line);border-radius:12px;padding:10px 14px;
   box-shadow:0 20px 40px -20px oklch(0 0 0 /0.8);
   transform:translateZ(90px);
 }
-.hero-chip .pulse{width:10px;height:10px;border-radius:50%;background:oklch(0.7 0.16 145);box-shadow:0 0 0 0 oklch(0.7 0.16 145 /0.5)}
+.hero-chip .pulse{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 color-mix(in oklch, var(--green) 50%, transparent)}
 .hero-chip.live .pulse{animation:livePulse 2.2s ease-out infinite}
-@keyframes livePulse{0%{box-shadow:0 0 0 0 oklch(0.7 0.16 145 /0.5)}100%{box-shadow:0 0 0 12px oklch(0.7 0.16 145 /0)}}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 color-mix(in oklch, var(--green) 50%, transparent)}100%{box-shadow:0 0 0 12px transparent}}
 .hero-chip b{font-size:13px;font-weight:600;color:var(--cream)}
 .hero-chip span{font-size:11px;color:var(--cream-soft);display:block}
 
@@ -277,8 +314,8 @@ p{margin:0;text-wrap:pretty}
 .bubble.theme .ic{color:var(--tomato-bright)}
 .bubble.track .ic{color:var(--green)}
 .bubble.qr .ic{color:var(--saffron)}
-.bubble.scan{top:6px;left:-30px}
-.bubble.theme{top:108px;right:-46px;font-size:0.92rem}
+.bubble.scan{top:-30px;left:-30px}
+.bubble.theme{top:84px;right:-46px;font-size:0.92rem}
 .bubble.track{bottom:142px;left:-58px}
 .bubble.qr{bottom:30px;right:-22px}
 /* bubble entrance + drift */
@@ -295,24 +332,28 @@ p{margin:0;text-wrap:pretty}
 @keyframes drift4{0%,100%{transform:translate(0,0)}50%{transform:translate(-6px,-11px)}}
 
 @media (max-width:980px){
-  .hero-inner{grid-template-columns:1fr;gap:44px;text-align:left}
-  .hero-stage{order:2;margin-top:8px}
+  .hero-inner{grid-template-columns:minmax(0,1fr);gap:44px;text-align:left}
+  .hero-stage{order:2;margin-top:34px}
   .hero-composition{width:min(330px,76%)}
   .hero-dish{width:140px;height:140px;left:-26px}
   .hero-chip{right:-14px}
-  /* reflow bubbles so they never overlap headline / overflow */
-  .bubble.scan{top:0;left:0}
-  .bubble.theme{top:88px;right:0}
-  .bubble.track{display:none}
-  .bubble.qr{bottom:18px;right:0}
+  /* mobile: shrink the floating bubbles so all four fit around the smaller phone */
+  .bubble{font-size:0.68rem;padding:6px 9px;gap:6px}
+  .bubble .ic{width:22px;height:22px}
+  .bubble .ic svg{width:13px;height:13px}
+  .bubble.scan{top:42px;left:-4px}
+  .bubble.theme{top:42px;left:auto;right:-4px;font-size:0.68rem}
+  .bubble.track{bottom:172px;left:-18px}
+  .bubble.qr{bottom:14px;right:-6px}
 }
 @media (max-width:520px){
   .hero{padding:108px 0 50px}
   .hero-dish{width:118px;height:118px;left:-12px;bottom:-18px}
-  .hero-chip{right:0;top:30px;padding:8px 11px}
+  .hero-chip{right:0;top:-26px;padding:8px 11px}
   .hero-qr{width:100%}
-  .bubble{font-size:0.8rem;padding:9px 13px}
-  .bubble .ic{width:26px;height:26px}
+  .bubble{font-size:0.58rem;padding:5px 7px;gap:4px}
+  .bubble .ic{width:18px;height:18px}
+  .bubble .ic svg{width:11px;height:11px}
 }
 
 /* ============ SECTION SHELL ============ */
@@ -323,26 +364,36 @@ p{margin:0;text-wrap:pretty}
 .section-head .lede{margin-top:18px;font-size:clamp(1.05rem,1.6vw,1.2rem);color:var(--cream-soft);max-width:66ch;line-height:1.55}
 .section-head.center .lede{margin-left:auto;margin-right:auto}
 
-/* ============ HOW IT WORKS (sticky split-scroll, from E2) ============ */
+/* ============ HOW IT WORKS (scroll-scrubbed assembly — V1) ============ */
 .how{background:linear-gradient(180deg,var(--bg),oklch(0.205 0.03 56),var(--bg))}
 .how-grid{display:grid;grid-template-columns:0.92fr 1.08fr;gap:64px;align-items:start}
+
+/* sticky phone column */
 .how-sticky{position:sticky;top:0;height:100svh;display:flex;align-items:center;justify-content:center;min-width:0}
 .how-phone{
   position:relative;width:min(310px,80%);
   border-radius:40px;background:oklch(0.22 0.02 60);
   border:1px solid oklch(0.5 0.03 70 / 0.4);padding:10px;
   box-shadow:0 40px 80px -34px oklch(0 0 0 /0.85);
+  will-change:transform;
 }
-.how-phone .phone-screen{border-radius:30px}
+.how-phone .phone-screen{border-radius:30px;overflow:hidden;position:relative;aspect-ratio:9/17}
+
+/* Phone state transitions */
 .how-states{position:relative;height:100%;width:100%}
 .how-state{
   position:absolute;inset:0;
-  opacity:0;transition:opacity .5s var(--ease);
+  opacity:0;transform:translateY(16px) scale(.985);filter:blur(3px);
+  transition:opacity .5s var(--ease),transform .65s var(--ease),filter .5s var(--ease);
+  pointer-events:none;
   display:flex;flex-direction:column;
 }
-.how-state.active{opacity:1}
-@media (prefers-reduced-motion:reduce){.how-state{transition:none}}
+.how-state.active{opacity:1;transform:none;filter:none;pointer-events:auto}
+@media (prefers-reduced-motion:reduce){
+  .how-state{transition:opacity .2s linear;transform:none;filter:none}
+}
 
+/* Create state */
 .s-create{background:var(--bg);padding:0}
 .builder-top{flex:none;padding:38px 16px 12px;text-align:center;border-bottom:1px solid var(--line-soft)}
 .builder-top .ico{width:54px;height:54px;border-radius:16px;margin:0 auto 12px;background:oklch(0.30 0.04 60);display:flex;align-items:center;justify-content:center;color:var(--saffron);border:1px dashed var(--line)}
@@ -355,18 +406,76 @@ p{margin:0;text-wrap:pretty}
 .fld .inp.ghost{color:var(--cream-soft);opacity:.6}
 .fld .slugline{font-size:10px;color:var(--cream-soft);margin-top:5px}
 .fld .slugline b{color:var(--saffron);font-weight:600}
-.builder-cta{margin-top:auto;background:var(--tomato);color:var(--cream);border-radius:11px;text-align:center;padding:11px;font-size:12.5px;font-weight:600}
+.builder-cta{
+  margin-top:auto;border-radius:11px;text-align:center;padding:11px;
+  font-size:12.5px;font-weight:600;color:var(--cream);
+  transition:background .45s var(--ease),box-shadow .45s var(--ease);
+}
+.builder-cta.dim{background:var(--surface-2);color:var(--cream-soft)}
+.builder-cta.lit{background:var(--tomato);box-shadow:0 8px 24px -8px oklch(0.56 0.19 32 /0.55)}
 
-.s-share{background:linear-gradient(180deg,oklch(0.245 0.034 58),var(--bg));align-items:center;justify-content:center;text-align:center;padding:24px 20px;flex:1 1 auto}
+/* Share state */
+.s-share{background:linear-gradient(180deg,oklch(0.245 0.034 58),var(--bg));align-items:center;justify-content:center;text-align:center;padding:24px 20px;flex:1 1 auto;position:relative;overflow:hidden}
 .s-share .live-pill{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:oklch(0.78 0.16 145);background:oklch(0.7 0.16 145 /0.12);border:1px solid oklch(0.7 0.16 145 /0.35);border-radius:999px;padding:5px 12px;margin-bottom:18px}
 .s-share .live-pill .pulse{width:8px;height:8px;border-radius:50%;background:oklch(0.7 0.16 145)}
 .s-share h5{font-family:"Boska";font-size:19px;color:var(--cream);font-weight:700;line-height:1.05}
 .s-share p{font-size:11.5px;color:var(--cream-soft);margin-top:7px;line-height:1.4}
-.s-share .qrbox{background:#fff;border-radius:18px;padding:14px;margin:20px auto 14px;line-height:0;box-shadow:0 20px 40px -20px oklch(0 0 0 /0.7)}
+.s-share .qrbox{
+  background:#fff;border-radius:18px;padding:14px;margin:20px auto 14px;line-height:0;
+  box-shadow:0 20px 40px -20px oklch(0 0 0 /0.7);
+  will-change:clip-path,opacity;
+}
 .s-share .qrbox img{width:150px;height:150px}
 .s-share .url{font-size:11px;color:var(--saffron);font-weight:600;word-break:break-all}
 
-.how-steps{display:flex;flex-direction:column}
+/* Publish sweep — animated by JS */
+.how-sweep{
+  position:absolute;inset:0;z-index:6;pointer-events:none;
+  background:linear-gradient(180deg,oklch(0.96 0.015 78 /0.22) 0%,oklch(0.785 0.14 68 /0.08) 50%,transparent 100%);
+  transform:translateY(-105%);
+  will-change:transform,opacity;
+}
+
+/* Add-dish pulsing */
+@keyframes how-dish-pulse{
+  0%,100%{opacity:0.55}50%{opacity:0.82}
+}
+.mrow.asm-add{animation:how-dish-pulse 2.2s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.mrow.asm-add{animation:none;opacity:0.65}}
+
+/* Live pill pulse */
+@keyframes how-live-pulse{
+  0%,100%{box-shadow:0 0 0 0 oklch(0.7 0.16 145 /0.5)}
+  55%{box-shadow:0 0 0 5px oklch(0.7 0.16 145 /0)}
+}
+.s-share .live-pill .pulse{animation:how-live-pulse 2s ease-out infinite}
+@media(prefers-reduced-motion:reduce){.s-share .live-pill .pulse{animation:none}}
+
+/* Step column + progress rail */
+.how-steps-wrap{display:flex;gap:20px;min-width:0;align-items:stretch}
+.how-rail{
+  flex:none;width:2px;position:relative;
+  background:var(--line-soft);border-radius:2px;
+  margin-top:60px;margin-bottom:32px;
+}
+.how-rail-fill{
+  position:absolute;top:0;left:0;right:0;height:100%;
+  background:linear-gradient(180deg,var(--saffron),oklch(0.785 0.14 68 /0.6));
+  border-radius:2px;will-change:transform;
+  transform:scaleY(0);transform-origin:top center;
+}
+.how-rail-node{
+  position:absolute;left:50%;transform:translate(-50%,-50%);
+  width:8px;height:8px;border-radius:50%;
+  background:oklch(0.30 0.03 55);border:2px solid var(--line-soft);
+  transition:background .4s var(--ease),border-color .4s var(--ease),box-shadow .4s var(--ease);
+}
+.how-rail-node.lit{background:var(--saffron);border-color:var(--saffron);box-shadow:0 0 10px 2px oklch(0.785 0.14 68 /0.45)}
+.how-rail-node[data-node="0"]{top:0}
+.how-rail-node[data-node="1"]{top:33.33%}
+.how-rail-node[data-node="2"]{top:66.66%}
+
+.how-steps{display:flex;flex-direction:column;flex:1;min-width:0}
 .step{min-height:78vh;display:flex;flex-direction:column;justify-content:center;padding:32px 0}
 .step:first-child{padding-top:8px}
 .step .num{
@@ -378,17 +487,42 @@ p{margin:0;text-wrap:pretty}
 .step p{margin-top:18px;font-size:clamp(1.02rem,1.5vw,1.15rem);color:var(--cream-soft);max-width:46ch;line-height:1.6}
 .step .mini{display:none}
 
+/* Desktop: active step bright, inactive recede */
+@media (min-width:901px){
+  .js .how-steps .step{opacity:.32;transform:translateX(-10px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
+  .js .how-steps .step.is-active{opacity:1;transform:none}
+  .js .how-steps .step .num::before{transform-origin:left center;transition:transform .55s var(--ease),opacity .55s var(--ease)}
+  .js .how-steps .step:not(.is-active) .num::before{transform:scaleX(0.53);opacity:.28}
+  .js .how-steps .step.is-active .num::before{transform:scaleX(1.41);opacity:.9}
+}
+
+/* Mobile: phone sticky, steps scroll beneath */
 @media (max-width:900px){
-  .how-grid{grid-template-columns:1fr;gap:0}
-  .how-sticky{display:none}
-  .step{min-height:auto;padding:34px 0;border-bottom:1px solid var(--line-soft)}
-  .step:last-child{border-bottom:none}
-  .step .mini{
-    display:block;margin-top:24px;width:min(260px,80%);
-    border-radius:30px;background:oklch(0.22 0.02 60);padding:8px;
-    border:1px solid oklch(0.5 0.03 70 /0.4);box-shadow:0 30px 60px -30px oklch(0 0 0 /0.8);
+  .how-grid{
+    grid-template-columns:1fr;
+    gap:0;
   }
-  .step .mini .phone-screen{border-radius:24px}
+  .how-sticky{
+    height:auto;
+    top:68px;
+    z-index:10;
+    padding:14px 0 28px;
+    /* surface bg creates a clear panel — separates phone from dark section bg */
+    background:linear-gradient(180deg,var(--surface) 90%,oklch(0.235 0.034 46 /0));
+    border-bottom:1px solid var(--line-soft);
+  }
+  /* tall, sleek mockup that matches the viewer's own phone aspect (JS-set --mock-ar) */
+  .how-phone{width:auto;padding:8px;border-radius:34px}
+  .how-phone .phone-screen{height:min(56svh,540px);width:auto;max-width:84vw;aspect-ratio:var(--mock-ar,9/19.5);border-radius:28px}
+  .how-rail{display:none}
+  .step{min-height:58vh;padding:26px 0 22px;border-bottom:1px solid var(--line-soft)}
+  .step:first-child{padding-top:30px}
+  .step:last-child{border-bottom:none}
+  .step .mini{display:none}
+  .step h3{font-size:clamp(1.55rem,6.4vw,2rem)}
+  .step p{font-size:clamp(0.98rem,3.7vw,1.08rem);max-width:38ch}
+  .js .how-steps .step{opacity:.62;transition:opacity .45s var(--ease)}
+  .js .how-steps .step.is-active{opacity:1}
 }
 
 /* ============ THEME BUILDER STUDIO (E3 studio, upgraded) ============ */
@@ -644,6 +778,8 @@ p{margin:0;text-wrap:pretty}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none !important;transition-duration:.01ms !important}
   .js .stagger,.js .reveal{opacity:1 !important;transform:none !important}
+  .js .step,.js .step .mini{opacity:1 !important;transform:none !important}
+  .js #hero-h .hl-in{transform:none !important}
   .hero-composition.float{animation:none}
   .hero-video{display:none}
   .hero-poster{display:block}
@@ -692,15 +828,15 @@ p{margin:0;text-wrap:pretty}
 
   <div class="wrap hero-inner">
     <div class="hero-copy">
-      <h1 id="hero-h" class="stagger" data-delay="0">A beautiful menu for your restaurant.<br><span class="em">Free, in minutes.</span></h1>
-      <p class="hero-sub stagger" data-delay="1">Menufic turns your dishes into a polished digital menu you can publish online and share with a QR code. It takes no design skills and costs nothing, so your food simply looks its best.</p>
+      <h1 id="hero-h" class="stagger" data-delay="0"><span class="hl-line"><span class="hl-in">A digital menu</span></span><span class="hl-line"><span class="hl-in em">for your restaurant.</span></span></h1>
+      <p class="hero-sub stagger" data-delay="1">Add your dishes, choose a theme, and hit publish. Menufic gives you a menu to share by link or QR. No design skills, and free forever.</p>
 
       <div class="hero-actions stagger" data-delay="2">
         <a class="btn btn-primary" href="/app/signin.html">
           <svg class="gicon" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
           Get started, it's free
         </a>
-        <a class="see-live" href="#studio">See a live menu <span class="arr" aria-hidden="true">→</span></a>
+        <a class="see-live" href="#studio"><span class="see-live-label">See a live menu</span> <span class="arr" aria-hidden="true">→</span></a>
       </div>
 
       <div class="hero-qr stagger" data-delay="3">
@@ -719,10 +855,10 @@ p{margin:0;text-wrap:pretty}
           <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="3" y1="12" x2="21" y2="12"/></svg></span>
           Scan to preview
         </div>
-        <div class="bubble theme" data-bub="2">
+        <button class="bubble theme" type="button" id="heroThemeBtn" data-bub="2" aria-label="Tap to preview a theme colour on the menu">
           <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 2a10 10 0 1 0 0 20 2 2 0 0 0 2-2 2 2 0 0 1 2-2h2a4 4 0 0 0 4-4 10 10 0 0 0-10-10z"/></svg></span>
           Customise themes
-        </div>
+        </button>
         <div class="bubble track" data-bub="3">
           <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
           Track analytics
@@ -743,10 +879,10 @@ p{margin:0;text-wrap:pretty}
                   <span class="loc">📍 Modern grill · Open till 11</span>
                 </div>
               </div>
-              <div class="menu-tabs">
-                <span class="mt act">Mains</span><span class="mt">Small plates</span><span class="mt">Sides</span>
+              <div class="menu-tabs" role="tablist" aria-label="Menu categories" id="heroTabs">
+                <button class="mt act" type="button" role="tab" aria-selected="true" data-tab="mains">Mains</button><button class="mt" type="button" role="tab" aria-selected="false" data-tab="small">Small plates</button><button class="mt" type="button" role="tab" aria-selected="false" data-tab="sides">Sides</button>
               </div>
-              <div class="menu-list">
+              <div class="menu-list" id="heroMenuList" role="tabpanel" aria-live="polite">
                 <div class="mrow">
                   <img src="assets/img/photo-1432139555190-58524dae6a55.jpg" alt="Charred short rib glistening on a dark plate" loading="lazy">
                   <div class="mmeta"><div class="mname">Smoked short rib <span class="mtag">Chef's pick</span></div><div class="mdesc">36-hour cook, burnt-honey glaze</div></div>
@@ -781,7 +917,7 @@ p{margin:0;text-wrap:pretty}
   </div>
 </section>
 
-<!-- ============ HOW IT WORKS — sticky split-scroll (E2) ============ -->
+<!-- ============ HOW IT WORKS — scroll-scrubbed assembly (V1) ============ -->
 <section class="section how" id="how" aria-labelledby="how-h">
   <div class="wrap">
     <div class="section-head reveal">
@@ -790,34 +926,40 @@ p{margin:0;text-wrap:pretty}
     </div>
 
     <div class="how-grid">
-      <!-- sticky phone -->
+      <!-- sticky phone — decorative demo, assembles in sync with scroll -->
       <div class="how-sticky">
-        <div class="how-phone">
+        <div class="how-phone" aria-hidden="true">
           <div class="phone-screen">
             <div class="how-states" id="howStates">
 
-              <!-- STATE 1: CREATE -->
+              <!-- STATE 1: CREATE — form fields assemble on scroll -->
               <div class="how-state active s-create" data-state="0">
                 <div class="builder-top">
-                  <div class="ico" aria-hidden="true">
+                  <div class="ico">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
                   </div>
                   <h5>New restaurant</h5>
                   <p>Tell us the basics. It takes a minute.</p>
                 </div>
                 <div class="builder-form">
-                  <div class="fld"><label>Restaurant name</label><div class="inp filled">Bella Trattoria</div></div>
-                  <div class="fld">
+                  <div class="fld asm-field" data-asm="0">
+                    <label>Restaurant name</label>
+                    <div class="inp filled">Bella Trattoria</div>
+                  </div>
+                  <div class="fld asm-field" data-asm="1">
                     <label>Your menu address</label>
                     <div class="inp">bella-trattoria</div>
                     <div class="slugline">Live at <b>menufic.com/r/bella-trattoria</b></div>
                   </div>
-                  <div class="fld"><label>Cuisine</label><div class="inp ghost">Italian · Trattoria</div></div>
-                  <div class="builder-cta">Create restaurant</div>
+                  <div class="fld asm-field" data-asm="2">
+                    <label>Cuisine</label>
+                    <div class="inp ghost">Italian · Trattoria</div>
+                  </div>
+                  <div class="builder-cta dim" id="howCta">Create restaurant</div>
                 </div>
               </div>
 
-              <!-- STATE 2: BUILD -->
+              <!-- STATE 2: BUILD — dish rows drop in one by one -->
               <div class="how-state s-build" data-state="1">
                 <div class="menu-ui" style="--accent:var(--tomato);--accent-r:16px;height:100%">
                   <div class="menu-cover" style="background-image:url('assets/img/photo-1424847651672-bf20a4b0982b.jpg')">
@@ -830,23 +972,23 @@ p{margin:0;text-wrap:pretty}
                   <div class="menu-tabs">
                     <span class="mt act">Pasta</span><span class="mt">Pizza</span><span class="mt">+ Add</span>
                   </div>
-                  <div class="menu-list">
-                    <div class="mrow">
+                  <div class="menu-list" id="howDishList">
+                    <div class="mrow asm-dish" data-dish="0">
                       <img src="assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="Margherita pizza" loading="lazy">
                       <div class="mmeta"><div class="mname">Pizza Margherita <span class="mtag">New</span></div><div class="mdesc">San Marzano, fior di latte</div></div>
                       <div class="mprice">$17</div>
                     </div>
-                    <div class="mrow">
+                    <div class="mrow asm-dish" data-dish="1">
                       <img src="assets/img/photo-1424847651672-bf20a4b0982b.jpg" alt="Sharing plates of Italian food" loading="lazy">
                       <div class="mmeta"><div class="mname">Antipasti board</div><div class="mdesc">Cured meats, olives, focaccia</div></div>
                       <div class="mprice">$21</div>
                     </div>
-                    <div class="mrow">
-                      <img src="assets/img/photo-1455619452474-d2be8b1e70cd.jpg" alt="Tomato seafood dish" loading="lazy">
+                    <div class="mrow asm-dish" data-dish="2">
+                      <img src="assets/img/photo-1455619452474-d2be8b1e70cd.jpg" alt="Seafood linguine" loading="lazy">
                       <div class="mmeta"><div class="mname">Linguine alle vongole</div><div class="mdesc">Clams, white wine, chilli</div></div>
                       <div class="mprice">$24</div>
                     </div>
-                    <div class="mrow" style="border-style:dashed;opacity:.7">
+                    <div class="mrow asm-add" style="border-style:dashed">
                       <div style="width:46px;height:46px;border-radius:11px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--tomato);flex:none">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
                       </div>
@@ -856,12 +998,13 @@ p{margin:0;text-wrap:pretty}
                 </div>
               </div>
 
-              <!-- STATE 3: SHARE -->
+              <!-- STATE 3: SHARE — publish sweep, QR reveals -->
               <div class="how-state s-share" data-state="2">
+                <div class="how-sweep" aria-hidden="true"></div>
                 <span class="live-pill"><span class="pulse" aria-hidden="true"></span> Published &amp; live</span>
                 <h5>Your menu is online.</h5>
                 <p>Share the link, or print this QR for tables, windows and flyers.</p>
-                <div class="qrbox">
+                <div class="qrbox" id="howQr">
                   <img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://menufic.com/r/bella-trattoria" alt="Scannable QR code for the published Bella Trattoria menu" width="150" height="150">
                 </div>
                 <div class="url">menufic.com/r/bella-trattoria</div>
@@ -872,54 +1015,33 @@ p{margin:0;text-wrap:pretty}
         </div>
       </div>
 
-      <!-- scrolling steps -->
-      <div class="how-steps" id="howSteps">
-        <article class="step" data-step="0">
-          <span class="num">01 · Create</span>
-          <h3>Create your restaurant.</h3>
-          <p>Add your name and pick your web address. Menufic instantly reserves your page at menufic.com/r/your-name. No website, no hosting to figure out.</p>
-          <div class="mini" aria-hidden="true">
-            <div class="phone-screen">
-              <div class="s-create" style="height:100%;display:flex;flex-direction:column">
-                <div class="builder-top"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><h5>New restaurant</h5><p>Takes a minute.</p></div>
-                <div class="builder-form"><div class="fld"><label>Name</label><div class="inp filled">Bella Trattoria</div></div><div class="fld"><label>Address</label><div class="inp">bella-trattoria</div></div><div class="builder-cta">Create restaurant</div></div>
-              </div>
-            </div>
-          </div>
-        </article>
+      <!-- scrolling steps + saffron progress rail -->
+      <div class="how-steps-wrap">
+        <div class="how-rail" aria-hidden="true">
+          <div class="how-rail-fill" id="howRailFill"></div>
+          <div class="how-rail-node" data-node="0" id="howNode0"></div>
+          <div class="how-rail-node" data-node="1" id="howNode1"></div>
+          <div class="how-rail-node" data-node="2" id="howNode2"></div>
+        </div>
+        <div class="how-steps" id="howSteps">
+          <article class="step is-active" data-step="0">
+            <span class="num">01 · Create</span>
+            <h3>Create your restaurant.</h3>
+            <p>Add your name and pick your web address. Menufic instantly reserves your page at menufic.com/r/your-name. No website, no hosting to figure out.</p>
+          </article>
 
-        <article class="step" data-step="1">
-          <span class="num">02 · Build</span>
-          <h3>Build your menu.</h3>
-          <p>Add dishes with a name, price and photo. Group them into courses, mark your favourites, and watch your menu come together beautifully as you type.</p>
-          <div class="mini" aria-hidden="true">
-            <div class="phone-screen">
-              <div class="menu-ui" style="--accent:var(--tomato);--accent-r:16px;height:100%">
-                <div class="menu-cover" style="background-image:url('assets/img/photo-1424847651672-bf20a4b0982b.jpg')"><div class="menu-head"><span class="badge">Editing</span><h4>Bella Trattoria</h4></div></div>
-                <div class="menu-list" style="padding-top:12px">
-                  <div class="mrow"><img src="assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="Pizza" loading="lazy"><div class="mmeta"><div class="mname">Pizza Margherita</div><div class="mdesc">San Marzano, basil</div></div><div class="mprice">$17</div></div>
-                  <div class="mrow"><img src="assets/img/photo-1424847651672-bf20a4b0982b.jpg" alt="Sharing plates" loading="lazy"><div class="mmeta"><div class="mname">Antipasti board</div><div class="mdesc">Cured meats, olives</div></div><div class="mprice">$21</div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
+          <article class="step" data-step="1">
+            <span class="num">02 · Build</span>
+            <h3>Build your menu.</h3>
+            <p>Add dishes with a name, price and photo. Group them into courses, mark your favourites, and watch your menu come together beautifully as you type.</p>
+          </article>
 
-        <article class="step" data-step="2">
-          <span class="num">03 · Share</span>
-          <h3>Share with a QR code.</h3>
-          <p>Hit publish and your menu is live. Print the QR for tables and windows, drop the link in your bio, and update prices any time, and changes show instantly.</p>
-          <div class="mini" aria-hidden="true">
-            <div class="phone-screen">
-              <div class="s-share" style="height:100%">
-                <span class="live-pill"><span class="pulse"></span> Live</span>
-                <h5>Your menu is online.</h5>
-                <div class="qrbox"><img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://menufic.com/r/bella-trattoria" alt="QR code for Bella Trattoria menu" width="120" height="120"></div>
-                <div class="url">menufic.com/r/bella-trattoria</div>
-              </div>
-            </div>
-          </div>
-        </article>
+          <article class="step" data-step="2">
+            <span class="num">03 · Share</span>
+            <h3>Share with a QR code.</h3>
+            <p>Hit publish and your menu is live. Print the QR for tables and windows, drop the link in your bio, and update prices any time, and changes show instantly.</p>
+          </article>
+        </div>
       </div>
     </div>
   </div>
@@ -1394,7 +1516,7 @@ p{margin:0;text-wrap:pretty}
   } else {
     staggers.sort(function(a,b){ return (a.dataset.delay||0)-(b.dataset.delay||0); });
     staggers.forEach(function(el){
-      var d = parseInt(el.dataset.delay||0,10) * 110 + 120;
+      var d = parseInt(el.dataset.delay||0,10) * 70 + 80;
       setTimeout(function(){ el.classList.add("in"); }, d);
     });
   }
@@ -1410,7 +1532,7 @@ p{margin:0;text-wrap:pretty}
       setTimeout(function(){
         b.classList.add("pop");
         b.classList.add(driftMap[idx]);
-      }, 700 + i*150);
+      }, 450 + i*90);
     });
   }
 
@@ -1438,20 +1560,128 @@ p{margin:0;text-wrap:pretty}
     reveals.forEach(function(el){ ro.observe(el); });
   }
 
-  /* ---- How it works: sticky split-scroll state swap ---- */
-  var states = Array.prototype.slice.call(document.querySelectorAll(".how-state"));
-  var steps = Array.prototype.slice.call(document.querySelectorAll(".step[data-step]"));
-  function setState(i){
-    states.forEach(function(s){ s.classList.toggle("active", parseInt(s.dataset.state,10)===i); });
-  }
-  if(steps.length && "IntersectionObserver" in window){
-    var so = new IntersectionObserver(function(entries){
-      entries.forEach(function(en){
-        if(en.isIntersecting){ setState(parseInt(en.target.dataset.step,10)); }
+  /* ---- How it works V1: scroll-scrubbed assembly ---- */
+  (function(){
+    var how = document.getElementById("how");
+    if(!how) return;
+
+    /* match the mockup's aspect ratio to the viewer's own device (mobile only uses --mock-ar) */
+    function setMockAR(){
+      var w = window.innerWidth, h = window.innerHeight;
+      if(!w || !h) return;
+      var ar = Math.max(0.42, Math.min(0.56, w/h)); // clamp to portrait-phone-like
+      document.documentElement.style.setProperty("--mock-ar", ar.toFixed(4));
+    }
+    setMockAR();
+    window.addEventListener("resize", setMockAR, {passive:true});
+    window.addEventListener("orientationchange", setMockAR);
+
+    var hwStates  = Array.prototype.slice.call(how.querySelectorAll(".how-state"));
+    var hwSteps   = Array.prototype.slice.call(how.querySelectorAll(".step[data-step]"));
+    var flds      = Array.prototype.slice.call(how.querySelectorAll(".fld.asm-field"));
+    var cta       = how.querySelector("#howCta");
+    var dishes    = Array.prototype.slice.call(how.querySelectorAll(".mrow.asm-dish"));
+    var addRow    = how.querySelector(".mrow.asm-add");
+    var qrBox     = how.querySelector("#howQr");
+    var railFill  = how.querySelector("#howRailFill");
+    var railNodes = Array.prototype.slice.call(how.querySelectorAll(".how-rail-node"));
+    var sweep     = how.querySelector(".how-sweep");
+
+    /* Reduced-motion fallback: phone locked to published state, all steps visible */
+    if(reduce){
+      hwStates.forEach(function(s){ s.classList.toggle("active", parseInt(s.dataset.state,10)===2); });
+      hwSteps.forEach(function(s){ s.classList.add("is-active"); });
+      if(qrBox){ qrBox.style.clipPath="none"; qrBox.style.opacity="1"; }
+      return;
+    }
+
+    var raf = null;
+    var lastP = -1;
+
+    function clamp01(v){ return v<0?0:v>1?1:v; }
+    function rng(p, s, e){ return clamp01((p-s)/(e-s)); }
+
+    function applyProgress(p){
+      if(Math.abs(p-lastP)<0.0004) return;
+      lastP = p;
+
+      var phase = p<0.33?0:p<0.66?1:2;
+
+      /* activate phone state + highlight step */
+      hwStates.forEach(function(s){
+        s.classList.toggle("active", parseInt(s.dataset.state,10)===phase);
       });
-    }, {rootMargin:"-45% 0px -45% 0px", threshold:0});
-    steps.forEach(function(s){ so.observe(s); });
-  }
+      hwSteps.forEach(function(s){
+        s.classList.toggle("is-active", parseInt(s.dataset.step,10)===phase);
+      });
+
+      /* progress rail — scaleY avoids height animation */
+      if(railFill) railFill.style.transform = "scaleY("+p.toFixed(4)+")";
+      railNodes.forEach(function(n,i){
+        n.classList.toggle("lit", p >= i/3);
+      });
+
+      /* ── CREATE (p 0 → 0.33): form fields rise in sequentially ── */
+      /* field 0 (name) is pre-filled — start < 0 so it's visible from the very top */
+      var fieldStarts = [-0.09, 0.09, 0.18];
+      flds.forEach(function(f,i){
+        var frac = rng(p, fieldStarts[i], fieldStarts[i]+0.09);
+        f.style.opacity = frac;
+        f.style.transform = frac<0.999 ? "translateY("+(10*(1-frac)).toFixed(2)+"px)" : "";
+      });
+      /* CTA lights up at end of create range */
+      if(cta){
+        var ctaFrac = rng(p, 0.26, 0.33);
+        if(ctaFrac>0.5){ cta.classList.add("lit"); cta.classList.remove("dim"); }
+        else            { cta.classList.remove("lit"); cta.classList.add("dim"); }
+        cta.style.opacity = (0.3 + ctaFrac*0.7).toFixed(3);
+      }
+
+      /* ── BUILD (p 0.33 → 0.66): dishes drop in staggered ── */
+      dishes.forEach(function(r,i){
+        var s = 0.33 + i*0.10, e = s+0.09;
+        var frac = rng(p,s,e);
+        r.style.opacity  = frac.toFixed(4);
+        r.style.transform = frac<0.999
+          ? "translateY("+(18*(1-frac)).toFixed(2)+"px) scale("+(0.96+0.04*frac).toFixed(4)+")"
+          : "";
+      });
+      if(addRow) addRow.style.opacity = phase===1 ? "0.65" : "0.7";
+
+      /* ── SHARE (p 0.66 → 1.0): sweep then QR circle-reveal ── */
+      var sp = rng(p, 0.66, 1.0);
+      if(sweep){
+        /* sweep travels top→bottom in first 50% of share range, fades as it goes */
+        var sweepY  = rng(sp, 0, 0.5) * 110; /* % travel */
+        var sweepOp = sp<0.05 ? sp*20 : clamp01(1-(sp-0.05)/0.35);
+        sweep.style.transform = "translateY("+sweepY.toFixed(2)+"%)";
+        sweep.style.opacity   = (sweepOp*0.9).toFixed(3);
+      }
+      if(qrBox){
+        var qrFrac = rng(sp, 0.35, 1.0);
+        var radius  = Math.round(qrFrac*75); /* 0→75% radius — fills the box */
+        qrBox.style.clipPath = "circle("+radius+"% at 50% 50%)";
+        qrBox.style.opacity  = (qrFrac*0.15+0.85).toFixed(3); /* fades from 85→100 */
+      }
+    }
+
+    function tick(){
+      raf = null;
+      var rect  = how.getBoundingClientRect();
+      var range = how.offsetHeight - window.innerHeight;
+      if(range<=0){ applyProgress(0.01); return; }
+      applyProgress(clamp01(-rect.top/range));
+    }
+
+    window.addEventListener("scroll", function(){
+      if(!raf) raf = requestAnimationFrame(tick);
+    }, {passive:true});
+
+    /* synchronous init — avoids one-frame flash */
+    var r0 = how.getBoundingClientRect();
+    var rng0 = how.offsetHeight - window.innerHeight;
+    applyProgress(rng0>0 ? clamp01(-r0.top/rng0) : 0);
+  })();
 
   /* ---- THEME BUILDER: live custom restyle ---- */
   var demo = document.getElementById("demoMenu");
@@ -1527,5 +1757,94 @@ p{margin:0;text-wrap:pretty}
   }
 })();
 </script>
+
+<!-- Overdrive: the hero phone is a working product demo (tabs + live theming) -->
+<script>
+(function(){
+  var list = document.getElementById("heroMenuList");
+  var tabs = document.getElementById("heroTabs");
+  var menuUi = document.querySelector(".hero .menu-ui");
+  if(!list || !tabs) return;
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Dish data per category. Images reuse the project's verified food photos.
+  var IMG = "assets/img/";
+  var DISHES = {
+    mains: [
+      {img:"photo-1432139555190-58524dae6a55.jpg", alt:"Charred short rib glistening on a dark plate", name:"Smoked short rib", tag:"Chef's pick", desc:"36-hour cook, burnt-honey glaze", price:"$28"},
+      {img:"photo-1484723091739-30a097e8f929.jpg", alt:"Seared prawn dish under warm light", name:"Saffron prawns", tag:"Popular", desc:"Chilli butter, charred lemon", price:"$22"},
+      {img:"photo-1455619452474-d2be8b1e70cd.jpg", alt:"Bowl of red shrimp broth", name:"Red shrimp broth", tag:"", desc:"Smoked tomato, fennel", price:"$16"},
+      {img:"photo-1565299624946-b28f40a0ae38.jpg", alt:"Wood-fired pizza fresh from the oven", name:"Wood-fired margherita", tag:"", desc:"San Marzano, basil oil", price:"$19"}
+    ],
+    small: [
+      {img:"photo-1414235077428-338989a2e8c0.jpg", alt:"Plated small dish dressed with herbs", name:"Charred octopus", tag:"Popular", desc:"Smoked paprika, lemon oil", price:"$14"},
+      {img:"photo-1424847651672-bf20a4b0982b.jpg", alt:"Creamy spread with toasted seeds", name:"Burrata & honey", tag:"", desc:"Saffron honey, toasted seeds", price:"$12"},
+      {img:"photo-1432139555190-58524dae6a55.jpg", alt:"Golden charred small plate", name:"Crispy artichokes", tag:"", desc:"Garlic aioli, sea salt", price:"$9"},
+      {img:"photo-1484723091739-30a097e8f929.jpg", alt:"Warm bowl of seasoned nibbles", name:"Smoked almonds", tag:"Chef's pick", desc:"Rosemary, chilli salt", price:"$6"}
+    ],
+    sides: [
+      {img:"photo-1424847651672-bf20a4b0982b.jpg", alt:"Crisp golden fries", name:"Truffle fries", tag:"Popular", desc:"Parmesan, truffle oil", price:"$8"},
+      {img:"photo-1414235077428-338989a2e8c0.jpg", alt:"Bright grilled greens", name:"Grilled greens", tag:"", desc:"Lemon, chilli flakes", price:"$7"},
+      {img:"photo-1565299624946-b28f40a0ae38.jpg", alt:"Wood-oven bread, torn and warm", name:"Wood-oven bread", tag:"", desc:"Sea salt, olive oil", price:"$5"},
+      {img:"photo-1455619452474-d2be8b1e70cd.jpg", alt:"Bowl of house pickles", name:"House pickles", tag:"", desc:"Dill, mustard seed", price:"$4"}
+    ]
+  };
+
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function rowHTML(d){
+    var tag = d.tag ? ' <span class="mtag">'+esc(d.tag)+'</span>' : '';
+    return '<div class="mrow">'+
+      '<img src="'+IMG+esc(d.img)+'" alt="'+esc(d.alt)+'" loading="lazy">'+
+      '<div class="mmeta"><div class="mname">'+esc(d.name)+tag+'</div>'+
+      '<div class="mdesc">'+esc(d.desc)+'</div></div>'+
+      '<div class="mprice">'+esc(d.price)+'</div></div>';
+  }
+  function render(key){ list.innerHTML = DISHES[key].map(rowHTML).join(""); }
+
+  function select(btn){
+    if(btn.classList.contains("act")) return;
+    var key = btn.getAttribute("data-tab");
+    Array.prototype.forEach.call(tabs.querySelectorAll(".mt"), function(t){
+      var on = t === btn;
+      t.classList.toggle("act", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    if(!reduce && document.startViewTransition){ document.startViewTransition(function(){ render(key); }); }
+    else { render(key); }
+  }
+
+  tabs.addEventListener("click", function(e){ var b = e.target.closest(".mt"); if(b) select(b); });
+  tabs.addEventListener("keydown", function(e){
+    if(e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    var btns = Array.prototype.slice.call(tabs.querySelectorAll(".mt"));
+    var i = btns.indexOf(document.activeElement);
+    if(i < 0) return;
+    e.preventDefault();
+    var n = e.key === "ArrowRight" ? (i+1) % btns.length : (i-1+btns.length) % btns.length;
+    btns[n].focus();
+    select(btns[n]);
+  });
+
+  // "Customise themes" bubble cycles the menu's live accent + corner radius.
+  var themeBtn = document.getElementById("heroThemeBtn");
+  if(menuUi && themeBtn){
+    var THEMES = [
+      {accent:"var(--saffron)", r:"14px", name:"saffron gold"},
+      {accent:"var(--tomato)",  r:"18px", name:"tomato red"},
+      {accent:"var(--green)",   r:"9px",  name:"herb green"}
+    ];
+    var ti = 0;
+    themeBtn.addEventListener("click", function(){
+      ti = (ti + 1) % THEMES.length;
+      menuUi.style.setProperty("--accent", THEMES[ti].accent);
+      menuUi.style.setProperty("--accent-r", THEMES[ti].r);
+      themeBtn.setAttribute("aria-label", "Menu theme: " + THEMES[ti].name + ". Tap to try another.");
+    });
+  }
+})();
+</script>
+<!-- impeccable-live-start -->
+<script src="http://localhost:8400/live.js"></script>
+<!-- impeccable-live-end -->
 </body>
 </html>

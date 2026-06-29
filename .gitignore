@@ -53,10 +53,12 @@ yarn-error.log*
 TODO.md
 
 # AI / editor tooling — not part of the design deliverable
+.agents/
 .claude/
 .codex/
 .cursor/
 .impeccable/
+.opencode/
 
 # Scratch / generated verification artifacts
 .shots/
