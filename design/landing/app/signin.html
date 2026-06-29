@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" class="js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in · Menufic</title>
+<meta name="description" content="Sign in to Menufic to build and manage your restaurant's digital menus. It's free, always.">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<!-- Plated identity fonts (same as the landing page) -->
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=boska@400,500,700&f[]=supreme@400,500,600,700&display=swap">
+<style>
+:root{
+  --bg: oklch(0.18 0.03 45);
+  --bg-deep: oklch(0.155 0.026 52);
+  --surface: oklch(0.235 0.034 46);
+  --surface-2: oklch(0.295 0.04 48);
+  --saffron: oklch(0.785 0.14 68);
+  --saffron-deep: oklch(0.72 0.14 70);
+  --tomato: oklch(0.56 0.19 32);
+  --tomato-bright: oklch(0.66 0.19 32);
+  --green: oklch(0.72 0.15 150);
+  --cream: oklch(0.96 0.015 78);
+  --cream-soft: oklch(0.83 0.022 78);
+  --line: oklch(0.42 0.03 48 / 0.5);
+  --line-soft: oklch(0.42 0.03 58 / 0.28);
+  --ease: cubic-bezier(0.16,1,0.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  min-height:100svh;
+  background:var(--bg);
+  color:var(--cream);
+  font-family:"Supreme",system-ui,sans-serif;
+  font-size:17px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:32px 20px;
+}
+a{color:inherit;text-decoration:none}
+h1{
+  font-family:"Boska",Georgia,serif;
+  font-weight:700;
+  letter-spacing:-0.03em;
+  line-height:1.02;
+  margin:0;
+  text-wrap:balance;
+}
+p{margin:0;text-wrap:pretty}
+:focus-visible{outline:3px solid var(--saffron);outline-offset:3px;border-radius:8px}
+
+/* ============ warm scene background ============ */
+.scene{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(60% 50% at 50% 30%, oklch(0.80 0.135 78 / 0.13), transparent 70%),
+    radial-gradient(50% 50% at 82% 88%, oklch(0.605 0.18 30 / 0.12), transparent 68%),
+    radial-gradient(70% 60% at 14% 84%, oklch(0.30 0.04 60 / 0.5), transparent 72%),
+    linear-gradient(180deg, var(--bg-deep), var(--bg) 42%, var(--bg));
+}
+.grain{
+  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* ============ layout ============ */
+.auth{
+  position:relative;z-index:2;
+  width:100%;max-width:420px;
+  display:flex;flex-direction:column;align-items:center;gap:22px;
+}
+
+/* ============ card ============ */
+.card{
+  width:100%;
+  background:var(--surface);
+  border:1px solid var(--line-soft);
+  border-radius:24px;
+  padding:clamp(28px,6vw,40px) clamp(24px,5vw,36px);
+  text-align:center;
+  box-shadow:
+    0 1px 0 oklch(0.85 0.13 78 / 0.06) inset,
+    0 30px 70px -34px oklch(0 0 0 / 0.85),
+    0 14px 36px -20px oklch(0 0 0 / 0.7);
+}
+
+.wordmark{
+  font-family:"Boska",Georgia,serif;font-weight:700;font-size:27px;letter-spacing:-0.04em;
+  color:var(--cream);display:inline-flex;align-items:center;gap:8px;
+}
+.wordmark .dot{width:9px;height:9px;border-radius:50%;background:var(--tomato);margin-bottom:-3px}
+
+.card h1{
+  font-size:clamp(2rem,7vw,2.6rem);
+  color:var(--cream);
+  margin-top:26px;
+}
+.card .sub{
+  margin-top:12px;
+  color:var(--cream-soft);
+  font-size:1.02rem;
+  line-height:1.55;
+  max-width:34ch;
+  margin-left:auto;margin-right:auto;
+}
+
+/* ============ Google sign-in (standard, credible) ============ */
+.google-btn{
+  margin-top:30px;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  width:100%;min-height:54px;padding:0 22px;
+  background:#fff;color:#1f1f1f;
+  font-family:"Supreme",system-ui,sans-serif;font-weight:600;font-size:16px;
+  border:1px solid transparent;border-radius:999px;
+  box-shadow:0 12px 30px -14px oklch(0 0 0 / 0.85);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .25s var(--ease);
+}
+.google-btn:hover{
+  background:#f4f4f4;
+  transform:translateY(-2px);
+  box-shadow:0 18px 40px -16px oklch(0 0 0 / 0.9);
+}
+.google-btn .gmark{width:20px;height:20px;flex:none}
+
+.legal{
+  margin-top:18px;
+  font-size:12.5px;line-height:1.5;color:var(--cream-soft);
+  max-width:30ch;margin-left:auto;margin-right:auto;
+}
+.legal a{color:var(--cream);font-weight:500;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:2px}
+.legal a:hover{text-decoration-color:var(--saffron)}
+
+/* free reassurance line */
+.reassure{
+  margin-top:22px;
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:600;color:var(--cream-soft);
+}
+.reassure .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none}
+
+/* ============ back link ============ */
+.back{
+  display:inline-flex;align-items:center;gap:9px;
+  min-height:44px;padding:0 8px;
+  color:var(--cream-soft);font-size:15px;font-weight:500;
+  transition:color .2s var(--ease);
+}
+.back .arr{transition:transform .3s var(--ease)}
+.back:hover{color:var(--cream)}
+.back:hover .arr{transform:translateX(-4px)}
+
+/* ============ staggered entrance ============ */
+.js .stagger{opacity:0;transform:translateY(22px)}
+.js .stagger.in{opacity:1;transform:none;transition:opacity .6s var(--ease),transform .6s var(--ease)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition-duration:.01ms !important}
+  .js .stagger{opacity:1 !important;transform:none !important}
+}
+</style>
+</head>
+<body>
+
+<div class="scene" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<main class="auth">
+  <section class="card" aria-labelledby="auth-h">
+    <a class="wordmark stagger" data-delay="0" href="/index.html" aria-label="Menufic home">Menufic<span class="dot" aria-hidden="true"></span></a>
+
+    <h1 id="auth-h" class="stagger" data-delay="1">Welcome back</h1>
+    <p class="sub stagger" data-delay="2">Sign in to manage your menus. It's free, always.</p>
+
+    <a class="google-btn stagger" data-delay="3" href="/app/dashboard.html">
+      <svg class="gmark" viewBox="0 0 48 48" aria-hidden="true">
+        <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+        <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+        <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0124 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+        <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 01-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+      </svg>
+      Sign in with Google
+    </a>
+
+    <p class="legal stagger" data-delay="4">By continuing you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>.</p>
+
+    <p class="reassure stagger" data-delay="5"><span class="pulse" aria-hidden="true"></span>No card, no trial, no catch.</p>
+  </section>
+
+  <a class="back stagger" data-delay="6" href="/index.html"><span class="arr" aria-hidden="true">&larr;</span> Back to home</a>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var staggers = Array.prototype.slice.call(document.querySelectorAll(".stagger"));
+  if(reduce){
+    staggers.forEach(function(el){ el.classList.add("in"); });
+  } else {
+    staggers.sort(function(a,b){ return (a.dataset.delay||0)-(b.dataset.delay||0); });
+    staggers.forEach(function(el){
+      var d = parseInt(el.dataset.delay||0,10) * 90 + 120;
+      setTimeout(function(){ el.classList.add("in"); }, d);
+    });
+  }
+})();
+</script>
+</body>
+</html>

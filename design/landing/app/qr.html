@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en" class="js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR code · Saffron &amp; Smoke · Menufic</title>
+<meta name="description" content="Download the QR code for Saffron &amp; Smoke — print it for tables, windows and flyers. It always points to your latest published menu.">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<!-- Same identity fonts as the landing page and dashboard -->
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=boska@400,500,700&f[]=supreme@400,500,600,700&display=swap">
+<style>
+:root{
+  --bg: oklch(0.18 0.03 45);
+  --bg-deep: oklch(0.155 0.026 52);
+  --surface: oklch(0.235 0.034 46);
+  --surface-2: oklch(0.295 0.04 48);
+  --saffron: oklch(0.785 0.14 68);
+  --saffron-deep: oklch(0.72 0.14 70);
+  --tomato: oklch(0.56 0.19 32);
+  --tomato-bright: oklch(0.66 0.19 32);
+  --green: oklch(0.72 0.15 150);
+  --green-bright: oklch(0.82 0.15 150);
+  --cream: oklch(0.96 0.015 78);
+  --cream-soft: oklch(0.83 0.022 78);
+  --line: oklch(0.42 0.03 48 / 0.5);
+  --line-soft: oklch(0.42 0.03 58 / 0.28);
+  --ease: cubic-bezier(0.16,1,0.3,1);
+  --sidebar-w: 260px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--cream);
+  font-family:"Supreme",system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+h1,h2,h3{
+  font-family:"Boska",Georgia,serif;
+  font-weight:700;
+  letter-spacing:-0.03em;
+  line-height:1.05;
+  margin:0;
+  text-wrap:balance;
+}
+p{margin:0;text-wrap:pretty}
+:focus-visible{outline:3px solid var(--saffron);outline-offset:3px;border-radius:6px}
+
+/* ============ BUTTONS ============ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  min-height:48px;padding:0 22px;
+  border-radius:999px;border:1px solid transparent;
+  font-family:"Supreme";font-weight:600;font-size:16px;color:var(--cream);
+  transition:transform .35s var(--ease),background .25s var(--ease),box-shadow .35s var(--ease),border-color .25s var(--ease),color .25s var(--ease);
+}
+.btn-primary{
+  background:var(--tomato);color:#fff;
+  box-shadow:0 10px 30px -10px oklch(0.605 0.18 30 / 0.7);
+}
+.btn-primary:hover{background:var(--tomato-bright);transform:translateY(-2px);box-shadow:0 16px 40px -12px oklch(0.605 0.18 30 / 0.8)}
+.btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}
+.btn-ghost:hover{background:oklch(0.30 0.04 60 / 0.5);transform:translateY(-2px)}
+.gicon{width:18px;height:18px;flex:none}
+
+.btn-sm{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:44px;padding:0 16px;border-radius:999px;
+  background:transparent;border:1px solid var(--line);color:var(--cream);
+  font-family:"Supreme";font-weight:600;font-size:14px;
+  transition:background .2s var(--ease),border-color .2s var(--ease),color .2s var(--ease),transform .3s var(--ease);
+}
+.btn-sm:hover{background:oklch(0.30 0.04 60 / 0.5);border-color:var(--saffron);color:var(--cream);transform:translateY(-1px)}
+.btn-sm svg{width:16px;height:16px;flex:none;stroke:currentColor}
+
+/* ============ APP SHELL ============ */
+.app{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);min-height:100vh}
+
+.sidebar{
+  position:sticky;top:0;align-self:start;
+  height:100vh;
+  background:var(--bg-deep);
+  border-right:1px solid var(--line-soft);
+  display:flex;flex-direction:column;
+  padding:22px 16px 16px;
+  z-index:60;
+  overflow-y:auto;
+}
+.sb-brand{
+  font-family:"Boska";font-weight:700;font-size:24px;letter-spacing:-0.04em;
+  color:var(--cream);display:inline-flex;align-items:center;gap:8px;
+  padding:6px 8px 4px;margin-bottom:18px;flex:none;
+}
+.sb-brand .dot{width:9px;height:9px;border-radius:50%;background:var(--tomato);margin-bottom:-2px}
+.sb-section{
+  font-size:12px;font-weight:600;color:var(--cream-soft);
+  letter-spacing:.04em;padding:0 10px;margin:6px 0 8px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sb-section .count{
+  font-size:11px;font-weight:600;color:var(--cream-soft);
+  background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:999px;padding:1px 8px;
+}
+.sb-list{display:flex;flex-direction:column;gap:3px;margin:0 0 4px}
+.sb-item{
+  display:flex;align-items:center;gap:11px;
+  width:100%;min-height:46px;padding:6px 10px;
+  border:none;background:transparent;border-radius:12px;text-align:left;
+  color:var(--cream-soft);font-size:14.5px;font-weight:500;
+  transition:background .2s var(--ease),color .2s var(--ease);
+}
+.sb-item:hover{background:oklch(0.30 0.04 60 / 0.4);color:var(--cream)}
+.sb-item .thumb{
+  width:34px;height:34px;border-radius:9px;object-fit:cover;flex:none;
+  border:1px solid var(--line-soft);
+}
+.sb-item .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-item .sb-dot{width:7px;height:7px;border-radius:50%;flex:none;background:transparent}
+.sb-item[aria-current="page"]{
+  background:oklch(0.785 0.14 68 / 0.13);
+  color:var(--saffron);font-weight:600;
+}
+.sb-item[aria-current="page"] .sb-dot{background:var(--saffron)}
+.sb-item[aria-current="page"] .thumb{border-color:oklch(0.785 0.14 68 / 0.55)}
+
+.sb-nav{display:flex;flex-direction:column;gap:3px;margin:4px 0 8px}
+.sb-nav .sb-link.subnav{padding-left:12px}
+.sb-link{
+  display:flex;align-items:center;gap:12px;
+  width:100%;min-height:46px;padding:6px 12px;
+  border:none;background:transparent;border-radius:12px;text-align:left;
+  color:var(--cream-soft);font-size:14.5px;font-weight:500;
+  transition:background .2s var(--ease),color .2s var(--ease);
+}
+.sb-link:hover{background:oklch(0.30 0.04 60 / 0.4);color:var(--cream)}
+.sb-link svg{width:19px;height:19px;flex:none;stroke:currentColor;fill:none}
+.sb-link[aria-current="page"]{
+  background:oklch(0.785 0.14 68 / 0.13);
+  color:var(--saffron);font-weight:600;
+}
+
+.sb-divider{height:1px;background:var(--line-soft);margin:10px 6px}
+
+.sb-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-soft);display:flex;flex-direction:column;gap:3px;flex:none}
+.sb-user{
+  display:flex;align-items:center;gap:11px;
+  margin-top:10px;padding:9px 11px;
+  background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;
+}
+.sb-user img{width:38px;height:38px;border-radius:50%;object-fit:cover;flex:none}
+.sb-user .who{min-width:0;flex:1}
+.sb-user .who b{display:block;font-size:13.5px;font-weight:600;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-user .who span{display:block;font-size:12px;color:var(--cream-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---- Main ---- */
+.main{display:flex;flex-direction:column;min-width:0;background:var(--bg)}
+
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;gap:16px;
+  padding:12px clamp(18px,3vw,40px);
+  background:oklch(0.185 0.028 55 / 0.86);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line-soft);
+}
+.crumb{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--cream-soft);min-width:0;flex-wrap:wrap}
+.crumb a{color:var(--cream-soft);font-weight:500;border-radius:6px;transition:color .2s var(--ease)}
+.crumb a:hover{color:var(--cream)}
+.crumb .sep{width:15px;height:15px;flex:none;color:var(--cream-soft);opacity:.55}
+.crumb .here{color:var(--cream);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-spacer{flex:1}
+.hamburger{
+  display:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  width:44px;height:44px;align-items:center;justify-content:center;flex:none;
+}
+.hamburger span{display:block;width:18px;height:2px;background:var(--cream);position:relative}
+.hamburger span::before,.hamburger span::after{content:"";position:absolute;left:0;width:18px;height:2px;background:var(--cream)}
+.hamburger span::before{top:-6px}.hamburger span::after{top:6px}
+
+.acct{position:relative;flex:none}
+.acct-btn{
+  display:flex;align-items:center;gap:9px;
+  min-height:44px;padding:4px 10px 4px 4px;
+  background:var(--surface);border:1px solid var(--line-soft);border-radius:999px;
+  color:var(--cream);font-size:14px;font-weight:600;
+  transition:background .2s var(--ease),border-color .2s var(--ease);
+}
+.acct-btn:hover{background:var(--surface-2)}
+.acct-btn img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none}
+.acct-btn .nm{display:none}
+.acct-btn .chev{width:16px;height:16px;color:var(--cream-soft);transition:transform .25s var(--ease)}
+.acct-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.acct-menu{
+  position:absolute;right:0;top:calc(100% + 10px);min-width:224px;
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;
+  padding:8px;box-shadow:0 18px 40px -22px oklch(0 0 0 / 0.85);
+  display:none;flex-direction:column;gap:2px;
+}
+.acct-menu.open{display:flex}
+.acct-head{padding:9px 11px 11px;border-bottom:1px solid var(--line-soft);margin-bottom:6px}
+.acct-head b{display:block;font-size:14px;color:var(--cream)}
+.acct-head span{display:block;font-size:12.5px;color:var(--cream-soft);margin-top:2px}
+.acct-menu a{
+  display:flex;align-items:center;gap:11px;
+  min-height:44px;padding:0 11px;border-radius:10px;
+  color:var(--cream);font-size:14px;font-weight:500;
+  transition:background .18s var(--ease);
+}
+.acct-menu a:hover{background:oklch(0.30 0.04 60 / 0.5)}
+.acct-menu a svg{width:17px;height:17px;flex:none;stroke:currentColor;color:var(--cream-soft)}
+.acct-menu a.danger:hover{color:var(--tomato-bright)}
+
+/* page body — centred focused screen */
+.page{padding:clamp(24px,4vw,52px) clamp(18px,3vw,40px) 80px;max-width:640px;width:100%;margin:0 auto}
+.page-head{text-align:center;margin-bottom:clamp(22px,3vw,32px)}
+.page-head h1{font-size:clamp(2rem,4.1vw,2.9rem);color:var(--cream);letter-spacing:-0.035em}
+.page-head .subtitle{margin:10px auto 0;color:var(--cream-soft);font-size:clamp(0.98rem,1.4vw,1.08rem);max-width:46ch;line-height:1.5}
+
+/* QR card */
+.qr-card{
+  background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:24px;padding:clamp(22px,3vw,34px);
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;min-width:0;
+  box-shadow:0 18px 40px -28px oklch(0 0 0 / 0.8);
+}
+/* live status */
+.qr-live{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12.5px;font-weight:600;color:var(--green-bright);
+  background:oklch(0.72 0.15 150 / 0.13);border:1px solid oklch(0.72 0.15 150 / 0.4);
+  border-radius:999px;padding:5px 13px;margin-bottom:22px;
+}
+.qr-live .ldot{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none}
+
+/* white chip holding the real QR */
+.qr-chip{
+  background:#fff;border-radius:20px;padding:18px;flex:none;
+  box-shadow:0 14px 34px -20px oklch(0 0 0 / 0.7);
+  border:1px solid oklch(0.785 0.14 68 / 0.35);
+}
+.qr-chip img{width:240px;height:240px;display:block;border-radius:6px}
+@media (max-width:380px){
+  .qr-chip img{width:200px;height:200px}
+}
+
+/* URL row */
+.qr-url{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
+  margin-top:24px;width:100%;
+}
+.qr-url .url-chip{
+  display:inline-flex;align-items:center;gap:10px;min-width:0;
+  background:var(--bg);border:1px solid var(--line);border-radius:999px;
+  padding:0 6px 0 16px;min-height:48px;max-width:100%;
+}
+.qr-url .url-chip svg{width:16px;height:16px;flex:none;stroke:var(--saffron);fill:none}
+.qr-url .url-chip code{
+  font-family:"Supreme";font-size:14.5px;font-weight:600;color:var(--cream);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
+}
+.qr-url .url-chip .copy-inline{
+  flex:none;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  min-height:38px;padding:0 13px;border-radius:999px;
+  background:var(--surface-2);border:1px solid var(--line-soft);color:var(--cream);
+  font-family:"Supreme";font-weight:600;font-size:13px;
+  transition:background .2s var(--ease),border-color .2s var(--ease),color .2s var(--ease);
+}
+.qr-url .url-chip .copy-inline:hover{border-color:var(--saffron);color:var(--saffron)}
+.qr-url .url-chip .copy-inline svg{width:14px;height:14px;stroke:currentColor}
+
+/* download actions */
+.qr-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:24px;width:100%}
+
+/* helper + public link */
+.qr-helper{margin-top:22px;font-size:13.5px;color:var(--cream-soft);max-width:44ch;line-height:1.5}
+.qr-public{
+  display:inline-flex;align-items:center;gap:8px;margin-top:20px;
+  font-family:"Supreme";font-weight:600;font-size:15px;color:var(--saffron);
+  min-height:44px;padding:0 6px;border-radius:10px;
+  transition:gap .25s var(--ease),color .2s var(--ease);
+}
+.qr-public:hover{gap:12px;color:var(--saffron-deep)}
+.qr-public svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none}
+
+/* ============ entrance ============ */
+.js .stagger{opacity:0;transform:translateY(20px)}
+.js .stagger.in{opacity:1;transform:none;transition:opacity .55s var(--ease),transform .55s var(--ease)}
+
+/* ============ RESPONSIVE ============ */
+@media (min-width:1100px){
+  .acct-btn .nm{display:inline}
+}
+@media (max-width:900px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .sidebar{
+    position:fixed;top:0;left:0;bottom:0;width:min(300px,86vw);
+    transform:translateX(-100%);transition:transform .35s var(--ease);
+    box-shadow:0 18px 50px -20px oklch(0 0 0 / 0.7);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:inline-flex}
+  .topbar{padding-left:16px;padding-right:16px}
+}
+@media (max-width:560px){
+  .page{padding-left:16px;padding-right:16px}
+  .qr-actions .btn,.qr-actions .btn-sm{width:100%}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition-duration:.01ms !important}
+  .js .stagger{opacity:1 !important;transform:none !important}
+  html{scroll-behavior:auto}
+}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar" aria-label="Restaurants and account">
+    <a class="sb-brand" href="/index.html" aria-label="Menufic home">Menufic<span class="dot" aria-hidden="true"></span></a>
+
+    <nav aria-label="Your restaurants">
+      <div class="sb-section"><span>Restaurants</span><span class="count">3</span></div>
+      <div class="sb-list">
+        <a class="sb-item" href="/app/restaurant.html" aria-current="page">
+          <img class="thumb" src="/assets/img/photo-1432139555190-58524dae6a55.jpg" alt="">
+          <span class="nm">Saffron &amp; Smoke</span>
+          <span class="sb-dot" aria-hidden="true"></span>
+        </a>
+        <a class="sb-item" href="/app/restaurant.html">
+          <img class="thumb" src="/assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="">
+          <span class="nm">Bella Trattoria</span>
+          <span class="sb-dot" aria-hidden="true"></span>
+        </a>
+        <a class="sb-item" href="/app/restaurant.html">
+          <img class="thumb" src="/assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="">
+          <span class="nm">Verde Kitchen</span>
+          <span class="sb-dot" aria-hidden="true"></span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="sb-divider" aria-hidden="true"></div>
+
+    <nav class="sb-nav" aria-label="Saffron and Smoke sections">
+      <div class="sb-section"><span>Saffron &amp; Smoke</span></div>
+      <a class="sb-link subnav" href="/app/menu-editor.html">
+        <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Menus
+      </a>
+      <a class="sb-link subnav" href="/app/banners.html">
+        <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        Banners
+      </a>
+      <a class="sb-link subnav" href="/app/theme.html">
+        <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="12.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="13.5" r="2.5"/><path d="M12 22a10 10 0 0 1 0-20 9 9 0 0 1 9 9c0 4-3 5-6 5h-1a2 2 0 0 0-1 4 2 2 0 0 1-1 2z"/></svg>
+        Theme
+      </a>
+      <a class="sb-link subnav" href="/app/analytics.html">
+        <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Analytics
+      </a>
+      <a class="sb-link subnav" href="/app/team.html">
+        <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Team
+      </a>
+      <a class="sb-link subnav" href="/app/qr.html" aria-current="page">
+        <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="14" y1="14" x2="14" y2="14.01"/><line x1="21" y1="14" x2="21" y2="21"/><line x1="14" y1="21" x2="17" y2="21"/><line x1="17" y1="17" x2="21" y2="17"/></svg>
+        QR code
+      </a>
+    </nav>
+
+    <div class="sb-foot">
+      <a class="sb-link" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+      <a class="sb-link" href="/index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
+      </a>
+
+      <div class="sb-user">
+        <img src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran">
+        <span class="who">
+          <b>Arun Kajendran</b>
+          <span>a.kajendran@gmail.com</span>
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- scrim for mobile nav -->
+  <div class="scrim" id="navScrim" hidden style="position:fixed;inset:0;z-index:55;background:oklch(0.13 0.02 50 / 0.6);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);opacity:0;visibility:hidden;transition:opacity .3s var(--ease),visibility .3s var(--ease)"></div>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+
+    <header class="topbar">
+      <button class="hamburger" id="hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">
+        <span aria-hidden="true"></span>
+      </button>
+      <nav class="crumb" aria-label="Breadcrumb">
+        <a href="/app/dashboard.html">My Restaurants</a>
+        <svg class="sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        <a href="/app/restaurant.html">Saffron &amp; Smoke</a>
+        <svg class="sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        <span class="here" aria-current="page">QR code</span>
+      </nav>
+      <span class="topbar-spacer"></span>
+
+      <div class="acct">
+        <button class="acct-btn" id="acctBtn" aria-haspopup="true" aria-expanded="false" aria-controls="acctMenu">
+          <img src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran, account menu">
+          <span class="nm">Arun</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="acct-menu" id="acctMenu" role="menu" aria-label="Account">
+          <div class="acct-head">
+            <b>Arun Kajendran</b>
+            <span>a.kajendran@gmail.com</span>
+          </div>
+          <a href="/admin/review.html" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V5z"/><path d="M9 12l2 2 4-4"/></svg>Admin review</a>
+          <a href="#" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
+          <a href="/index.html" role="menuitem" class="danger"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- page -->
+    <main class="page">
+      <div class="page-head">
+        <h1 class="stagger" data-delay="0">QR code</h1>
+        <p class="subtitle stagger" data-delay="0">One code for Saffron &amp; Smoke. Print it once — it always opens your latest published menu.</p>
+      </div>
+
+      <section class="qr-card stagger" data-delay="1" aria-labelledby="qr-card-h">
+        <h2 id="qr-card-h" class="sr-only">Saffron &amp; Smoke menu QR code</h2>
+
+        <span class="qr-live"><span class="ldot" aria-hidden="true"></span>Published &amp; live</span>
+
+        <div class="qr-chip">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://menufic.com/r/saffron-smoke"
+               width="240" height="240"
+               alt="QR code that opens the Saffron and Smoke menu at menufic.com/r/saffron-smoke">
+        </div>
+
+        <div class="qr-url">
+          <span class="url-chip">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <code>menufic.com/r/saffron-smoke</code>
+            <button class="copy-inline" type="button" id="copyLink" aria-label="Copy public menu link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span id="copyLinkText">Copy link</span>
+            </button>
+          </span>
+        </div>
+
+        <div class="qr-actions">
+          <a class="btn btn-primary"
+             href="https://api.qrserver.com/v1/create-qr-code/?size=1024x1024&format=png&data=https://menufic.com/r/saffron-smoke"
+             download="saffron-smoke-menu-qr.png">
+            <svg class="gicon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download PNG
+          </a>
+          <a class="btn-sm"
+             href="https://api.qrserver.com/v1/create-qr-code/?size=1024x1024&format=svg&data=https://menufic.com/r/saffron-smoke"
+             download="saffron-smoke-menu-qr.svg">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download SVG
+          </a>
+        </div>
+
+        <p class="qr-helper">Print it for tables, windows and flyers — it always points to your latest menu.</p>
+
+        <a class="qr-public" href="/public/index.html">
+          View public menu
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- Sidebar drawer (mobile) ---- */
+  var sidebar = document.getElementById("sidebar");
+  var burger = document.getElementById("hamburger");
+  var navScrim = document.getElementById("navScrim");
+  function openNav(){
+    sidebar.classList.add("open");
+    burger.setAttribute("aria-expanded","true");
+    navScrim.hidden = false;
+    requestAnimationFrame(function(){ navScrim.style.opacity="1"; navScrim.style.visibility="visible"; });
+  }
+  function closeNav(){
+    sidebar.classList.remove("open");
+    burger.setAttribute("aria-expanded","false");
+    navScrim.style.opacity="0"; navScrim.style.visibility="hidden";
+    setTimeout(function(){ navScrim.hidden = true; }, 300);
+  }
+  burger.addEventListener("click", function(){
+    if(sidebar.classList.contains("open")) closeNav(); else openNav();
+  });
+  navScrim.addEventListener("click", closeNav);
+  sidebar.addEventListener("click", function(e){
+    if(e.target.closest("a") && window.matchMedia("(max-width:900px)").matches) closeNav();
+  });
+
+  /* ---- Account dropdown ---- */
+  var acctBtn = document.getElementById("acctBtn");
+  var acctMenu = document.getElementById("acctMenu");
+  function closeAcct(){ acctMenu.classList.remove("open"); acctBtn.setAttribute("aria-expanded","false"); }
+  acctBtn.addEventListener("click", function(e){
+    e.stopPropagation();
+    var open = acctMenu.classList.toggle("open");
+    acctBtn.setAttribute("aria-expanded", open ? "true":"false");
+  });
+  document.addEventListener("click", function(e){
+    if(!acctMenu.contains(e.target) && e.target !== acctBtn) closeAcct();
+  });
+
+  /* ---- Copy public link ---- */
+  var copyBtn = document.getElementById("copyLink");
+  var copyTxt = document.getElementById("copyLinkText");
+  copyBtn.addEventListener("click", function(){
+    var link = "https://menufic.com/r/saffron-smoke";
+    var done = function(){
+      copyTxt.textContent = "Copied";
+      setTimeout(function(){ copyTxt.textContent = "Copy link"; }, 1800);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(link).then(done, done);
+    } else { done(); }
+  });
+
+  /* ---- Escape closes overlays ---- */
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape"){
+      closeAcct();
+      if(sidebar.classList.contains("open")){ closeNav(); burger.focus(); }
+    }
+  });
+
+  /* ---- Entrance stagger ---- */
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var staggers = Array.prototype.slice.call(document.querySelectorAll(".stagger"));
+  if(reduce){
+    staggers.forEach(function(el){ el.classList.add("in"); });
+  } else {
+    staggers.sort(function(a,b){ return (a.dataset.delay||0)-(b.dataset.delay||0); });
+    staggers.forEach(function(el){
+      var d = parseInt(el.dataset.delay||0,10) * 80 + 90;
+      setTimeout(function(){ el.classList.add("in"); }, d);
+    });
+  }
+})();
+</script>
+</body>
+</html>

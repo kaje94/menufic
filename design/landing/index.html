@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en" class="js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menufic · A beautiful digital menu for your restaurant. Free, in minutes.</title>
+<meta name="description" content="Menufic is a genuinely free digital menu maker for restaurants. Build a themeable menu, publish it at menufic.com, and share it with a link and QR code. No design skills, no cost.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231a120b'/%3E%3Ctext x='50' y='72' font-size='62' text-anchor='middle'%3E%F0%9F%8D%BD%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<!-- Plated identity fonts -->
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=boska@400,500,700&f[]=supreme@400,500,600,700&display=swap">
+<!-- Extra fonts for the theme builder font selector -->
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=gambetta@400,500,700&f[]=sentient@400,500,700&f[]=general-sans@400,500,600,700&display=swap">
+<style>
+:root{
+  --bg: oklch(0.18 0.03 45);
+  --bg-deep: oklch(0.155 0.026 52);
+  --surface: oklch(0.235 0.034 46);
+  --surface-2: oklch(0.295 0.04 48);
+  --saffron: oklch(0.785 0.14 68);
+  --saffron-deep: oklch(0.72 0.14 70);
+  --tomato: oklch(0.56 0.19 32);
+  --tomato-bright: oklch(0.66 0.19 32);
+  --green: oklch(0.72 0.15 150);
+  --cream: oklch(0.96 0.015 78);
+  --cream-soft: oklch(0.83 0.022 78);
+  --line: oklch(0.42 0.03 48 / 0.5);
+  --line-soft: oklch(0.42 0.03 58 / 0.28);
+  --ease: cubic-bezier(0.16,1,0.3,1);
+  --maxw: 1200px;
+  --r: 18px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--cream);
+  font-family:"Supreme",system-ui,sans-serif;
+  font-size:17px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+h1,h2,h3{
+  font-family:"Boska",Georgia,serif;
+  font-weight:700;
+  letter-spacing:-0.03em;
+  line-height:1.02;
+  margin:0;
+  text-wrap:balance;
+}
+p{margin:0;text-wrap:pretty}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+:focus-visible{outline:3px solid var(--saffron);outline-offset:3px;border-radius:6px}
+
+/* ============ BUTTONS ============ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  min-height:48px;padding:0 24px;
+  border-radius:999px;border:1px solid transparent;
+  font-family:"Supreme";font-weight:600;font-size:16px;
+  transition:transform .35s var(--ease),background .25s var(--ease),box-shadow .35s var(--ease);
+}
+.btn-primary{
+  background:var(--tomato);color:#fff;
+  box-shadow:0 10px 30px -10px oklch(0.605 0.18 30 / 0.7);
+}
+.btn-primary:hover{background:var(--tomato-bright);transform:translateY(-2px);box-shadow:0 16px 40px -12px oklch(0.605 0.18 30 / 0.8)}
+.btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}
+.btn-ghost:hover{background:oklch(0.30 0.04 60 / 0.5);transform:translateY(-2px)}
+.gicon{width:18px;height:18px;flex:none}
+
+/* ============ NAV (condensing sticky) ============ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  transition:background .4s var(--ease),box-shadow .4s var(--ease),border-color .4s var(--ease);
+  padding:18px 0;
+  border-bottom:1px solid transparent;
+}
+.nav.condensed{
+  background:oklch(0.185 0.028 55 / 0.92);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line-soft);
+  padding:10px 0;
+  box-shadow:0 8px 30px -18px oklch(0 0 0 / 0.8);
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.wordmark{
+  font-family:"Boska";font-weight:700;font-size:25px;letter-spacing:-0.04em;
+  color:var(--cream);display:inline-flex;align-items:center;gap:8px;
+}
+.wordmark .dot{width:9px;height:9px;border-radius:50%;background:var(--tomato);margin-bottom:-2px}
+.nav-links{display:flex;align-items:center;gap:30px}
+.nav-links a{color:var(--cream-soft);font-size:15px;font-weight:500;transition:color .2s var(--ease)}
+.nav-links a:hover{color:var(--cream)}
+.nav-cta{display:flex;align-items:center;gap:14px}
+.hamburger{display:none;background:none;border:1px solid var(--line);border-radius:12px;width:48px;height:48px;align-items:center;justify-content:center}
+.hamburger span{display:block;width:20px;height:2px;background:var(--cream);position:relative}
+.hamburger span::before,.hamburger span::after{content:"";position:absolute;left:0;width:20px;height:2px;background:var(--cream)}
+.hamburger span::before{top:-6px}.hamburger span::after{top:6px}
+
+@media (max-width:880px){
+  .nav-links{
+    display:none;position:absolute;top:100%;left:0;right:0;
+    flex-direction:column;align-items:flex-start;gap:6px;
+    background:oklch(0.185 0.028 55 / 0.98);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+    padding:16px 24px 24px;border-bottom:1px solid var(--line-soft);
+  }
+  .nav-links.open{display:flex}
+  .nav-links a{padding:12px 4px;font-size:17px;width:100%}
+  .hamburger{display:inline-flex}
+  .nav-cta .btn-text-hide{display:none}
+}
+
+/* ============ shared reveal / stagger ============ */
+.js .reveal{opacity:0;transform:translateY(30px)}
+.js .reveal.in{opacity:1;transform:none;transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.js .stagger{opacity:0;transform:translateY(24px)}
+.js .stagger.in{opacity:1;transform:none;transition:opacity .55s var(--ease),transform .55s var(--ease)}
+
+/* ============ live menu UI (shared phone component) ============ */
+.phone{
+  position:relative;z-index:3;
+  border-radius:42px;background:oklch(0.22 0.02 60);
+  border:1px solid oklch(0.5 0.03 70 / 0.45);padding:11px;
+  box-shadow:
+    0 0 0 1px oklch(0.85 0.13 78 / 0.12),
+    0 2px 3px oklch(0.85 0.13 78 / 0.28),
+    0 50px 100px -28px oklch(0 0 0 / 0.92),
+    0 18px 40px -14px oklch(0 0 0 / 0.85);
+}
+.phone-screen{position:relative;border-radius:32px;overflow:hidden;background:var(--bg);aspect-ratio:9/19.2}
+.phone-notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);z-index:6;width:78px;height:20px;border-radius:0 0 14px 14px;background:oklch(0.16 0.02 55)}
+.menu-ui{display:flex;flex-direction:column;height:100%;background:var(--bg)}
+.menu-cover{position:relative;height:128px;flex:none;background-size:cover;background-position:center}
+.menu-cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,oklch(0 0 0 /0.1),oklch(0.185 0.028 55 /0.9))}
+.menu-head{position:absolute;z-index:2;left:14px;right:14px;bottom:10px}
+.menu-head .badge{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--bg);background:var(--accent,var(--saffron));border-radius:999px;padding:3px 9px;margin-bottom:7px}
+.menu-head h4{font-family:"Boska";font-weight:700;font-size:21px;letter-spacing:-0.02em;color:var(--cream);line-height:1}
+.menu-head .loc{font-size:11px;color:var(--cream-soft);margin-top:4px;display:flex;align-items:center;gap:5px}
+.menu-tabs{display:flex;gap:7px;padding:11px 14px 4px;flex:none;overflow:hidden}
+.menu-tabs .mt{font-size:11px;font-weight:600;color:var(--cream-soft);padding:5px 11px;border-radius:999px;background:transparent;white-space:nowrap}
+.menu-tabs .mt.act{color:var(--bg);background:var(--accent,var(--saffron))}
+.menu-list{flex:1 1 auto;padding:4px 14px 16px;display:flex;flex-direction:column;gap:9px;min-height:0;overflow:hidden}
+.mrow{display:flex;gap:11px;align-items:center;padding:7px;border-radius:calc(var(--accent-r,14px));background:var(--surface);border:1px solid var(--line-soft)}
+.mrow img{width:46px;height:46px;border-radius:calc(var(--accent-r,10px) - 3px);object-fit:cover;flex:none}
+.mrow .mmeta{flex:1;min-width:0}
+.mrow .mname{font-size:12.5px;font-weight:600;color:var(--cream);line-height:1.15;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.mrow .mtag{font-size:8px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--accent,var(--saffron));border:1px solid var(--accent,var(--saffron));border-radius:5px;padding:1px 5px}
+.mrow .mdesc{font-size:10px;color:var(--cream-soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrow .mprice{font-family:"Boska";font-weight:600;font-size:14px;color:var(--cream);flex:none}
+
+/* ============ HERO (video bg + modern composition + bubbles) ============ */
+.hero{
+  position:relative;min-height:100svh;
+  display:flex;align-items:center;
+  padding:120px 0 60px;overflow:hidden;
+  background:var(--bg);
+}
+/* full-bleed crossfade-looping video (two stacked layers cross-dissolve at the loop seam) */
+.hero-video{
+  position:absolute;inset:0;z-index:0;
+  width:100%;height:100%;object-fit:cover;object-position:center 40%;
+  pointer-events:none;
+  opacity:0;transition:opacity .85s linear;
+}
+.hero-video.is-front{opacity:1}
+/* poster fallback for reduced-motion (video hidden via media query) */
+.hero-poster{
+  position:absolute;inset:0;z-index:0;display:none;pointer-events:none;
+  background-image:url("assets/video/hero-meatball-poster.jpg");
+  background-size:cover;background-position:center 40%;
+}
+/* strong warm gradient scrim — heavier on the left/headline side */
+.hero-scrim{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(95deg,
+      oklch(0.155 0.026 52 / 0.97) 0%,
+      oklch(0.16 0.027 53 / 0.93) 32%,
+      oklch(0.175 0.028 54 / 0.78) 58%,
+      oklch(0.185 0.03 55 / 0.62) 100%),
+    radial-gradient(circle at 80% 28%, oklch(0.80 0.135 78 / 0.15), transparent 55%),
+    linear-gradient(0deg, oklch(0.155 0.026 52 / 0.88), oklch(0.155 0.026 52 / 0.25) 45%, transparent 72%);
+}
+.hero-grain{
+  position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  mix-blend-mode:overlay;
+}
+.hero-inner{
+  position:relative;z-index:3;width:100%;
+  display:grid;grid-template-columns:1.05fr 0.95fr;gap:48px;align-items:center;
+}
+.hero-copy{max-width:600px}
+.hero h1{
+  font-size:clamp(2.6rem,6.2vw,6rem);
+  letter-spacing:-0.035em;line-height:0.98;color:var(--cream);
+  text-shadow:0 2px 24px oklch(0.13 0.02 50 / 0.6);
+}
+.hero h1 .em{color:var(--saffron)}
+.hero-sub{
+  margin-top:26px;font-size:clamp(1.05rem,2vw,1.3rem);
+  color:var(--cream-soft);max-width:52ch;line-height:1.55;
+  text-shadow:0 1px 12px oklch(0.13 0.02 50 / 0.55);
+}
+.hero-actions{margin-top:34px;display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+.see-live{display:inline-flex;align-items:center;gap:8px;color:var(--cream);font-weight:500;font-size:16px;min-height:48px;padding:0 6px}
+.see-live .arr{transition:transform .3s var(--ease)}
+.see-live:hover .arr{transform:translateX(4px)}
+.hero-qr{
+  margin-top:36px;display:inline-flex;align-items:center;gap:16px;
+  padding:12px 18px 12px 12px;border-radius:16px;
+  background:oklch(0.20 0.028 54 / 0.82);border:1px solid var(--line);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  box-shadow:0 18px 40px -22px oklch(0 0 0 / 0.8);
+}
+.hero-qr .chip{background:#fff;border-radius:10px;padding:7px;line-height:0;flex:none}
+.hero-qr .chip img{width:62px;height:62px}
+.hero-qr .qr-text{font-size:14.5px;line-height:1.4}
+.hero-qr .qr-text b{display:block;color:var(--cream);font-weight:600;font-size:15px}
+.hero-qr .qr-text span{color:var(--cream-soft)}
+
+/* hero composition (modern, from E2) */
+.hero-stage{position:relative;perspective:1400px;min-width:0}
+.hero-composition{
+  position:relative;width:min(380px,82%);margin:0 auto;
+  transform-style:preserve-3d;
+  transition:transform .35s var(--ease);
+}
+.hero-composition.float{animation:idleFloat 7s ease-in-out infinite}
+@keyframes idleFloat{0%,100%{translate:0 0}50%{translate:0 -14px}}
+.phone::before{
+  content:"";position:absolute;top:50%;left:-1px;width:3px;height:60px;
+  border-radius:3px;background:oklch(0.45 0.03 70 / 0.5);transform:translateY(-90px);
+}
+.hero-dish{
+  position:absolute;z-index:4;width:172px;height:172px;border-radius:24px;
+  left:-58px;bottom:-26px;object-fit:cover;
+  border:5px solid oklch(0.22 0.02 60);
+  box-shadow:0 30px 60px -24px oklch(0 0 0 /0.85), 0 2px 0 oklch(0.85 0.13 78 /0.2);
+  transform:translateZ(60px);
+}
+.hero-chip{
+  position:absolute;z-index:5;right:-30px;top:42px;
+  display:flex;align-items:center;gap:9px;
+  background:oklch(0.30 0.04 60 / 0.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border:1px solid var(--line);border-radius:14px;padding:10px 14px;
+  box-shadow:0 20px 40px -20px oklch(0 0 0 /0.8);
+  transform:translateZ(90px);
+}
+.hero-chip .pulse{width:10px;height:10px;border-radius:50%;background:oklch(0.7 0.16 145);box-shadow:0 0 0 0 oklch(0.7 0.16 145 /0.5)}
+.hero-chip.live .pulse{animation:livePulse 2.2s ease-out infinite}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 oklch(0.7 0.16 145 /0.5)}100%{box-shadow:0 0 0 12px oklch(0.7 0.16 145 /0)}}
+.hero-chip b{font-size:13px;font-weight:600;color:var(--cream)}
+.hero-chip span{font-size:11px;color:var(--cream-soft);display:block}
+
+/* floating feature bubbles (from B) */
+.bubble{
+  position:absolute;z-index:6;display:inline-flex;align-items:center;gap:9px;
+  background:oklch(0.245 0.034 58 / 0.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border-radius:999px;padding:11px 16px;
+  box-shadow:0 18px 38px -20px oklch(0 0 0 /0.8);
+  font-weight:600;font-size:0.86rem;white-space:nowrap;color:var(--cream);
+  border:1px solid var(--line);
+}
+.bubble .ic{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;background:oklch(0.30 0.04 60)}
+.bubble .ic svg{width:17px;height:17px}
+.bubble.scan .ic{color:var(--saffron)}
+.bubble.theme .ic{color:var(--tomato-bright)}
+.bubble.track .ic{color:var(--green)}
+.bubble.qr .ic{color:var(--saffron)}
+.bubble.scan{top:6px;left:-30px}
+.bubble.theme{top:108px;right:-46px;font-size:0.92rem}
+.bubble.track{bottom:142px;left:-58px}
+.bubble.qr{bottom:30px;right:-22px}
+/* bubble entrance + drift */
+.js .bubble{opacity:0;transform:scale(0.7)}
+.bubble.pop{opacity:1;animation:popIn .5s var(--ease) forwards}
+@keyframes popIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+.bubble.pop.drift1{animation:popIn .5s var(--ease) forwards, drift1 7s ease-in-out 0.6s infinite}
+.bubble.pop.drift2{animation:popIn .5s var(--ease) forwards, drift2 9s ease-in-out 0.6s infinite}
+.bubble.pop.drift3{animation:popIn .5s var(--ease) forwards, drift3 6s ease-in-out 0.6s infinite}
+.bubble.pop.drift4{animation:popIn .5s var(--ease) forwards, drift4 8s ease-in-out 0.6s infinite}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(7px,-12px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-9px,10px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(10px,8px)}}
+@keyframes drift4{0%,100%{transform:translate(0,0)}50%{transform:translate(-6px,-11px)}}
+
+@media (max-width:980px){
+  .hero-inner{grid-template-columns:1fr;gap:44px;text-align:left}
+  .hero-stage{order:2;margin-top:8px}
+  .hero-composition{width:min(330px,76%)}
+  .hero-dish{width:140px;height:140px;left:-26px}
+  .hero-chip{right:-14px}
+  /* reflow bubbles so they never overlap headline / overflow */
+  .bubble.scan{top:0;left:0}
+  .bubble.theme{top:88px;right:0}
+  .bubble.track{display:none}
+  .bubble.qr{bottom:18px;right:0}
+}
+@media (max-width:520px){
+  .hero{padding:108px 0 50px}
+  .hero-dish{width:118px;height:118px;left:-12px;bottom:-18px}
+  .hero-chip{right:0;top:30px;padding:8px 11px}
+  .hero-qr{width:100%}
+  .bubble{font-size:0.8rem;padding:9px 13px}
+  .bubble .ic{width:26px;height:26px}
+}
+
+/* ============ SECTION SHELL ============ */
+.section{padding:clamp(72px,10vw,128px) 0;position:relative}
+.section-head{max-width:680px;margin-bottom:48px}
+.section-head.center{margin-left:auto;margin-right:auto;text-align:center}
+.section-head h2{font-size:clamp(2rem,4.6vw,3.4rem);color:var(--cream)}
+.section-head .lede{margin-top:18px;font-size:clamp(1.05rem,1.6vw,1.2rem);color:var(--cream-soft);max-width:66ch;line-height:1.55}
+.section-head.center .lede{margin-left:auto;margin-right:auto}
+
+/* ============ HOW IT WORKS (sticky split-scroll, from E2) ============ */
+.how{background:linear-gradient(180deg,var(--bg),oklch(0.205 0.03 56),var(--bg))}
+.how-grid{display:grid;grid-template-columns:0.92fr 1.08fr;gap:64px;align-items:start}
+.how-sticky{position:sticky;top:0;height:100svh;display:flex;align-items:center;justify-content:center;min-width:0}
+.how-phone{
+  position:relative;width:min(310px,80%);
+  border-radius:40px;background:oklch(0.22 0.02 60);
+  border:1px solid oklch(0.5 0.03 70 / 0.4);padding:10px;
+  box-shadow:0 40px 80px -34px oklch(0 0 0 /0.85);
+}
+.how-phone .phone-screen{border-radius:30px}
+.how-states{position:relative;height:100%;width:100%}
+.how-state{
+  position:absolute;inset:0;
+  opacity:0;transition:opacity .5s var(--ease);
+  display:flex;flex-direction:column;
+}
+.how-state.active{opacity:1}
+@media (prefers-reduced-motion:reduce){.how-state{transition:none}}
+
+.s-create{background:var(--bg);padding:0}
+.builder-top{flex:none;padding:38px 16px 12px;text-align:center;border-bottom:1px solid var(--line-soft)}
+.builder-top .ico{width:54px;height:54px;border-radius:16px;margin:0 auto 12px;background:oklch(0.30 0.04 60);display:flex;align-items:center;justify-content:center;color:var(--saffron);border:1px dashed var(--line)}
+.builder-top h5{font-family:"Boska";font-size:17px;color:var(--cream);font-weight:700}
+.builder-top p{font-size:11px;color:var(--cream-soft);margin-top:5px}
+.builder-form{flex:1 1 auto;padding:16px;display:flex;flex-direction:column;gap:11px;min-height:0}
+.fld label{font-size:10px;color:var(--cream-soft);font-weight:500;display:block;margin-bottom:5px}
+.fld .inp{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:10px 12px;font-size:12px;color:var(--cream)}
+.fld .inp.filled{color:var(--cream);border-color:var(--saffron)}
+.fld .inp.ghost{color:var(--cream-soft);opacity:.6}
+.fld .slugline{font-size:10px;color:var(--cream-soft);margin-top:5px}
+.fld .slugline b{color:var(--saffron);font-weight:600}
+.builder-cta{margin-top:auto;background:var(--tomato);color:var(--cream);border-radius:11px;text-align:center;padding:11px;font-size:12.5px;font-weight:600}
+
+.s-share{background:linear-gradient(180deg,oklch(0.245 0.034 58),var(--bg));align-items:center;justify-content:center;text-align:center;padding:24px 20px;flex:1 1 auto}
+.s-share .live-pill{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:oklch(0.78 0.16 145);background:oklch(0.7 0.16 145 /0.12);border:1px solid oklch(0.7 0.16 145 /0.35);border-radius:999px;padding:5px 12px;margin-bottom:18px}
+.s-share .live-pill .pulse{width:8px;height:8px;border-radius:50%;background:oklch(0.7 0.16 145)}
+.s-share h5{font-family:"Boska";font-size:19px;color:var(--cream);font-weight:700;line-height:1.05}
+.s-share p{font-size:11.5px;color:var(--cream-soft);margin-top:7px;line-height:1.4}
+.s-share .qrbox{background:#fff;border-radius:18px;padding:14px;margin:20px auto 14px;line-height:0;box-shadow:0 20px 40px -20px oklch(0 0 0 /0.7)}
+.s-share .qrbox img{width:150px;height:150px}
+.s-share .url{font-size:11px;color:var(--saffron);font-weight:600;word-break:break-all}
+
+.how-steps{display:flex;flex-direction:column}
+.step{min-height:78vh;display:flex;flex-direction:column;justify-content:center;padding:32px 0}
+.step:first-child{padding-top:8px}
+.step .num{
+  font-family:"Boska";font-size:15px;font-weight:600;color:var(--saffron);
+  display:inline-flex;align-items:center;gap:12px;margin-bottom:18px;
+}
+.step .num::before{content:"";width:34px;height:1px;background:var(--saffron);opacity:.6}
+.step h3{font-size:clamp(1.7rem,3.6vw,2.7rem);color:var(--cream)}
+.step p{margin-top:18px;font-size:clamp(1.02rem,1.5vw,1.15rem);color:var(--cream-soft);max-width:46ch;line-height:1.6}
+.step .mini{display:none}
+
+@media (max-width:900px){
+  .how-grid{grid-template-columns:1fr;gap:0}
+  .how-sticky{display:none}
+  .step{min-height:auto;padding:34px 0;border-bottom:1px solid var(--line-soft)}
+  .step:last-child{border-bottom:none}
+  .step .mini{
+    display:block;margin-top:24px;width:min(260px,80%);
+    border-radius:30px;background:oklch(0.22 0.02 60);padding:8px;
+    border:1px solid oklch(0.5 0.03 70 /0.4);box-shadow:0 30px 60px -30px oklch(0 0 0 /0.8);
+  }
+  .step .mini .phone-screen{border-radius:24px}
+}
+
+/* ============ THEME BUILDER STUDIO (E3 studio, upgraded) ============ */
+.studio{background:var(--surface)}
+.studio-grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:clamp(28px,4vw,56px);align-items:center}
+.studio-stage{display:flex;justify-content:center;min-width:0}
+.preview-frame{
+  position:relative;background:oklch(0.22 0.02 60);
+  border:1px solid oklch(0.5 0.03 70 /0.4);
+  box-shadow:0 50px 90px -40px oklch(0 0 0 /0.85);
+  transition:border-radius .5s var(--ease);
+  width:min(320px,84vw);border-radius:42px;padding:12px;
+}
+.preview-frame.desktop{width:min(560px,90vw);border-radius:20px;padding:12px 12px 16px}
+.preview-frame.desktop .preview-screen{border-radius:11px;aspect-ratio:16/11}
+.preview-frame.desktop .topbar{display:flex}
+.preview-screen{position:relative;border-radius:32px;overflow:hidden;background:var(--demo-bg,var(--bg));aspect-ratio:9/18;transition:background .35s var(--ease)}
+.preview-frame .topbar{display:none;align-items:center;gap:6px;padding:0 4px 10px}
+.preview-frame .topbar i{width:10px;height:10px;border-radius:50%;background:oklch(0.45 0.02 60);display:block}
+/* the restyled live menu — driven by CSS vars on .demo-menu */
+.demo-menu{
+  --acc:var(--saffron);--rad:18px;--fontd:"Boska",Georgia,serif;
+  --demo-bg:var(--bg);--demo-surface:var(--surface);--demo-line:var(--line-soft);
+  --demo-cream:var(--cream);--demo-cream-soft:var(--cream-soft);
+  display:flex;flex-direction:column;height:100%;background:var(--demo-bg);transition:background .35s var(--ease);
+}
+.demo-menu.light{
+  --demo-bg:oklch(0.985 0.006 95);--demo-surface:oklch(0.96 0.012 92);--demo-line:oklch(0.55 0.02 90 /0.3);
+  --demo-cream:oklch(0.2 0.02 80);--demo-cream-soft:oklch(0.42 0.02 85);
+}
+.demo-cover{position:relative;height:34%;min-height:120px;flex:none;background-size:cover;background-position:center}
+.demo-cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,oklch(0 0 0 /0.08),oklch(0.185 0.028 55 /0.92));transition:background .35s var(--ease)}
+.demo-menu.light .demo-cover::after{background:linear-gradient(180deg,oklch(0 0 0 /0.04),oklch(0.18 0.02 80 /0.55))}
+.demo-head{position:absolute;z-index:2;left:16px;right:16px;bottom:12px}
+.demo-head .badge{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:var(--acc);border-radius:999px;padding:3px 10px;margin-bottom:8px;transition:background .35s var(--ease)}
+.demo-head h4{font-family:var(--fontd);font-weight:700;font-size:clamp(20px,4vw,26px);letter-spacing:-0.02em;color:var(--cream);line-height:1}
+.demo-head .loc{font-size:11.5px;color:var(--cream-soft);margin-top:5px}
+.demo-tabs{display:flex;gap:8px;padding:12px 16px 4px;flex:none;overflow:hidden}
+.demo-tabs .dt{font-size:11.5px;font-weight:600;color:var(--demo-cream-soft);padding:6px 12px;border-radius:calc(var(--rad) * 0.7);background:transparent;white-space:nowrap;transition:border-radius .35s var(--ease),color .35s var(--ease)}
+.demo-tabs .dt.act{color:#fff;background:var(--acc);transition:background .35s var(--ease),border-radius .35s var(--ease)}
+.demo-list{flex:1 1 auto;padding:6px 16px 18px;display:flex;flex-direction:column;gap:11px;min-height:0;overflow:hidden}
+.drow{display:flex;gap:12px;align-items:center;padding:9px;border-radius:var(--rad);background:var(--demo-surface);border:1px solid var(--demo-line);transition:border-radius .35s var(--ease),background .35s var(--ease),border-color .35s var(--ease)}
+.drow img{width:52px;height:52px;border-radius:calc(var(--rad) * 0.66);object-fit:cover;flex:none;transition:border-radius .35s var(--ease)}
+.drow .dm{flex:1;min-width:0}
+.drow .dn{font-family:var(--fontd);font-size:14px;font-weight:600;color:var(--demo-cream);line-height:1.15;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.drow .dtag{font-size:8.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--acc);border:1px solid var(--acc);border-radius:5px;padding:1px 6px;transition:color .35s var(--ease),border-color .35s var(--ease)}
+.drow .dd{font-size:11px;color:var(--demo-cream-soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drow .dp{font-family:var(--fontd);font-weight:600;font-size:15px;color:var(--demo-cream);flex:none}
+
+/* controls */
+.studio-controls{min-width:0}
+.studio-controls h3{font-size:clamp(1.4rem,2.6vw,2rem);color:var(--cream)}
+.studio-controls .ctrl-lede{margin-top:12px;color:var(--cream-soft);font-size:16px;line-height:1.55;max-width:42ch}
+.ctrl{margin-top:26px}
+.ctrl > .lbl{display:block;font-size:13px;font-weight:600;color:var(--cream-soft);margin-bottom:11px}
+.swatches{display:flex;gap:11px;flex-wrap:wrap;align-items:center}
+.sw{width:46px;height:46px;border-radius:13px;border:3px solid transparent;transition:transform .2s var(--ease),border-color .2s var(--ease)}
+.sw:hover{transform:scale(1.07)}
+.sw[aria-pressed="true"]{border-color:var(--cream)}
+/* native color picker, dressed as a swatch */
+.color-pick{position:relative;display:inline-flex;align-items:center}
+.color-pick input[type="color"]{
+  -webkit-appearance:none;appearance:none;width:46px;height:46px;min-width:44px;min-height:44px;
+  border:3px dashed var(--line);border-radius:13px;background:transparent;cursor:pointer;padding:0;
+}
+.color-pick input[type="color"]::-webkit-color-swatch-wrapper{padding:3px}
+.color-pick input[type="color"]::-webkit-color-swatch{border:none;border-radius:9px}
+.color-pick input[type="color"]::-moz-color-swatch{border:none;border-radius:9px}
+.color-pick .cp-lbl{font-size:12.5px;color:var(--cream-soft);margin-left:11px;font-weight:600}
+/* range slider */
+.range-row{display:flex;align-items:center;gap:14px}
+.range-row input[type="range"]{
+  -webkit-appearance:none;appearance:none;flex:1;min-width:0;height:40px;background:transparent;cursor:pointer;outline-offset:4px;
+}
+.range-row input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:linear-gradient(90deg,var(--saffron),var(--saffron-deep))}
+.range-row input[type="range"]::-moz-range-track{height:6px;border-radius:999px;background:linear-gradient(90deg,var(--saffron),var(--saffron-deep))}
+.range-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;margin-top:-10px;width:26px;height:26px;border-radius:50%;background:var(--cream);border:3px solid var(--saffron-deep);cursor:pointer;box-shadow:0 4px 12px -3px oklch(0 0 0 /0.6)}
+.range-row input[type="range"]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--cream);border:3px solid var(--saffron-deep);cursor:pointer}
+.range-row .rad-read{font-variant-numeric:tabular-nums;font-weight:600;font-size:14px;color:var(--cream);min-width:48px;text-align:right}
+/* select / segmented */
+.studio-select{
+  width:100%;min-height:48px;background:var(--bg);color:var(--cream);
+  border:1px solid var(--line);border-radius:12px;padding:0 44px 0 16px;
+  font-family:"Supreme";font-size:15px;font-weight:500;cursor:pointer;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23d9cdbb' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 16px center;
+}
+.segset{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;flex-wrap:wrap}
+.segset button{min-height:44px;padding:0 16px;border:none;background:transparent;color:var(--cream-soft);font-size:14px;font-weight:600;border-radius:9px;transition:background .25s var(--ease),color .25s var(--ease)}
+.segset button[aria-pressed="true"]{background:var(--surface-2);color:var(--cream)}
+.studio-foot{margin-top:30px;padding-top:26px;border-top:1px solid var(--line-soft);display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.studio-foot .sqr{background:#fff;border-radius:12px;padding:9px;line-height:0;flex:none}
+.studio-foot .sqr img{width:84px;height:84px}
+.studio-foot .sview b{display:block;font-family:"Boska";font-weight:600;font-size:1.05rem;color:var(--cream)}
+.studio-foot .sview .vl{display:inline-flex;align-items:center;gap:7px;color:var(--cream);font-weight:600;font-size:15px;margin-top:7px}
+.studio-foot .sview .vl .arr{transition:transform .3s var(--ease)}
+.studio-foot .sview .vl:hover .arr{transform:translateX(4px)}
+.studio-foot .sview .surl{display:block;font-size:12.5px;color:var(--cream-soft);font-weight:400;margin-top:3px}
+@media (max-width:880px){
+  .studio-grid{grid-template-columns:1fr;gap:40px}
+  .studio-stage{order:2}
+  .preview-frame.desktop{width:min(560px,92vw)}
+}
+
+/* ============ FEATURES — alternating immersive spotlights (E3) ============ */
+.spotlights{background:var(--bg)}
+.spot{
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,72px);align-items:center;
+  padding:clamp(52px,7vw,84px) 0;
+}
+.spot + .spot{border-top:1px solid var(--line-soft)}
+.spot-text{min-width:0;max-width:480px}
+.spot:nth-child(even) .spot-visual{order:-1}
+.spot-index{font-family:"Boska";font-size:14px;font-weight:600;color:var(--saffron);display:inline-flex;align-items:center;gap:11px;margin-bottom:16px}
+.spot-index::before{content:"";width:30px;height:1px;background:var(--saffron);opacity:.6}
+.spot h3{font-size:clamp(1.8rem,3.4vw,2.7rem);color:var(--cream)}
+.spot .benefit{margin-top:16px;font-size:clamp(1.05rem,1.7vw,1.22rem);color:var(--cream-soft);line-height:1.5;max-width:40ch}
+.spot-supports{margin-top:22px;display:flex;flex-wrap:wrap;gap:9px}
+.spot-supports span{font-size:13.5px;font-weight:500;color:var(--cream);background:var(--surface);border:1px solid var(--line-soft);border-radius:999px;padding:7px 15px}
+.spot-visual{min-width:0;display:flex;justify-content:center}
+.spot-photo{position:relative;width:100%;border-radius:24px;overflow:hidden;border:1px solid var(--line-soft);box-shadow:0 40px 80px -44px oklch(0 0 0 /0.85)}
+.spot-photo img{width:100%;height:100%;aspect-ratio:5/4;object-fit:cover}
+.spot-photo::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px oklch(0.85 0.05 80 /0.06);border-radius:24px}
+.mock{
+  width:100%;max-width:480px;background:var(--surface-2);border:1px solid var(--line-soft);
+  border-radius:24px;padding:clamp(22px,3vw,34px);box-shadow:0 40px 80px -44px oklch(0 0 0 /0.8);min-width:0;
+}
+.mk-analytics .mk-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
+.mk-analytics .mk-stat{font-family:"Boska";font-weight:700;font-size:clamp(2rem,4vw,2.8rem);color:var(--cream);letter-spacing:-0.02em}
+.mk-analytics .mk-delta{font-size:13px;font-weight:600;color:var(--green);background:oklch(0.72 0.15 150 /0.14);border-radius:999px;padding:4px 11px}
+.mk-analytics .mk-cap{font-size:13.5px;color:var(--cream-soft)}
+.mk-analytics .mk-chart{display:flex;align-items:flex-end;gap:8px;height:128px;margin-top:22px}
+.mk-analytics .mk-bar{flex:1;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--saffron),var(--saffron-deep));min-width:0}
+.mk-analytics .mk-days{display:flex;justify-content:space-between;gap:8px;margin-top:9px;font-size:11px;color:var(--cream-soft)}
+.mk-analytics .mk-days span{flex:1;text-align:center}
+.mk-qr{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.mk-qr .qrcard{background:#fff;border-radius:16px;padding:13px;line-height:0;flex:none}
+.mk-qr .qrcard img{width:128px;height:128px}
+.mk-qr .qrmeta b{display:block;font-family:"Boska";font-weight:600;font-size:1.15rem;color:var(--cream);margin-bottom:8px}
+.mk-qr .qrmeta .row{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--cream-soft);margin-top:8px}
+.mk-qr .qrmeta .row svg{color:var(--saffron);flex:none}
+@media (max-width:820px){
+  .spot{grid-template-columns:1fr;gap:30px;padding:48px 0}
+  .spot:nth-child(even) .spot-visual{order:0}
+  .spot-text{max-width:560px}
+}
+
+/* ============ PRICING — giant Free. Forever. band (E3) ============ */
+.pricing{
+  position:relative;overflow:hidden;text-align:center;
+  background:
+    radial-gradient(circle at 18% 12%, oklch(0.605 0.18 30 /0.16), transparent 46%),
+    radial-gradient(circle at 86% 88%, oklch(0.80 0.135 78 /0.14), transparent 48%),
+    linear-gradient(180deg,var(--bg-deep),oklch(0.20 0.03 56));
+  padding:clamp(84px,12vw,150px) 0;
+}
+.pricing .pr-free{
+  font-family:"Boska";font-weight:700;
+  font-size:clamp(4rem,15vw,9.5rem);line-height:0.86;letter-spacing:-0.05em;
+  color:var(--cream);margin:0 0 8px;
+}
+.pricing .pr-free em{font-style:normal;color:var(--saffron)}
+.pricing .pr-kicker{font-size:clamp(1.05rem,1.8vw,1.3rem);color:var(--cream-soft);max-width:50ch;margin:18px auto 0;line-height:1.55}
+.compare{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:46px auto 0;max-width:760px}
+.cmp{
+  flex:1 1 200px;max-width:240px;min-width:0;
+  background:var(--surface);border:1px solid var(--line-soft);border-radius:18px;
+  padding:22px 20px;text-align:left;
+}
+.cmp .cmp-feat{font-size:14.5px;font-weight:600;color:var(--cream);line-height:1.3}
+.cmp .cmp-prices{display:flex;align-items:baseline;gap:12px;margin-top:14px;flex-wrap:wrap}
+.cmp .cmp-was{font-family:"Boska";font-weight:600;font-size:1.4rem;color:var(--cream-soft);text-decoration:line-through;text-decoration-color:var(--tomato);text-decoration-thickness:2px}
+.cmp .cmp-now{font-family:"Boska";font-weight:700;font-size:1.7rem;color:var(--saffron);letter-spacing:-0.02em}
+.cmp .cmp-tag{display:block;font-size:12px;color:var(--cream-soft);margin-top:8px}
+.cmp .cmp-tag b{color:var(--cream);font-weight:600}
+.pricing .pr-note{margin:42px auto 0;max-width:54ch;color:var(--cream-soft);font-size:clamp(1.02rem,1.6vw,1.18rem);line-height:1.55}
+.pricing .pr-note b{color:var(--cream);font-weight:600}
+.pricing .pr-cta{margin-top:34px;display:flex;justify-content:center}
+@media (max-width:560px){
+  .compare{flex-direction:column;align-items:stretch;max-width:340px}
+  .cmp{max-width:none}
+}
+
+/* ============ TESTIMONIALS — D card style as a marquee ============ */
+.testimonials{
+  position:relative;background:var(--surface);overflow:hidden;
+  background-image:
+    radial-gradient(circle at 20% 30%, oklch(0.30 0.04 60 /0.6), transparent 40%),
+    radial-gradient(circle at 82% 76%, oklch(0.22 0.03 56 /0.7), transparent 42%);
+}
+.marquee{position:relative;margin-top:14px;overflow:hidden;
+  -webkit-mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+}
+.marquee-track{
+  display:flex;gap:clamp(18px,2.4vw,28px);width:max-content;
+  animation:marquee 56s linear infinite;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track{animation-play-state:paused}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tcard{
+  flex:0 0 auto;width:min(340px,82vw);
+  background:var(--bg);border:1px solid var(--line-soft);border-radius:22px;
+  padding:30px;display:flex;flex-direction:column;min-width:0;
+}
+.tcard .stars{color:var(--saffron);font-size:15px;letter-spacing:2px;margin-bottom:16px}
+.tcard blockquote{margin:0;font-family:"Boska";font-weight:500;font-size:1.12rem;line-height:1.36;color:var(--cream);letter-spacing:-0.01em}
+.tcard .who{margin-top:auto;padding-top:24px;display:flex;align-items:center;gap:13px}
+.tcard .who img,.tcard .who .av{width:46px;height:46px;border-radius:50%;object-fit:cover;flex:none}
+.tcard .who .av{display:flex;align-items:center;justify-content:center;font-family:"Boska";font-weight:700;font-size:18px;color:var(--bg);background:var(--saffron)}
+.tcard .who .av.t{background:var(--tomato);color:var(--cream)}
+.tcard .who .av.g{background:var(--green);color:var(--bg)}
+.tcard .who b{display:block;font-size:15px;color:var(--cream);font-weight:600}
+.tcard .who span{font-size:13.5px;color:var(--cream-soft)}
+/* reduced-motion / no-JS fallback: manual horizontal scroll, no animation */
+.marquee.static{overflow-x:auto;-webkit-overflow-scrolling:touch;
+  -webkit-mask:none;mask:none;padding-bottom:8px;
+}
+.marquee.static .marquee-track{animation:none;width:max-content}
+
+/* ============ CLOSING ============ */
+.closing{position:relative;overflow:hidden;text-align:center;padding:clamp(96px,14vw,170px) 0}
+.closing-bg{position:absolute;inset:0;z-index:0}
+.closing-bg img{width:100%;height:100%;object-fit:cover;object-position:center}
+.closing-bg::after{content:"";position:absolute;inset:0;background:
+  linear-gradient(180deg,oklch(0.155 0.026 52 /0.9),oklch(0.155 0.026 52 /0.94)),
+  radial-gradient(circle at 50% 28%, oklch(0.80 0.135 78 /0.16), transparent 58%)}
+.closing-inner{position:relative;z-index:2}
+.closing h2{font-size:clamp(2.3rem,6vw,4.4rem);color:var(--cream)}
+.closing p{margin:22px auto 0;max-width:52ch;color:var(--cream-soft);font-size:clamp(1.05rem,1.8vw,1.3rem)}
+.closing .cl-actions{margin-top:38px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+
+/* ============ FOOTER ============ */
+.footer{background:var(--bg-deep);border-top:1px solid var(--line-soft);padding:64px 0 36px}
+.footer-top{display:grid;grid-template-columns:1.4fr repeat(3,0.9fr);gap:40px 32px}
+.footer .wordmark{font-size:25px}
+.footer .tag{color:var(--cream-soft);font-size:15px;margin-top:14px;max-width:32ch;line-height:1.55}
+.footer-col h6{font-size:13px;color:var(--cream-soft);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin:0 0 16px}
+.footer-col a{display:block;color:var(--cream);font-size:15px;margin-bottom:11px;transition:color .2s var(--ease)}
+.footer-col a:hover{color:var(--saffron)}
+.footer-bottom{margin-top:52px;padding-top:24px;border-top:1px solid var(--line-soft);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--cream-soft);font-size:13.5px}
+.footer-bottom .pwr{color:var(--saffron)}
+@media (max-width:760px){
+  .footer-top{grid-template-columns:1fr 1fr;gap:34px 24px}
+  .footer-brand{grid-column:1 / -1}
+}
+@media (max-width:440px){
+  .footer-top{grid-template-columns:1fr}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition-duration:.01ms !important}
+  .js .stagger,.js .reveal{opacity:1 !important;transform:none !important}
+  .hero-composition.float{animation:none}
+  .hero-video{display:none}
+  .hero-poster{display:block}
+  .bubble{opacity:1 !important;transform:none !important;animation:none !important}
+  .marquee-track{animation:none !important}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="wordmark" href="#top" aria-label="Menufic home">Menufic<span class="dot" aria-hidden="true"></span></a>
+    <nav class="nav-links" id="navLinks" aria-label="Primary">
+      <a href="#how">How it works</a>
+      <a href="#studio">See a menu</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+        <span aria-hidden="true"></span>
+      </button>
+      <a class="btn btn-primary" href="/app/signin.html">
+        <svg class="gicon" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+        <span class="btn-text-hide">Get started</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO — video bg + modern composition + floating bubbles ============ -->
+<section class="hero" aria-labelledby="hero-h">
+  <video class="hero-video is-front" id="heroVideoA" autoplay muted playsinline preload="auto" poster="assets/video/hero-meatball-poster.jpg" aria-hidden="true">
+    <source src="assets/video/hero-meatball.mp4" type="video/mp4">
+  </video>
+  <video class="hero-video" id="heroVideoB" muted playsinline preload="auto" aria-hidden="true">
+    <source src="assets/video/hero-meatball.mp4" type="video/mp4">
+  </video>
+  <div class="hero-poster" aria-hidden="true"></div>
+  <div class="hero-scrim" aria-hidden="true"></div>
+  <div class="hero-grain" aria-hidden="true"></div>
+
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <h1 id="hero-h" class="stagger" data-delay="0">A beautiful menu for your restaurant.<br><span class="em">Free, in minutes.</span></h1>
+      <p class="hero-sub stagger" data-delay="1">Menufic turns your dishes into a polished digital menu you can publish online and share with a QR code. It takes no design skills and costs nothing, so your food simply looks its best.</p>
+
+      <div class="hero-actions stagger" data-delay="2">
+        <a class="btn btn-primary" href="/app/signin.html">
+          <svg class="gicon" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+          Get started, it's free
+        </a>
+        <a class="see-live" href="#studio">See a live menu <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+
+      <div class="hero-qr stagger" data-delay="3">
+        <span class="chip"><img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://menufic.com/r/saffron-smoke" alt="QR code linking to the live Saffron and Smoke sample menu" width="62" height="62"></span>
+        <span class="qr-text">
+          <b>Scan to see a real menu</b>
+          <span>Point your camera at the code. That's a live Menufic page.</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="hero-stage stagger" data-delay="4">
+      <div class="hero-composition float" id="heroComp">
+        <!-- Floating feature bubbles (from B) -->
+        <div class="bubble scan" data-bub="1">
+          <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="3" y1="12" x2="21" y2="12"/></svg></span>
+          Scan to preview
+        </div>
+        <div class="bubble theme" data-bub="2">
+          <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 2a10 10 0 1 0 0 20 2 2 0 0 0 2-2 2 2 0 0 1 2-2h2a4 4 0 0 0 4-4 10 10 0 0 0-10-10z"/></svg></span>
+          Customise themes
+        </div>
+        <div class="bubble track" data-bub="3">
+          <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+          Track analytics
+        </div>
+        <div class="bubble qr" data-bub="4">
+          <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="14" y1="14" x2="14" y2="21"/><line x1="18" y1="14" x2="21" y2="14"/><line x1="21" y1="18" x2="21" y2="21"/></svg></span>
+          Share via QR
+        </div>
+
+        <div class="phone">
+          <div class="phone-notch" aria-hidden="true"></div>
+          <div class="phone-screen">
+            <div class="menu-ui" style="--accent:var(--saffron);--accent-r:14px">
+              <div class="menu-cover" style="background-image:url('assets/img/photo-1432139555190-58524dae6a55.jpg')">
+                <div class="menu-head">
+                  <span class="badge">Now serving</span>
+                  <h4>Saffron &amp; Smoke</h4>
+                  <span class="loc">📍 Modern grill · Open till 11</span>
+                </div>
+              </div>
+              <div class="menu-tabs">
+                <span class="mt act">Mains</span><span class="mt">Small plates</span><span class="mt">Sides</span>
+              </div>
+              <div class="menu-list">
+                <div class="mrow">
+                  <img src="assets/img/photo-1432139555190-58524dae6a55.jpg" alt="Charred short rib glistening on a dark plate" loading="lazy">
+                  <div class="mmeta"><div class="mname">Smoked short rib <span class="mtag">Chef's pick</span></div><div class="mdesc">36-hour cook, burnt-honey glaze</div></div>
+                  <div class="mprice">$28</div>
+                </div>
+                <div class="mrow">
+                  <img src="assets/img/photo-1484723091739-30a097e8f929.jpg" alt="Seared prawn dish under warm light" loading="lazy">
+                  <div class="mmeta"><div class="mname">Saffron prawns <span class="mtag">Popular</span></div><div class="mdesc">Chilli butter, charred lemon</div></div>
+                  <div class="mprice">$22</div>
+                </div>
+                <div class="mrow">
+                  <img src="assets/img/photo-1455619452474-d2be8b1e70cd.jpg" alt="Bowl of red shrimp broth" loading="lazy">
+                  <div class="mmeta"><div class="mname">Red shrimp broth</div><div class="mdesc">Smoked tomato, fennel</div></div>
+                  <div class="mprice">$16</div>
+                </div>
+                <div class="mrow">
+                  <img src="assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="Wood-fired pizza fresh from the oven" loading="lazy">
+                  <div class="mmeta"><div class="mname">Wood-fired margherita</div><div class="mdesc">San Marzano, basil oil</div></div>
+                  <div class="mprice">$19</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <img class="hero-dish" src="assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="A bubbling wood-fired pizza, fresh from the oven" loading="lazy">
+        <div class="hero-chip live">
+          <span class="pulse" aria-hidden="true"></span>
+          <span><b>Published &amp; live</b><span>menufic.com/r/saffron-smoke</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS — sticky split-scroll (E2) ============ -->
+<section class="section how" id="how" aria-labelledby="how-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2 id="how-h">From your dishes to a shareable menu in three steps.</h2>
+      <p class="lede">You won't sit through setup calls or learn design tools. Create your restaurant, add your dishes, and share the link or QR code, and that's the whole thing.</p>
+    </div>
+
+    <div class="how-grid">
+      <!-- sticky phone -->
+      <div class="how-sticky">
+        <div class="how-phone">
+          <div class="phone-screen">
+            <div class="how-states" id="howStates">
+
+              <!-- STATE 1: CREATE -->
+              <div class="how-state active s-create" data-state="0">
+                <div class="builder-top">
+                  <div class="ico" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                  </div>
+                  <h5>New restaurant</h5>
+                  <p>Tell us the basics. It takes a minute.</p>
+                </div>
+                <div class="builder-form">
+                  <div class="fld"><label>Restaurant name</label><div class="inp filled">Bella Trattoria</div></div>
+                  <div class="fld">
+                    <label>Your menu address</label>
+                    <div class="inp">bella-trattoria</div>
+                    <div class="slugline">Live at <b>menufic.com/r/bella-trattoria</b></div>
+                  </div>
+                  <div class="fld"><label>Cuisine</label><div class="inp ghost">Italian · Trattoria</div></div>
+                  <div class="builder-cta">Create restaurant</div>
+                </div>
+              </div>
+
+              <!-- STATE 2: BUILD -->
+              <div class="how-state s-build" data-state="1">
+                <div class="menu-ui" style="--accent:var(--tomato);--accent-r:16px;height:100%">
+                  <div class="menu-cover" style="background-image:url('assets/img/photo-1424847651672-bf20a4b0982b.jpg')">
+                    <div class="menu-head">
+                      <span class="badge">Editing menu</span>
+                      <h4>Bella Trattoria</h4>
+                      <span class="loc">🍝 Adding your dishes…</span>
+                    </div>
+                  </div>
+                  <div class="menu-tabs">
+                    <span class="mt act">Pasta</span><span class="mt">Pizza</span><span class="mt">+ Add</span>
+                  </div>
+                  <div class="menu-list">
+                    <div class="mrow">
+                      <img src="assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="Margherita pizza" loading="lazy">
+                      <div class="mmeta"><div class="mname">Pizza Margherita <span class="mtag">New</span></div><div class="mdesc">San Marzano, fior di latte</div></div>
+                      <div class="mprice">$17</div>
+                    </div>
+                    <div class="mrow">
+                      <img src="assets/img/photo-1424847651672-bf20a4b0982b.jpg" alt="Sharing plates of Italian food" loading="lazy">
+                      <div class="mmeta"><div class="mname">Antipasti board</div><div class="mdesc">Cured meats, olives, focaccia</div></div>
+                      <div class="mprice">$21</div>
+                    </div>
+                    <div class="mrow">
+                      <img src="assets/img/photo-1455619452474-d2be8b1e70cd.jpg" alt="Tomato seafood dish" loading="lazy">
+                      <div class="mmeta"><div class="mname">Linguine alle vongole</div><div class="mdesc">Clams, white wine, chilli</div></div>
+                      <div class="mprice">$24</div>
+                    </div>
+                    <div class="mrow" style="border-style:dashed;opacity:.7">
+                      <div style="width:46px;height:46px;border-radius:11px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--tomato);flex:none">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                      </div>
+                      <div class="mmeta"><div class="mname" style="color:var(--cream-soft)">Add a dish</div><div class="mdesc">Name, price, photo</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- STATE 3: SHARE -->
+              <div class="how-state s-share" data-state="2">
+                <span class="live-pill"><span class="pulse" aria-hidden="true"></span> Published &amp; live</span>
+                <h5>Your menu is online.</h5>
+                <p>Share the link, or print this QR for tables, windows and flyers.</p>
+                <div class="qrbox">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://menufic.com/r/bella-trattoria" alt="Scannable QR code for the published Bella Trattoria menu" width="150" height="150">
+                </div>
+                <div class="url">menufic.com/r/bella-trattoria</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- scrolling steps -->
+      <div class="how-steps" id="howSteps">
+        <article class="step" data-step="0">
+          <span class="num">01 · Create</span>
+          <h3>Create your restaurant.</h3>
+          <p>Add your name and pick your web address. Menufic instantly reserves your page at menufic.com/r/your-name. No website, no hosting to figure out.</p>
+          <div class="mini" aria-hidden="true">
+            <div class="phone-screen">
+              <div class="s-create" style="height:100%;display:flex;flex-direction:column">
+                <div class="builder-top"><div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><h5>New restaurant</h5><p>Takes a minute.</p></div>
+                <div class="builder-form"><div class="fld"><label>Name</label><div class="inp filled">Bella Trattoria</div></div><div class="fld"><label>Address</label><div class="inp">bella-trattoria</div></div><div class="builder-cta">Create restaurant</div></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="step" data-step="1">
+          <span class="num">02 · Build</span>
+          <h3>Build your menu.</h3>
+          <p>Add dishes with a name, price and photo. Group them into courses, mark your favourites, and watch your menu come together beautifully as you type.</p>
+          <div class="mini" aria-hidden="true">
+            <div class="phone-screen">
+              <div class="menu-ui" style="--accent:var(--tomato);--accent-r:16px;height:100%">
+                <div class="menu-cover" style="background-image:url('assets/img/photo-1424847651672-bf20a4b0982b.jpg')"><div class="menu-head"><span class="badge">Editing</span><h4>Bella Trattoria</h4></div></div>
+                <div class="menu-list" style="padding-top:12px">
+                  <div class="mrow"><img src="assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="Pizza" loading="lazy"><div class="mmeta"><div class="mname">Pizza Margherita</div><div class="mdesc">San Marzano, basil</div></div><div class="mprice">$17</div></div>
+                  <div class="mrow"><img src="assets/img/photo-1424847651672-bf20a4b0982b.jpg" alt="Sharing plates" loading="lazy"><div class="mmeta"><div class="mname">Antipasti board</div><div class="mdesc">Cured meats, olives</div></div><div class="mprice">$21</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="step" data-step="2">
+          <span class="num">03 · Share</span>
+          <h3>Share with a QR code.</h3>
+          <p>Hit publish and your menu is live. Print the QR for tables and windows, drop the link in your bio, and update prices any time, and changes show instantly.</p>
+          <div class="mini" aria-hidden="true">
+            <div class="phone-screen">
+              <div class="s-share" style="height:100%">
+                <span class="live-pill"><span class="pulse"></span> Live</span>
+                <h5>Your menu is online.</h5>
+                <div class="qrbox"><img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://menufic.com/r/bella-trattoria" alt="QR code for Bella Trattoria menu" width="120" height="120"></div>
+                <div class="url">menufic.com/r/bella-trattoria</div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THEME BUILDER STUDIO (E3 studio, upgraded to a live custom builder) ============ -->
+<section class="section studio" id="studio" aria-labelledby="studio-h">
+  <div class="wrap">
+    <div class="studio-grid">
+      <div class="studio-stage reveal">
+        <div class="preview-frame" id="previewFrame">
+          <div class="topbar" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="preview-screen">
+            <div class="demo-menu" id="demoMenu">
+              <div class="demo-cover" style="background-image:url('assets/img/photo-1432139555190-58524dae6a55.jpg')">
+                <div class="demo-head">
+                  <span class="badge">Now serving</span>
+                  <h4>Saffron &amp; Smoke</h4>
+                  <span class="loc">📍 Modern grill · Open till 11</span>
+                </div>
+              </div>
+              <div class="demo-tabs"><span class="dt act">Mains</span><span class="dt">Small plates</span><span class="dt">Sides</span></div>
+              <div class="demo-list">
+                <div class="drow">
+                  <img src="assets/img/photo-1432139555190-58524dae6a55.jpg" alt="Charred short rib on a dark plate" loading="lazy">
+                  <div class="dm"><div class="dn">Smoked short rib <span class="dtag">Chef's pick</span></div><div class="dd">36-hour cook, burnt-honey glaze</div></div>
+                  <div class="dp">$28</div>
+                </div>
+                <div class="drow">
+                  <img src="assets/img/photo-1484723091739-30a097e8f929.jpg" alt="Seared prawns" loading="lazy">
+                  <div class="dm"><div class="dn">Saffron prawns <span class="dtag">Popular</span></div><div class="dd">Chilli butter, charred lemon</div></div>
+                  <div class="dp">$22</div>
+                </div>
+                <div class="drow">
+                  <img src="assets/img/photo-1455619452474-d2be8b1e70cd.jpg" alt="Red shrimp broth" loading="lazy">
+                  <div class="dm"><div class="dn">Red shrimp broth</div><div class="dd">Smoked tomato, fennel</div></div>
+                  <div class="dp">$16</div>
+                </div>
+                <div class="drow">
+                  <img src="assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="Wood-fired pizza" loading="lazy">
+                  <div class="dm"><div class="dn">Wood-fired margherita</div><div class="dd">San Marzano, basil oil</div></div>
+                  <div class="dp">$19</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="studio-controls reveal">
+        <h3 id="studio-h">Make it yours in seconds.</h3>
+        <p class="ctrl-lede">This is a real, hands-on sandbox. Pick any colour, drag the corners, swap the font, and the menu on the left restyles instantly. It's the same studio you'll use on your own restaurant.</p>
+
+        <!-- Accent colour: presets + native custom picker -->
+        <div class="ctrl">
+          <span class="lbl" id="acc-lbl">Accent colour</span>
+          <div class="swatches" role="group" aria-labelledby="acc-lbl">
+            <button class="sw" data-acc="#e0a94a" aria-pressed="true" aria-label="Saffron accent" style="background:oklch(0.80 0.135 78)"></button>
+            <button class="sw" data-acc="#d2492f" aria-pressed="false" aria-label="Tomato accent" style="background:oklch(0.66 0.19 32)"></button>
+            <button class="sw" data-acc="#4caa6e" aria-pressed="false" aria-label="Fresh green accent" style="background:oklch(0.74 0.15 150)"></button>
+            <button class="sw" data-acc="#6f8fd6" aria-pressed="false" aria-label="Ocean blue accent" style="background:oklch(0.70 0.13 250)"></button>
+            <span class="color-pick">
+              <input type="color" id="customColour" value="#e0a94a" aria-label="Custom colour (pick any accent)">
+              <label class="cp-lbl" for="customColour">Custom colour</label>
+            </span>
+          </div>
+        </div>
+
+        <!-- Corner radius: real range slider with live readout -->
+        <div class="ctrl">
+          <label class="lbl" for="radiusRange">Corner radius</label>
+          <div class="range-row">
+            <input type="range" id="radiusRange" min="0" max="24" step="1" value="18" aria-describedby="radiusVal">
+            <span class="rad-read" id="radiusVal">18px</span>
+          </div>
+        </div>
+
+        <!-- Font: select from menu-appropriate Fontshare faces -->
+        <div class="ctrl">
+          <label class="lbl" for="fontSelect">Menu font</label>
+          <select class="studio-select" id="fontSelect">
+            <option value='"Boska",Georgia,serif' selected>Boska (elegant serif)</option>
+            <option value='"Gambetta",Georgia,serif'>Gambetta (editorial serif)</option>
+            <option value='"Sentient",Georgia,serif'>Sentient (refined serif)</option>
+            <option value='"General Sans","Supreme",sans-serif'>General Sans (clean sans)</option>
+          </select>
+        </div>
+
+        <!-- Background tone toggle -->
+        <div class="ctrl">
+          <span class="lbl" id="tone-lbl">Menu tone</span>
+          <div class="segset" role="group" aria-labelledby="tone-lbl">
+            <button data-tone="dark" aria-pressed="true">Dark</button>
+            <button data-tone="light" aria-pressed="false">Light</button>
+          </div>
+        </div>
+
+        <!-- Size toggle -->
+        <div class="ctrl">
+          <span class="lbl" id="size-lbl">Preview</span>
+          <div class="segset" role="group" aria-labelledby="size-lbl">
+            <button data-size="phone" aria-pressed="true">Phone</button>
+            <button data-size="desktop" aria-pressed="false">Desktop</button>
+          </div>
+        </div>
+
+        <div class="studio-foot">
+          <span class="sqr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://menufic.com/r/saffron-smoke" alt="QR code for the live Saffron and Smoke menu" width="84" height="84"></span>
+          <div class="sview">
+            <b>This is a real menu.</b>
+            <a class="vl" href="/public/index.html">View live menu <span class="arr" aria-hidden="true">→</span></a>
+            <span class="surl">menufic.com/r/saffron-smoke</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES — alternating immersive spotlights (E3) ============ -->
+<section class="section spotlights" id="features" aria-labelledby="feat-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2 id="feat-h">Everything you need. Nothing you'll pay for.</h2>
+      <p class="lede">The tools that make your menu look professional and stay effortless to run, all included and all free.</p>
+    </div>
+
+    <!-- Feature 1: Theme customisation (photo) -->
+    <div class="spot reveal">
+      <div class="spot-text">
+        <span class="spot-index" aria-hidden="true">Theme</span>
+        <h3>Make it match your room.</h3>
+        <p class="benefit">Pick an accent, corner style and font, and your whole menu restyles to feel like your restaurant.</p>
+        <div class="spot-supports"><span>Colour</span><span>Corners</span><span>Typography</span></div>
+      </div>
+      <div class="spot-visual">
+        <figure class="spot-photo" style="margin:0">
+          <img src="assets/img/photo-1555396273-367ea4eb4db5.jpg" alt="A warm restaurant interior with set tables, the kind of atmosphere a menu's theme should echo" loading="lazy">
+        </figure>
+      </div>
+    </div>
+
+    <!-- Feature 2: Analytics (mockup) -->
+    <div class="spot reveal">
+      <div class="spot-text">
+        <span class="spot-index" aria-hidden="true">Analytics</span>
+        <h3>See what's working.</h3>
+        <p class="benefit">Live counts show how many people open your menu and which dishes they look at most.</p>
+        <div class="spot-supports"><span>Daily views</span><span>Top dishes</span><span>Trends</span></div>
+      </div>
+      <div class="spot-visual">
+        <div class="mock mk-analytics" role="img" aria-label="An analytics panel showing 2,418 menu views this week, up 18 percent, with a bar chart rising across the week.">
+          <div class="mk-top">
+            <div class="mk-stat">2,418</div>
+            <div class="mk-delta">▲ 18%</div>
+          </div>
+          <div class="mk-cap">Menu views this week</div>
+          <div class="mk-chart" aria-hidden="true">
+            <span class="mk-bar" style="height:42%"></span>
+            <span class="mk-bar" style="height:58%"></span>
+            <span class="mk-bar" style="height:49%"></span>
+            <span class="mk-bar" style="height:71%"></span>
+            <span class="mk-bar" style="height:63%"></span>
+            <span class="mk-bar" style="height:88%"></span>
+            <span class="mk-bar" style="height:100%"></span>
+          </div>
+          <div class="mk-days" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature 3: Team management (photo) -->
+    <div class="spot reveal">
+      <div class="spot-text">
+        <span class="spot-index" aria-hidden="true">Team</span>
+        <h3>Bring your team in.</h3>
+        <p class="benefit">Invite staff to update the menu while you stay in control of what goes live.</p>
+        <div class="spot-supports"><span>Invite staff</span><span>Roles</span><span>Shared edits</span></div>
+      </div>
+      <div class="spot-visual">
+        <figure class="spot-photo" style="margin:0">
+          <img src="assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="The bar of a busy restaurant with stools and a team ready for service" loading="lazy">
+        </figure>
+      </div>
+    </div>
+
+    <!-- Feature 4: QR sharing (mockup) -->
+    <div class="spot reveal">
+      <div class="spot-text">
+        <span class="spot-index" aria-hidden="true">QR sharing</span>
+        <h3>One code, everywhere.</h3>
+        <p class="benefit">Print one QR for tables, windows and flyers, and it always points to your latest menu.</p>
+        <div class="spot-supports"><span>Tables</span><span>Windows</span><span>Bio link</span></div>
+      </div>
+      <div class="spot-visual">
+        <div class="mock mk-qr">
+          <span class="qrcard"><img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://menufic.com/r/verde-kitchen" alt="Scannable QR code for the Verde Kitchen menu" width="128" height="128"></span>
+          <div class="qrmeta">
+            <b>menufic.com/r/verde-kitchen</b>
+            <div class="row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Update once, everywhere updates</div>
+            <div class="row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Download &amp; print at any size</div>
+            <div class="row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> No app for guests to install</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING — giant Free. Forever. band (E3) ============ -->
+<section class="pricing" id="pricing" aria-labelledby="price-h">
+  <div class="wrap">
+    <h2 id="price-h" class="pr-free reveal"><em>Free.</em> Forever.</h2>
+    <p class="pr-kicker reveal">Other menu tools charge you monthly for the basics. Here's what each of them costs on Menufic.</p>
+
+    <div class="compare reveal">
+      <div class="cmp">
+        <div class="cmp-feat">Theme customisation</div>
+        <div class="cmp-prices"><span class="cmp-was">$29/mo</span><span class="cmp-now">$0</span></div>
+        <span class="cmp-tag">Elsewhere a premium tier. <b>Free here.</b></span>
+      </div>
+      <div class="cmp">
+        <div class="cmp-feat">Analytics &amp; insights</div>
+        <div class="cmp-prices"><span class="cmp-was">$15/mo</span><span class="cmp-now">$0</span></div>
+        <span class="cmp-tag">Elsewhere an add-on. <b>Free here.</b></span>
+      </div>
+      <div class="cmp">
+        <div class="cmp-feat">QR codes &amp; team seats</div>
+        <div class="cmp-prices"><span class="cmp-was">$12/mo</span><span class="cmp-now">$0</span></div>
+        <span class="cmp-tag">Elsewhere metered. <b>Free here.</b></span>
+      </div>
+    </div>
+
+    <p class="pr-note reveal"><b>Free since launch, over 3 years ago.</b> No hidden fees. No premium tiers. No credit card, ever.</p>
+
+    <div class="pr-cta reveal">
+      <a class="btn btn-primary" href="/app/signin.html">
+        <svg class="gicon" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+        Get started, it's free
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS — D card style as a continuous marquee ============ -->
+<section class="section testimonials" aria-labelledby="test-h">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <h2 id="test-h">Restaurant owners actually use it.</h2>
+      <p class="lede">From food trucks to family bistros, here's what they say after switching to Menufic.</p>
+    </div>
+  </div>
+
+  <div class="marquee" id="marquee">
+    <div class="marquee-track" id="marqueeTrack" aria-label="Testimonials from restaurant owners">
+      <!-- SET A (the original 6) -->
+      <figure class="tcard">
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote>"I scribbled our specials on a chalkboard for years. Now there's a QR on every table and our dishes finally look as good as they taste."</blockquote>
+        <figcaption class="who">
+          <img src="assets/img/photo-1438761681033-6461ffad8d80.jpg" alt="Maria Conti, owner of Bella Trattoria, smiling warmly" loading="lazy">
+          <div><b>Maria Conti</b><span>Owner, Bella Trattoria</span></div>
+        </figcaption>
+      </figure>
+      <figure class="tcard">
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote>"We change the grill menu nightly. I update prices from my phone between services and it's live before the doors open. Didn't believe it was free."</blockquote>
+        <figcaption class="who">
+          <img src="assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Daniel Okafor, owner of Saffron and Smoke, in his kitchen" loading="lazy">
+          <div><b>Daniel Okafor</b><span>Owner, Saffron &amp; Smoke</span></div>
+        </figcaption>
+      </figure>
+      <figure class="tcard">
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote>"No printing costs, no designer, no website headache. I built our whole menu in an afternoon and the green theme suits our little cafe perfectly."</blockquote>
+        <figcaption class="who">
+          <img src="assets/img/photo-1494790108377-be9c29b29330.jpg" alt="Priya Nair, owner of Verde Kitchen, in her bright cafe" loading="lazy">
+          <div><b>Priya Nair</b><span>Owner, Verde Kitchen</span></div>
+        </figcaption>
+      </figure>
+      <figure class="tcard">
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote>"Our food truck moves every day. The QR sticker on the window means regulars always find tonight's menu, wherever we park."</blockquote>
+        <figcaption class="who">
+          <span class="av t" aria-hidden="true">TG</span>
+          <div><b>Tom Gallagher</b><span>Owner, Smoke &amp; Barrel Truck</span></div>
+        </figcaption>
+      </figure>
+      <figure class="tcard">
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote>"I'm not techy at all. I had our tapas menu online before my coffee went cold, and editing a price is genuinely two taps."</blockquote>
+        <figcaption class="who">
+          <span class="av" aria-hidden="true">EM</span>
+          <div><b>Elena Marín</b><span>Owner, Calle Ocho Tapas</span></div>
+        </figcaption>
+      </figure>
+      <figure class="tcard">
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote>"The analytics surprised me. I could see which ramen people kept opening, so I made it the house special. Sales followed."</blockquote>
+        <figcaption class="who">
+          <span class="av g" aria-hidden="true">KT</span>
+          <div><b>Kenji Tanaka</b><span>Owner, Hana Ramen Bar</span></div>
+        </figcaption>
+      </figure>
+
+      <!-- SET B (duplicate of A for a seamless loop) — hidden from AT -->
+      <figure class="tcard" aria-hidden="true">
+        <div class="stars">★★★★★</div>
+        <blockquote>"I scribbled our specials on a chalkboard for years. Now there's a QR on every table and our dishes finally look as good as they taste."</blockquote>
+        <figcaption class="who">
+          <img src="assets/img/photo-1438761681033-6461ffad8d80.jpg" alt="" loading="lazy">
+          <div><b>Maria Conti</b><span>Owner, Bella Trattoria</span></div>
+        </figcaption>
+      </figure>
+      <figure class="tcard" aria-hidden="true">
+        <div class="stars">★★★★★</div>
+        <blockquote>"We change the grill menu nightly. I update prices from my phone between services and it's live before the doors open. Didn't believe it was free."</blockquote>
+        <figcaption class="who">
+          <img src="assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="" loading="lazy">
+          <div><b>Daniel Okafor</b><span>Owner, Saffron &amp; Smoke</span></div>
+        </figcaption>
+      </figure>
+      <figure class="tcard" aria-hidden="true">
+        <div class="stars">★★★★★</div>
+        <blockquote>"No printing costs, no designer, no website headache. I built our whole menu in an afternoon and the green theme suits our little cafe perfectly."</blockquote>
+        <figcaption class="who">
+          <img src="assets/img/photo-1494790108377-be9c29b29330.jpg" alt="" loading="lazy">
+          <div><b>Priya Nair</b><span>Owner, Verde Kitchen</span></div>
+        </figcaption>
+      </figure>
+      <figure class="tcard" aria-hidden="true">
+        <div class="stars">★★★★★</div>
+        <blockquote>"Our food truck moves every day. The QR sticker on the window means regulars always find tonight's menu, wherever we park."</blockquote>
+        <figcaption class="who">
+          <span class="av t">TG</span>
+          <div><b>Tom Gallagher</b><span>Owner, Smoke &amp; Barrel Truck</span></div>
+        </figcaption>
+      </figure>
+      <figure class="tcard" aria-hidden="true">
+        <div class="stars">★★★★★</div>
+        <blockquote>"I'm not techy at all. I had our tapas menu online before my coffee went cold, and editing a price is genuinely two taps."</blockquote>
+        <figcaption class="who">
+          <span class="av">EM</span>
+          <div><b>Elena Marín</b><span>Owner, Calle Ocho Tapas</span></div>
+        </figcaption>
+      </figure>
+      <figure class="tcard" aria-hidden="true">
+        <div class="stars">★★★★★</div>
+        <blockquote>"The analytics surprised me. I could see which ramen people kept opening, so I made it the house special. Sales followed."</blockquote>
+        <figcaption class="who">
+          <span class="av g">KT</span>
+          <div><b>Kenji Tanaka</b><span>Owner, Hana Ramen Bar</span></div>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CLOSING ============ -->
+<section class="closing" aria-labelledby="close-h">
+  <div class="closing-bg" aria-hidden="true">
+    <img src="assets/img/photo-1414235077428-338989a2e8c0.jpg" alt="">
+  </div>
+  <div class="wrap closing-inner reveal">
+    <h2 id="close-h">Start your free menu.</h2>
+    <p>Build yours in minutes, share it with a QR code, and keep it forever, completely free.</p>
+    <div class="cl-actions">
+      <a class="btn btn-primary" href="/app/signin.html">
+        <svg class="gicon" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+        Start your free menu
+      </a>
+      <a class="btn btn-ghost" href="#studio">See a live menu</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="wordmark" href="#top" aria-label="Menufic home">Menufic<span class="dot" aria-hidden="true"></span></a>
+        <p class="tag">The genuinely free digital menu maker for restaurants of every size.</p>
+      </div>
+      <div class="footer-col">
+        <h6>Product</h6>
+        <a href="#how">How it works</a>
+        <a href="#studio">See a menu</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="footer-col">
+        <h6>Company</h6>
+        <a href="#features">Features</a>
+        <a href="/app/signin.html">Get started</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h6>Legal</h6>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms &amp; Conditions</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Menufic. All rights reserved.</span>
+      <span class="pwr">Powered by Menufic</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var isTouch = window.matchMedia && window.matchMedia("(hover: none)").matches;
+
+  /* ---- NAV condense + hamburger ---- */
+  var nav = document.getElementById("nav");
+  function onScroll(){ if(window.scrollY > 24){ nav.classList.add("condensed"); } else { nav.classList.remove("condensed"); } }
+  onScroll();
+  window.addEventListener("scroll", onScroll, {passive:true});
+
+  var burger = document.getElementById("hamburger");
+  var navLinks = document.getElementById("navLinks");
+  burger.addEventListener("click", function(){
+    var open = navLinks.classList.toggle("open");
+    burger.setAttribute("aria-expanded", open ? "true":"false");
+  });
+  navLinks.addEventListener("click", function(e){
+    if(e.target.tagName === "A"){ navLinks.classList.remove("open"); burger.setAttribute("aria-expanded","false"); }
+  });
+
+  /* ---- Hero: crossfade-looping video (seamless loop via two layers) ---- */
+  var vA = document.getElementById("heroVideoA");
+  var vB = document.getElementById("heroVideoB");
+  if(reduce){
+    /* reduced motion: no video at all — show the still poster */
+    [vA,vB].forEach(function(v){ if(!v) return; try{ v.pause(); v.removeAttribute("autoplay"); }catch(e){} v.style.display="none"; });
+    var poster = document.querySelector(".hero-poster");
+    if(poster) poster.style.display = "block";
+  } else if(vA && vB){
+    var FADE = 0.85;            /* must match the CSS transition duration */
+    var front = vA, back = vB;
+    var armed = false;
+    try { vA.play(); } catch(e){}
+    function onTick(){
+      var v = front;
+      if(!v.duration || isNaN(v.duration)) return;
+      if(!armed && v.currentTime >= v.duration - FADE){
+        armed = true;
+        back.currentTime = 0;
+        var pr = back.play();
+        if(pr && pr.catch) pr.catch(function(){});
+        front.classList.remove("is-front");   /* fade out current */
+        back.classList.add("is-front");        /* fade in the other */
+        var tmp = front; front = back; back = tmp;
+        armed = false;                          /* re-arm for the new front near its own end */
+      }
+    }
+    vA.addEventListener("timeupdate", onTick);
+    vB.addEventListener("timeupdate", onTick);
+  }
+
+  /* ---- Hero staggered entrance ---- */
+  var staggers = Array.prototype.slice.call(document.querySelectorAll(".stagger"));
+  if(reduce){
+    staggers.forEach(function(el){ el.classList.add("in"); });
+  } else {
+    staggers.sort(function(a,b){ return (a.dataset.delay||0)-(b.dataset.delay||0); });
+    staggers.forEach(function(el){
+      var d = parseInt(el.dataset.delay||0,10) * 110 + 120;
+      setTimeout(function(){ el.classList.add("in"); }, d);
+    });
+  }
+
+  /* ---- Hero floating bubbles: staggered pop-in after the hero loads ---- */
+  var bubbles = Array.prototype.slice.call(document.querySelectorAll(".bubble"));
+  var driftMap = {1:"drift1",2:"drift2",3:"drift3",4:"drift4"};
+  if(reduce){
+    bubbles.forEach(function(b){ b.classList.add("pop"); });
+  } else {
+    bubbles.forEach(function(b,i){
+      var idx = b.getAttribute("data-bub");
+      setTimeout(function(){
+        b.classList.add("pop");
+        b.classList.add(driftMap[idx]);
+      }, 700 + i*150);
+    });
+  }
+
+  /* ---- Hero mouse parallax tilt ---- */
+  var comp = document.getElementById("heroComp");
+  if(comp && !reduce && !isTouch){
+    var hero = comp.closest(".hero");
+    hero.addEventListener("mousemove", function(e){
+      var r = hero.getBoundingClientRect();
+      var px = (e.clientX - r.left)/r.width - 0.5;
+      var py = (e.clientY - r.top)/r.height - 0.5;
+      comp.style.transform = "rotateY(" + (px*8) + "deg) rotateX(" + (-py*6) + "deg) translateZ(0)";
+    });
+    hero.addEventListener("mouseleave", function(){ comp.style.transform = ""; });
+  }
+
+  /* ---- Scroll reveal ---- */
+  var reveals = document.querySelectorAll(".reveal");
+  if(reduce || !("IntersectionObserver" in window)){
+    reveals.forEach(function(el){ el.classList.add("in"); });
+  } else {
+    var ro = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add("in"); ro.unobserve(en.target); } });
+    }, {rootMargin:"0px 0px -10% 0px", threshold:0.12});
+    reveals.forEach(function(el){ ro.observe(el); });
+  }
+
+  /* ---- How it works: sticky split-scroll state swap ---- */
+  var states = Array.prototype.slice.call(document.querySelectorAll(".how-state"));
+  var steps = Array.prototype.slice.call(document.querySelectorAll(".step[data-step]"));
+  function setState(i){
+    states.forEach(function(s){ s.classList.toggle("active", parseInt(s.dataset.state,10)===i); });
+  }
+  if(steps.length && "IntersectionObserver" in window){
+    var so = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ setState(parseInt(en.target.dataset.step,10)); }
+      });
+    }, {rootMargin:"-45% 0px -45% 0px", threshold:0});
+    steps.forEach(function(s){ so.observe(s); });
+  }
+
+  /* ---- THEME BUILDER: live custom restyle ---- */
+  var demo = document.getElementById("demoMenu");
+  var frame = document.getElementById("previewFrame");
+
+  function pressGroup(btn){
+    var group = btn.parentNode.querySelectorAll("[aria-pressed]");
+    Array.prototype.forEach.call(group, function(b){ b.setAttribute("aria-pressed", b===btn ? "true":"false"); });
+  }
+  function clearSwatchPressed(){
+    Array.prototype.forEach.call(document.querySelectorAll(".sw"), function(s){ s.setAttribute("aria-pressed","false"); });
+  }
+
+  /* accent: preset swatches */
+  Array.prototype.forEach.call(document.querySelectorAll(".sw"), function(sw){
+    sw.addEventListener("click", function(){
+      clearSwatchPressed();
+      sw.setAttribute("aria-pressed","true");
+      if(demo) demo.style.setProperty("--acc", sw.dataset.acc);
+      var picker = document.getElementById("customColour");
+      if(picker) picker.value = sw.dataset.acc;
+    });
+  });
+
+  /* accent: custom native colour picker (live) */
+  var customColour = document.getElementById("customColour");
+  if(customColour){
+    customColour.addEventListener("input", function(){
+      clearSwatchPressed();
+      if(demo) demo.style.setProperty("--acc", customColour.value);
+    });
+  }
+
+  /* corner radius: range slider with live readout */
+  var radiusRange = document.getElementById("radiusRange");
+  var radiusVal = document.getElementById("radiusVal");
+  if(radiusRange){
+    radiusRange.addEventListener("input", function(){
+      var v = radiusRange.value + "px";
+      if(demo) demo.style.setProperty("--rad", v);
+      if(radiusVal) radiusVal.textContent = v;
+    });
+  }
+
+  /* font: select */
+  var fontSelect = document.getElementById("fontSelect");
+  if(fontSelect){
+    fontSelect.addEventListener("change", function(){
+      if(demo) demo.style.setProperty("--fontd", fontSelect.value);
+    });
+  }
+
+  /* tone + size: segmented controls */
+  Array.prototype.forEach.call(document.querySelectorAll(".segset button"), function(btn){
+    btn.addEventListener("click", function(){
+      pressGroup(btn);
+      if(btn.dataset.tone && demo){ demo.classList.toggle("light", btn.dataset.tone === "light"); }
+      if(btn.dataset.size && frame){ frame.classList.toggle("desktop", btn.dataset.size === "desktop"); }
+    });
+  });
+
+  /* ---- TESTIMONIAL marquee: reduced-motion fallback to manual scroll ---- */
+  var marquee = document.getElementById("marquee");
+  var track = document.getElementById("marqueeTrack");
+  if(marquee && reduce){
+    /* drop the duplicate (aria-hidden) set so a manual scroller isn't doubled */
+    var dupes = track.querySelectorAll(".tcard[aria-hidden='true']");
+    Array.prototype.forEach.call(dupes, function(d){ d.parentNode.removeChild(d); });
+    marquee.classList.add("static");
+    marquee.setAttribute("tabindex","0");
+    marquee.setAttribute("role","region");
+    marquee.setAttribute("aria-label","Testimonials from restaurant owners, scroll horizontally");
+  }
+})();
+</script>
+</body>
+</html>

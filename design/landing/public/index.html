@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saffron &amp; Smoke · Dinner Menu</title>
+<meta name="description" content="Saffron &amp; Smoke — wood-fired cooking and small plates at 12 Dock Street, Downtown. Browse our breakfast, lunch and dinner menus.">
+<!-- Open Graph -->
+<meta property="og:type" content="restaurant.menu">
+<meta property="og:title" content="Saffron &amp; Smoke">
+<meta property="og:description" content="Wood-fired cooking & small plates · 12 Dock Street, Downtown">
+<meta property="og:image" content="../assets/img/photo-1432139555190-58524dae6a55.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Structured data: restaurant + menu -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "Saffron & Smoke",
+  "address": "12 Dock Street, Downtown",
+  "telephone": "+44 20 7946 0123",
+  "servesCuisine": "Wood-fired, Small plates",
+  "image": "../assets/img/photo-1432139555190-58524dae6a55.jpg"
+}
+</script>
+<style>
+:root{
+  /* Classic Bistro — owner theme: warm, light, premium */
+  --bg: #f6efe2;            /* warm parchment */
+  --bg-deep: #efe5d3;
+  --surface: #fffaf2;        /* warm off-white card */
+  --surface-2: #fdf4e7;
+  --ink: #2b211a;            /* deep warm brown text */
+  --ink-soft: #5c4f44;       /* secondary text (≥4.5:1 on surface) */
+  --ink-faint: #7a6c5e;
+  --terracotta: #b14a2e;     /* warm brick primary */
+  --terracotta-deep: #8f3a22;
+  --terracotta-soft: #d9805f;
+  --gold: #b8893a;
+  --line: rgba(90,68,48,0.16);
+  --line-soft: rgba(90,68,48,0.10);
+  --shadow-sm: 0 1px 2px rgba(70,45,25,0.06), 0 2px 8px rgba(70,45,25,0.05);
+  --shadow-md: 0 6px 20px rgba(80,48,24,0.10), 0 2px 6px rgba(80,48,24,0.06);
+  --shadow-lg: 0 24px 60px rgba(60,35,18,0.22);
+  --r: 16px;
+  --r-sm: 11px;
+  --ease: cubic-bezier(0.16,1,0.3,1);
+  --maxw: 1180px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:"Hanken Grotesk",system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{
+  outline:3px solid var(--terracotta);
+  outline-offset:2px;
+  border-radius:6px;
+}
+button{font-family:inherit}
+
+/* ---------- Floating prototype nav ---------- */
+.proto-back{
+  position:fixed;top:14px;left:14px;z-index:120;
+  display:inline-flex;align-items:center;gap:7px;
+  min-height:40px;padding:8px 14px;
+  font-size:13px;font-weight:500;letter-spacing:.01em;
+  color:#3a2c20;text-decoration:none;
+  background:rgba(255,250,242,.82);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border:1px solid var(--line);border-radius:999px;
+  box-shadow:var(--shadow-sm);
+  transition:background .2s var(--ease), transform .2s var(--ease);
+}
+.proto-back:hover{background:#fff;transform:translateY(-1px)}
+
+/* ---------- Banner ---------- */
+.banner{position:relative;width:100%;overflow:hidden}
+.banner__track{display:flex;width:100%;transition:transform .9s var(--ease)}
+.banner__slide{position:relative;flex:0 0 100%;height:clamp(320px,52vh,520px)}
+.banner__slide img{width:100%;height:100%;object-fit:cover}
+.banner__scrim{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(30,18,10,.12) 0%,rgba(30,18,10,.30) 42%,rgba(28,16,8,.74) 100%);
+}
+.banner__inner{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;
+  max-width:var(--maxw);margin:0 auto;
+  padding:0 20px clamp(22px,4vw,40px);
+  width:100%;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  color:#f4d8c4;margin-bottom:10px;
+}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--terracotta-soft)}
+h1.restaurant-name{
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-weight:600;
+  font-size:clamp(2.4rem,8vw,4.6rem);
+  line-height:.98;color:#fff;
+  letter-spacing:-.01em;
+  text-shadow:0 2px 24px rgba(0,0,0,.35);
+}
+.banner__meta{
+  display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px;
+}
+.meta-link{
+  display:inline-flex;align-items:center;gap:8px;
+  min-height:40px;padding:6px 0;
+  font-size:14.5px;font-weight:500;color:#fbeee2;
+  text-decoration:none;
+}
+.meta-link svg{flex:none;opacity:.9}
+.meta-link span{border-bottom:1px solid rgba(251,238,226,.35);transition:border-color .2s}
+.meta-link:hover span{border-color:#fff}
+/* carousel dots */
+.banner__dots{position:absolute;bottom:14px;right:18px;z-index:3;display:flex;gap:7px}
+.banner__dots button{
+  width:9px;height:9px;padding:0;border:none;border-radius:999px;cursor:pointer;
+  background:rgba(255,255,255,.45);transition:background .25s, width .25s;
+}
+.banner__dots button[aria-current="true"]{background:#fff;width:22px}
+
+/* ---------- Sticky controls (search + tabs) ---------- */
+.controls{
+  position:sticky;top:0;z-index:60;
+  background:rgba(246,239,226,.92);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line-soft);
+}
+.controls__inner{max-width:var(--maxw);margin:0 auto;padding:14px 20px 0}
+.search{position:relative;margin-bottom:12px}
+.search svg{
+  position:absolute;left:16px;top:50%;transform:translateY(-50%);
+  color:var(--ink-faint);pointer-events:none;
+}
+.search input{
+  width:100%;min-height:48px;
+  padding:12px 16px 12px 46px;
+  font-size:16px;color:var(--ink);
+  background:var(--surface);
+  border:1.5px solid var(--line);border-radius:999px;
+  box-shadow:var(--shadow-sm);
+  transition:border-color .2s,box-shadow .2s;
+}
+.search input::placeholder{color:var(--ink-faint)}
+.search input:focus{outline:none;border-color:var(--terracotta);box-shadow:0 0 0 4px rgba(177,74,46,.14)}
+.search__clear{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  display:none;align-items:center;justify-content:center;
+  width:34px;height:34px;border:none;border-radius:999px;cursor:pointer;
+  background:transparent;color:var(--ink-soft);
+}
+.search__clear:hover{background:var(--line-soft)}
+.search.has-value .search__clear{display:flex}
+
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  position:relative;flex:none;
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  min-height:48px;padding:10px 18px;
+  background:none;border:none;cursor:pointer;
+  font-family:"Cormorant Garamond",Georgia,serif;font-size:18px;font-weight:600;
+  color:var(--ink-soft);white-space:nowrap;
+  border-bottom:2.5px solid transparent;
+  transition:color .2s;
+}
+.tab small{font-family:"Hanken Grotesk",sans-serif;font-size:11px;font-weight:500;letter-spacing:.02em;color:var(--ink-faint)}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--terracotta);border-bottom-color:var(--terracotta)}
+.tab[aria-selected="true"] small{color:var(--terracotta-deep)}
+
+/* ---------- Menu body ---------- */
+main{max-width:var(--maxw);margin:0 auto;padding:30px 20px 0}
+.menu-panel[hidden]{display:none}
+.section{margin-bottom:44px}
+.section__head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.section__head h2{
+  font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;
+  font-size:clamp(1.5rem,4vw,2rem);color:var(--ink);letter-spacing:-.01em;
+}
+.section__head .rule{flex:1;height:1px;background:var(--line)}
+.section__count{font-size:13px;color:var(--ink-faint);font-weight:500}
+
+.grid{
+  display:grid;gap:18px;
+  grid-template-columns:1fr;
+}
+@media(min-width:560px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:920px){.grid{grid-template-columns:repeat(3,1fr)}}
+
+/* ---------- Item card ---------- */
+.card{
+  position:relative;text-align:left;width:100%;
+  display:flex;flex-direction:column;
+  background:var(--surface);
+  border:1px solid var(--line-soft);
+  border-radius:var(--r);
+  box-shadow:var(--shadow-sm);
+  cursor:pointer;overflow:hidden;
+  transition:transform .28s var(--ease),box-shadow .28s var(--ease),border-color .2s;
+}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line)}
+.card:focus-visible{outline:3px solid var(--terracotta);outline-offset:2px}
+.card__media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--bg-deep)}
+.card__media img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+.card:hover .card__media img{transform:scale(1.05)}
+.badge{
+  position:absolute;top:12px;left:12px;
+  padding:5px 11px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:#fff;background:rgba(40,24,16,.82);border-radius:999px;
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+}
+.card.is-sold .card__media img{filter:grayscale(.5) brightness(.82)}
+.card__body{padding:15px 16px 17px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card__top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.card__name{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.18rem;font-weight:600;color:var(--ink);line-height:1.2}
+.card__price{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.1rem;font-weight:600;color:var(--terracotta);white-space:nowrap}
+.card__desc{
+  font-size:14px;color:var(--ink-soft);line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.card__tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:4px}
+.pill{
+  font-size:11px;font-weight:600;letter-spacing:.02em;
+  padding:3px 9px;border-radius:999px;
+  background:var(--surface-2);color:var(--terracotta-deep);
+  border:1px solid var(--line-soft);
+}
+.no-results{
+  display:none;text-align:center;padding:50px 20px;color:var(--ink-soft);
+}
+.no-results h3{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.5rem;color:var(--ink);margin-bottom:6px}
+
+/* ---------- Footer ---------- */
+footer{
+  margin-top:30px;padding:34px 20px 40px;
+  border-top:1px solid var(--line-soft);
+  text-align:center;
+}
+.powered{
+  display:inline-flex;align-items:center;gap:7px;
+  min-height:44px;padding:8px 14px;
+  font-size:13px;color:var(--ink-faint);text-decoration:none;
+  border-radius:999px;transition:color .2s,background .2s;
+}
+.powered strong{color:var(--terracotta-deep);font-weight:600}
+.powered:hover{color:var(--ink);background:var(--surface-2)}
+.foot-info{margin-top:10px;font-size:12.5px;color:var(--ink-faint)}
+
+/* ---------- Modal ---------- */
+.modal-root[hidden]{display:none}
+.modal-backdrop{
+  position:fixed;inset:0;z-index:200;
+  display:flex;align-items:center;justify-content:center;padding:18px;
+  background:rgba(40,24,14,.5);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  animation:fade .25s var(--ease);
+}
+.modal{
+  position:relative;width:100%;max-width:560px;
+  max-height:92vh;overflow-y:auto;
+  background:var(--surface);
+  border-radius:22px;box-shadow:var(--shadow-lg);
+  animation:pop .35s var(--ease);
+}
+.modal__media{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--bg-deep);border-radius:22px 22px 0 0}
+.modal__media img{width:100%;height:100%;object-fit:cover}
+.modal__close{
+  position:absolute;top:12px;right:12px;z-index:3;
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  border:none;border-radius:999px;cursor:pointer;
+  background:rgba(255,250,242,.9);color:var(--ink);
+  box-shadow:var(--shadow-sm);transition:background .2s,transform .2s;
+}
+.modal__close:hover{background:#fff;transform:rotate(90deg)}
+.modal__body{padding:22px 24px 26px}
+.modal__top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:4px}
+.modal__name{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.85rem;font-weight:600;color:var(--ink);line-height:1.1}
+.modal__price{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.5rem;font-weight:600;color:var(--terracotta);white-space:nowrap}
+.modal__tags{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.modal__tags .pill{font-size:12px;padding:5px 12px}
+.modal__desc{font-size:15.5px;line-height:1.65;color:var(--ink-soft)}
+.modal__sold{
+  display:inline-block;margin-top:16px;padding:8px 16px;
+  font-size:13px;font-weight:600;color:#fff;background:var(--ink);border-radius:999px;
+}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .card:hover{transform:none}
+  .card:hover .card__media img{transform:none}
+}
+</style>
+</head>
+<body>
+
+<a href="../app/restaurant.html" class="proto-back" aria-label="Back to the menu editor">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+  Back to editor
+</a>
+
+<!-- ===== Banner ===== -->
+<header class="banner">
+  <div class="banner__track" id="bannerTrack">
+    <div class="banner__slide">
+      <img src="../assets/img/photo-1432139555190-58524dae6a55.jpg" alt="A glowing wood-fired grill with smoke rising over flame-charred meat" loading="eager">
+      <div class="banner__scrim"></div>
+    </div>
+    <div class="banner__slide">
+      <img src="../assets/img/photo-1484723091739-30a097e8f929.jpg" alt="A spread of plated dishes on a warm wooden restaurant table" loading="lazy">
+      <div class="banner__scrim"></div>
+    </div>
+    <div class="banner__slide">
+      <img src="../assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="A wood-fired margherita pizza fresh from the oven" loading="lazy">
+      <div class="banner__scrim"></div>
+    </div>
+  </div>
+
+  <div class="banner__inner">
+    <span class="eyebrow">Wood-fired &amp; Small plates</span>
+    <h1 class="restaurant-name">Saffron &amp; Smoke</h1>
+    <div class="banner__meta">
+      <a class="meta-link" href="https://www.google.com/maps/search/?api=1&amp;query=12+Dock+Street+Downtown" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>12 Dock Street, Downtown</span>
+      </a>
+      <a class="meta-link" href="tel:+442079460123">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
+        <span>+44 20 7946 0123</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="banner__dots" role="tablist" aria-label="Banner images" id="bannerDots">
+    <button type="button" aria-label="Show banner image 1" aria-current="true"></button>
+    <button type="button" aria-label="Show banner image 2"></button>
+    <button type="button" aria-label="Show banner image 3"></button>
+  </div>
+</header>
+
+<!-- ===== Controls ===== -->
+<div class="controls">
+  <div class="controls__inner">
+    <div class="search" id="searchWrap">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="search" id="search" placeholder="Search the menu…" aria-label="Search the menu by name or description" autocomplete="off">
+      <button type="button" class="search__clear" id="searchClear" aria-label="Clear search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Menus">
+      <button class="tab" role="tab" aria-selected="false" aria-controls="panel-breakfast" id="tab-breakfast" data-menu="breakfast">Breakfast<small>7–11am</small></button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="panel-lunch" id="tab-lunch" data-menu="lunch">Lunch<small>12–4pm</small></button>
+      <button class="tab" role="tab" aria-selected="true" aria-controls="panel-dinner" id="tab-dinner" data-menu="dinner">Dinner<small>5–11pm</small></button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Menu body ===== -->
+<main>
+  <!-- Dinner (active) -->
+  <div class="menu-panel" id="panel-dinner" role="tabpanel" aria-labelledby="tab-dinner">
+
+    <section class="section" data-section>
+      <div class="section__head">
+        <h2>Mains</h2><span class="rule"></span>
+      </div>
+      <div class="grid" data-grid>
+        <!-- Smoked short rib -->
+        <button class="card" type="button"
+          data-name="Smoked short rib" data-price="£28"
+          data-img="../assets/img/photo-1432139555190-58524dae6a55.jpg"
+          data-alt="A pile of glossy smoked short rib glazed in burnt honey"
+          data-desc="Thirty-six hours over oak embers, lacquered in a sticky burnt-honey glaze and finished with smoked sea salt. Falls apart at the touch of a fork."
+          data-tags="Chef&#39;s Special|Popular">
+          <div class="card__media"><img src="../assets/img/photo-1432139555190-58524dae6a55.jpg" alt="A pile of glossy smoked short rib glazed in burnt honey"></div>
+          <div class="card__body">
+            <div class="card__top"><span class="card__name">Smoked short rib</span><span class="card__price">£28</span></div>
+            <p class="card__desc">36-hour cook over oak embers, burnt-honey glaze, smoked sea salt.</p>
+            <div class="card__tags"><span class="pill">Chef's Special</span><span class="pill">Popular</span></div>
+          </div>
+        </button>
+        <!-- Wood-fired margherita -->
+        <button class="card" type="button"
+          data-name="Wood-fired margherita" data-price="£19"
+          data-img="../assets/img/photo-1565299624946-b28f40a0ae38.jpg"
+          data-alt="A bubbling wood-fired margherita pizza topped with fresh basil"
+          data-desc="San Marzano tomatoes, fior di latte and a slick of cold-pressed basil oil, blistered in ninety seconds in the wood oven. Simple, the way it should be."
+          data-tags="Popular">
+          <div class="card__media"><img src="../assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="A bubbling wood-fired margherita pizza topped with fresh basil"></div>
+          <div class="card__body">
+            <div class="card__top"><span class="card__name">Wood-fired margherita</span><span class="card__price">£19</span></div>
+            <p class="card__desc">San Marzano, fior di latte, basil oil, blistered in the wood oven.</p>
+            <div class="card__tags"><span class="pill">Popular</span></div>
+          </div>
+        </button>
+        <!-- Saffron prawns — SOLD OUT -->
+        <button class="card is-sold" type="button"
+          data-name="Saffron prawns" data-price="£22"
+          data-img="../assets/img/photo-1424847651672-bf20a4b0982b.jpg"
+          data-alt="Plump prawns in a golden saffron chilli butter with charred lemon"
+          data-desc="Wild tiger prawns bathed in saffron chilli butter, seared hard and served with a charred lemon half. Pull-apart messy in the best way."
+          data-tags="Spicy|Chef&#39;s Special" data-sold="1">
+          <div class="card__media">
+            <span class="badge">Sold out</span>
+            <img src="../assets/img/photo-1424847651672-bf20a4b0982b.jpg" alt="Plump prawns in a golden saffron chilli butter with charred lemon">
+          </div>
+          <div class="card__body">
+            <div class="card__top"><span class="card__name">Saffron prawns</span><span class="card__price">£22</span></div>
+            <p class="card__desc">Saffron chilli butter, seared hard, with a charred lemon half.</p>
+            <div class="card__tags"><span class="pill">Spicy</span><span class="pill">Chef's Special</span></div>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <section class="section" data-section>
+      <div class="section__head">
+        <h2>Small plates</h2><span class="rule"></span>
+      </div>
+      <div class="grid" data-grid>
+        <!-- Red shrimp broth -->
+        <button class="card" type="button"
+          data-name="Red shrimp broth" data-price="£16"
+          data-img="../assets/img/photo-1455619452474-d2be8b1e70cd.jpg"
+          data-alt="A deep red shrimp broth in a rustic bowl with fresh herbs"
+          data-desc="A slow-built shellfish bisque the colour of embers, finished with chilli oil and a spoon of crème fraîche. Bread for dunking is not optional."
+          data-tags="New|Spicy">
+          <div class="card__media"><img src="../assets/img/photo-1455619452474-d2be8b1e70cd.jpg" alt="A deep red shrimp broth in a rustic bowl with fresh herbs"></div>
+          <div class="card__body">
+            <div class="card__top"><span class="card__name">Red shrimp broth</span><span class="card__price">£16</span></div>
+            <p class="card__desc">Slow shellfish bisque, chilli oil, a spoon of crème fraîche.</p>
+            <div class="card__tags"><span class="pill">New</span><span class="pill">Spicy</span></div>
+          </div>
+        </button>
+        <!-- Charred sharing board -->
+        <button class="card" type="button"
+          data-name="Charred sharing board" data-price="£24"
+          data-img="../assets/img/photo-1414235077428-338989a2e8c0.jpg"
+          data-alt="A generous sharing board of charred meats, breads and dips"
+          data-desc="A board for the table — charred flatbreads, smoked dips, pickles and whatever the grill is loving that night. Built for two to four hands."
+          data-tags="Popular|New">
+          <div class="card__media"><img src="../assets/img/photo-1414235077428-338989a2e8c0.jpg" alt="A generous sharing board of charred meats, breads and dips"></div>
+          <div class="card__body">
+            <div class="card__top"><span class="card__name">Charred sharing board</span><span class="card__price">£24</span></div>
+            <p class="card__desc">Charred flatbreads, smoked dips, pickles, grill-of-the-night.</p>
+            <div class="card__tags"><span class="pill">Popular</span><span class="pill">New</span></div>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <section class="section" data-section>
+      <div class="section__head">
+        <h2>Sides</h2><span class="rule"></span>
+      </div>
+      <div class="grid" data-grid>
+        <!-- Burnt-honey carrots -->
+        <button class="card" type="button"
+          data-name="Burnt-honey carrots" data-price="£9"
+          data-img="../assets/img/photo-1484723091739-30a097e8f929.jpg"
+          data-alt="Roasted heritage carrots glazed in burnt honey on a plate"
+          data-desc="Heritage carrots roasted whole, glazed in burnt honey and scattered with toasted seeds and dukkah. Sweet, smoky, a little bit dangerous."
+          data-tags="Popular">
+          <div class="card__media"><img src="../assets/img/photo-1484723091739-30a097e8f929.jpg" alt="Roasted heritage carrots glazed in burnt honey on a plate"></div>
+          <div class="card__body">
+            <div class="card__top"><span class="card__name">Burnt-honey carrots</span><span class="card__price">£9</span></div>
+            <p class="card__desc">Heritage carrots, burnt honey, toasted seeds and dukkah.</p>
+            <div class="card__tags"><span class="pill">Popular</span></div>
+          </div>
+        </button>
+        <!-- Sourdough & cultured butter -->
+        <button class="card" type="button"
+          data-name="Sourdough &amp; cultured butter" data-price="£6"
+          data-img="../assets/img/photo-1424847651672-bf20a4b0982b.jpg"
+          data-alt="Warm sourdough bread with a quenelle of cultured butter"
+          data-desc="Our own slow-proved sourdough, served warm with a generous quenelle of cultured butter and a pinch of smoked salt. The dangerous opener."
+          data-tags="New">
+          <div class="card__media"><img src="../assets/img/photo-1424847651672-bf20a4b0982b.jpg" alt="Warm sourdough bread with a quenelle of cultured butter"></div>
+          <div class="card__body">
+            <div class="card__top"><span class="card__name">Sourdough &amp; cultured butter</span><span class="card__price">£6</span></div>
+            <p class="card__desc">Slow-proved sourdough, warm, with cultured butter and smoked salt.</p>
+            <div class="card__tags"><span class="pill">New</span></div>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <div class="no-results" id="noResults" role="status">
+      <h3>Nothing on the menu matches that</h3>
+      <p>Try a different word — maybe “smoked”, “honey” or “charred”.</p>
+    </div>
+  </div>
+
+  <!-- Breakfast (placeholder) -->
+  <div class="menu-panel" id="panel-breakfast" role="tabpanel" aria-labelledby="tab-breakfast" hidden>
+    <section class="section">
+      <div class="section__head"><h2>Breakfast</h2><span class="rule"></span></div>
+      <p style="color:var(--ink-soft);max-width:46ch">Served 7–11am. Smoked-salmon flatbreads, saffron shakshuka and the house granola — the full breakfast menu is being plated. Switch to <strong>Dinner</strong> to browse tonight's service.</p>
+    </section>
+  </div>
+
+  <!-- Lunch (placeholder) -->
+  <div class="menu-panel" id="panel-lunch" role="tabpanel" aria-labelledby="tab-lunch" hidden>
+    <section class="section">
+      <div class="section__head"><h2>Lunch</h2><span class="rule"></span></div>
+      <p style="color:var(--ink-soft);max-width:46ch">Served 12–4pm. Grilled flatbread plates, a daily broth and the short-rib roll. Switch to <strong>Dinner</strong> to browse tonight's service.</p>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <a class="powered" href="../index.html">Powered by <strong>Menufic</strong></a>
+  <p class="foot-info">Saffron &amp; Smoke · 12 Dock Street, Downtown · Open daily 7am–11pm</p>
+</footer>
+
+<!-- ===== Item detail modal ===== -->
+<div class="modal-root" id="modalRoot" hidden>
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalName" id="modal">
+      <div class="modal__media">
+        <button type="button" class="modal__close" id="modalClose" aria-label="Close dish details">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <img id="modalImg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="">
+      </div>
+      <div class="modal__body">
+        <div class="modal__top">
+          <h2 class="modal__name" id="modalName"></h2>
+          <span class="modal__price" id="modalPrice"></span>
+        </div>
+        <div class="modal__tags" id="modalTags"></div>
+        <p class="modal__desc" id="modalDesc"></p>
+        <span class="modal__sold" id="modalSold" hidden>Currently sold out</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Banner carousel ---------- */
+  var track = document.getElementById('bannerTrack');
+  var dots = Array.prototype.slice.call(document.querySelectorAll('#bannerDots button'));
+  var slideCount = dots.length, current = 0, timer = null;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function goTo(i){
+    current = (i + slideCount) % slideCount;
+    track.style.transform = 'translateX(' + (-current * 100) + '%)';
+    dots.forEach(function(d, idx){ d.setAttribute('aria-current', idx === current ? 'true' : 'false'); });
+  }
+  dots.forEach(function(d, idx){ d.addEventListener('click', function(){ goTo(idx); restart(); }); });
+  function restart(){ if(reduce) return; clearInterval(timer); timer = setInterval(function(){ goTo(current+1); }, 5000); }
+  restart();
+
+  /* ---------- Tabs ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var search = document.getElementById('search');
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+    runFilter();
+  }
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){ selectTab(tab); });
+    tab.addEventListener('keydown', function(e){
+      var i = tabs.indexOf(tab);
+      if(e.key === 'ArrowRight'){ e.preventDefault(); tabs[(i+1)%tabs.length].focus(); }
+      if(e.key === 'ArrowLeft'){ e.preventDefault(); tabs[(i-1+tabs.length)%tabs.length].focus(); }
+    });
+  });
+
+  /* ---------- Search filter ---------- */
+  var wrap = document.getElementById('searchWrap');
+  var clearBtn = document.getElementById('searchClear');
+  var noResults = document.getElementById('noResults');
+  function runFilter(){
+    var q = search.value.trim().toLowerCase();
+    wrap.classList.toggle('has-value', q.length > 0);
+    var activePanel = document.querySelector('.menu-panel:not([hidden])');
+    if(!activePanel){ return; }
+    var sections = activePanel.querySelectorAll('[data-section]');
+    var anyVisible = false;
+    sections.forEach(function(sec){
+      var cards = sec.querySelectorAll('.card');
+      var secVisible = 0;
+      cards.forEach(function(c){
+        var hay = (c.getAttribute('data-name') + ' ' + c.getAttribute('data-desc')).toLowerCase();
+        var match = q === '' || hay.indexOf(q) !== -1;
+        c.style.display = match ? '' : 'none';
+        if(match) secVisible++;
+      });
+      sec.style.display = secVisible ? '' : 'none';
+      if(secVisible) anyVisible = true;
+    });
+    if(noResults) noResults.style.display = (anyVisible || activePanel.id !== 'panel-dinner') ? 'none' : 'block';
+  }
+  search.addEventListener('input', runFilter);
+  clearBtn.addEventListener('click', function(){ search.value = ''; runFilter(); search.focus(); });
+
+  /* ---------- Modal ---------- */
+  var root = document.getElementById('modalRoot');
+  var backdrop = document.getElementById('modalBackdrop');
+  var modal = document.getElementById('modal');
+  var closeBtn = document.getElementById('modalClose');
+  var mImg = document.getElementById('modalImg'),
+      mName = document.getElementById('modalName'),
+      mPrice = document.getElementById('modalPrice'),
+      mDesc = document.getElementById('modalDesc'),
+      mTags = document.getElementById('modalTags'),
+      mSold = document.getElementById('modalSold');
+  var lastFocus = null;
+
+  function openModal(card){
+    lastFocus = card;
+    mImg.src = card.getAttribute('data-img');
+    mImg.alt = card.getAttribute('data-alt') || '';
+    mName.textContent = card.getAttribute('data-name').replace(/&amp;/g,'&');
+    mPrice.textContent = card.getAttribute('data-price');
+    mDesc.textContent = card.getAttribute('data-desc');
+    mTags.innerHTML = '';
+    (card.getAttribute('data-tags') || '').split('|').filter(Boolean).forEach(function(t){
+      var s = document.createElement('span');
+      s.className = 'pill';
+      s.textContent = t.replace(/&#39;/g, "'").replace(/&amp;/g,'&');
+      mTags.appendChild(s);
+    });
+    mSold.hidden = card.getAttribute('data-sold') !== '1';
+    root.hidden = false;
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+    document.addEventListener('keydown', onKey);
+  }
+  function closeModal(){
+    root.hidden = true;
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', onKey);
+    if(lastFocus) lastFocus.focus();
+  }
+  function onKey(e){
+    if(e.key === 'Escape'){ closeModal(); return; }
+    if(e.key === 'Tab'){
+      var f = modal.querySelectorAll('button, a[href], input, [tabindex]:not([tabindex="-1"])');
+      if(!f.length) return;
+      var first = f[0], last = f[f.length-1];
+      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    }
+  }
+  document.querySelectorAll('.card').forEach(function(card){
+    card.addEventListener('click', function(){ openModal(card); });
+  });
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', function(e){ if(e.target === backdrop) closeModal(); });
+})();
+</script>
+</body>
+</html>

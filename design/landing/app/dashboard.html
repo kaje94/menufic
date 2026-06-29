@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en" class="js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Restaurants · Menufic</title>
+<meta name="description" content="Manage your restaurants on Menufic — create, edit and publish beautiful digital menus from one dashboard.">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<!-- Same identity fonts as the landing page -->
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=boska@400,500,700&f[]=supreme@400,500,600,700&display=swap">
+<style>
+:root{
+  --bg: oklch(0.18 0.03 45);
+  --bg-deep: oklch(0.155 0.026 52);
+  --surface: oklch(0.235 0.034 46);
+  --surface-2: oklch(0.295 0.04 48);
+  --saffron: oklch(0.785 0.14 68);
+  --saffron-deep: oklch(0.72 0.14 70);
+  --tomato: oklch(0.56 0.19 32);
+  --tomato-bright: oklch(0.66 0.19 32);
+  --green: oklch(0.72 0.15 150);
+  --cream: oklch(0.96 0.015 78);
+  --cream-soft: oklch(0.83 0.022 78);
+  --line: oklch(0.42 0.03 48 / 0.5);
+  --line-soft: oklch(0.42 0.03 58 / 0.28);
+  --ease: cubic-bezier(0.16,1,0.3,1);
+  --sidebar-w: 260px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--cream);
+  font-family:"Supreme",system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+h1,h2,h3{
+  font-family:"Boska",Georgia,serif;
+  font-weight:700;
+  letter-spacing:-0.03em;
+  line-height:1.05;
+  margin:0;
+  text-wrap:balance;
+}
+p{margin:0;text-wrap:pretty}
+:focus-visible{outline:3px solid var(--saffron);outline-offset:3px;border-radius:6px}
+
+/* ============ BUTTONS (from landing) ============ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  min-height:48px;padding:0 22px;
+  border-radius:999px;border:1px solid transparent;
+  font-family:"Supreme";font-weight:600;font-size:16px;color:var(--cream);
+  transition:transform .35s var(--ease),background .25s var(--ease),box-shadow .35s var(--ease);
+}
+.btn-primary{
+  background:var(--tomato);color:#fff;
+  box-shadow:0 10px 30px -10px oklch(0.605 0.18 30 / 0.7);
+}
+.btn-primary:hover{background:var(--tomato-bright);transform:translateY(-2px);box-shadow:0 16px 40px -12px oklch(0.605 0.18 30 / 0.8)}
+.btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}
+.btn-ghost:hover{background:oklch(0.30 0.04 60 / 0.5);transform:translateY(-2px)}
+.gicon{width:18px;height:18px;flex:none}
+
+/* ============ APP SHELL ============ */
+.app{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);min-height:100vh}
+
+/* ---- Sidebar ---- */
+.sidebar{
+  position:sticky;top:0;align-self:start;
+  height:100vh;
+  background:var(--bg-deep);
+  border-right:1px solid var(--line-soft);
+  display:flex;flex-direction:column;
+  padding:22px 16px 16px;
+  z-index:60;
+}
+.sb-brand{
+  font-family:"Boska";font-weight:700;font-size:24px;letter-spacing:-0.04em;
+  color:var(--cream);display:inline-flex;align-items:center;gap:8px;
+  padding:6px 8px 4px;margin-bottom:18px;
+}
+.sb-brand .dot{width:9px;height:9px;border-radius:50%;background:var(--tomato);margin-bottom:-2px}
+.sb-section{
+  font-size:12px;font-weight:600;color:var(--cream-soft);
+  letter-spacing:.04em;padding:0 10px;margin:6px 0 8px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sb-section .count{
+  font-size:11px;font-weight:600;color:var(--cream-soft);
+  background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:999px;padding:1px 8px;
+}
+.sb-list{display:flex;flex-direction:column;gap:3px;margin:0 0 4px;overflow-y:auto;flex:0 1 auto}
+.sb-item{
+  display:flex;align-items:center;gap:11px;
+  width:100%;min-height:46px;padding:6px 10px;
+  border:none;background:transparent;border-radius:12px;text-align:left;
+  color:var(--cream-soft);font-size:14.5px;font-weight:500;
+  transition:background .2s var(--ease),color .2s var(--ease);
+}
+.sb-item:hover{background:oklch(0.30 0.04 60 / 0.4);color:var(--cream)}
+.sb-item .thumb{
+  width:34px;height:34px;border-radius:9px;object-fit:cover;flex:none;
+  border:1px solid var(--line-soft);
+}
+.sb-item .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-item .sb-dot{width:7px;height:7px;border-radius:50%;flex:none;background:transparent}
+/* active: full subtle tint + saffron text + saffron dot (NO side-stripe) */
+.sb-item[aria-current="page"]{
+  background:oklch(0.785 0.14 68 / 0.13);
+  color:var(--saffron);font-weight:600;
+}
+.sb-item[aria-current="page"] .sb-dot{background:var(--saffron)}
+.sb-item[aria-current="page"] .thumb{border-color:oklch(0.785 0.14 68 / 0.55)}
+
+.sb-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-soft);display:flex;flex-direction:column;gap:3px}
+.sb-link{
+  display:flex;align-items:center;gap:12px;
+  width:100%;min-height:46px;padding:6px 12px;
+  border:none;background:transparent;border-radius:12px;text-align:left;
+  color:var(--cream-soft);font-size:14.5px;font-weight:500;
+  transition:background .2s var(--ease),color .2s var(--ease);
+}
+.sb-link:hover{background:oklch(0.30 0.04 60 / 0.4);color:var(--cream)}
+.sb-link svg{width:19px;height:19px;flex:none;stroke:currentColor}
+.sb-user{
+  display:flex;align-items:center;gap:11px;
+  margin-top:10px;padding:9px 11px;
+  background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;
+}
+.sb-user img{width:38px;height:38px;border-radius:50%;object-fit:cover;flex:none}
+.sb-user .who{min-width:0;flex:1}
+.sb-user .who b{display:block;font-size:13.5px;font-weight:600;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-user .who span{display:block;font-size:12px;color:var(--cream-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---- Main ---- */
+.main{display:flex;flex-direction:column;min-width:0;background:var(--bg)}
+
+/* slim top bar */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;gap:16px;
+  padding:12px clamp(18px,3vw,40px);
+  background:oklch(0.185 0.028 55 / 0.86);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line-soft);
+}
+.crumb{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--cream-soft);min-width:0}
+.crumb .home{color:var(--cream-soft);font-weight:500}
+.crumb .sep{opacity:.6}
+.crumb .here{color:var(--cream);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-spacer{flex:1}
+.hamburger{
+  display:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  width:44px;height:44px;align-items:center;justify-content:center;flex:none;
+}
+.hamburger span{display:block;width:18px;height:2px;background:var(--cream);position:relative}
+.hamburger span::before,.hamburger span::after{content:"";position:absolute;left:0;width:18px;height:2px;background:var(--cream)}
+.hamburger span::before{top:-6px}.hamburger span::after{top:6px}
+
+/* avatar + dropdown */
+.acct{position:relative;flex:none}
+.acct-btn{
+  display:flex;align-items:center;gap:9px;
+  min-height:44px;padding:4px 10px 4px 4px;
+  background:var(--surface);border:1px solid var(--line-soft);border-radius:999px;
+  color:var(--cream);font-size:14px;font-weight:600;
+  transition:background .2s var(--ease),border-color .2s var(--ease);
+}
+.acct-btn:hover{background:var(--surface-2)}
+.acct-btn img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none}
+.acct-btn .nm{display:none}
+.acct-btn .chev{width:16px;height:16px;color:var(--cream-soft);transition:transform .25s var(--ease)}
+.acct-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.acct-menu{
+  position:absolute;right:0;top:calc(100% + 10px);min-width:224px;
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;
+  padding:8px;box-shadow:0 18px 40px -22px oklch(0 0 0 / 0.85);
+  display:none;flex-direction:column;gap:2px;
+}
+.acct-menu.open{display:flex}
+.acct-head{padding:9px 11px 11px;border-bottom:1px solid var(--line-soft);margin-bottom:6px}
+.acct-head b{display:block;font-size:14px;color:var(--cream)}
+.acct-head span{display:block;font-size:12.5px;color:var(--cream-soft);margin-top:2px}
+.acct-menu a{
+  display:flex;align-items:center;gap:11px;
+  min-height:44px;padding:0 11px;border-radius:10px;
+  color:var(--cream);font-size:14px;font-weight:500;
+  transition:background .18s var(--ease);
+}
+.acct-menu a:hover{background:oklch(0.30 0.04 60 / 0.5)}
+.acct-menu a svg{width:17px;height:17px;flex:none;stroke:currentColor;color:var(--cream-soft)}
+.acct-menu a.danger{color:var(--cream)}
+.acct-menu a.danger:hover{color:var(--tomato-bright)}
+
+/* page body */
+.page{padding:clamp(24px,4vw,44px) clamp(18px,3vw,40px) 64px;max-width:1240px;width:100%}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(24px,3vw,38px)}
+.page-head h1{font-size:clamp(2.1rem,4.4vw,3.1rem);color:var(--cream);letter-spacing:-0.035em}
+.page-head .subtitle{margin-top:12px;color:var(--cream-soft);font-size:clamp(1rem,1.5vw,1.12rem);max-width:54ch;line-height:1.5}
+.page-head .ph-text{min-width:0}
+
+/* ============ RESTAURANT GRID ============ */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(18px,2.2vw,26px)}
+
+.rcard{
+  position:relative;display:flex;flex-direction:column;
+  background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:24px;overflow:hidden;min-width:0;
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .35s var(--ease);
+}
+.rcard:hover,.rcard:focus-within{
+  transform:translateY(-4px);
+  box-shadow:0 18px 40px -22px oklch(0 0 0 / 0.85);
+  border-color:var(--line);
+}
+.rcard-cover{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--surface-2)}
+.rcard-cover img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+.rcard:hover .rcard-cover img,.rcard:focus-within .rcard-cover img{transform:scale(1.04)}
+.rcard-cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,oklch(0 0 0 /0.05),oklch(0.155 0.026 52 /0.35))}
+
+/* hover/focus reveal: edit + delete micro-actions */
+.card-actions{
+  position:absolute;z-index:2;top:10px;right:10px;display:flex;gap:8px;
+  opacity:0;transform:translateY(-4px);
+  transition:opacity .25s var(--ease),transform .25s var(--ease);
+}
+.rcard:hover .card-actions,.rcard:focus-within .card-actions{opacity:1;transform:none}
+.iconbtn{
+  width:44px;height:44px;border-radius:12px;flex:none;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:oklch(0.155 0.026 52 / 0.72);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  border:1px solid var(--line);color:var(--cream);
+  transition:background .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease);
+}
+.iconbtn svg{width:18px;height:18px;stroke:currentColor}
+.iconbtn:hover{background:var(--surface-2);border-color:var(--saffron);color:var(--saffron)}
+.iconbtn.del:hover{border-color:var(--tomato-bright);color:var(--tomato-bright)}
+/* keep actions visible whenever they hold keyboard focus, even without :focus-within support quirks */
+.iconbtn:focus-visible{opacity:1}
+
+.rcard-body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:7px;flex:1}
+.rcard-body h2{font-family:"Boska";font-weight:600;font-size:1.32rem;letter-spacing:-0.02em;color:var(--cream);line-height:1.12}
+.rcard-meta{font-size:13.5px;color:var(--cream-soft);display:flex;align-items:center;gap:7px}
+.rcard-meta svg{width:14px;height:14px;flex:none;color:var(--cream-soft)}
+.rcard-foot{margin-top:auto;padding-top:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.dish-count{font-size:12.5px;color:var(--cream-soft)}
+
+/* status badges */
+.status{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;border-radius:999px;padding:4px 11px;white-space:nowrap}
+.status .sdot{width:8px;height:8px;border-radius:50%;flex:none}
+/* Published = green dot + label on a quiet green tint (confirmation) */
+.status.published{color:oklch(0.82 0.15 150);background:oklch(0.72 0.15 150 / 0.13);border:1px solid oklch(0.72 0.15 150 / 0.4)}
+.status.published .sdot{background:var(--green)}
+/* Pending = canonical saffron badge: saffron pill, cocoa-deep text */
+.status.pending{color:var(--bg-deep);background:var(--saffron)}
+.status.pending .sdot{background:var(--bg-deep);opacity:.65}
+
+/* Add-new card (dashed) */
+.addcard{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  min-height:100%;padding:34px 24px;text-align:center;
+  background:transparent;border:1px dashed var(--line);border-radius:24px;
+  color:var(--cream-soft);
+  transition:border-color .3s var(--ease),background .3s var(--ease),color .3s var(--ease),transform .35s var(--ease);
+}
+.addcard:hover,.addcard:focus-visible{
+  border-color:var(--saffron);color:var(--cream);
+  background:oklch(0.785 0.14 68 / 0.06);transform:translateY(-4px);
+}
+.addcard .plus{
+  width:54px;height:54px;border-radius:16px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--surface);border:1px dashed var(--line);color:var(--saffron);
+  transition:border-color .3s var(--ease),background .3s var(--ease);
+}
+.addcard:hover .plus,.addcard:focus-visible .plus{border-color:var(--saffron);background:var(--surface-2)}
+.addcard .plus svg{width:24px;height:24px;stroke:currentColor}
+.addcard .at{font-family:"Boska";font-weight:600;font-size:1.2rem;color:var(--cream);letter-spacing:-0.02em}
+.addcard .ad{font-size:13px;color:var(--cream-soft);max-width:26ch;line-height:1.45}
+
+.empty-note{
+  margin-top:28px;font-size:13px;color:var(--cream-soft);
+  display:flex;align-items:center;gap:9px;
+}
+.empty-note svg{width:16px;height:16px;flex:none;color:var(--saffron)}
+
+/* drawer backdrop (mobile) */
+.scrim{
+  position:fixed;inset:0;z-index:55;background:oklch(0.13 0.02 50 / 0.6);
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
+  opacity:0;visibility:hidden;transition:opacity .3s var(--ease),visibility .3s var(--ease);
+}
+.scrim.show{opacity:1;visibility:visible}
+
+/* ============ entrance ============ */
+.js .stagger{opacity:0;transform:translateY(22px)}
+.js .stagger.in{opacity:1;transform:none;transition:opacity .55s var(--ease),transform .55s var(--ease)}
+
+/* ============ RESPONSIVE ============ */
+@media (min-width:1100px){
+  .acct-btn .nm{display:inline}
+}
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  .sidebar{
+    position:fixed;top:0;left:0;bottom:0;width:min(300px,86vw);
+    transform:translateX(-100%);transition:transform .35s var(--ease);
+    box-shadow:0 18px 50px -20px oklch(0 0 0 / 0.7);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:inline-flex}
+  .topbar{padding-left:16px;padding-right:16px}
+}
+@media (max-width:560px){
+  .page{padding-left:16px;padding-right:16px}
+  .page-head{align-items:flex-start}
+  .page-head .btn{width:100%}
+  .grid{grid-template-columns:1fr}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition-duration:.01ms !important}
+  .js .stagger{opacity:1 !important;transform:none !important}
+  .card-actions{opacity:1 !important;transform:none !important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar" aria-label="Restaurants and account">
+    <a class="sb-brand" href="/index.html" aria-label="Menufic home">Menufic<span class="dot" aria-hidden="true"></span></a>
+
+    <nav aria-label="Your restaurants" style="display:flex;flex-direction:column;min-height:0;flex:1">
+      <div class="sb-section"><span>Restaurants</span><span class="count">3</span></div>
+      <div class="sb-list">
+        <a class="sb-item" href="/app/restaurant.html" aria-current="page">
+          <img class="thumb" src="../assets/img/photo-1432139555190-58524dae6a55.jpg" alt="">
+          <span class="nm">Saffron &amp; Smoke</span>
+          <span class="sb-dot" aria-hidden="true"></span>
+        </a>
+        <a class="sb-item" href="/app/restaurant.html">
+          <img class="thumb" src="../assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="">
+          <span class="nm">Bella Trattoria</span>
+          <span class="sb-dot" aria-hidden="true"></span>
+        </a>
+        <a class="sb-item" href="/app/restaurant.html">
+          <img class="thumb" src="../assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="">
+          <span class="nm">Verde Kitchen</span>
+          <span class="sb-dot" aria-hidden="true"></span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="sb-foot">
+      <a class="sb-link" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+      <a class="sb-link" href="/index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
+      </a>
+
+      <div class="sb-user">
+        <img src="../assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran">
+        <span class="who">
+          <b>Arun Kajendran</b>
+          <span>a.kajendran@gmail.com</span>
+        </span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="scrim" id="scrim" hidden></div>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+
+    <!-- slim top bar -->
+    <header class="topbar">
+      <button class="hamburger" id="hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">
+        <span aria-hidden="true"></span>
+      </button>
+      <nav class="crumb" aria-label="Breadcrumb">
+        <span class="home">Menufic</span>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="here" aria-current="page">My Restaurants</span>
+      </nav>
+      <span class="topbar-spacer"></span>
+
+      <div class="acct">
+        <button class="acct-btn" id="acctBtn" aria-haspopup="true" aria-expanded="false" aria-controls="acctMenu">
+          <img src="../assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran, account menu">
+          <span class="nm">Arun</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="acct-menu" id="acctMenu" role="menu" aria-label="Account">
+          <div class="acct-head">
+            <b>Arun Kajendran</b>
+            <span>a.kajendran@gmail.com</span>
+          </div>
+          <a href="#" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Account</a>
+          <a href="#" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
+          <a href="/index.html" role="menuitem" class="danger"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- page -->
+    <main class="page">
+      <div class="page-head">
+        <div class="ph-text">
+          <h1 class="stagger" data-delay="0">My Restaurants</h1>
+          <p class="subtitle stagger" data-delay="0">Each one is a live, themeable menu. Open a restaurant to edit its dishes, or publish it to share with a link and QR code.</p>
+        </div>
+        <a class="btn btn-primary stagger" data-delay="1" href="#">
+          <svg class="gicon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          New restaurant
+        </a>
+      </div>
+
+      <section class="grid" aria-label="Your restaurants">
+
+        <!-- Card 1 -->
+        <article class="rcard stagger" data-delay="2">
+          <div class="rcard-cover">
+            <a class="rcard-open" href="/app/restaurant.html" aria-label="Open Saffron and Smoke" style="position:absolute;inset:0;z-index:1;border-radius:inherit"></a>
+            <img src="../assets/img/photo-1432139555190-58524dae6a55.jpg" alt="Charred short rib glistening under warm light at Saffron and Smoke" loading="lazy">
+            <div class="card-actions" style="z-index:2">
+              <button class="iconbtn" type="button" aria-label="Edit Saffron and Smoke">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+              </button>
+              <button class="iconbtn del" type="button" aria-label="Delete Saffron and Smoke">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="rcard-body">
+            <h2>Saffron &amp; Smoke</h2>
+            <p class="rcard-meta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Modern grill · Downtown
+            </p>
+            <div class="rcard-foot">
+              <span class="dish-count">42 dishes</span>
+              <span class="status published"><span class="sdot" aria-hidden="true"></span>Published</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="rcard stagger" data-delay="3">
+          <div class="rcard-cover">
+            <a class="rcard-open" href="/app/restaurant.html" aria-label="Open Bella Trattoria" style="position:absolute;inset:0;z-index:1;border-radius:inherit"></a>
+            <img src="../assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="A bubbling wood-fired margherita pizza fresh from the oven at Bella Trattoria" loading="lazy">
+            <div class="card-actions" style="z-index:2">
+              <button class="iconbtn" type="button" aria-label="Edit Bella Trattoria">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+              </button>
+              <button class="iconbtn del" type="button" aria-label="Delete Bella Trattoria">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="rcard-body">
+            <h2>Bella Trattoria</h2>
+            <p class="rcard-meta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Italian · Since 1998
+            </p>
+            <div class="rcard-foot">
+              <span class="dish-count">28 dishes</span>
+              <span class="status published"><span class="sdot" aria-hidden="true"></span>Published</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="rcard stagger" data-delay="4">
+          <div class="rcard-cover">
+            <a class="rcard-open" href="/app/restaurant.html" aria-label="Open Verde Kitchen" style="position:absolute;inset:0;z-index:1;border-radius:inherit"></a>
+            <img src="../assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="The warm, plant-filled dining room of Verde Kitchen set for all-day brunch" loading="lazy">
+            <div class="card-actions" style="z-index:2">
+              <button class="iconbtn" type="button" aria-label="Edit Verde Kitchen">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+              </button>
+              <button class="iconbtn del" type="button" aria-label="Delete Verde Kitchen">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="rcard-body">
+            <h2>Verde Kitchen</h2>
+            <p class="rcard-meta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              All-day brunch · Riverside
+            </p>
+            <div class="rcard-foot">
+              <span class="dish-count">19 dishes</span>
+              <span class="status pending"><span class="sdot" aria-hidden="true"></span>Pending review</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Add new -->
+        <a class="addcard stagger" data-delay="5" href="#" aria-label="Add a new restaurant">
+          <span class="plus" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          </span>
+          <span class="at">Add new restaurant</span>
+          <span class="ad">Start a fresh menu — name it, add a few dishes, and publish.</span>
+        </a>
+
+      </section>
+
+      <p class="empty-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        New owners land here on an empty state with a single prompt to create their first restaurant.
+      </p>
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---- Sidebar drawer (mobile) ---- */
+  var sidebar = document.getElementById("sidebar");
+  var burger = document.getElementById("hamburger");
+  var scrim = document.getElementById("scrim");
+  function openNav(){
+    sidebar.classList.add("open");
+    burger.setAttribute("aria-expanded","true");
+    scrim.hidden = false;
+    requestAnimationFrame(function(){ scrim.classList.add("show"); });
+  }
+  function closeNav(){
+    sidebar.classList.remove("open");
+    burger.setAttribute("aria-expanded","false");
+    scrim.classList.remove("show");
+    setTimeout(function(){ scrim.hidden = true; }, 300);
+  }
+  burger.addEventListener("click", function(){
+    if(sidebar.classList.contains("open")) closeNav(); else openNav();
+  });
+  scrim.addEventListener("click", closeNav);
+  sidebar.addEventListener("click", function(e){
+    if(e.target.closest("a") && window.matchMedia("(max-width:900px)").matches) closeNav();
+  });
+
+  /* ---- Account dropdown ---- */
+  var acctBtn = document.getElementById("acctBtn");
+  var acctMenu = document.getElementById("acctMenu");
+  function closeAcct(){ acctMenu.classList.remove("open"); acctBtn.setAttribute("aria-expanded","false"); }
+  acctBtn.addEventListener("click", function(e){
+    e.stopPropagation();
+    var open = acctMenu.classList.toggle("open");
+    acctBtn.setAttribute("aria-expanded", open ? "true":"false");
+  });
+  document.addEventListener("click", function(e){
+    if(!acctMenu.contains(e.target) && e.target !== acctBtn) closeAcct();
+  });
+
+  /* ---- Escape closes overlays ---- */
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape"){
+      closeAcct();
+      if(sidebar.classList.contains("open")){ closeNav(); burger.focus(); }
+    }
+  });
+
+  /* ---- Entrance stagger (fade-up) ---- */
+  var staggers = Array.prototype.slice.call(document.querySelectorAll(".stagger"));
+  if(reduce){
+    staggers.forEach(function(el){ el.classList.add("in"); });
+  } else {
+    staggers.sort(function(a,b){ return (a.dataset.delay||0)-(b.dataset.delay||0); });
+    staggers.forEach(function(el){
+      var d = parseInt(el.dataset.delay||0,10) * 80 + 90;
+      setTimeout(function(){ el.classList.add("in"); }, d);
+    });
+  }
+})();
+</script>
+</body>
+</html>

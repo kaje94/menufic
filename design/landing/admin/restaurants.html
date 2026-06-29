@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restaurants — Menufic Admin</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=supreme@400,500,600,700&display=swap">
+<style>
+  :root{
+    --bg:#12100e;
+    --panel:#1a1715;
+    --panel-2:#211d1a;
+    --line:#322c28;
+    --line-strong:#433b35;
+    --text:#ece8e2;
+    --muted:#a59c92;
+    --muted-2:#79716a;
+    --accent:#6ea8ff;
+    --green:#53be70;
+    --green-bg:rgba(83,190,112,0.14);
+    --amber:#f3a64a;
+    --amber-bg:rgba(243,166,74,0.14);
+    --red:#f05940;
+    --red-bg:rgba(240,89,64,0.14);
+    --grey:#9a8f86;
+    --grey-bg:rgba(154,143,134,0.16);
+    --radius:6px;
+    --focus:#8fbcff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:"Supreme",system-ui,sans-serif;
+    background:var(--bg);color:var(--text);
+    font-size:14px;line-height:1.5;min-width:0;overflow-x:hidden;
+  }
+  a{color:inherit}
+  button{font-family:inherit}
+  :focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+
+  .topbar{
+    display:flex;align-items:center;gap:16px;padding:0 16px;height:56px;
+    background:var(--panel);border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:20;flex-wrap:wrap;
+  }
+  .wordmark{font-weight:700;font-size:15px;letter-spacing:-0.01em;color:var(--text);
+    text-decoration:none;display:flex;align-items:center;gap:7px;white-space:nowrap}
+  .wordmark .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .wordmark .tag{font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
+    color:var(--muted-2);border:1px solid var(--line-strong);border-radius:4px;padding:1px 6px}
+  .topbar-spacer{flex:1 1 auto}
+  .userchip{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);
+    padding:5px 10px;border:1px solid var(--line);border-radius:var(--radius);
+    background:var(--panel-2);white-space:nowrap}
+  .userchip .avatar{width:22px;height:22px;border-radius:50%;background:#3a4d6b;color:#cfe0ff;
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+  .exit-link{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;
+    color:var(--muted);text-decoration:none;padding:8px 12px;min-height:40px;
+    border:1px solid var(--line);border-radius:var(--radius);white-space:nowrap}
+  .exit-link:hover{color:var(--text);border-color:var(--line-strong)}
+
+  .tabsbar{background:var(--panel);border-bottom:1px solid var(--line);padding:0 16px;
+    display:flex;gap:4px;overflow-x:auto;position:sticky;top:56px;z-index:19}
+  .tab{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;font-size:13.5px;
+    font-weight:600;color:var(--muted);text-decoration:none;white-space:nowrap;
+    border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tab:hover{color:var(--text)}
+  .tab[aria-current="page"]{color:var(--text);border-bottom-color:var(--accent)}
+
+  main{padding:18px 16px 64px;max-width:1180px;margin:0 auto}
+  .page-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+  h1{font-size:18px;font-weight:700;margin:0;letter-spacing:-0.01em}
+  .count-pill{font-size:11.5px;font-weight:600;color:var(--muted);background:var(--panel-2);
+    border:1px solid var(--line);border-radius:999px;padding:1px 9px}
+  .sub{color:var(--muted);font-size:12.5px;margin:2px 0 16px}
+
+  /* search */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .search-field{position:relative;flex:1 1 280px;min-width:0}
+  .search-field svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);
+    width:16px;height:16px;color:var(--muted-2);pointer-events:none}
+  .search-field input{
+    width:100%;height:42px;padding:0 12px 0 34px;
+    background:var(--panel);color:var(--text);
+    border:1px solid var(--line-strong);border-radius:var(--radius);
+    font-family:inherit;font-size:13.5px;
+  }
+  .search-field input::placeholder{color:var(--muted-2)}
+  .search-field input:focus-visible{outline:2px solid var(--focus);outline-offset:1px;border-color:var(--focus)}
+  .result-note{font-size:12px;color:var(--muted-2);white-space:nowrap}
+
+  .table-wrap{min-width:0;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+  table{border-collapse:collapse;width:100%;min-width:880px;font-size:13px}
+  thead th{text-align:left;font-weight:600;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;
+    color:var(--muted-2);padding:10px 14px;border-bottom:1px solid var(--line);
+    background:var(--panel-2);white-space:nowrap}
+  tbody td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .row-main{cursor:pointer}
+  .row-main:hover{background:var(--panel-2)}
+  .row-main[aria-expanded="true"]{background:var(--panel-2)}
+  .r-name{font-weight:600;display:flex;align-items:center;gap:8px}
+  .chev{color:var(--muted-2);transition:transform .18s ease;display:inline-block}
+  .row-main[aria-expanded="true"] .chev{transform:rotate(90deg)}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--muted)}
+  .r-owner{color:var(--muted);font-size:12.5px;word-break:break-all}
+  .r-date{color:var(--muted);white-space:nowrap;font-size:12.5px;font-variant-numeric:tabular-nums}
+
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;
+    padding:3px 9px;border-radius:4px;white-space:nowrap;border:1px solid transparent}
+  .badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+  .badge.published{color:var(--green);background:var(--green-bg);border-color:rgba(83,190,112,0.3)}
+  .badge.pending{color:var(--amber);background:var(--amber-bg);border-color:rgba(243,166,74,0.3)}
+  .badge.draft{color:var(--grey);background:var(--grey-bg);border-color:rgba(154,143,134,0.3)}
+  .badge.rejected,.badge.flagged{color:var(--red);background:var(--red-bg);border-color:rgba(240,89,64,0.3)}
+
+  .cell-actions{white-space:nowrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;
+    padding:0 12px;font-size:12.5px;font-weight:600;border-radius:var(--radius);
+    border:1px solid var(--line-strong);background:var(--panel-2);color:var(--text);
+    cursor:pointer;white-space:nowrap}
+  .btn:hover{border-color:var(--muted-2)}
+  .btn + .btn{margin-left:6px}
+
+  .detail-row td{padding:0;background:var(--bg)}
+  .detail-row[hidden]{display:none}
+  .detail-inner{padding:16px;border-bottom:1px solid var(--line);
+    display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:760px){.detail-inner{grid-template-columns:repeat(3,1fr)}}
+  .meta{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px;min-width:0}
+  .meta h3{margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted-2)}
+  .meta dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:12.5px}
+  .meta dt{color:var(--muted-2)}
+  .meta dd{margin:0;color:var(--text);text-align:right;word-break:break-word}
+  .audit{grid-column:1/-1;font-size:12px;color:var(--muted);
+    background:var(--panel);border:1px dashed var(--line-strong);border-radius:var(--radius);
+    padding:10px 12px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .audit b{color:var(--text);font-weight:600}
+  .audit .ts{color:var(--muted-2);font-variant-numeric:tabular-nums}
+  .detail-actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
+  .btn-edit{background:var(--panel-2)}
+  .btn-status{background:var(--panel-2)}
+
+  .empty-row td{padding:28px 14px;text-align:center;color:var(--muted-2);font-size:13px}
+  .empty-row[hidden]{display:none}
+
+  @media(max-width:520px){
+    .topbar{height:auto;padding:10px 12px}
+    main{padding:16px 12px 56px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="wordmark" href="/admin/review.html"><span class="dot"></span>Menufic <span class="tag">Admin</span></a>
+  <div class="topbar-spacer"></div>
+  <div class="userchip"><span class="avatar">A</span>Arun (Admin)</div>
+  <a class="exit-link" href="/app/dashboard.html">Exit to app &rarr;</a>
+</header>
+
+<nav class="tabsbar" aria-label="Admin sections">
+  <a class="tab" href="/admin/review.html">Review queue</a>
+  <a class="tab" href="/admin/restaurants.html" aria-current="page">Restaurants</a>
+</nav>
+
+<main>
+  <div class="page-head">
+    <h1>Restaurants</h1>
+    <span class="count-pill" id="totalCount">8 total</span>
+  </div>
+  <p class="sub">Every restaurant across all organizations. Search, inspect, and edit records or change publish status when needed.</p>
+
+  <div class="toolbar">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <label for="q" class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search restaurants</label>
+      <input id="q" type="search" autocomplete="off" placeholder="Search by name, owner email, slug, status…" aria-controls="rtable">
+    </div>
+    <span class="result-note" id="resultNote" aria-live="polite">8 of 8 shown</span>
+  </div>
+
+  <div class="table-wrap">
+    <table id="rtable">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Slug</th>
+          <th scope="col">Owner</th>
+          <th scope="col">Status</th>
+          <th scope="col">Created</th>
+          <th scope="col">Last updated</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="rbody">
+
+        <!-- 1 -->
+        <tr class="row-main" aria-expanded="false" aria-controls="x1" data-toggle
+            data-search="saffron & smoke saffron-smoke arun@saffronsmoke.com published">
+          <td><span class="r-name"><span class="chev">&rsaquo;</span>Saffron &amp; Smoke</span></td>
+          <td><span class="mono">saffron-smoke</span></td>
+          <td class="r-owner">arun@saffronsmoke.com</td>
+          <td><span class="badge published">Published</span></td>
+          <td class="r-date">2024-11-02</td>
+          <td class="r-date">2026-06-21</td>
+          <td class="cell-actions">
+            <button type="button" class="btn btn-edit" data-edit>Edit</button>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </td>
+        </tr>
+        <tr class="detail-row" id="x1" hidden><td colspan="7"><div class="detail-inner">
+          <div class="meta"><h3>Organization</h3><dl>
+            <dt>Org</dt><dd>Saffron Group</dd>
+            <dt>Members</dt><dd>3</dd>
+            <dt>Plan</dt><dd>Free</dd></dl></div>
+          <div class="meta"><h3>Theme</h3><dl>
+            <dt>Preset</dt><dd>Warm Pass</dd>
+            <dt>Font</dt><dd>Boska / Supreme</dd>
+            <dt>Accent</dt><dd>Saffron</dd></dl></div>
+          <div class="meta"><h3>Content</h3><dl>
+            <dt>Menus</dt><dd>2</dd>
+            <dt>Items</dt><dd>41</dd>
+            <dt>Banners</dt><dd>3</dd></dl></div>
+          <div class="audit"><b>Audit log</b><span>Approved &amp; published by Arun (Admin).</span><span class="ts">2024-11-05 09:12</span></div>
+          <div class="detail-actions">
+            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </div>
+        </div></td></tr>
+
+        <!-- 2 -->
+        <tr class="row-main" aria-expanded="false" aria-controls="x2" data-toggle
+            data-search="bella trattoria bella-trattoria marco@bellatrattoria.it published">
+          <td><span class="r-name"><span class="chev">&rsaquo;</span>Bella Trattoria</span></td>
+          <td><span class="mono">bella-trattoria</span></td>
+          <td class="r-owner">marco@bellatrattoria.it</td>
+          <td><span class="badge published">Published</span></td>
+          <td class="r-date">2025-01-18</td>
+          <td class="r-date">2026-06-12</td>
+          <td class="cell-actions">
+            <button type="button" class="btn btn-edit" data-edit>Edit</button>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </td>
+        </tr>
+        <tr class="detail-row" id="x2" hidden><td colspan="7"><div class="detail-inner">
+          <div class="meta"><h3>Organization</h3><dl>
+            <dt>Org</dt><dd>Bella Group</dd>
+            <dt>Members</dt><dd>2</dd>
+            <dt>Plan</dt><dd>Free</dd></dl></div>
+          <div class="meta"><h3>Theme</h3><dl>
+            <dt>Preset</dt><dd>Classic</dd>
+            <dt>Font</dt><dd>Supreme</dd>
+            <dt>Accent</dt><dd>Tomato</dd></dl></div>
+          <div class="meta"><h3>Content</h3><dl>
+            <dt>Menus</dt><dd>3</dd>
+            <dt>Items</dt><dd>58</dd>
+            <dt>Banners</dt><dd>2</dd></dl></div>
+          <div class="audit"><b>Audit log</b><span>Item "Carbonara" edited by Marco (owner).</span><span class="ts">2026-06-12 14:40</span></div>
+          <div class="detail-actions">
+            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </div>
+        </div></td></tr>
+
+        <!-- 3 -->
+        <tr class="row-main" aria-expanded="false" aria-controls="x3" data-toggle
+            data-search="verde kitchen verde-kitchen arun@verdekitchen.com pending">
+          <td><span class="r-name"><span class="chev">&rsaquo;</span>Verde Kitchen</span></td>
+          <td><span class="mono">verde-kitchen</span></td>
+          <td class="r-owner">arun@verdekitchen.com</td>
+          <td><span class="badge pending">Pending</span></td>
+          <td class="r-date">2026-06-26</td>
+          <td class="r-date">2026-06-28</td>
+          <td class="cell-actions">
+            <button type="button" class="btn btn-edit" data-edit>Edit</button>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </td>
+        </tr>
+        <tr class="detail-row" id="x3" hidden><td colspan="7"><div class="detail-inner">
+          <div class="meta"><h3>Organization</h3><dl>
+            <dt>Org</dt><dd>Verde Co</dd>
+            <dt>Members</dt><dd>1</dd>
+            <dt>Plan</dt><dd>Free</dd></dl></div>
+          <div class="meta"><h3>Theme</h3><dl>
+            <dt>Preset</dt><dd>Fresh</dd>
+            <dt>Font</dt><dd>Supreme</dd>
+            <dt>Accent</dt><dd>Herb green</dd></dl></div>
+          <div class="meta"><h3>Content</h3><dl>
+            <dt>Menus</dt><dd>1</dd>
+            <dt>Items</dt><dd>12</dd>
+            <dt>Banners</dt><dd>1</dd></dl></div>
+          <div class="audit"><b>Audit log</b><span>Submitted for first-time review. Awaiting decision in Review queue.</span><span class="ts">2026-06-28 08:02</span></div>
+          <div class="detail-actions">
+            <a class="btn" href="/admin/review.html">Open in review queue &rarr;</a>
+            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
+          </div>
+        </div></td></tr>
+
+        <!-- 4 -->
+        <tr class="row-main" aria-expanded="false" aria-controls="x4" data-toggle
+            data-search="tony's pizzeria tonys pizzeria tonys-pizzeria tony@tonyspizza.co flagged rejected">
+          <td><span class="r-name"><span class="chev">&rsaquo;</span>Tony's Pizzeria</span></td>
+          <td><span class="mono">tonys-pizzeria</span></td>
+          <td class="r-owner">tony@tonyspizza.co</td>
+          <td><span class="badge flagged">Flagged</span></td>
+          <td class="r-date">2026-06-25</td>
+          <td class="r-date">2026-06-28</td>
+          <td class="cell-actions">
+            <button type="button" class="btn btn-edit" data-edit>Edit</button>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </td>
+        </tr>
+        <tr class="detail-row" id="x4" hidden><td colspan="7"><div class="detail-inner">
+          <div class="meta"><h3>Organization</h3><dl>
+            <dt>Org</dt><dd>Tony's</dd>
+            <dt>Members</dt><dd>1</dd>
+            <dt>Plan</dt><dd>Free</dd></dl></div>
+          <div class="meta"><h3>Theme</h3><dl>
+            <dt>Preset</dt><dd>Classic</dd>
+            <dt>Font</dt><dd>Supreme</dd>
+            <dt>Accent</dt><dd>Tomato</dd></dl></div>
+          <div class="meta"><h3>Content</h3><dl>
+            <dt>Menus</dt><dd>1</dd>
+            <dt>Items</dt><dd>9</dd>
+            <dt>Banners</dt><dd>0</dd></dl></div>
+          <div class="audit"><b>Audit log</b><span>AI pre-screen flagged placeholder text. Held pending owner fix.</span><span class="ts">2026-06-28 03:20</span></div>
+          <div class="detail-actions">
+            <a class="btn" href="/admin/review.html">Open in review queue &rarr;</a>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </div>
+        </div></td></tr>
+
+        <!-- 5 -->
+        <tr class="row-main" aria-expanded="false" aria-controls="x5" data-toggle
+            data-search="green bowl green-bowl lia@greenbowl.io pending">
+          <td><span class="r-name"><span class="chev">&rsaquo;</span>Green Bowl</span></td>
+          <td><span class="mono">green-bowl</span></td>
+          <td class="r-owner">lia@greenbowl.io</td>
+          <td><span class="badge pending">Pending</span></td>
+          <td class="r-date">2026-06-27</td>
+          <td class="r-date">2026-06-27</td>
+          <td class="cell-actions">
+            <button type="button" class="btn btn-edit" data-edit>Edit</button>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </td>
+        </tr>
+        <tr class="detail-row" id="x5" hidden><td colspan="7"><div class="detail-inner">
+          <div class="meta"><h3>Organization</h3><dl>
+            <dt>Org</dt><dd>Green Bowl Ltd</dd>
+            <dt>Members</dt><dd>4</dd>
+            <dt>Plan</dt><dd>Free</dd></dl></div>
+          <div class="meta"><h3>Theme</h3><dl>
+            <dt>Preset</dt><dd>Fresh</dd>
+            <dt>Font</dt><dd>Supreme</dd>
+            <dt>Accent</dt><dd>Herb green</dd></dl></div>
+          <div class="meta"><h3>Content</h3><dl>
+            <dt>Menus</dt><dd>1</dd>
+            <dt>Items</dt><dd>15</dd>
+            <dt>Banners</dt><dd>1</dd></dl></div>
+          <div class="audit"><b>Audit log</b><span>Submitted for first-time review by Lia (owner).</span><span class="ts">2026-06-27 19:30</span></div>
+          <div class="detail-actions">
+            <a class="btn" href="/admin/review.html">Open in review queue &rarr;</a>
+            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
+          </div>
+        </div></td></tr>
+
+        <!-- 6 -->
+        <tr class="row-main" aria-expanded="false" aria-controls="x6" data-toggle
+            data-search="coastal catch coastal-catch sam@coastalcatch.com draft">
+          <td><span class="r-name"><span class="chev">&rsaquo;</span>Coastal Catch</span></td>
+          <td><span class="mono">coastal-catch</span></td>
+          <td class="r-owner">sam@coastalcatch.com</td>
+          <td><span class="badge draft">Draft</span></td>
+          <td class="r-date">2026-05-30</td>
+          <td class="r-date">2026-06-14</td>
+          <td class="cell-actions">
+            <button type="button" class="btn btn-edit" data-edit>Edit</button>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </td>
+        </tr>
+        <tr class="detail-row" id="x6" hidden><td colspan="7"><div class="detail-inner">
+          <div class="meta"><h3>Organization</h3><dl>
+            <dt>Org</dt><dd>Coastal Co</dd>
+            <dt>Members</dt><dd>2</dd>
+            <dt>Plan</dt><dd>Free</dd></dl></div>
+          <div class="meta"><h3>Theme</h3><dl>
+            <dt>Preset</dt><dd>Coastal</dd>
+            <dt>Font</dt><dd>Supreme</dd>
+            <dt>Accent</dt><dd>Blue</dd></dl></div>
+          <div class="meta"><h3>Content</h3><dl>
+            <dt>Menus</dt><dd>1</dd>
+            <dt>Items</dt><dd>7</dd>
+            <dt>Banners</dt><dd>0</dd></dl></div>
+          <div class="audit"><b>Audit log</b><span>Draft saved by Sam (editor). Not yet submitted for review.</span><span class="ts">2026-06-14 11:05</span></div>
+          <div class="detail-actions">
+            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </div>
+        </div></td></tr>
+
+        <!-- 7 -->
+        <tr class="row-main" aria-expanded="false" aria-controls="x7" data-toggle
+            data-search="noodle bar noodle-bar mei@noodlebar.sg published">
+          <td><span class="r-name"><span class="chev">&rsaquo;</span>Noodle Bar</span></td>
+          <td><span class="mono">noodle-bar</span></td>
+          <td class="r-owner">mei@noodlebar.sg</td>
+          <td><span class="badge published">Published</span></td>
+          <td class="r-date">2025-03-09</td>
+          <td class="r-date">2026-06-05</td>
+          <td class="cell-actions">
+            <button type="button" class="btn btn-edit" data-edit>Edit</button>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </td>
+        </tr>
+        <tr class="detail-row" id="x7" hidden><td colspan="7"><div class="detail-inner">
+          <div class="meta"><h3>Organization</h3><dl>
+            <dt>Org</dt><dd>Noodle Bar SG</dd>
+            <dt>Members</dt><dd>5</dd>
+            <dt>Plan</dt><dd>Free</dd></dl></div>
+          <div class="meta"><h3>Theme</h3><dl>
+            <dt>Preset</dt><dd>Night Market</dd>
+            <dt>Font</dt><dd>Supreme</dd>
+            <dt>Accent</dt><dd>Saffron</dd></dl></div>
+          <div class="meta"><h3>Content</h3><dl>
+            <dt>Menus</dt><dd>2</dd>
+            <dt>Items</dt><dd>33</dd>
+            <dt>Banners</dt><dd>4</dd></dl></div>
+          <div class="audit"><b>Audit log</b><span>Status confirmed Published. Last admin touch by Arun (Admin).</span><span class="ts">2026-06-05 16:22</span></div>
+          <div class="detail-actions">
+            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </div>
+        </div></td></tr>
+
+        <!-- 8 -->
+        <tr class="row-main" aria-expanded="false" aria-controls="x8" data-toggle
+            data-search="the burnt end burnt-end dre@burntend.com rejected">
+          <td><span class="r-name"><span class="chev">&rsaquo;</span>The Burnt End</span></td>
+          <td><span class="mono">burnt-end</span></td>
+          <td class="r-owner">dre@burntend.com</td>
+          <td><span class="badge rejected">Rejected</span></td>
+          <td class="r-date">2026-06-10</td>
+          <td class="r-date">2026-06-20</td>
+          <td class="cell-actions">
+            <button type="button" class="btn btn-edit" data-edit>Edit</button>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </td>
+        </tr>
+        <tr class="detail-row" id="x8" hidden><td colspan="7"><div class="detail-inner">
+          <div class="meta"><h3>Organization</h3><dl>
+            <dt>Org</dt><dd>Burnt End BBQ</dd>
+            <dt>Members</dt><dd>1</dd>
+            <dt>Plan</dt><dd>Free</dd></dl></div>
+          <div class="meta"><h3>Theme</h3><dl>
+            <dt>Preset</dt><dd>Smoke</dd>
+            <dt>Font</dt><dd>Supreme</dd>
+            <dt>Accent</dt><dd>Tomato</dd></dl></div>
+          <div class="meta"><h3>Content</h3><dl>
+            <dt>Menus</dt><dd>1</dd>
+            <dt>Items</dt><dd>4</dd>
+            <dt>Banners</dt><dd>0</dd></dl></div>
+          <div class="audit"><b>Audit log</b><span>Rejected by Arun (Admin): "Near-empty menu, only 4 items." Owner notified.</span><span class="ts">2026-06-20 10:48</span></div>
+          <div class="detail-actions">
+            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
+            <button type="button" class="btn btn-status" data-status>Change status</button>
+          </div>
+        </div></td></tr>
+
+        <!-- empty state for filter -->
+        <tr class="empty-row" id="emptyRow" hidden>
+          <td colspan="7">No restaurants match your search.</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+(function(){
+  // Expand / collapse detail rows
+  function toggleRow(row){
+    var id = row.getAttribute('aria-controls');
+    var detail = document.getElementById(id);
+    if(!detail) return;
+    var open = row.getAttribute('aria-expanded') === 'true';
+    row.setAttribute('aria-expanded', String(!open));
+    detail.hidden = open;
+  }
+  document.querySelectorAll('.row-main[data-toggle]').forEach(function(row){
+    row.addEventListener('click', function(e){
+      if(e.target.closest('button, a')) return;
+      toggleRow(row);
+    });
+  });
+
+  // Edit / Change status: lightweight prototype feedback (would open a panel)
+  function flash(btn, label){
+    var orig = btn.textContent;
+    btn.textContent = label;
+    btn.disabled = true;
+    setTimeout(function(){ btn.textContent = orig; btn.disabled = false; }, 1400);
+  }
+  document.querySelectorAll('[data-edit]').forEach(function(b){
+    b.addEventListener('click', function(e){ e.stopPropagation(); flash(b,'Opening editor…'); });
+  });
+  document.querySelectorAll('[data-status]').forEach(function(b){
+    b.addEventListener('click', function(e){ e.stopPropagation(); flash(b,'Status panel…'); });
+  });
+
+  // Real-time client-side filter
+  var input = document.getElementById('q');
+  var rows = Array.prototype.slice.call(document.querySelectorAll('#rbody .row-main'));
+  var note = document.getElementById('resultNote');
+  var empty = document.getElementById('emptyRow');
+  var total = rows.length;
+
+  function applyFilter(){
+    var q = input.value.trim().toLowerCase();
+    var shown = 0;
+    rows.forEach(function(row){
+      var hay = row.getAttribute('data-search') || '';
+      var match = q === '' || hay.indexOf(q) !== -1;
+      row.hidden = !match;
+      // also collapse + hide its detail row when filtered out
+      var detail = document.getElementById(row.getAttribute('aria-controls'));
+      if(detail && !match){ detail.hidden = true; row.setAttribute('aria-expanded','false'); }
+      if(match) shown++;
+    });
+    empty.hidden = shown !== 0;
+    note.textContent = shown + ' of ' + total + ' shown';
+  }
+  input.addEventListener('input', applyFilter);
+})();
+</script>
+</body>
+</html>

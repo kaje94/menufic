@@ -51,3 +51,14 @@ yarn-error.log*
 /.scannerwork
 
 TODO.md
+
+# AI / editor tooling — not part of the design deliverable
+.claude/
+.codex/
+.cursor/
+.impeccable/
+
+# Scratch / generated verification artifacts
+.shots/
+*.log
+TEMP_REQ.md
