@@ -1,3 +1,79 @@
 @import "tailwindcss";
 @source "../../**/*.html";
 @plugin "daisyui";
+
+/* ---- menufic (Brand + App + Admin): warm cocoa dark ---- */
+@plugin "daisyui/theme" {
+  name: "menufic";
+  default: true;
+  prefersdark: true;
+  color-scheme: dark;
+
+  --color-base-100: oklch(0.18 0.03 45);    /* cocoa-bg */
+  --color-base-200: oklch(0.235 0.034 46);  /* surface */
+  --color-base-300: oklch(0.295 0.04 48);   /* surface-2 */
+  --color-base-content: oklch(0.96 0.015 78); /* cream */
+
+  --color-primary: oklch(0.56 0.19 32);     /* tomato — ACT */
+  --color-primary-content: oklch(1 0 0);    /* white */
+  --color-secondary: oklch(0.785 0.14 68);  /* saffron — ATTENTION */
+  --color-secondary-content: oklch(0.155 0.026 52); /* cocoa-deep */
+  --color-accent: oklch(0.72 0.14 70);      /* saffron-deep */
+  --color-accent-content: oklch(0.155 0.026 52);
+  --color-neutral: oklch(0.295 0.04 48);    /* surface-2 */
+  --color-neutral-content: oklch(0.96 0.015 78);
+
+  --color-info: oklch(0.83 0.022 78);       /* cream-soft */
+  --color-info-content: oklch(0.155 0.026 52);
+  --color-success: oklch(0.72 0.15 150);    /* herb-green — CONFIRM */
+  --color-success-content: oklch(0.155 0.026 52);
+  --color-warning: oklch(0.785 0.14 68);    /* saffron */
+  --color-warning-content: oklch(0.155 0.026 52);
+  --color-error: oklch(0.50 0.17 25);       /* danger-red (functional state, NOT tomato) */
+  --color-error-content: oklch(0.96 0.015 78);
+
+  --radius-selector: 999px;  /* pills: badges, chips */
+  --radius-field: 12px;      /* inputs/selects (DESIGN.md sm) */
+  --radius-box: 24px;        /* cards/panels (DESIGN.md lg) */
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* ---- menufic-public (diner Public menu): owner's LIGHT default ----
+   Runtime: theme builder overrides --color-primary / --radius-box /
+   --radius-field / font-family INLINE on the menu root. */
+@plugin "daisyui/theme" {
+  name: "menufic-public";
+  color-scheme: light;
+
+  --color-base-100: oklch(0.97 0.01 78);    /* warm light bg (NOT pure white) */
+  --color-base-200: oklch(0.94 0.012 78);
+  --color-base-300: oklch(0.90 0.014 78);
+  --color-base-content: oklch(0.25 0.02 40);
+
+  --color-primary: oklch(0.55 0.16 35);     /* terracotta default; owner-overridable */
+  --color-primary-content: oklch(0.98 0.01 78);
+  --color-secondary: oklch(0.72 0.14 70);
+  --color-secondary-content: oklch(0.20 0.02 40);
+  --color-success: oklch(0.62 0.15 150);
+  --color-success-content: oklch(0.98 0.01 78);
+
+  --radius-selector: 999px;
+  --radius-field: 12px;
+  --radius-box: 18px;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* ---- Tailwind tokens (fonts, pill radius, the Shadow Vocabulary) ---- */
+@theme {
+  --font-display: "Boska", Georgia, serif;
+  --font-body: "Supreme", system-ui, sans-serif;
+  --radius-pill: 999px;
+  --shadow-accent-glow: 0 10px 30px -10px oklch(0.56 0.19 32 / 0.7);
+  --shadow-accent-glow-hover: 0 16px 40px -12px oklch(0.56 0.19 32 / 0.8);
+  --shadow-floating: 0 18px 40px -22px oklch(0 0 0 / 0.8);
+  --shadow-nav: 0 8px 30px -18px oklch(0 0 0 / 0.8);
+}
