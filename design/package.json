@@ -1,0 +1,14 @@
+{
+  "name": "menufic-design-prototype",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build:css": "tailwindcss -i ./landing/assets/css/app.css -o ./landing/assets/css/styles.css --minify",
+    "watch:css": "tailwindcss -i ./landing/assets/css/app.css -o ./landing/assets/css/styles.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.0.0",
+    "daisyui": "^5.0.0",
+    "tailwindcss": "^4.0.0"
+  }
+}
