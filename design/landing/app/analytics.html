@@ -112,10 +112,11 @@
     </header>
 
     <!-- ===================== PAGE ===================== -->
+    <!-- wider than the default app max-width: the analytics chart grid needs ~1320px to breathe at 1440 -->
     <main class="w-full max-w-[1320px] px-[clamp(1rem,3vw,2.5rem)] pb-20 pt-[clamp(1.375rem,3.4vw,2.375rem)]">
 
       <!-- per-restaurant section tab strip -->
-      <nav class="sectionbar" aria-label="Saffron and Smoke sections">
+      <nav class="sectionbar" aria-label="Page sections">
         <a href="/app/menu-editor.html">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Menus
         </a>
@@ -328,7 +329,7 @@
       </section>
 
       <!-- ===== LOCATION TABLE ===== -->
-      <section class="stagger min-w-0 overflow-x-auto rounded-[var(--radius-box)] border border-base-content/10 bg-base-200 p-[clamp(16px,1.9vw,24px)]" data-delay="9" aria-labelledby="loc-title">
+      <section class="stagger min-w-0 rounded-[var(--radius-box)] border border-base-content/10 bg-base-200 p-[clamp(16px,1.9vw,24px)]" data-delay="9" aria-labelledby="loc-title">
         <h2 id="loc-title" class="[font-family:var(--font-display)] text-[1.22rem] font-semibold tracking-[-0.02em]">Location breakdown</h2>
         <p class="mb-4 mt-1 text-[12.5px] text-base-content/70">Where your guests viewed the menu from</p>
         <div class="overflow-x-auto">
