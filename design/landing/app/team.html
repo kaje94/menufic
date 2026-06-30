@@ -151,35 +151,6 @@ dialog.team-modal[open] {
     <!-- ===================== PAGE ===================== -->
     <main class="w-full max-w-[1080px] px-[clamp(1rem,3vw,2.5rem)] pb-20 pt-[clamp(1.375rem,3.4vw,2.375rem)]">
 
-      <!-- per-restaurant section tab strip
-           aria-label "Page sections" is DISTINCT from sidebar "Saffron and Smoke sections" -->
-      <nav class="sectionbar" aria-label="Page sections">
-        <a href="/app/menu-editor.html">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-          Menus
-        </a>
-        <a href="/app/banners.html">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-          Banners
-        </a>
-        <a href="/app/theme.html">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="12.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="13.5" r="2.5"/><path d="M12 22a10 10 0 0 1 0-20 9 9 0 0 1 9 9c0 4-3 5-6 5h-1a2 2 0 0 0-1 4 2 2 0 0 1-1 2z"/></svg>
-          Theme
-        </a>
-        <a href="/app/analytics.html">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          Analytics
-        </a>
-        <a href="/app/team.html" aria-current="page">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          Team
-        </a>
-        <a href="/app/qr.html">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="14" y1="14" x2="14" y2="14.01"/><line x1="21" y1="14" x2="21" y2="21"/><line x1="14" y1="21" x2="17" y2="21"/><line x1="17" y1="17" x2="21" y2="17"/></svg>
-          QR
-        </a>
-      </nav>
-
       <!-- page head -->
       <div class="mb-[clamp(1.25rem,2.6vw,1.875rem)]">
         <h1 class="stagger text-[clamp(2rem,4.1vw,2.9rem)] tracking-[-0.035em]" data-delay="0">Team</h1>
@@ -289,10 +260,10 @@ dialog.team-modal[open] {
             <caption class="sr-only">Members of Saffron &amp; Smoke, with role and join date</caption>
             <thead>
               <tr>
-                <th>Member</th>
-                <th>Role</th>
-                <th>Joined</th>
-                <th><span class="sr-only">Actions</span></th>
+                <th scope="col">Member</th>
+                <th scope="col">Role</th>
+                <th scope="col">Joined</th>
+                <th scope="col"><span class="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody>
@@ -416,9 +387,12 @@ dialog.team-modal[open] {
             </tbody>
           </table>
         </div>
+      </section>
 
-        <!-- transfer ownership footer -->
-        <div class="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-base-content/10 pt-5">
+      <!-- ===== TRANSFER OWNERSHIP ===== -->
+      <section class="stagger mb-[clamp(1rem,1.6vw,1.375rem)] min-w-0 rounded-[var(--radius-box)] border border-base-content/[0.18] bg-base-200 p-[clamp(1.125rem,2.4vw,1.625rem)]"
+               data-delay="4" aria-labelledby="transfer-h">
+        <div class="flex flex-wrap items-center justify-between gap-4">
           <div class="min-w-0 flex-1">
             <b id="transfer-h" class="block text-[14.5px] font-semibold text-base-content [font-family:var(--font-body)]">Transfer ownership</b>
             <span class="mt-0.5 block text-[13px] text-base-content/60">Hand this restaurant to another member. You'll become an Editor.</span>
