@@ -167,6 +167,20 @@
     color: var(--color-secondary);
   }
 
+  /* ---- Per-restaurant sub-nav (theme, menu-editor, banners, analytics, team, qr) ----
+     Shown indented under the active restaurant in the sidebar.
+     Active item gets the same saffron tonal treatment as .app-nav.
+     Scoped to .app-subnav so it never leaks into other menus.
+     Full tonal tint + saffron text — never a side-stripe (DESIGN.md §6). */
+  .app-subnav a[aria-current="page"] {
+    background-color: color-mix(in oklch, var(--color-secondary) 13%, transparent);
+    color: var(--color-secondary);
+    font-weight: 600;
+  }
+  .app-subnav a[aria-current="page"] svg {
+    opacity: 1;
+  }
+
   /* ---- App shell: sidebar nav (reused by every App page) ----
      daisyUI `menu` carries layout, hover and radius; this only swaps the
      active treatment to saffron = ATTENTION (Two-Accent Rule). Scoped to
