@@ -1,576 +1,213 @@
 <!DOCTYPE html>
-<html lang="en" class="js">
+<html lang="en" class="js" data-theme="menufic">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Team · Saffron &amp; Smoke · Menufic</title>
 <meta name="description" content="Manage who can edit and view the Saffron &amp; Smoke menu — invite teammates, set roles, and transfer ownership.">
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<!-- Same identity fonts as the landing page and dashboard -->
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=boska@400,500,700&f[]=supreme@400,500,600,700&display=swap">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<!-- Team-page island: bespoke rules that cannot be expressed as Tailwind utilities.
+     All colours reference theme tokens; documented literal carve-outs noted inline. -->
 <style>
-:root{
-  --bg: oklch(0.18 0.03 45);
-  --bg-deep: oklch(0.155 0.026 52);
-  --surface: oklch(0.235 0.034 46);
-  --surface-2: oklch(0.295 0.04 48);
-  --saffron: oklch(0.785 0.14 68);
-  --saffron-deep: oklch(0.72 0.14 70);
-  --tomato: oklch(0.56 0.19 32);
-  --tomato-bright: oklch(0.66 0.19 32);
-  --green: oklch(0.72 0.15 150);
-  --green-bright: oklch(0.82 0.15 150);
-  --cream: oklch(0.96 0.015 78);
-  --cream-soft: oklch(0.83 0.022 78);
-  --line: oklch(0.42 0.03 48 / 0.5);
-  --line-soft: oklch(0.42 0.03 58 / 0.28);
-  --ease: cubic-bezier(0.16,1,0.3,1);
-  --sidebar-w: 260px;
+/* ---- Role + status badges ---- */
+/* .badge-dot is a coloured dot inside each badge; background: currentColor inherits badge text colour */
+.badge-dot { width: 6px; height: 6px; border-radius: 50%; flex: none; background: currentColor; }
+.badge-owner  { background: var(--color-secondary); color: var(--color-secondary-content); }
+.badge-owner .badge-dot { background: var(--color-secondary-content); opacity: 0.7; }
+.badge-editor { background: var(--color-base-300); color: var(--color-base-content); border: 1px solid color-mix(in oklch, var(--color-base-content) 18%, transparent); }
+.badge-viewer { background: transparent; color: color-mix(in oklch, var(--color-base-content) 65%, transparent); border: 1px solid color-mix(in oklch, var(--color-base-content) 18%, transparent); }
+.badge-pending { background: color-mix(in oklch, var(--color-secondary) 14%, transparent); color: var(--color-secondary); border: 1px solid color-mix(in oklch, var(--color-secondary) 40%, transparent); }
+/* badge-expired text uses tomato-bright (oklch(0.66 0.19 32)) — no token exists; documented carve-out */
+.badge-expired { background: color-mix(in oklch, var(--color-error) 14%, transparent); color: oklch(0.66 0.19 32); border: 1px solid color-mix(in oklch, var(--color-error) 35%, transparent); }
+
+/* ---- Invite separator (::before/::after pseudo-elements cannot be Tailwind utilities) ---- */
+.invite-sep {
+  display: flex; align-items: center; gap: 14px;
+  margin: 20px 0;
+  font-size: 12.5px; font-weight: 600; letter-spacing: 0.02em;
+  color: color-mix(in oklch, var(--color-base-content) 55%, transparent);
+}
+.invite-sep::before, .invite-sep::after {
+  content: ""; height: 1px; flex: 1;
+  background: color-mix(in oklch, var(--color-base-content) 12%, transparent);
 }
 
-*,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--cream);
-  font-family:"Supreme",system-ui,sans-serif;
-  font-size:16px;
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-  overflow-x:hidden;
-}
-img{max-width:100%;display:block}
-a{color:inherit;text-decoration:none}
-button{font-family:inherit;cursor:pointer}
-h1,h2,h3{
-  font-family:"Boska",Georgia,serif;
-  font-weight:700;
-  letter-spacing:-0.03em;
-  line-height:1.05;
-  margin:0;
-  text-wrap:balance;
-}
-p{margin:0;text-wrap:pretty}
-:focus-visible{outline:3px solid var(--saffron);outline-offset:3px;border-radius:6px}
-
-/* ============ BUTTONS ============ */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  min-height:48px;padding:0 22px;
-  border-radius:999px;border:1px solid transparent;
-  font-family:"Supreme";font-weight:600;font-size:16px;color:var(--cream);
-  transition:transform .35s var(--ease),background .25s var(--ease),box-shadow .35s var(--ease),border-color .25s var(--ease),color .25s var(--ease);
-}
-.btn-primary{
-  background:var(--tomato);color:#fff;
-  box-shadow:0 10px 30px -10px oklch(0.605 0.18 30 / 0.7);
-}
-.btn-primary:hover{background:var(--tomato-bright);transform:translateY(-2px);box-shadow:0 16px 40px -12px oklch(0.605 0.18 30 / 0.8)}
-.btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}
-.btn-ghost:hover{background:oklch(0.30 0.04 60 / 0.5);transform:translateY(-2px)}
-.gicon{width:18px;height:18px;flex:none}
-
-/* small pill ghost for in-panel actions */
-.btn-sm{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  min-height:44px;padding:0 16px;border-radius:999px;
-  background:transparent;border:1px solid var(--line);color:var(--cream);
-  font-family:"Supreme";font-weight:600;font-size:14px;
-  transition:background .2s var(--ease),border-color .2s var(--ease),color .2s var(--ease),transform .3s var(--ease);
-}
-.btn-sm:hover{background:oklch(0.30 0.04 60 / 0.5);border-color:var(--saffron);color:var(--cream);transform:translateY(-1px)}
-.btn-sm svg{width:16px;height:16px;flex:none;stroke:currentColor}
-.btn-sm.danger:hover{border-color:var(--tomato-bright);color:var(--tomato-bright)}
-
-/* ============ APP SHELL ============ */
-.app{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);min-height:100vh}
-
-/* ---- Sidebar ---- */
-.sidebar{
-  position:sticky;top:0;align-self:start;
-  height:100vh;
-  background:var(--bg-deep);
-  border-right:1px solid var(--line-soft);
-  display:flex;flex-direction:column;
-  padding:22px 16px 16px;
-  z-index:60;
-  overflow-y:auto;
-}
-.sb-brand{
-  font-family:"Boska";font-weight:700;font-size:24px;letter-spacing:-0.04em;
-  color:var(--cream);display:inline-flex;align-items:center;gap:8px;
-  padding:6px 8px 4px;margin-bottom:18px;flex:none;
-}
-.sb-brand .dot{width:9px;height:9px;border-radius:50%;background:var(--tomato);margin-bottom:-2px}
-.sb-section{
-  font-size:12px;font-weight:600;color:var(--cream-soft);
-  letter-spacing:.04em;padding:0 10px;margin:6px 0 8px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.sb-section .count{
-  font-size:11px;font-weight:600;color:var(--cream-soft);
-  background:var(--surface);border:1px solid var(--line-soft);
-  border-radius:999px;padding:1px 8px;
-}
-.sb-list{display:flex;flex-direction:column;gap:3px;margin:0 0 4px}
-.sb-item{
-  display:flex;align-items:center;gap:11px;
-  width:100%;min-height:46px;padding:6px 10px;
-  border:none;background:transparent;border-radius:12px;text-align:left;
-  color:var(--cream-soft);font-size:14.5px;font-weight:500;
-  transition:background .2s var(--ease),color .2s var(--ease);
-}
-.sb-item:hover{background:oklch(0.30 0.04 60 / 0.4);color:var(--cream)}
-.sb-item .thumb{
-  width:34px;height:34px;border-radius:9px;object-fit:cover;flex:none;
-  border:1px solid var(--line-soft);
-}
-.sb-item .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb-item .sb-dot{width:7px;height:7px;border-radius:50%;flex:none;background:transparent}
-.sb-item[aria-current="page"]{
-  background:oklch(0.785 0.14 68 / 0.13);
-  color:var(--saffron);font-weight:600;
-}
-.sb-item[aria-current="page"] .sb-dot{background:var(--saffron)}
-.sb-item[aria-current="page"] .thumb{border-color:oklch(0.785 0.14 68 / 0.55)}
-
-/* section sub-nav (within the active restaurant) */
-.sb-nav{display:flex;flex-direction:column;gap:3px;margin:4px 0 8px}
-.sb-nav .sb-link.subnav{padding-left:12px}
-.sb-link{
-  display:flex;align-items:center;gap:12px;
-  width:100%;min-height:46px;padding:6px 12px;
-  border:none;background:transparent;border-radius:12px;text-align:left;
-  color:var(--cream-soft);font-size:14.5px;font-weight:500;
-  transition:background .2s var(--ease),color .2s var(--ease);
-}
-.sb-link:hover{background:oklch(0.30 0.04 60 / 0.4);color:var(--cream)}
-.sb-link svg{width:19px;height:19px;flex:none;stroke:currentColor;fill:none}
-.sb-link[aria-current="page"]{
-  background:oklch(0.785 0.14 68 / 0.13);
-  color:var(--saffron);font-weight:600;
+/* ---- Invite form grids (align-items:end + multi-col collapse) ---- */
+.invite-row { display: grid; grid-template-columns: minmax(0,1fr) 170px auto; gap: 14px; align-items: end; }
+.invite-link-row { display: grid; grid-template-columns: 170px auto; gap: 14px; align-items: end; }
+@media (max-width: 620px) {
+  .invite-row { grid-template-columns: 1fr; align-items: stretch; }
+  .invite-row .btn { width: 100%; }
+  .invite-link-row { grid-template-columns: 1fr; align-items: stretch; }
 }
 
-.sb-divider{height:1px;background:var(--line-soft);margin:10px 6px}
+/* ---- Row "more" dropdown — JS-toggled .open; display:none→flex cannot be a Tailwind variant ---- */
+.more-menu {
+  position: absolute; right: 0; top: calc(100% + 8px); min-width: 188px; z-index: 30;
+  background: var(--color-base-300);
+  border: 1px solid color-mix(in oklch, var(--color-base-content) 20%, transparent);
+  border-radius: var(--radius-field); padding: 7px;
+  box-shadow: var(--shadow-floating);
+  display: none; flex-direction: column; gap: 2px;
+}
+.more-menu.open { display: flex; }
 
-.sb-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-soft);display:flex;flex-direction:column;gap:3px;flex:none}
-.sb-user{
-  display:flex;align-items:center;gap:11px;
-  margin-top:10px;padding:9px 11px;
-  background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;
+/* ---- Transfer-ownership dialog + scrim (custom entry animation; cannot be expressed as Tailwind) ---- */
+/* Overlay tint: no brand token for dim-bg; pure-black at low opacity — documented carve-out */
+.team-scrim {
+  position: fixed; inset: 0; z-index: 90;
+  background: oklch(0.13 0.02 50 / 0.66);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  opacity: 0; visibility: hidden;
+  transition: opacity 300ms cubic-bezier(0.16,1,0.3,1), visibility 300ms cubic-bezier(0.16,1,0.3,1);
 }
-.sb-user img{width:38px;height:38px;border-radius:50%;object-fit:cover;flex:none}
-.sb-user .who{min-width:0;flex:1}
-.sb-user .who b{display:block;font-size:13.5px;font-weight:600;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb-user .who span{display:block;font-size:12px;color:var(--cream-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.team-scrim.show { opacity: 1; visibility: visible; }
 
-/* ---- Main ---- */
-.main{display:flex;flex-direction:column;min-width:0;background:var(--bg)}
-
-.topbar{
-  position:sticky;top:0;z-index:50;
-  display:flex;align-items:center;gap:16px;
-  padding:12px clamp(18px,3vw,40px);
-  background:oklch(0.185 0.028 55 / 0.86);
-  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--line-soft);
+dialog.team-modal {
+  position: fixed; z-index: 95; left: 50%; top: 50%;
+  transform: translate(-50%, -46%);
+  margin: 0; padding: 0; border: none;
+  width: min(460px, calc(100vw - 32px));
+  background: var(--color-base-200);
+  border: 1px solid color-mix(in oklch, var(--color-base-content) 20%, transparent);
+  border-radius: var(--radius-box);
+  color: var(--color-base-content);
+  /* pure-black shadow stop — documented carve-out (§4 Elevation) */
+  box-shadow: 0 30px 70px -30px oklch(0 0 0 / 0.9);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 320ms cubic-bezier(0.16,1,0.3,1),
+              transform 320ms cubic-bezier(0.16,1,0.3,1),
+              visibility 320ms cubic-bezier(0.16,1,0.3,1);
 }
-.crumb{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--cream-soft);min-width:0;flex-wrap:wrap}
-.crumb a{color:var(--cream-soft);font-weight:500;border-radius:6px;transition:color .2s var(--ease)}
-.crumb a:hover{color:var(--cream)}
-.crumb .sep{width:15px;height:15px;flex:none;color:var(--cream-soft);opacity:.55}
-.crumb .here{color:var(--cream);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.topbar-spacer{flex:1}
-.hamburger{
-  display:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;
-  width:44px;height:44px;align-items:center;justify-content:center;flex:none;
+dialog.team-modal[open] {
+  opacity: 1; visibility: visible;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
 }
-.hamburger span{display:block;width:18px;height:2px;background:var(--cream);position:relative}
-.hamburger span::before,.hamburger span::after{content:"";position:absolute;left:0;width:18px;height:2px;background:var(--cream)}
-.hamburger span::before{top:-6px}.hamburger span::after{top:6px}
-
-/* avatar + dropdown */
-.acct{position:relative;flex:none}
-.acct-btn{
-  display:flex;align-items:center;gap:9px;
-  min-height:44px;padding:4px 10px 4px 4px;
-  background:var(--surface);border:1px solid var(--line-soft);border-radius:999px;
-  color:var(--cream);font-size:14px;font-weight:600;
-  transition:background .2s var(--ease),border-color .2s var(--ease);
-}
-.acct-btn:hover{background:var(--surface-2)}
-.acct-btn img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none}
-.acct-btn .nm{display:none}
-.acct-btn .chev{width:16px;height:16px;color:var(--cream-soft);transition:transform .25s var(--ease)}
-.acct-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
-.acct-menu{
-  position:absolute;right:0;top:calc(100% + 10px);min-width:224px;
-  background:var(--surface);border:1px solid var(--line);border-radius:16px;
-  padding:8px;box-shadow:0 18px 40px -22px oklch(0 0 0 / 0.85);
-  display:none;flex-direction:column;gap:2px;
-}
-.acct-menu.open{display:flex}
-.acct-head{padding:9px 11px 11px;border-bottom:1px solid var(--line-soft);margin-bottom:6px}
-.acct-head b{display:block;font-size:14px;color:var(--cream)}
-.acct-head span{display:block;font-size:12.5px;color:var(--cream-soft);margin-top:2px}
-.acct-menu a{
-  display:flex;align-items:center;gap:11px;
-  min-height:44px;padding:0 11px;border-radius:10px;
-  color:var(--cream);font-size:14px;font-weight:500;
-  transition:background .18s var(--ease);
-}
-.acct-menu a:hover{background:oklch(0.30 0.04 60 / 0.5)}
-.acct-menu a svg{width:17px;height:17px;flex:none;stroke:currentColor;color:var(--cream-soft)}
-.acct-menu a.danger:hover{color:var(--tomato-bright)}
-
-/* page body */
-.page{padding:clamp(22px,3.4vw,38px) clamp(18px,3vw,40px) 80px;max-width:1080px;width:100%}
-.page-head{margin-bottom:clamp(20px,2.6vw,30px)}
-.page-head h1{font-size:clamp(2rem,4.1vw,2.9rem);color:var(--cream);letter-spacing:-0.035em}
-.page-head .subtitle{margin-top:10px;color:var(--cream-soft);font-size:clamp(0.98rem,1.4vw,1.08rem);max-width:60ch;line-height:1.5}
-
-/* ============ PANELS ============ */
-.panel{
-  background:var(--surface);border:1px solid var(--line-soft);
-  border-radius:24px;padding:clamp(18px,2.4vw,26px);margin-bottom:clamp(16px,2vw,22px);min-width:0;
-}
-.panel-head{margin-bottom:18px}
-.panel-head h2{font-family:"Boska";font-weight:700;font-size:1.4rem;color:var(--cream);letter-spacing:-0.025em}
-.panel-head p{margin-top:6px;font-size:13.5px;color:var(--cream-soft);max-width:58ch}
-
-/* fields */
-.field{display:flex;flex-direction:column;gap:8px;min-width:0}
-.field label{font-size:13px;font-weight:600;color:var(--cream);letter-spacing:.01em}
-.input,.select{
-  width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;
-  color:var(--cream);font-family:"Supreme";font-size:15px;
-  padding:0 14px;height:48px;min-width:0;
-  transition:border-color .2s var(--ease),background .2s var(--ease);
-}
-.input::placeholder{color:oklch(0.66 0.02 70)}
-.input:focus,.select:focus{border-color:var(--saffron);outline:none}
-.select{
-  appearance:none;-webkit-appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23cfc6b8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 12px center;padding-right:40px;cursor:pointer;
+.team-modal-icon {
+  width: 48px; height: 48px; border-radius: var(--radius-field);
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 14px;
+  background: color-mix(in oklch, var(--color-secondary) 14%, transparent);
+  color: var(--color-secondary);
+  border: 1px solid color-mix(in oklch, var(--color-secondary) 40%, transparent);
 }
 
-/* invite form row */
-.invite-row{display:grid;grid-template-columns:minmax(0,1fr) 170px auto;gap:14px;align-items:end}
-.invite-sep{
-  display:flex;align-items:center;gap:14px;margin:20px 0;
-  font-size:12.5px;font-weight:600;color:var(--cream-soft);letter-spacing:.02em;
-}
-.invite-sep::before,.invite-sep::after{content:"";height:1px;background:var(--line-soft);flex:1}
-.invite-link-row{display:grid;grid-template-columns:170px auto;gap:14px;align-items:end}
-
-/* pending invites */
-.invite-list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
-.invite-card{
-  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
-  background:var(--bg);border:1px solid var(--line-soft);border-radius:16px;
-  padding:12px 14px;min-width:0;
-}
-.invite-ico{
-  width:40px;height:40px;border-radius:11px;flex:none;
-  display:inline-flex;align-items:center;justify-content:center;
-  background:var(--surface-2);border:1px solid var(--line-soft);color:var(--cream-soft);
-}
-.invite-ico svg{width:18px;height:18px;stroke:currentColor;fill:none}
-.invite-info{flex:1;min-width:0}
-.invite-info .em{font-size:14.5px;font-weight:600;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:"Supreme"}
-.invite-info .meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:3px;font-size:12.5px;color:var(--cream-soft)}
-
-/* role + status badges (text, not colour-only) */
-.badge{
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:11.5px;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap;
-  font-family:"Supreme";letter-spacing:.01em;
-}
-.badge .bdot{width:6px;height:6px;border-radius:50%;flex:none;background:currentColor}
-.badge-owner{background:var(--saffron);color:var(--bg-deep)}
-.badge-owner .bdot{background:var(--bg-deep);opacity:.7}
-.badge-editor{background:var(--surface-2);color:var(--cream);border:1px solid var(--line)}
-.badge-viewer{background:transparent;color:var(--cream-soft);border:1px solid var(--line)}
-.badge-pending{background:oklch(0.785 0.14 68 / 0.14);color:var(--saffron);border:1px solid oklch(0.785 0.14 68 / 0.4)}
-.badge-expired{background:oklch(0.66 0.19 32 / 0.14);color:var(--tomato-bright);border:1px solid oklch(0.66 0.19 32 / 0.4)}
-
-/* ============ MEMBERS TABLE ============ */
-.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:16px;min-width:0}
-table.members{width:100%;border-collapse:collapse;min-width:560px}
-table.members caption{text-align:left;padding:0 0 12px;font-size:13px;color:var(--cream-soft)}
-table.members th{
-  text-align:left;font-size:12px;font-weight:600;color:var(--cream-soft);
-  letter-spacing:.02em;padding:0 14px 12px;white-space:nowrap;
-}
-table.members td{
-  padding:12px 14px;border-top:1px solid var(--line-soft);vertical-align:middle;
-}
-table.members tbody tr:hover{background:oklch(0.30 0.04 60 / 0.3)}
-.m-who{display:flex;align-items:center;gap:12px;min-width:0}
-.m-who img{width:42px;height:42px;border-radius:50%;object-fit:cover;flex:none;border:1px solid var(--line-soft)}
-.m-who .mn{min-width:0}
-.m-who .mn b{display:block;font-family:"Supreme";font-size:14.5px;font-weight:600;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.m-who .mn span{display:block;font-size:12.5px;color:var(--cream-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.m-you{font-size:11px;font-weight:600;color:var(--cream-soft);background:var(--bg);border:1px solid var(--line-soft);border-radius:999px;padding:1px 8px;margin-left:2px}
-.m-joined{font-size:13.5px;color:var(--cream-soft);white-space:nowrap;font-variant-numeric:tabular-nums}
-.m-actions{text-align:right;white-space:nowrap}
-.m-owner-note{font-size:12.5px;color:var(--cream-soft);white-space:nowrap}
-
-/* row "more" dropdown */
-.more{position:relative;display:inline-block}
-.more-btn{
-  width:44px;height:44px;border-radius:12px;flex:none;
-  display:inline-flex;align-items:center;justify-content:center;
-  background:var(--surface);border:1px solid var(--line-soft);color:var(--cream-soft);
-  transition:background .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease);
-}
-.more-btn:hover,.more-btn[aria-expanded="true"]{background:var(--surface-2);color:var(--cream);border-color:var(--line)}
-.more-btn svg{width:20px;height:20px;stroke:currentColor;fill:none}
-.more-menu{
-  position:absolute;right:0;top:calc(100% + 8px);min-width:188px;z-index:30;
-  background:var(--surface-2);border:1px solid var(--line);border-radius:14px;
-  padding:7px;box-shadow:0 18px 40px -22px oklch(0 0 0 / 0.85);
-  display:none;flex-direction:column;gap:2px;
-}
-.more-menu.open{display:flex}
-.more-menu button{
-  display:flex;align-items:center;gap:10px;width:100%;
-  min-height:44px;padding:0 11px;border:none;background:transparent;border-radius:10px;text-align:left;
-  color:var(--cream);font-family:"Supreme";font-size:14px;font-weight:500;
-  transition:background .18s var(--ease),color .18s var(--ease);
-}
-.more-menu button:hover{background:oklch(0.30 0.04 60 / 0.6)}
-.more-menu button svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;color:var(--cream-soft)}
-.more-menu button.danger{color:var(--tomato-bright)}
-.more-menu button.danger svg{color:var(--tomato-bright)}
-.more-menu button.danger:hover{background:oklch(0.66 0.19 32 / 0.16)}
-
-/* transfer ownership footer */
-.transfer-foot{
-  display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;
-  margin-top:6px;
-}
-.transfer-foot .tf-text{min-width:0;flex:1}
-.transfer-foot .tf-text b{font-family:"Supreme";font-size:14.5px;font-weight:600;color:var(--cream);display:block}
-.transfer-foot .tf-text span{font-size:13px;color:var(--cream-soft)}
-
-/* ============ DIALOG ============ */
-.scrim{
-  position:fixed;inset:0;z-index:90;background:oklch(0.13 0.02 50 / 0.66);
-  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
-  opacity:0;visibility:hidden;transition:opacity .3s var(--ease),visibility .3s var(--ease);
-}
-.scrim.show{opacity:1;visibility:visible}
-
-dialog.modal{
-  position:fixed;z-index:95;left:50%;top:50%;
-  transform:translate(-50%,-46%);
-  margin:0;padding:0;border:none;
-  width:min(460px,calc(100vw - 32px));max-width:calc(100vw - 32px);
-  background:var(--surface);border:1px solid var(--line);border-radius:24px;
-  color:var(--cream);
-  box-shadow:0 30px 70px -30px oklch(0 0 0 / 0.9);
-  opacity:0;visibility:hidden;pointer-events:none;
-  transition:opacity .32s var(--ease),transform .32s var(--ease),visibility .32s var(--ease);
-}
-dialog.modal[open]{opacity:1;visibility:visible;transform:translate(-50%,-50%);pointer-events:auto}
-.modal-body{padding:24px 24px 8px}
-.modal-icon{
-  width:48px;height:48px;border-radius:14px;
-  display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px;
-  background:oklch(0.785 0.14 68 / 0.14);color:var(--saffron);border:1px solid oklch(0.785 0.14 68 / 0.4);
-}
-.modal-icon svg{width:22px;height:22px;stroke:currentColor;fill:none}
-.modal-body h2{font-family:"Boska";font-weight:700;font-size:1.5rem;color:var(--cream);letter-spacing:-0.03em}
-.modal-body p{margin-top:8px;font-size:14px;color:var(--cream-soft);line-height:1.5}
-.modal-field{margin-top:18px;display:flex;flex-direction:column;gap:8px}
-.modal-foot{display:flex;gap:12px;padding:8px 24px 24px}
-.modal-foot .btn{flex:1}
-
-/* ============ entrance ============ */
-.js .stagger{opacity:0;transform:translateY(20px)}
-.js .stagger.in{opacity:1;transform:none;transition:opacity .55s var(--ease),transform .55s var(--ease)}
-
-/* ============ RESPONSIVE ============ */
-@media (min-width:1100px){
-  .acct-btn .nm{display:inline}
-}
-@media (max-width:900px){
-  .app{grid-template-columns:minmax(0,1fr)}
-  .sidebar{
-    position:fixed;top:0;left:0;bottom:0;width:min(300px,86vw);
-    transform:translateX(-100%);transition:transform .35s var(--ease);
-    box-shadow:0 18px 50px -20px oklch(0 0 0 / 0.7);
-  }
-  .sidebar.open{transform:translateX(0)}
-  .hamburger{display:inline-flex}
-  .topbar{padding-left:16px;padding-right:16px}
-}
-@media (max-width:620px){
-  .page{padding-left:16px;padding-right:16px}
-  .invite-row{grid-template-columns:1fr;align-items:stretch}
-  .invite-row .btn{width:100%}
-  .invite-link-row{grid-template-columns:1fr;align-items:stretch}
-  .invite-link-row .btn-sm{width:100%}
-  .invite-card .btn-sm{width:100%}
-  .transfer-foot .btn-sm{width:100%}
-}
-
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none !important;transition-duration:.01ms !important}
-  .js .stagger{opacity:1 !important;transform:none !important}
-  dialog.modal{transition:opacity .01ms !important,visibility .01ms !important}
-  html{scroll-behavior:auto}
+@media (prefers-reduced-motion: reduce) {
+  .team-scrim, dialog.team-modal { transition: none !important; }
 }
 </style>
 </head>
-<body>
+<body class="min-h-screen bg-base-100 text-base-content">
 
-<div class="app">
+<div class="drawer lg:drawer-open">
+  <input id="app-drawer" type="checkbox" class="drawer-toggle" aria-label="Toggle navigation">
 
-  <!-- ============ SIDEBAR ============ -->
-  <aside class="sidebar" id="sidebar" aria-label="Restaurants and account">
-    <a class="sb-brand" href="/index.html" aria-label="Menufic home">Menufic<span class="dot" aria-hidden="true"></span></a>
+  <!-- ===================== CONTENT ===================== -->
+  <div class="drawer-content flex min-h-screen min-w-0 flex-col">
 
-    <nav aria-label="Your restaurants">
-      <div class="sb-section"><span>Restaurants</span><span class="count">3</span></div>
-      <div class="sb-list">
-        <a class="sb-item" href="/app/restaurant.html" aria-current="page">
-          <img class="thumb" src="/assets/img/photo-1432139555190-58524dae6a55.jpg" alt="">
-          <span class="nm">Saffron &amp; Smoke</span>
-          <span class="sb-dot" aria-hidden="true"></span>
-        </a>
-        <a class="sb-item" href="/app/restaurant.html">
-          <img class="thumb" src="/assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="">
-          <span class="nm">Bella Trattoria</span>
-          <span class="sb-dot" aria-hidden="true"></span>
-        </a>
-        <a class="sb-item" href="/app/restaurant.html">
-          <img class="thumb" src="/assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="">
-          <span class="nm">Verde Kitchen</span>
-          <span class="sb-dot" aria-hidden="true"></span>
-        </a>
-      </div>
-    </nav>
-
-    <div class="sb-divider" aria-hidden="true"></div>
-
-    <nav class="sb-nav" aria-label="Saffron and Smoke sections">
-      <div class="sb-section"><span>Saffron &amp; Smoke</span></div>
-      <a class="sb-link subnav" href="/app/menu-editor.html">
-        <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        Menus
-      </a>
-      <a class="sb-link subnav" href="/app/banners.html">
-        <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-        Banners
-      </a>
-      <a class="sb-link subnav" href="/app/theme.html">
-        <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="12.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="13.5" r="2.5"/><path d="M12 22a10 10 0 0 1 0-20 9 9 0 0 1 9 9c0 4-3 5-6 5h-1a2 2 0 0 0-1 4 2 2 0 0 1-1 2z"/></svg>
-        Theme
-      </a>
-      <a class="sb-link subnav" href="/app/analytics.html">
-        <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        Analytics
-      </a>
-      <a class="sb-link subnav" href="/app/team.html" aria-current="page">
-        <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Team
-      </a>
-      <a class="sb-link subnav" href="/app/qr.html">
-        <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="14" y1="14" x2="14" y2="14.01"/><line x1="21" y1="14" x2="21" y2="21"/><line x1="14" y1="21" x2="17" y2="21"/><line x1="17" y1="17" x2="21" y2="17"/></svg>
-        QR code
-      </a>
-    </nav>
-
-    <div class="sb-foot">
-      <a class="sb-link" href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        Settings
-      </a>
-      <a class="sb-link" href="/index.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Sign out
-      </a>
-
-      <div class="sb-user">
-        <img src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran">
-        <span class="who">
-          <b>Arun Kajendran</b>
-          <span>a.kajendran@gmail.com</span>
-        </span>
-      </div>
-    </div>
-  </aside>
-
-  <!-- scrim for mobile nav -->
-  <div class="scrim" id="navScrim" hidden></div>
-
-  <!-- ============ MAIN ============ -->
-  <div class="main">
-
-    <header class="topbar">
-      <button class="hamburger" id="hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">
-        <span aria-hidden="true"></span>
+    <!-- sticky top bar -->
+    <header class="sticky top-0 z-20 flex items-center gap-4 border-b border-base-content/10 bg-base-100/85 px-[clamp(1rem,3vw,2.5rem)] py-3 backdrop-blur-lg">
+      <button id="hamburger" type="button"
+              class="inline-flex size-11 shrink-0 items-center justify-center rounded-xl border border-base-content/20 bg-base-200 text-base-content lg:hidden"
+              aria-label="Open navigation" aria-expanded="false" aria-controls="app-drawer">
+        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
-      <nav class="crumb" aria-label="Breadcrumb">
-        <a href="/app/dashboard.html">My Restaurants</a>
-        <svg class="sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-        <a href="/app/restaurant.html">Saffron &amp; Smoke</a>
-        <svg class="sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-        <span class="here" aria-current="page">Team</span>
-      </nav>
-      <span class="topbar-spacer"></span>
 
-      <div class="acct">
-        <button class="acct-btn" id="acctBtn" aria-haspopup="true" aria-expanded="false" aria-controls="acctMenu">
-          <img src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran, account menu">
-          <span class="nm">Arun</span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      <nav class="flex min-w-0 items-center gap-2 text-sm text-base-content/70" aria-label="Breadcrumb">
+        <a class="font-medium transition-colors hover:text-base-content" href="/app/dashboard.html">My Restaurants</a>
+        <svg class="size-[15px] shrink-0 opacity-55" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        <a class="font-medium transition-colors hover:text-base-content" href="/app/restaurant.html">Saffron &amp; Smoke</a>
+        <svg class="size-[15px] shrink-0 opacity-55" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        <span class="truncate font-semibold text-base-content" aria-current="page">Team</span>
+      </nav>
+
+      <span class="flex-1"></span>
+
+      <!-- account dropdown (JS-controlled for deterministic aria-expanded) -->
+      <div class="relative shrink-0" id="acct">
+        <button id="acctBtn" type="button"
+                class="group inline-flex h-11 items-center gap-2 rounded-full border border-base-content/10 bg-base-200 py-1 pe-3 ps-1 text-sm font-semibold transition-colors hover:bg-base-300"
+                aria-haspopup="true" aria-expanded="false" aria-controls="acctMenu">
+          <img class="size-9 rounded-full object-cover" src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran, account menu">
+          <span class="hidden min-[1100px]:inline">Arun</span>
+          <svg class="size-4 text-base-content/70 transition-transform duration-200 group-aria-[expanded=true]:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
         </button>
-        <div class="acct-menu" id="acctMenu" role="menu" aria-label="Account">
-          <div class="acct-head">
-            <b>Arun Kajendran</b>
-            <span>a.kajendran@gmail.com</span>
-          </div>
-          <a href="/admin/review.html" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V5z"/><path d="M9 12l2 2 4-4"/></svg>Admin review</a>
-          <a href="#" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
-          <a href="/index.html" role="menuitem" class="danger"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</a>
-        </div>
+        <ul id="acctMenu" role="menu" aria-label="Account"
+            class="menu absolute end-0 top-[calc(100%+0.625rem)] z-30 hidden w-56 gap-0.5 rounded-2xl border border-base-content/10 bg-base-200 p-2 shadow-floating">
+          <li class="menu-title px-3 pb-2.5 pt-2 leading-tight">
+            <span class="block text-sm font-semibold text-base-content">Arun Kajendran</span>
+            <span class="mt-0.5 block text-xs font-normal normal-case text-base-content/70">a.kajendran@gmail.com</span>
+          </li>
+          <li><a href="/admin/review.html" role="menuitem"><svg class="size-[17px] text-base-content/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V5z"/><path d="M9 12l2 2 4-4"/></svg>Admin review</a></li>
+          <li><a href="#" role="menuitem"><svg class="size-[17px] text-base-content/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a></li>
+          <li><a href="/index.html" role="menuitem" class="hover:text-[var(--color-primary)]"><svg class="size-[17px] text-base-content/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</a></li>
+        </ul>
       </div>
     </header>
 
-    <!-- page -->
-    <main class="page">
-      <div class="page-head">
-        <h1 class="stagger" data-delay="0">Team</h1>
-        <p class="subtitle stagger" data-delay="0">Invite people to help run the Saffron &amp; Smoke menu. Editors can change dishes and publish; viewers can look but not touch. You're the owner.</p>
+    <!-- ===================== PAGE ===================== -->
+    <main class="w-full max-w-[1080px] px-[clamp(1rem,3vw,2.5rem)] pb-20 pt-[clamp(1.375rem,3.4vw,2.375rem)]">
+
+      <!-- per-restaurant section tab strip
+           aria-label "Page sections" is DISTINCT from sidebar "Saffron and Smoke sections" -->
+      <nav class="sectionbar" aria-label="Page sections">
+        <a href="/app/menu-editor.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          Menus
+        </a>
+        <a href="/app/banners.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          Banners
+        </a>
+        <a href="/app/theme.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="12.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="13.5" r="2.5"/><path d="M12 22a10 10 0 0 1 0-20 9 9 0 0 1 9 9c0 4-3 5-6 5h-1a2 2 0 0 0-1 4 2 2 0 0 1-1 2z"/></svg>
+          Theme
+        </a>
+        <a href="/app/analytics.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Analytics
+        </a>
+        <a href="/app/team.html" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Team
+        </a>
+        <a href="/app/qr.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="14" y1="14" x2="14" y2="14.01"/><line x1="21" y1="14" x2="21" y2="21"/><line x1="14" y1="21" x2="17" y2="21"/><line x1="17" y1="17" x2="21" y2="17"/></svg>
+          QR
+        </a>
+      </nav>
+
+      <!-- page head -->
+      <div class="mb-[clamp(1.25rem,2.6vw,1.875rem)]">
+        <h1 class="stagger text-[clamp(2rem,4.1vw,2.9rem)] tracking-[-0.035em]" data-delay="0">Team</h1>
+        <p class="stagger mt-2.5 max-w-[60ch] text-pretty text-[clamp(0.98rem,1.4vw,1.08rem)] leading-relaxed text-base-content/70" data-delay="0">Invite people to help run the Saffron &amp; Smoke menu. Editors can change dishes and publish; viewers can look but not touch. You're the owner.</p>
       </div>
 
       <!-- ===== INVITE ===== -->
-      <section class="panel stagger" data-delay="1" aria-labelledby="invite-h">
-        <div class="panel-head">
-          <h2 id="invite-h">Invite a teammate</h2>
-          <p>Send an email invite, or copy a shareable link they can use to join with the role you pick.</p>
+      <section class="stagger mb-[clamp(1rem,1.6vw,1.375rem)] min-w-0 rounded-[var(--radius-box)] border border-base-content/[0.18] bg-base-200 p-[clamp(1.125rem,2.4vw,1.625rem)]"
+               data-delay="1" aria-labelledby="invite-h">
+        <div class="mb-[18px]">
+          <h2 id="invite-h" class="text-[1.4rem] tracking-[-0.025em]">Invite a teammate</h2>
+          <p class="mt-1.5 max-w-[58ch] text-[13.5px] text-base-content/70">Send an email invite, or copy a shareable link they can use to join with the role you pick.</p>
         </div>
 
         <form class="invite-row" onsubmit="return false">
-          <div class="field">
-            <label for="invite-email">Email address</label>
-            <input class="input" id="invite-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@restaurant.com">
+          <div class="flex min-w-0 flex-col gap-2">
+            <label class="text-[13px] font-semibold tracking-[0.01em]" for="invite-email">Email address</label>
+            <input class="input w-full bg-base-100" id="invite-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@restaurant.com">
           </div>
-          <div class="field">
-            <label for="invite-role">Role</label>
-            <select class="select" id="invite-role" name="role">
+          <div class="flex min-w-0 flex-col gap-2">
+            <label class="text-[13px] font-semibold tracking-[0.01em]" for="invite-role">Role</label>
+            <select class="select w-full bg-base-100" id="invite-role" name="role">
               <option value="editor">Editor</option>
               <option value="viewer">Viewer</option>
             </select>
           </div>
-          <button class="btn btn-primary" type="submit">
-            <svg class="gicon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+          <button class="btn btn-primary shrink-0" type="submit">
+            <svg class="size-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
             Send invite
           </button>
         </form>
@@ -578,57 +215,61 @@ dialog.modal[open]{opacity:1;visibility:visible;transform:translate(-50%,-50%);p
         <div class="invite-sep" aria-hidden="true">or share a link</div>
 
         <form class="invite-link-row" onsubmit="return false">
-          <div class="field">
-            <label for="link-role">Link role</label>
-            <select class="select" id="link-role" name="link-role">
+          <div class="flex min-w-0 flex-col gap-2">
+            <label class="text-[13px] font-semibold tracking-[0.01em]" for="link-role">Link role</label>
+            <select class="select w-full bg-base-100" id="link-role" name="link-role">
               <option value="editor">Editor</option>
               <option value="viewer">Viewer</option>
             </select>
           </div>
-          <button class="btn-sm" type="submit" id="copyInviteLink">
-            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <button class="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-full border border-base-content/25 bg-transparent px-4 text-[14px] font-semibold text-base-content transition-[border-color,color,transform] duration-200 hover:-translate-y-px hover:border-secondary hover:text-secondary"
+                  type="submit" id="copyInviteLink">
+            <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
             <span id="copyInviteLinkText">Copy invite link</span>
           </button>
         </form>
       </section>
 
       <!-- ===== PENDING INVITES ===== -->
-      <section class="panel stagger" data-delay="2" aria-labelledby="pending-h">
-        <div class="panel-head">
-          <h2 id="pending-h">Pending invites</h2>
-          <p>People who've been invited but haven't joined yet. Expired invites can be re-sent.</p>
+      <section class="stagger mb-[clamp(1rem,1.6vw,1.375rem)] min-w-0 rounded-[var(--radius-box)] border border-base-content/[0.18] bg-base-200 p-[clamp(1.125rem,2.4vw,1.625rem)]"
+               data-delay="2" aria-labelledby="pending-h">
+        <div class="mb-[18px]">
+          <h2 id="pending-h" class="text-[1.4rem] tracking-[-0.025em]">Pending invites</h2>
+          <p class="mt-1.5 max-w-[58ch] text-[13.5px] text-base-content/70">People who've been invited but haven't joined yet. Expired invites can be re-sent.</p>
         </div>
 
-        <ul class="invite-list" style="list-style:none;margin:0;padding:0">
-          <li class="invite-card">
-            <span class="invite-ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        <ul class="flex flex-col gap-2.5" style="list-style:none;margin:0;padding:0">
+          <li class="flex min-w-0 flex-wrap items-center gap-3.5 rounded-2xl border border-base-content/[0.13] bg-base-100 px-3.5 py-3">
+            <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-[11px] border border-base-content/[0.13] bg-base-300 text-base-content/60" aria-hidden="true">
+              <svg class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
             </span>
-            <span class="invite-info">
-              <span class="em">chef@saffronsmoke.com</span>
-              <span class="meta">
-                <span class="badge badge-editor">Editor</span>
-                <span class="badge badge-pending">Pending</span>
-                <span>Sent 2 days ago</span>
+            <span class="min-w-0 flex-1">
+              <span class="block truncate text-[14.5px] font-semibold text-base-content [font-family:var(--font-body)]">chef@saffronsmoke.com</span>
+              <span class="mt-0.5 flex flex-wrap items-center gap-2">
+                <span class="badge badge-editor inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[11.5px] font-semibold [font-family:var(--font-body)] tracking-[0.01em]"><span class="badge-dot" aria-hidden="true"></span>Editor</span>
+                <span class="badge badge-pending inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[11.5px] font-semibold [font-family:var(--font-body)] tracking-[0.01em]"><span class="badge-dot" aria-hidden="true"></span>Pending</span>
+                <span class="text-[12.5px] text-base-content/60">Sent 2 days ago</span>
               </span>
             </span>
-            <button class="btn-sm danger" type="button" aria-label="Revoke invite for chef@saffronsmoke.com">Revoke</button>
+            <button class="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-full border border-error/30 bg-transparent px-4 text-[14px] font-semibold text-error transition-[background-color,border-color,transform] duration-200 hover:-translate-y-px hover:border-error/50 hover:bg-error/10 max-[620px]:w-full"
+                    type="button" aria-label="Revoke invite for chef@saffronsmoke.com">Revoke</button>
           </li>
 
-          <li class="invite-card">
-            <span class="invite-ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          <li class="flex min-w-0 flex-wrap items-center gap-3.5 rounded-2xl border border-base-content/[0.13] bg-base-100 px-3.5 py-3">
+            <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-[11px] border border-base-content/[0.13] bg-base-300 text-base-content/60" aria-hidden="true">
+              <svg class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
             </span>
-            <span class="invite-info">
-              <span class="em">host@saffronsmoke.com</span>
-              <span class="meta">
-                <span class="badge badge-viewer">Viewer</span>
-                <span class="badge badge-expired">Expired</span>
-                <span>Sent 3 weeks ago</span>
+            <span class="min-w-0 flex-1">
+              <span class="block truncate text-[14.5px] font-semibold text-base-content [font-family:var(--font-body)]">host@saffronsmoke.com</span>
+              <span class="mt-0.5 flex flex-wrap items-center gap-2">
+                <span class="badge badge-viewer inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[11.5px] font-semibold [font-family:var(--font-body)] tracking-[0.01em]"><span class="badge-dot" aria-hidden="true"></span>Viewer</span>
+                <span class="badge badge-expired inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[11.5px] font-semibold [font-family:var(--font-body)] tracking-[0.01em]"><span class="badge-dot" aria-hidden="true"></span>Expired</span>
+                <span class="text-[12.5px] text-base-content/60">Sent 3 weeks ago</span>
               </span>
             </span>
-            <button class="btn-sm" type="button" aria-label="Resend invite to host@saffronsmoke.com">
-              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            <button class="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-full border border-base-content/25 bg-transparent px-4 text-[14px] font-semibold text-base-content transition-[border-color,color,transform] duration-200 hover:-translate-y-px hover:border-secondary hover:text-secondary max-[620px]:w-full"
+                    type="button" aria-label="Resend invite to host@saffronsmoke.com">
+              <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
               Resend
             </button>
           </li>
@@ -636,65 +277,70 @@ dialog.modal[open]{opacity:1;visibility:visible;transform:translate(-50%,-50%);p
       </section>
 
       <!-- ===== MEMBERS ===== -->
-      <section class="panel stagger" data-delay="3" aria-labelledby="members-h">
-        <div class="panel-head">
-          <h2 id="members-h">Members</h2>
-          <p>Everyone with access to this restaurant. Only the owner can change roles or remove people.</p>
+      <section class="stagger mb-[clamp(1rem,1.6vw,1.375rem)] min-w-0 rounded-[var(--radius-box)] border border-base-content/[0.18] bg-base-200 p-[clamp(1.125rem,2.4vw,1.625rem)]"
+               data-delay="3" aria-labelledby="members-h">
+        <div class="mb-[18px]">
+          <h2 id="members-h" class="text-[1.4rem] tracking-[-0.025em]">Members</h2>
+          <p class="mt-1.5 max-w-[58ch] text-[13.5px] text-base-content/70">Everyone with access to this restaurant. Only the owner can change roles or remove people.</p>
         </div>
 
-        <div class="table-scroll">
-          <table class="members">
+        <div class="overflow-x-auto rounded-2xl [-webkit-overflow-scrolling:touch]">
+          <table class="table min-w-[560px] [&_tbody_tr:hover]:bg-base-300/40">
             <caption class="sr-only">Members of Saffron &amp; Smoke, with role and join date</caption>
             <thead>
               <tr>
-                <th scope="col">Member</th>
-                <th scope="col">Role</th>
-                <th scope="col">Joined</th>
-                <th scope="col"><span class="sr-only">Actions</span></th>
+                <th>Member</th>
+                <th>Role</th>
+                <th>Joined</th>
+                <th><span class="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody>
-              <!-- Owner (you) -->
+              <!-- Owner row -->
               <tr>
                 <td>
-                  <div class="m-who">
-                    <img src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran">
-                    <span class="mn">
-                      <b>Arun Kajendran <span class="m-you">You</span></b>
-                      <span>a.kajendran@gmail.com</span>
+                  <div class="flex min-w-0 items-center gap-3">
+                    <img class="size-[42px] shrink-0 rounded-full border border-base-content/[0.13] object-cover" src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran">
+                    <span class="min-w-0">
+                      <b class="flex min-w-0 flex-wrap items-center gap-1.5 [font-family:var(--font-body)] text-[14.5px] font-semibold text-base-content">
+                        Arun Kajendran
+                        <span class="rounded-full border border-base-content/[0.13] bg-base-100 px-2 py-px text-[11px] font-semibold text-base-content/60">You</span>
+                      </b>
+                      <span class="block truncate text-[12.5px] text-base-content/60">a.kajendran@gmail.com</span>
                     </span>
                   </div>
                 </td>
-                <td><span class="badge badge-owner"><span class="bdot" aria-hidden="true"></span>Owner</span></td>
-                <td class="m-joined">Jan 4, 2026</td>
-                <td class="m-actions"><span class="m-owner-note">Restaurant owner</span></td>
+                <td><span class="badge badge-owner inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[11.5px] font-semibold [font-family:var(--font-body)] tracking-[0.01em]"><span class="badge-dot" aria-hidden="true"></span>Owner</span></td>
+                <td class="whitespace-nowrap text-[13.5px] tabular-nums text-base-content/60">Jan 4, 2026</td>
+                <td class="text-right"><span class="whitespace-nowrap text-[12.5px] text-base-content/60">Restaurant owner</span></td>
               </tr>
 
               <!-- Maria Conti -->
               <tr>
                 <td>
-                  <div class="m-who">
-                    <img src="/assets/img/photo-1494790108377-be9c29b29330.jpg" alt="Maria Conti">
-                    <span class="mn">
-                      <b>Maria Conti</b>
-                      <span>maria@saffronsmoke.com</span>
+                  <div class="flex min-w-0 items-center gap-3">
+                    <img class="size-[42px] shrink-0 rounded-full border border-base-content/[0.13] object-cover" src="/assets/img/photo-1494790108377-be9c29b29330.jpg" alt="Maria Conti">
+                    <span class="min-w-0">
+                      <b class="block truncate [font-family:var(--font-body)] text-[14.5px] font-semibold text-base-content">Maria Conti</b>
+                      <span class="block truncate text-[12.5px] text-base-content/60">maria@saffronsmoke.com</span>
                     </span>
                   </div>
                 </td>
-                <td><span class="badge badge-editor">Editor</span></td>
-                <td class="m-joined">Feb 12, 2026</td>
-                <td class="m-actions">
-                  <div class="more">
-                    <button class="more-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="More actions for Maria Conti">
-                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg>
+                <td><span class="badge badge-editor inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[11.5px] font-semibold [font-family:var(--font-body)] tracking-[0.01em]">Editor</span></td>
+                <td class="whitespace-nowrap text-[13.5px] tabular-nums text-base-content/60">Feb 12, 2026</td>
+                <td class="text-right">
+                  <div class="more relative inline-block">
+                    <button class="inline-flex size-11 items-center justify-center rounded-xl border border-base-content/[0.13] bg-base-200 text-base-content/60 transition-[background-color,border-color,color] duration-200 hover:border-base-content/25 hover:bg-base-300 hover:text-base-content more-btn"
+                            type="button" aria-haspopup="true" aria-expanded="false" aria-label="More actions for Maria Conti">
+                      <svg class="size-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg>
                     </button>
                     <div class="more-menu" role="menu" aria-label="Actions for Maria Conti">
-                      <button type="button" role="menuitem">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+                      <button class="flex w-full min-h-[44px] items-center gap-2.5 rounded-[10px] border-none bg-transparent px-3 text-left [font-family:var(--font-body)] text-[14px] font-medium text-base-content transition-colors duration-150 hover:bg-base-100/60" type="button" role="menuitem">
+                        <svg class="size-[17px] shrink-0 text-base-content/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
                         Change role
                       </button>
-                      <button type="button" role="menuitem" class="danger">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
+                      <button class="flex w-full min-h-[44px] items-center gap-2.5 rounded-[10px] border-none bg-transparent px-3 text-left [font-family:var(--font-body)] text-[14px] font-medium text-error transition-[background-color] duration-150 hover:bg-error/[0.13]" type="button" role="menuitem">
+                        <svg class="size-[17px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
                         Remove
                       </button>
                     </div>
@@ -705,28 +351,29 @@ dialog.modal[open]{opacity:1;visibility:visible;transform:translate(-50%,-50%);p
               <!-- Daniel Okafor -->
               <tr>
                 <td>
-                  <div class="m-who">
-                    <img src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Daniel Okafor">
-                    <span class="mn">
-                      <b>Daniel Okafor</b>
-                      <span>daniel@saffronsmoke.com</span>
+                  <div class="flex min-w-0 items-center gap-3">
+                    <img class="size-[42px] shrink-0 rounded-full border border-base-content/[0.13] object-cover" src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Daniel Okafor">
+                    <span class="min-w-0">
+                      <b class="block truncate [font-family:var(--font-body)] text-[14.5px] font-semibold text-base-content">Daniel Okafor</b>
+                      <span class="block truncate text-[12.5px] text-base-content/60">daniel@saffronsmoke.com</span>
                     </span>
                   </div>
                 </td>
-                <td><span class="badge badge-editor">Editor</span></td>
-                <td class="m-joined">Mar 3, 2026</td>
-                <td class="m-actions">
-                  <div class="more">
-                    <button class="more-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="More actions for Daniel Okafor">
-                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg>
+                <td><span class="badge badge-editor inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[11.5px] font-semibold [font-family:var(--font-body)] tracking-[0.01em]">Editor</span></td>
+                <td class="whitespace-nowrap text-[13.5px] tabular-nums text-base-content/60">Mar 3, 2026</td>
+                <td class="text-right">
+                  <div class="more relative inline-block">
+                    <button class="inline-flex size-11 items-center justify-center rounded-xl border border-base-content/[0.13] bg-base-200 text-base-content/60 transition-[background-color,border-color,color] duration-200 hover:border-base-content/25 hover:bg-base-300 hover:text-base-content more-btn"
+                            type="button" aria-haspopup="true" aria-expanded="false" aria-label="More actions for Daniel Okafor">
+                      <svg class="size-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg>
                     </button>
                     <div class="more-menu" role="menu" aria-label="Actions for Daniel Okafor">
-                      <button type="button" role="menuitem">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+                      <button class="flex w-full min-h-[44px] items-center gap-2.5 rounded-[10px] border-none bg-transparent px-3 text-left [font-family:var(--font-body)] text-[14px] font-medium text-base-content transition-colors duration-150 hover:bg-base-100/60" type="button" role="menuitem">
+                        <svg class="size-[17px] shrink-0 text-base-content/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
                         Change role
                       </button>
-                      <button type="button" role="menuitem" class="danger">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
+                      <button class="flex w-full min-h-[44px] items-center gap-2.5 rounded-[10px] border-none bg-transparent px-3 text-left [font-family:var(--font-body)] text-[14px] font-medium text-error transition-[background-color] duration-150 hover:bg-error/[0.13]" type="button" role="menuitem">
+                        <svg class="size-[17px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
                         Remove
                       </button>
                     </div>
@@ -737,28 +384,29 @@ dialog.modal[open]{opacity:1;visibility:visible;transform:translate(-50%,-50%);p
               <!-- Priya Nair -->
               <tr>
                 <td>
-                  <div class="m-who">
-                    <img src="/assets/img/photo-1438761681033-6461ffad8d80.jpg" alt="Priya Nair">
-                    <span class="mn">
-                      <b>Priya Nair</b>
-                      <span>priya@saffronsmoke.com</span>
+                  <div class="flex min-w-0 items-center gap-3">
+                    <img class="size-[42px] shrink-0 rounded-full border border-base-content/[0.13] object-cover" src="/assets/img/photo-1438761681033-6461ffad8d80.jpg" alt="Priya Nair">
+                    <span class="min-w-0">
+                      <b class="block truncate [font-family:var(--font-body)] text-[14.5px] font-semibold text-base-content">Priya Nair</b>
+                      <span class="block truncate text-[12.5px] text-base-content/60">priya@saffronsmoke.com</span>
                     </span>
                   </div>
                 </td>
-                <td><span class="badge badge-viewer">Viewer</span></td>
-                <td class="m-joined">Apr 21, 2026</td>
-                <td class="m-actions">
-                  <div class="more">
-                    <button class="more-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="More actions for Priya Nair">
-                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg>
+                <td><span class="badge badge-viewer inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[11.5px] font-semibold [font-family:var(--font-body)] tracking-[0.01em]">Viewer</span></td>
+                <td class="whitespace-nowrap text-[13.5px] tabular-nums text-base-content/60">Apr 21, 2026</td>
+                <td class="text-right">
+                  <div class="more relative inline-block">
+                    <button class="inline-flex size-11 items-center justify-center rounded-xl border border-base-content/[0.13] bg-base-200 text-base-content/60 transition-[background-color,border-color,color] duration-200 hover:border-base-content/25 hover:bg-base-300 hover:text-base-content more-btn"
+                            type="button" aria-haspopup="true" aria-expanded="false" aria-label="More actions for Priya Nair">
+                      <svg class="size-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg>
                     </button>
                     <div class="more-menu" role="menu" aria-label="Actions for Priya Nair">
-                      <button type="button" role="menuitem">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+                      <button class="flex w-full min-h-[44px] items-center gap-2.5 rounded-[10px] border-none bg-transparent px-3 text-left [font-family:var(--font-body)] text-[14px] font-medium text-base-content transition-colors duration-150 hover:bg-base-100/60" type="button" role="menuitem">
+                        <svg class="size-[17px] shrink-0 text-base-content/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
                         Change role
                       </button>
-                      <button type="button" role="menuitem" class="danger">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
+                      <button class="flex w-full min-h-[44px] items-center gap-2.5 rounded-[10px] border-none bg-transparent px-3 text-left [font-family:var(--font-body)] text-[14px] font-medium text-error transition-[background-color] duration-150 hover:bg-error/[0.13]" type="button" role="menuitem">
+                        <svg class="size-[17px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
                         Remove
                       </button>
                     </div>
@@ -768,47 +416,167 @@ dialog.modal[open]{opacity:1;visibility:visible;transform:translate(-50%,-50%);p
             </tbody>
           </table>
         </div>
-      </section>
 
-      <!-- ===== TRANSFER OWNERSHIP ===== -->
-      <section class="panel stagger" data-delay="4" aria-labelledby="transfer-h">
-        <div class="transfer-foot">
-          <div class="tf-text">
-            <b id="transfer-h">Transfer ownership</b>
-            <span>Hand this restaurant to another member. You'll become an Editor.</span>
+        <!-- transfer ownership footer -->
+        <div class="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-base-content/10 pt-5">
+          <div class="min-w-0 flex-1">
+            <b id="transfer-h" class="block text-[14.5px] font-semibold text-base-content [font-family:var(--font-body)]">Transfer ownership</b>
+            <span class="mt-0.5 block text-[13px] text-base-content/60">Hand this restaurant to another member. You'll become an Editor.</span>
           </div>
-          <button class="btn-sm" type="button" id="openTransfer" aria-haspopup="dialog">
-            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          <button class="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-full border border-base-content/25 bg-transparent px-4 text-[14px] font-semibold text-base-content transition-[border-color,color,transform] duration-200 hover:-translate-y-px hover:border-secondary hover:text-secondary max-[620px]:w-full"
+                  type="button" id="openTransfer" aria-haspopup="dialog">
+            <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
             Transfer ownership
           </button>
         </div>
       </section>
     </main>
   </div>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <div class="drawer-side z-40">
+    <label for="app-drawer" class="drawer-overlay" aria-label="Close navigation"></label>
+    <aside class="flex min-h-screen w-[260px] flex-col border-e border-base-content/10 bg-cocoa-deep px-4 pb-4 pt-5"
+           aria-label="Restaurants and account">
+
+      <a class="mb-4 inline-flex items-center gap-2 px-2 pb-1 pt-1.5 text-2xl font-bold tracking-[-0.04em] text-base-content [font-family:var(--font-display)]"
+         href="/index.html" aria-label="Menufic home">
+        Menufic<span class="-mb-0.5 size-2.5 rounded-full bg-primary" aria-hidden="true"></span>
+      </a>
+
+      <div class="min-h-0 flex-1 overflow-y-auto">
+
+        <!-- Level 1: restaurant picker -->
+        <nav aria-label="Your restaurants">
+          <div class="flex items-center justify-between px-2.5 pb-2 pt-1.5 text-xs font-semibold tracking-wide text-base-content/70">
+            <span>Restaurants</span>
+            <span class="rounded-full border border-base-content/10 bg-base-200 px-2 py-px text-[11px] font-semibold">3</span>
+          </div>
+          <ul class="app-nav menu gap-0.5 p-0">
+            <li>
+              <!-- aria-current="location": ancestor of current page (not the current page itself) -->
+              <a href="/app/restaurant.html" aria-current="location" class="gap-2.5 py-1.5">
+                <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover" src="/assets/img/photo-1432139555190-58524dae6a55.jpg" alt="">
+                <span class="min-w-0 flex-1 truncate text-[14.5px]">Saffron &amp; Smoke</span>
+                <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li>
+              <a href="/app/restaurant.html" class="gap-2.5 py-1.5">
+                <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover" src="/assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="">
+                <span class="min-w-0 flex-1 truncate text-[14.5px]">Bella Trattoria</span>
+                <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li>
+              <a href="/app/restaurant.html" class="gap-2.5 py-1.5">
+                <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover" src="/assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="">
+                <span class="min-w-0 flex-1 truncate text-[14.5px]">Verde Kitchen</span>
+                <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="my-2.5 border-t border-base-content/10"></div>
+
+        <!-- Level 2: per-restaurant sections
+             aria-label "Saffron and Smoke sections" is DISTINCT from sectionbar "Page sections" -->
+        <nav aria-label="Saffron and Smoke sections">
+          <div class="px-2.5 pb-2 pt-1.5 text-xs font-semibold tracking-wide text-base-content/70">Saffron &amp; Smoke</div>
+          <ul class="app-nav menu gap-0.5 p-0">
+            <li>
+              <a href="/app/menu-editor.html" class="gap-3 py-1.5 text-[14.5px]">
+                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                Menus
+              </a>
+            </li>
+            <li>
+              <a href="/app/banners.html" class="gap-3 py-1.5 text-[14.5px]">
+                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                Banners
+              </a>
+            </li>
+            <li>
+              <a href="/app/theme.html" class="gap-3 py-1.5 text-[14.5px]">
+                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="12.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="13.5" r="2.5"/><path d="M12 22a10 10 0 0 1 0-20 9 9 0 0 1 9 9c0 4-3 5-6 5h-1a2 2 0 0 0-1 4 2 2 0 0 1-1 2z"/></svg>
+                Theme
+              </a>
+            </li>
+            <li>
+              <a href="/app/analytics.html" class="gap-3 py-1.5 text-[14.5px]">
+                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Analytics
+              </a>
+            </li>
+            <li>
+              <!-- aria-current="page": the current page -->
+              <a href="/app/team.html" aria-current="page" class="gap-3 py-1.5 text-[14.5px]">
+                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Team
+              </a>
+            </li>
+            <li>
+              <a href="/app/qr.html" class="gap-3 py-1.5 text-[14.5px]">
+                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="14" y1="14" x2="14" y2="14.01"/><line x1="21" y1="14" x2="21" y2="21"/><line x1="14" y1="21" x2="17" y2="21"/><line x1="17" y1="17" x2="21" y2="17"/></svg>
+                QR code
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+      </div>
+
+      <!-- sidebar footer -->
+      <div class="mt-auto border-t border-base-content/10 pt-3.5">
+        <ul class="menu gap-0.5 p-0">
+          <li>
+            <a href="#" class="gap-3 py-1.5 text-[14.5px]">
+              <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Settings
+            </a>
+          </li>
+          <li>
+            <a href="/index.html" class="gap-3 py-1.5 text-[14.5px]">
+              <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sign out
+            </a>
+          </li>
+        </ul>
+        <div class="mt-2.5 flex items-center gap-2.5 rounded-2xl border border-base-content/10 bg-base-200 px-3 py-2.5">
+          <img class="size-[38px] shrink-0 rounded-full object-cover" src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran">
+          <span class="min-w-0 flex-1">
+            <b class="block truncate text-[13.5px] font-semibold text-base-content">Arun Kajendran</b>
+            <span class="block truncate text-xs text-base-content/70">a.kajendran@gmail.com</span>
+          </span>
+        </div>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <!-- ============ TRANSFER DIALOG ============ -->
-<div class="scrim" id="dialogScrim" hidden></div>
-<dialog class="modal" id="transferDialog" aria-labelledby="td-title" aria-describedby="td-desc">
+<div class="team-scrim" id="dialogScrim" hidden></div>
+<dialog class="team-modal" id="transferDialog" aria-labelledby="td-title" aria-describedby="td-desc">
   <form method="dialog" id="transferForm">
-    <div class="modal-body">
-      <span class="modal-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+    <div class="p-6 pb-2">
+      <span class="team-modal-icon" aria-hidden="true">
+        <svg class="size-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
       </span>
-      <h2 id="td-title">Transfer ownership of Saffron &amp; Smoke?</h2>
-      <p id="td-desc">The person you choose becomes the new owner with full control. You'll become an Editor and can no longer manage the team or billing.</p>
-      <div class="modal-field">
-        <label for="transfer-member">New owner</label>
-        <select class="select" id="transfer-member" name="member" required>
+      <h2 id="td-title" class="text-[1.5rem] tracking-[-0.03em]">Transfer ownership of Saffron &amp; Smoke?</h2>
+      <p id="td-desc" class="mt-2 text-[14px] leading-relaxed text-base-content/70">The person you choose becomes the new owner with full control. You'll become an Editor and can no longer manage the team or billing.</p>
+      <div class="mt-[18px] flex flex-col gap-2">
+        <label class="text-[13px] font-semibold" for="transfer-member">New owner</label>
+        <select class="select w-full bg-base-100" id="transfer-member" name="member" required>
           <option value="maria">Maria Conti · Editor</option>
           <option value="daniel">Daniel Okafor · Editor</option>
           <option value="priya">Priya Nair · Viewer</option>
         </select>
       </div>
     </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" type="button" id="cancelTransfer" value="cancel">Cancel</button>
-      <button class="btn btn-primary" type="submit" value="confirm">Confirm transfer</button>
+    <div class="flex gap-3 px-6 pb-6 pt-2">
+      <button class="btn btn-ghost flex-1" type="button" id="cancelTransfer" value="cancel">Cancel</button>
+      <button class="btn btn-primary flex-1" type="submit" value="confirm">Confirm transfer</button>
     </div>
   </form>
 </dialog>
@@ -816,39 +584,33 @@ dialog.modal[open]{opacity:1;visibility:visible;transform:translate(-50%,-50%);p
 <script>
 (function(){
   "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var mqMobile = window.matchMedia("(max-width:1023px)");
 
-  /* ---- Sidebar drawer (mobile) ---- */
-  var sidebar = document.getElementById("sidebar");
+  /* ---- Sidebar drawer (mobile) — daisyUI checkbox drives slide/overlay ---- */
+  var drawer = document.getElementById("app-drawer");
   var burger = document.getElementById("hamburger");
-  var navScrim = document.getElementById("navScrim");
-  function openNav(){
-    sidebar.classList.add("open");
-    burger.setAttribute("aria-expanded","true");
-    navScrim.hidden = false;
-    requestAnimationFrame(function(){ navScrim.classList.add("show"); });
-  }
-  function closeNav(){
-    sidebar.classList.remove("open");
-    burger.setAttribute("aria-expanded","false");
-    navScrim.classList.remove("show");
-    setTimeout(function(){ navScrim.hidden = true; }, 300);
-  }
-  burger.addEventListener("click", function(){
-    if(sidebar.classList.contains("open")) closeNav(); else openNav();
-  });
-  navScrim.addEventListener("click", closeNav);
-  sidebar.addEventListener("click", function(e){
-    if(e.target.closest("a") && window.matchMedia("(max-width:900px)").matches) closeNav();
+  var drawerSide = document.querySelector(".drawer-side");
+  function syncBurger(){ burger.setAttribute("aria-expanded", drawer.checked ? "true" : "false"); }
+  burger.addEventListener("click", function(){ drawer.checked = !drawer.checked; syncBurger(); });
+  drawer.addEventListener("change", syncBurger);
+  drawerSide.addEventListener("click", function(e){
+    if(e.target.closest("a") && mqMobile.matches){ drawer.checked = false; syncBurger(); }
   });
 
   /* ---- Account dropdown ---- */
+  var acct = document.getElementById("acct");
   var acctBtn = document.getElementById("acctBtn");
   var acctMenu = document.getElementById("acctMenu");
-  function closeAcct(){ acctMenu.classList.remove("open"); acctBtn.setAttribute("aria-expanded","false"); }
+  function closeAcct(){ acctMenu.classList.add("hidden"); acctBtn.setAttribute("aria-expanded","false"); }
   acctBtn.addEventListener("click", function(e){
     e.stopPropagation();
-    var open = acctMenu.classList.toggle("open");
-    acctBtn.setAttribute("aria-expanded", open ? "true":"false");
+    var open = acctMenu.classList.toggle("hidden") === false;
+    acctBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  document.addEventListener("click", function(e){
+    if(!acct.contains(e.target)) closeAcct();
+    if(!e.target.closest(".more")) closeAllMore(null);
   });
 
   /* ---- Row "more" menus ---- */
@@ -866,14 +628,9 @@ dialog.modal[open]{opacity:1;visibility:visible;transform:translate(-50%,-50%);p
     b.addEventListener("click", function(e){
       e.stopPropagation();
       var open = menu.classList.toggle("open");
-      b.setAttribute("aria-expanded", open ? "true":"false");
+      b.setAttribute("aria-expanded", open ? "true" : "false");
       closeAllMore(b);
     });
-  });
-
-  document.addEventListener("click", function(e){
-    if(!acctMenu.contains(e.target) && e.target !== acctBtn) closeAcct();
-    if(!e.target.closest(".more")) closeAllMore(null);
   });
 
   /* ---- Copy invite link feedback ---- */
@@ -891,7 +648,7 @@ dialog.modal[open]{opacity:1;visibility:visible;transform:translate(-50%,-50%);p
     } else { done(); }
   });
 
-  /* ---- Transfer ownership dialog (focus trap + Esc) ---- */
+  /* ---- Transfer ownership dialog (focus trap + Escape) ---- */
   var dialog = document.getElementById("transferDialog");
   var dialogScrim = document.getElementById("dialogScrim");
   var openTransfer = document.getElementById("openTransfer");
@@ -901,7 +658,7 @@ dialog.modal[open]{opacity:1;visibility:visible;transform:translate(-50%,-50%);p
 
   function focusables(){
     return Array.prototype.slice.call(
-      dialog.querySelectorAll('button, [href], select, input, [tabindex]:not([tabindex="-1"])')
+      dialog.querySelectorAll('button,[href],select,input,[tabindex]:not([tabindex="-1"])')
     ).filter(function(el){ return !el.disabled && el.offsetParent !== null; });
   }
   function openDialog(){
@@ -915,8 +672,10 @@ dialog.modal[open]{opacity:1;visibility:visible;transform:translate(-50%,-50%);p
   function closeDialog(){
     dialogScrim.classList.remove("show");
     setTimeout(function(){ dialogScrim.hidden = true; }, 300);
-    if(dialog.open){ if(typeof dialog.close === "function"){ try{ dialog.close(); }catch(e){ dialog.removeAttribute("open"); } } else { dialog.removeAttribute("open"); } }
-    else { dialog.removeAttribute("open"); }
+    if(dialog.open){
+      if(typeof dialog.close === "function"){ try{ dialog.close(); }catch(e){ dialog.removeAttribute("open"); } }
+      else { dialog.removeAttribute("open"); }
+    } else { dialog.removeAttribute("open"); }
     if(lastFocused && lastFocused.focus) lastFocused.focus();
   }
   openTransfer.addEventListener("click", openDialog);
@@ -937,18 +696,17 @@ dialog.modal[open]{opacity:1;visibility:visible;transform:translate(-50%,-50%);p
     }
   });
 
-  /* ---- Escape closes overlays ---- */
+  /* ---- Escape: modal → dropdown → drawer (priority order) ---- */
   document.addEventListener("keydown", function(e){
     if(e.key === "Escape"){
       if(dialog.open){ e.preventDefault(); closeDialog(); return; }
       closeAcct();
       closeAllMore(null);
-      if(sidebar.classList.contains("open")){ closeNav(); burger.focus(); }
+      if(drawer.checked){ drawer.checked = false; syncBurger(); burger.focus(); }
     }
   });
 
   /* ---- Entrance stagger ---- */
-  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var staggers = Array.prototype.slice.call(document.querySelectorAll(".stagger"));
   if(reduce){
     staggers.forEach(function(el){ el.classList.add("in"); });
@@ -961,9 +719,6 @@ dialog.modal[open]{opacity:1;visibility:visible;transform:translate(-50%,-50%);p
   }
 })();
 </script>
-<style>
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-</style>
 <!-- impeccable-live-start -->
 <script src="http://localhost:8400/live.js"></script>
 <!-- impeccable-live-end -->
