@@ -1,157 +1,394 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="menufic">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Restaurants — Menufic Admin</title>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=supreme@400,500,600,700&display=swap">
+<link rel="stylesheet" href="/assets/css/styles.css">
 <style>
-  :root{
-    --bg:#12100e;
-    --panel:#1a1715;
-    --panel-2:#211d1a;
-    --line:#322c28;
-    --line-strong:#433b35;
-    --text:#ece8e2;
-    --muted:#a59c92;
-    --muted-2:#79716a;
-    --accent:#6ea8ff;
-    --green:#53be70;
-    --green-bg:rgba(83,190,112,0.14);
-    --amber:#f3a64a;
-    --amber-bg:rgba(243,166,74,0.14);
-    --red:#f05940;
-    --red-bg:rgba(240,89,64,0.14);
-    --grey:#9a8f86;
-    --grey-bg:rgba(154,143,134,0.16);
-    --radius:6px;
-    --focus:#8fbcff;
+  /* ═══ Admin portal island ═══════════════════════════════════════════
+     Admin is intentionally utilitarian: compact density, near-default
+     daisyUI, admin-blue accent (not brand saffron), Supreme throughout.
+     All colors reference menufic theme tokens (var(--color-*)).
+     Unlayered — after styles.css link, wins source-order conflicts.   */
+
+  /* Headings use body font; this is a utility portal, not a display surface.
+     Beats @layer base { h1–h4 { font-family: var(--font-display) } }. */
+  main h1,
+  .meta h3 {
+    font-family: var(--font-body);
+    text-wrap: auto;
   }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  html{-webkit-text-size-adjust:100%}
-  body{
-    font-family:"Supreme",system-ui,sans-serif;
-    background:var(--bg);color:var(--text);
-    font-size:14px;line-height:1.5;min-width:0;overflow-x:hidden;
+
+  /* ── Topbar ─────────────────────────────────────────────────────── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+    height: 56px;
+    background: var(--color-base-200);
+    border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-wrap: wrap;
   }
-  a{color:inherit}
-  button{font-family:inherit}
-  :focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
-
-  .topbar{
-    display:flex;align-items:center;gap:16px;padding:0 16px;height:56px;
-    background:var(--panel);border-bottom:1px solid var(--line);
-    position:sticky;top:0;z-index:20;flex-wrap:wrap;
+  .wordmark {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    color: var(--color-base-content);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
   }
-  .wordmark{font-weight:700;font-size:15px;letter-spacing:-0.01em;color:var(--text);
-    text-decoration:none;display:flex;align-items:center;gap:7px;white-space:nowrap}
-  .wordmark .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
-  .wordmark .tag{font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
-    color:var(--muted-2);border:1px solid var(--line-strong);border-radius:4px;padding:1px 6px}
-  .topbar-spacer{flex:1 1 auto}
-  .userchip{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);
-    padding:5px 10px;border:1px solid var(--line);border-radius:var(--radius);
-    background:var(--panel-2);white-space:nowrap}
-  .userchip .avatar{width:22px;height:22px;border-radius:50%;background:#3a4d6b;color:#cfe0ff;
-    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
-  .exit-link{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;
-    color:var(--muted);text-decoration:none;padding:8px 12px;min-height:40px;
-    border:1px solid var(--line);border-radius:var(--radius);white-space:nowrap}
-  .exit-link:hover{color:var(--text);border-color:var(--line-strong)}
-
-  .tabsbar{background:var(--panel);border-bottom:1px solid var(--line);padding:0 16px;
-    display:flex;gap:4px;overflow-x:auto;position:sticky;top:56px;z-index:19}
-  .tab{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;font-size:13.5px;
-    font-weight:600;color:var(--muted);text-decoration:none;white-space:nowrap;
-    border-bottom:2px solid transparent;margin-bottom:-1px}
-  .tab:hover{color:var(--text)}
-  .tab[aria-current="page"]{color:var(--text);border-bottom-color:var(--accent)}
-
-  main{padding:18px 16px 64px;max-width:1180px;margin:0 auto}
-  .page-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
-  h1{font-size:18px;font-weight:700;margin:0;letter-spacing:-0.01em}
-  .count-pill{font-size:11.5px;font-weight:600;color:var(--muted);background:var(--panel-2);
-    border:1px solid var(--line);border-radius:999px;padding:1px 9px}
-  .sub{color:var(--muted);font-size:12.5px;margin:2px 0 16px}
-
-  /* search */
-  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
-  .search-field{position:relative;flex:1 1 280px;min-width:0}
-  .search-field svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);
-    width:16px;height:16px;color:var(--muted-2);pointer-events:none}
-  .search-field input{
-    width:100%;height:42px;padding:0 12px 0 34px;
-    background:var(--panel);color:var(--text);
-    border:1px solid var(--line-strong);border-radius:var(--radius);
-    font-family:inherit;font-size:13.5px;
+  /* Admin dot: utilitarian blue — intentionally NOT brand saffron */
+  .wordmark .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: oklch(0.63 0.18 230);
   }
-  .search-field input::placeholder{color:var(--muted-2)}
-  .search-field input:focus-visible{outline:2px solid var(--focus);outline-offset:1px;border-color:var(--focus)}
-  .result-note{font-size:12px;color:var(--muted-2);white-space:nowrap}
-
-  .table-wrap{min-width:0;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;
-    border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
-  table{border-collapse:collapse;width:100%;min-width:880px;font-size:13px}
-  thead th{text-align:left;font-weight:600;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;
-    color:var(--muted-2);padding:10px 14px;border-bottom:1px solid var(--line);
-    background:var(--panel-2);white-space:nowrap}
-  tbody td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
-  .row-main{cursor:pointer}
-  .row-main:hover{background:var(--panel-2)}
-  .row-main[aria-expanded="true"]{background:var(--panel-2)}
-  .r-name{font-weight:600;display:flex;align-items:center;gap:8px}
-  .chev{color:var(--muted-2);transition:transform .18s ease;display:inline-block}
-  .row-main[aria-expanded="true"] .chev{transform:rotate(90deg)}
-  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--muted)}
-  .r-owner{color:var(--muted);font-size:12.5px;word-break:break-all}
-  .r-date{color:var(--muted);white-space:nowrap;font-size:12.5px;font-variant-numeric:tabular-nums}
-
-  .badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;
-    padding:3px 9px;border-radius:4px;white-space:nowrap;border:1px solid transparent}
-  .badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
-  .badge.published{color:var(--green);background:var(--green-bg);border-color:rgba(83,190,112,0.3)}
-  .badge.pending{color:var(--amber);background:var(--amber-bg);border-color:rgba(243,166,74,0.3)}
-  .badge.draft{color:var(--grey);background:var(--grey-bg);border-color:rgba(154,143,134,0.3)}
-  .badge.rejected,.badge.flagged{color:var(--red);background:var(--red-bg);border-color:rgba(240,89,64,0.3)}
-
-  .cell-actions{white-space:nowrap}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;
-    padding:0 12px;font-size:12.5px;font-weight:600;border-radius:var(--radius);
-    border:1px solid var(--line-strong);background:var(--panel-2);color:var(--text);
-    cursor:pointer;white-space:nowrap}
-  .btn:hover{border-color:var(--muted-2)}
-  .btn + .btn{margin-left:6px}
-
-  .detail-row td{padding:0;background:var(--bg)}
-  .detail-row[hidden]{display:none}
-  .detail-inner{padding:16px;border-bottom:1px solid var(--line);
-    display:grid;grid-template-columns:1fr;gap:14px}
-  @media(min-width:760px){.detail-inner{grid-template-columns:repeat(3,1fr)}}
-  .meta{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px;min-width:0}
-  .meta h3{margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted-2)}
-  .meta dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:12.5px}
-  .meta dt{color:var(--muted-2)}
-  .meta dd{margin:0;color:var(--text);text-align:right;word-break:break-word}
-  .audit{grid-column:1/-1;font-size:12px;color:var(--muted);
-    background:var(--panel);border:1px dashed var(--line-strong);border-radius:var(--radius);
-    padding:10px 12px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
-  .audit b{color:var(--text);font-weight:600}
-  .audit .ts{color:var(--muted-2);font-variant-numeric:tabular-nums}
-  .detail-actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
-  .btn-edit{background:var(--panel-2)}
-  .btn-status{background:var(--panel-2)}
-
-  .empty-row td{padding:28px 14px;text-align:center;color:var(--muted-2);font-size:13px}
-  .empty-row[hidden]{display:none}
-
-  @media(max-width:520px){
-    .topbar{height:auto;padding:10px 12px}
-    main{padding:16px 12px 56px}
+  .wordmark .tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: color-mix(in oklch, var(--color-base-content) 44%, transparent);
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 18%, transparent);
+    border-radius: 4px;
+    padding: 1px 6px;
   }
-  @media(prefers-reduced-motion:reduce){
-    *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+  .topbar-spacer { flex: 1 1 auto; }
+  .userchip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    padding: 5px 10px;
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    border-radius: 6px;
+    background: var(--color-base-300);
+    white-space: nowrap;
+  }
+  .userchip .avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: oklch(0.30 0.09 240);
+    color: oklch(0.87 0.06 240);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .exit-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    text-decoration: none;
+    padding: 8px 12px;
+    min-height: 40px;
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .exit-link:hover {
+    color: var(--color-base-content);
+    border-color: color-mix(in oklch, var(--color-base-content) 28%, transparent);
+  }
+
+  /* ── Admin tabs nav ──────────────────────────────────────────────── */
+  .tabsbar {
+    background: var(--color-base-200);
+    border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    padding: 0 16px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    position: sticky;
+    top: 56px;
+    z-index: 19;
+  }
+  .tab {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: color-mix(in oklch, var(--color-base-content) 54%, transparent);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--color-base-content); }
+  /* Active tab: admin-blue underline — utilitarian, not brand saffron */
+  .tab[aria-current="page"] {
+    color: var(--color-base-content);
+    border-bottom-color: oklch(0.63 0.18 230);
+  }
+
+  /* ── Page header ─────────────────────────────────────────────────── */
+  .count-pill {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: color-mix(in oklch, var(--color-base-content) 55%, transparent);
+    background: var(--color-base-300);
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    border-radius: 999px;
+    padding: 1px 9px;
+  }
+
+  /* ── Search toolbar ──────────────────────────────────────────────── */
+  .search-field {
+    position: relative;
+    flex: 1 1 280px;
+    min-width: 0;
+  }
+  .search-field svg {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: color-mix(in oklch, var(--color-base-content) 38%, transparent);
+    pointer-events: none;
+  }
+  .search-field input {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px 0 34px;
+    background: var(--color-base-200);
+    color: var(--color-base-content);
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 20%, transparent);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13.5px;
+  }
+  .search-field input::placeholder {
+    color: color-mix(in oklch, var(--color-base-content) 35%, transparent);
+  }
+
+  /* ── Table wrapper ───────────────────────────────────────────────── */
+  .table-wrap {
+    min-width: 0;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    border-radius: 6px;
+    background: var(--color-base-200);
+  }
+  /* daisyUI .table base + admin overrides */
+  .table-wrap table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 880px;
+    font-size: 13px;
+  }
+  .table-wrap thead th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: color-mix(in oklch, var(--color-base-content) 40%, transparent);
+    padding: 10px 14px;
+    border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    background: var(--color-base-300);
+    white-space: nowrap;
+  }
+  .table-wrap tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    vertical-align: middle;
+  }
+
+  /* ── Row interactions ────────────────────────────────────────────── */
+  .row-main { cursor: pointer; }
+  .row-main:hover { background: var(--color-base-300); }
+  .row-main[aria-expanded="true"] { background: var(--color-base-300); }
+  .r-name { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .chev {
+    color: color-mix(in oklch, var(--color-base-content) 38%, transparent);
+    transition: transform 0.18s ease;
+    display: inline-block;
+  }
+  .row-main[aria-expanded="true"] .chev { transform: rotate(90deg); }
+  .mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+  }
+  .r-owner {
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    font-size: 12.5px;
+    word-break: break-all;
+  }
+  .r-date {
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    white-space: nowrap;
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Status badge variants ───────────────────────────────────────── */
+  .badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 4px;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .badge-status::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    flex: none;
+  }
+  .badge-published {
+    color: var(--color-success);
+    background: color-mix(in oklch, var(--color-success) 14%, transparent);
+    border-color: color-mix(in oklch, var(--color-success) 30%, transparent);
+  }
+  .badge-pending {
+    color: var(--color-warning);
+    background: color-mix(in oklch, var(--color-warning) 14%, transparent);
+    border-color: color-mix(in oklch, var(--color-warning) 30%, transparent);
+  }
+  .badge-draft {
+    color: color-mix(in oklch, var(--color-base-content) 54%, transparent);
+    background: color-mix(in oklch, var(--color-base-content) 10%, transparent);
+    border-color: color-mix(in oklch, var(--color-base-content) 16%, transparent);
+  }
+  .badge-flagged,
+  .badge-rejected {
+    color: var(--color-error);
+    background: color-mix(in oklch, var(--color-error) 14%, transparent);
+    border-color: color-mix(in oklch, var(--color-error) 30%, transparent);
+  }
+
+  /* ── Admin compact action buttons ────────────────────────────────── */
+  /* Compact tool-buttons for table rows — 36px/6px-radius, not brand pills */
+  .admin-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 36px;
+    height: 36px;
+    padding: 0 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 20%, transparent);
+    background: var(--color-base-300);
+    color: var(--color-base-content);
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: var(--font-body);
+    text-decoration: none;
+  }
+  .admin-btn:hover {
+    border-color: color-mix(in oklch, var(--color-base-content) 36%, transparent);
+  }
+  .admin-btn + .admin-btn { margin-left: 6px; }
+  .cell-actions { white-space: nowrap; }
+
+  /* ── Expandable detail row ───────────────────────────────────────── */
+  .detail-row td { padding: 0; background: var(--color-base-100); }
+  .detail-row[hidden] { display: none; }
+  .detail-inner {
+    padding: 16px;
+    border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  @media (min-width: 760px) {
+    .detail-inner { grid-template-columns: repeat(3, 1fr); }
+  }
+  .meta {
+    background: var(--color-base-200);
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    border-radius: 6px;
+    padding: 12px;
+    min-width: 0;
+  }
+  .meta h3 {
+    margin: 0 0 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: color-mix(in oklch, var(--color-base-content) 44%, transparent);
+  }
+  .meta dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 5px 12px;
+    font-size: 12.5px;
+  }
+  .meta dt { color: color-mix(in oklch, var(--color-base-content) 50%, transparent); }
+  .meta dd { margin: 0; color: var(--color-base-content); text-align: right; word-break: break-word; }
+  .audit {
+    grid-column: 1 / -1;
+    font-size: 12px;
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    background: var(--color-base-200);
+    border: 1px dashed color-mix(in oklch, var(--color-base-content) 20%, transparent);
+    border-radius: 6px;
+    padding: 10px 12px;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+  .audit b { color: var(--color-base-content); font-weight: 600; }
+  .audit .ts {
+    color: color-mix(in oklch, var(--color-base-content) 40%, transparent);
+    font-variant-numeric: tabular-nums;
+  }
+  .detail-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* ── Empty filter state ──────────────────────────────────────────── */
+  .empty-row td {
+    padding: 28px 14px;
+    text-align: center;
+    color: color-mix(in oklch, var(--color-base-content) 40%, transparent);
+    font-size: 13px;
+  }
+  .empty-row[hidden] { display: none; }
+
+  /* ── Responsive ──────────────────────────────────────────────────── */
+  @media (max-width: 520px) {
+    .topbar { height: auto; padding: 10px 12px; }
+    main { padding: 16px 12px 56px; }
   }
 </style>
 </head>
@@ -169,26 +406,26 @@
   <a class="tab" href="/admin/restaurants.html" aria-current="page">Restaurants</a>
 </nav>
 
-<main>
-  <div class="page-head">
-    <h1>Restaurants</h1>
+<main class="px-4 pt-[18px] pb-16 max-w-[1180px] mx-auto">
+  <div class="flex items-baseline gap-3 flex-wrap mb-1">
+    <h1 class="text-lg font-bold m-0 -tracking-[0.01em]">Restaurants</h1>
     <span class="count-pill" id="totalCount">8 total</span>
   </div>
-  <p class="sub">Every restaurant across all organizations. Search, inspect, and edit records or change publish status when needed.</p>
+  <p class="text-[12.5px] text-base-content/60 mt-0.5 mb-4">Every restaurant across all organizations. Search, inspect, and edit records or change publish status when needed.</p>
 
-  <div class="toolbar">
+  <div class="flex gap-[10px] flex-wrap items-center mb-[14px]">
     <div class="search-field">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
-      <label for="q" class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search restaurants</label>
+      <label for="q" class="sr-only">Search restaurants</label>
       <input id="q" type="search" autocomplete="off" placeholder="Search by name, owner email, slug, status…" aria-controls="rtable">
     </div>
-    <span class="result-note" id="resultNote" aria-live="polite">8 of 8 shown</span>
+    <span class="text-xs text-base-content/40 whitespace-nowrap" id="resultNote" aria-live="polite">8 of 8 shown</span>
   </div>
 
   <div class="table-wrap">
-    <table id="rtable">
+    <table id="rtable" class="table">
       <thead>
         <tr>
           <th scope="col">Name</th>
@@ -208,12 +445,12 @@
           <td><span class="r-name"><span class="chev">&rsaquo;</span>Saffron &amp; Smoke</span></td>
           <td><span class="mono">saffron-smoke</span></td>
           <td class="r-owner">arun@saffronsmoke.com</td>
-          <td><span class="badge published">Published</span></td>
+          <td><span class="badge-status badge-published">Published</span></td>
           <td class="r-date">2024-11-02</td>
           <td class="r-date">2026-06-21</td>
           <td class="cell-actions">
-            <button type="button" class="btn btn-edit" data-edit>Edit</button>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <button type="button" class="admin-btn" data-edit>Edit</button>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </td>
         </tr>
         <tr class="detail-row" id="x1" hidden><td colspan="7"><div class="detail-inner">
@@ -231,8 +468,8 @@
             <dt>Banners</dt><dd>3</dd></dl></div>
           <div class="audit"><b>Audit log</b><span>Approved &amp; published by Arun (Admin).</span><span class="ts">2024-11-05 09:12</span></div>
           <div class="detail-actions">
-            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <button type="button" class="admin-btn" data-edit>Edit record</button>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </div>
         </div></td></tr>
 
@@ -242,12 +479,12 @@
           <td><span class="r-name"><span class="chev">&rsaquo;</span>Bella Trattoria</span></td>
           <td><span class="mono">bella-trattoria</span></td>
           <td class="r-owner">marco@bellatrattoria.it</td>
-          <td><span class="badge published">Published</span></td>
+          <td><span class="badge-status badge-published">Published</span></td>
           <td class="r-date">2025-01-18</td>
           <td class="r-date">2026-06-12</td>
           <td class="cell-actions">
-            <button type="button" class="btn btn-edit" data-edit>Edit</button>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <button type="button" class="admin-btn" data-edit>Edit</button>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </td>
         </tr>
         <tr class="detail-row" id="x2" hidden><td colspan="7"><div class="detail-inner">
@@ -265,8 +502,8 @@
             <dt>Banners</dt><dd>2</dd></dl></div>
           <div class="audit"><b>Audit log</b><span>Item "Carbonara" edited by Marco (owner).</span><span class="ts">2026-06-12 14:40</span></div>
           <div class="detail-actions">
-            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <button type="button" class="admin-btn" data-edit>Edit record</button>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </div>
         </div></td></tr>
 
@@ -276,12 +513,12 @@
           <td><span class="r-name"><span class="chev">&rsaquo;</span>Verde Kitchen</span></td>
           <td><span class="mono">verde-kitchen</span></td>
           <td class="r-owner">arun@verdekitchen.com</td>
-          <td><span class="badge pending">Pending</span></td>
+          <td><span class="badge-status badge-pending">Pending</span></td>
           <td class="r-date">2026-06-26</td>
           <td class="r-date">2026-06-28</td>
           <td class="cell-actions">
-            <button type="button" class="btn btn-edit" data-edit>Edit</button>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <button type="button" class="admin-btn" data-edit>Edit</button>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </td>
         </tr>
         <tr class="detail-row" id="x3" hidden><td colspan="7"><div class="detail-inner">
@@ -299,8 +536,8 @@
             <dt>Banners</dt><dd>1</dd></dl></div>
           <div class="audit"><b>Audit log</b><span>Submitted for first-time review. Awaiting decision in Review queue.</span><span class="ts">2026-06-28 08:02</span></div>
           <div class="detail-actions">
-            <a class="btn" href="/admin/review.html">Open in review queue &rarr;</a>
-            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
+            <a class="admin-btn" href="/admin/review.html">Open in review queue &rarr;</a>
+            <button type="button" class="admin-btn" data-edit>Edit record</button>
           </div>
         </div></td></tr>
 
@@ -310,12 +547,12 @@
           <td><span class="r-name"><span class="chev">&rsaquo;</span>Tony's Pizzeria</span></td>
           <td><span class="mono">tonys-pizzeria</span></td>
           <td class="r-owner">tony@tonyspizza.co</td>
-          <td><span class="badge flagged">Flagged</span></td>
+          <td><span class="badge-status badge-flagged">Flagged</span></td>
           <td class="r-date">2026-06-25</td>
           <td class="r-date">2026-06-28</td>
           <td class="cell-actions">
-            <button type="button" class="btn btn-edit" data-edit>Edit</button>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <button type="button" class="admin-btn" data-edit>Edit</button>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </td>
         </tr>
         <tr class="detail-row" id="x4" hidden><td colspan="7"><div class="detail-inner">
@@ -333,8 +570,8 @@
             <dt>Banners</dt><dd>0</dd></dl></div>
           <div class="audit"><b>Audit log</b><span>AI pre-screen flagged placeholder text. Held pending owner fix.</span><span class="ts">2026-06-28 03:20</span></div>
           <div class="detail-actions">
-            <a class="btn" href="/admin/review.html">Open in review queue &rarr;</a>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <a class="admin-btn" href="/admin/review.html">Open in review queue &rarr;</a>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </div>
         </div></td></tr>
 
@@ -344,12 +581,12 @@
           <td><span class="r-name"><span class="chev">&rsaquo;</span>Green Bowl</span></td>
           <td><span class="mono">green-bowl</span></td>
           <td class="r-owner">lia@greenbowl.io</td>
-          <td><span class="badge pending">Pending</span></td>
+          <td><span class="badge-status badge-pending">Pending</span></td>
           <td class="r-date">2026-06-27</td>
           <td class="r-date">2026-06-27</td>
           <td class="cell-actions">
-            <button type="button" class="btn btn-edit" data-edit>Edit</button>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <button type="button" class="admin-btn" data-edit>Edit</button>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </td>
         </tr>
         <tr class="detail-row" id="x5" hidden><td colspan="7"><div class="detail-inner">
@@ -367,8 +604,8 @@
             <dt>Banners</dt><dd>1</dd></dl></div>
           <div class="audit"><b>Audit log</b><span>Submitted for first-time review by Lia (owner).</span><span class="ts">2026-06-27 19:30</span></div>
           <div class="detail-actions">
-            <a class="btn" href="/admin/review.html">Open in review queue &rarr;</a>
-            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
+            <a class="admin-btn" href="/admin/review.html">Open in review queue &rarr;</a>
+            <button type="button" class="admin-btn" data-edit>Edit record</button>
           </div>
         </div></td></tr>
 
@@ -378,12 +615,12 @@
           <td><span class="r-name"><span class="chev">&rsaquo;</span>Coastal Catch</span></td>
           <td><span class="mono">coastal-catch</span></td>
           <td class="r-owner">sam@coastalcatch.com</td>
-          <td><span class="badge draft">Draft</span></td>
+          <td><span class="badge-status badge-draft">Draft</span></td>
           <td class="r-date">2026-05-30</td>
           <td class="r-date">2026-06-14</td>
           <td class="cell-actions">
-            <button type="button" class="btn btn-edit" data-edit>Edit</button>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <button type="button" class="admin-btn" data-edit>Edit</button>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </td>
         </tr>
         <tr class="detail-row" id="x6" hidden><td colspan="7"><div class="detail-inner">
@@ -401,8 +638,8 @@
             <dt>Banners</dt><dd>0</dd></dl></div>
           <div class="audit"><b>Audit log</b><span>Draft saved by Sam (editor). Not yet submitted for review.</span><span class="ts">2026-06-14 11:05</span></div>
           <div class="detail-actions">
-            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <button type="button" class="admin-btn" data-edit>Edit record</button>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </div>
         </div></td></tr>
 
@@ -412,12 +649,12 @@
           <td><span class="r-name"><span class="chev">&rsaquo;</span>Noodle Bar</span></td>
           <td><span class="mono">noodle-bar</span></td>
           <td class="r-owner">mei@noodlebar.sg</td>
-          <td><span class="badge published">Published</span></td>
+          <td><span class="badge-status badge-published">Published</span></td>
           <td class="r-date">2025-03-09</td>
           <td class="r-date">2026-06-05</td>
           <td class="cell-actions">
-            <button type="button" class="btn btn-edit" data-edit>Edit</button>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <button type="button" class="admin-btn" data-edit>Edit</button>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </td>
         </tr>
         <tr class="detail-row" id="x7" hidden><td colspan="7"><div class="detail-inner">
@@ -435,8 +672,8 @@
             <dt>Banners</dt><dd>4</dd></dl></div>
           <div class="audit"><b>Audit log</b><span>Status confirmed Published. Last admin touch by Arun (Admin).</span><span class="ts">2026-06-05 16:22</span></div>
           <div class="detail-actions">
-            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <button type="button" class="admin-btn" data-edit>Edit record</button>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </div>
         </div></td></tr>
 
@@ -446,12 +683,12 @@
           <td><span class="r-name"><span class="chev">&rsaquo;</span>The Burnt End</span></td>
           <td><span class="mono">burnt-end</span></td>
           <td class="r-owner">dre@burntend.com</td>
-          <td><span class="badge rejected">Rejected</span></td>
+          <td><span class="badge-status badge-rejected">Rejected</span></td>
           <td class="r-date">2026-06-10</td>
           <td class="r-date">2026-06-20</td>
           <td class="cell-actions">
-            <button type="button" class="btn btn-edit" data-edit>Edit</button>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <button type="button" class="admin-btn" data-edit>Edit</button>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </td>
         </tr>
         <tr class="detail-row" id="x8" hidden><td colspan="7"><div class="detail-inner">
@@ -469,8 +706,8 @@
             <dt>Banners</dt><dd>0</dd></dl></div>
           <div class="audit"><b>Audit log</b><span>Rejected by Arun (Admin): "Near-empty menu, only 4 items." Owner notified.</span><span class="ts">2026-06-20 10:48</span></div>
           <div class="detail-actions">
-            <button type="button" class="btn btn-edit" data-edit>Edit record</button>
-            <button type="button" class="btn btn-status" data-status>Change status</button>
+            <button type="button" class="admin-btn" data-edit>Edit record</button>
+            <button type="button" class="admin-btn" data-status>Change status</button>
           </div>
         </div></td></tr>
 
