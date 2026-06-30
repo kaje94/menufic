@@ -1,613 +1,466 @@
 <!DOCTYPE html>
-<html lang="en" class="js">
+<html lang="en" class="js" data-theme="menufic">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dinner menu · Saffron &amp; Smoke · Menufic</title>
 <meta name="description" content="Edit the Dinner menu for Saffron &amp; Smoke — reorder categories, set dish availability, prices and photos, all on one warm dark canvas.">
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<!-- Same identity fonts as the landing page and dashboard -->
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=boska@400,500,700&f[]=supreme@400,500,600,700&display=swap">
+<link rel="stylesheet" href="/assets/css/styles.css">
 <style>
-:root{
-  --bg: oklch(0.18 0.03 45);
-  --bg-deep: oklch(0.155 0.026 52);
-  --surface: oklch(0.235 0.034 46);
-  --surface-2: oklch(0.295 0.04 48);
-  --saffron: oklch(0.785 0.14 68);
-  --saffron-deep: oklch(0.72 0.14 70);
-  --tomato: oklch(0.56 0.19 32);
-  --tomato-bright: oklch(0.66 0.19 32);
-  --green: oklch(0.72 0.15 150);
-  --green-bright: oklch(0.82 0.15 150);
-  --cream: oklch(0.96 0.015 78);
-  --cream-soft: oklch(0.83 0.022 78);
-  --line: oklch(0.42 0.03 48 / 0.5);
-  --line-soft: oklch(0.42 0.03 58 / 0.28);
-  --ease: cubic-bezier(0.16,1,0.3,1);
-  --sidebar-w: 260px;
+/* ============================================================
+   SIGNATURE ISLAND: Menu editor bespoke components
+   All brand colours reference design system tokens (var(--color-*)).
+   Pure-black shadow stops are a documented carve-out (DESIGN.md §4).
+   --ease is a local convenience alias; oklch(0.66 0.19 32) is the
+   brand's tomato-bright shade — no token slot, documented use only.
+   ============================================================ */
+:root { --ease: cubic-bezier(0.16,1,0.3,1); }
+
+/* ---- Two-column editor layout ---- */
+.editor {
+  display: grid;
+  grid-template-columns: 280px minmax(0,1fr);
+  gap: clamp(16px,1.8vw,22px);
+  align-items: start;
 }
 
-*,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--cream);
-  font-family:"Supreme",system-ui,sans-serif;
-  font-size:16px;
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-  overflow-x:hidden;
+/* ---- Drag grip ---- */
+.grip {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 26px; height: 44px;
+  border: none; background: transparent; border-radius: 8px;
+  color: color-mix(in oklch, var(--color-base-content) 45%, transparent);
+  cursor: grab;
+  transition: color .2s var(--ease), background .2s var(--ease);
 }
-img{max-width:100%;display:block}
-a{color:inherit;text-decoration:none}
-button{font-family:inherit;cursor:pointer}
-h1,h2,h3{
-  font-family:"Boska",Georgia,serif;
-  font-weight:700;
-  letter-spacing:-0.03em;
-  line-height:1.05;
-  margin:0;
-  text-wrap:balance;
+.grip:hover {
+  color: var(--color-secondary);
+  background: color-mix(in oklch, var(--color-secondary) 10%, transparent);
 }
-p{margin:0;text-wrap:pretty}
-:focus-visible{outline:3px solid var(--saffron);outline-offset:3px;border-radius:6px}
+.grip:active { cursor: grabbing; }
+.grip svg { width: 16px; height: 16px; fill: currentColor; pointer-events: none; }
 
-/* ============ BUTTONS (from landing/dashboard) ============ */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  min-height:48px;padding:0 22px;
-  border-radius:999px;border:1px solid transparent;
-  font-family:"Supreme";font-weight:600;font-size:16px;color:var(--cream);
-  transition:transform .35s var(--ease),background .25s var(--ease),box-shadow .35s var(--ease);
+/* ---- Row action buttons (edit / delete) ---- */
+.rbtn {
+  width: 40px; height: 40px; border-radius: var(--radius-field); flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--color-base-200);
+  border: 1px solid color-mix(in oklch, var(--color-base-content) 28%, transparent);
+  color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+  transition: background .2s var(--ease), color .2s var(--ease),
+              border-color .2s var(--ease), transform .25s var(--ease);
 }
-.btn-primary{
-  background:var(--tomato);color:#fff;
-  box-shadow:0 10px 30px -10px oklch(0.605 0.18 30 / 0.7);
+.rbtn svg { width: 17px; height: 17px; stroke: currentColor; fill: none; }
+.rbtn:hover {
+  background: var(--color-base-300);
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+  transform: translateY(-1px);
 }
-.btn-primary:hover{background:var(--tomato-bright);transform:translateY(-2px);box-shadow:0 16px 40px -12px oklch(0.605 0.18 30 / 0.8)}
-.btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}
-.btn-ghost:hover{background:oklch(0.30 0.04 60 / 0.5);transform:translateY(-2px)}
-.gicon{width:18px;height:18px;flex:none}
+/* Delete: hovers to error red — destructive action (DESIGN.md §7.7) */
+.rbtn.del:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
 
-/* small pill ghost for in-panel actions */
-.btn-sm{
-  display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  min-height:40px;padding:0 14px;border-radius:999px;
-  background:transparent;border:1px solid var(--line);color:var(--cream);
-  font-family:"Supreme";font-weight:600;font-size:13.5px;
-  transition:background .2s var(--ease),border-color .2s var(--ease),color .2s var(--ease),transform .3s var(--ease);
+/* ---- Menu selector rows (left panel) ---- */
+.menu-list { display: flex; flex-direction: column; gap: 6px; }
+.menu-row {
+  display: flex; align-items: center; gap: 6px; width: 100%;
+  padding: 9px 11px; min-height: 48px;
+  background: transparent; border: 1px solid transparent; border-radius: 14px;
+  color: var(--color-base-content); text-align: left;
+  transition: background .25s var(--ease), border-color .25s var(--ease);
 }
-.btn-sm:hover{background:oklch(0.30 0.04 60 / 0.5);border-color:var(--saffron);color:var(--cream);transform:translateY(-1px)}
-.btn-sm svg{width:15px;height:15px;flex:none;stroke:currentColor}
+.menu-row:hover { background: color-mix(in oklch, var(--color-base-300) 45%, transparent); }
+.menu-row .grip { width: 20px; height: 34px; border-radius: 8px; opacity: 0; transition: opacity .2s, color .2s; }
+.menu-row:hover .grip { opacity: 1; }
+.menu-row .mr-pick {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center; gap: 10px;
+  background: none; border: 0; padding: 0; color: inherit; cursor: pointer; font: inherit;
+}
+/* Selected menu: saffron tint + glow dot + saffron name — no side-stripe (DESIGN.md §6) */
+.menu-row[aria-current="true"] {
+  background: color-mix(in oklch, var(--color-secondary) 12%, transparent);
+  border-color: color-mix(in oklch, var(--color-secondary) 40%, transparent);
+}
+.menu-row[aria-current="true"] .grip { color: var(--color-secondary); }
 
-/* ============ APP SHELL ============ */
-.app{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);min-height:100vh}
+/* Menu row internals */
+.v-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex: none;
+  background: color-mix(in oklch, var(--color-base-content) 30%, transparent);
+  transition: background .25s var(--ease), box-shadow .25s var(--ease);
+}
+.menu-row[aria-current="true"] .v-dot {
+  background: var(--color-secondary);
+  box-shadow: 0 0 10px color-mix(in oklch, var(--color-secondary) 60%, transparent);
+}
+.v-name {
+  font-family: var(--font-display); font-weight: 600; font-size: 1.06rem; letter-spacing: -0.01em;
+  color: var(--color-base-content); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.menu-row[aria-current="true"] .v-name { color: var(--color-secondary); }
+.v-time {
+  margin-left: auto; flex: none;
+  font-size: .72rem; font-weight: 600; color: var(--color-secondary);
+  background: color-mix(in oklch, var(--color-secondary) 14%, transparent);
+  padding: 3px 9px; border-radius: 999px; font-variant-numeric: tabular-nums;
+}
 
-/* ---- Sidebar ---- */
-.sidebar{
-  position:sticky;top:0;align-self:start;
-  height:100vh;
-  background:var(--bg-deep);
-  border-right:1px solid var(--line-soft);
-  display:flex;flex-direction:column;
-  padding:22px 16px 16px;
-  z-index:60;
+/* ---- Ghost dashed add button ---- */
+.ghost-add {
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  width: 100%; min-height: 46px; padding: 0 16px;
+  background: transparent;
+  border: 1px dashed color-mix(in oklch, var(--color-base-content) 50%, transparent);
+  border-radius: 14px;
+  color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+  font-family: var(--font-body); font-weight: 600; font-size: 13.5px;
+  transition: border-color .25s var(--ease), color .25s var(--ease),
+              background .25s var(--ease), transform .3s var(--ease);
 }
-.sb-brand{
-  font-family:"Boska";font-weight:700;font-size:24px;letter-spacing:-0.04em;
-  color:var(--cream);display:inline-flex;align-items:center;gap:8px;
-  padding:6px 8px 4px;margin-bottom:18px;
+.ghost-add:hover {
+  border-color: var(--color-secondary);
+  color: var(--color-base-content);
+  background: color-mix(in oklch, var(--color-secondary) 6%, transparent);
+  transform: translateY(-1px);
 }
-.sb-brand .dot{width:9px;height:9px;border-radius:50%;background:var(--tomato);margin-bottom:-2px}
-.sb-section{
-  font-size:12px;font-weight:600;color:var(--cream-soft);
-  letter-spacing:.04em;padding:0 10px;margin:6px 0 8px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.sb-section .count{
-  font-size:11px;font-weight:600;color:var(--cream-soft);
-  background:var(--surface);border:1px solid var(--line-soft);
-  border-radius:999px;padding:1px 8px;
-}
-.sb-list{display:flex;flex-direction:column;gap:3px;margin:0 0 4px;overflow-y:auto;flex:0 1 auto}
-.sb-item{
-  display:flex;align-items:center;gap:11px;
-  width:100%;min-height:46px;padding:6px 10px;
-  border:none;background:transparent;border-radius:12px;text-align:left;
-  color:var(--cream-soft);font-size:14.5px;font-weight:500;
-  transition:background .2s var(--ease),color .2s var(--ease);
-}
-.sb-item:hover{background:oklch(0.30 0.04 60 / 0.4);color:var(--cream)}
-.sb-item .thumb{
-  width:34px;height:34px;border-radius:9px;object-fit:cover;flex:none;
-  border:1px solid var(--line-soft);
-}
-.sb-item .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb-item .sb-dot{width:7px;height:7px;border-radius:50%;flex:none;background:transparent}
-.sb-item[aria-current="page"]{
-  background:oklch(0.785 0.14 68 / 0.13);
-  color:var(--saffron);font-weight:600;
-}
-.sb-item[aria-current="page"] .sb-dot{background:var(--saffron)}
-.sb-item[aria-current="page"] .thumb{border-color:oklch(0.785 0.14 68 / 0.55)}
+.ghost-add svg { width: 16px; height: 16px; stroke: currentColor; flex: none; }
 
-.sb-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-soft);display:flex;flex-direction:column;gap:3px}
-.sb-link{
-  display:flex;align-items:center;gap:12px;
-  width:100%;min-height:46px;padding:6px 12px;
-  border:none;background:transparent;border-radius:12px;text-align:left;
-  color:var(--cream-soft);font-size:14.5px;font-weight:500;
-  transition:background .2s var(--ease),color .2s var(--ease);
+/* ---- Dish item rows ---- */
+.items { display: flex; flex-direction: column; }
+.item {
+  display: flex; align-items: center; gap: clamp(10px,1.2vw,14px);
+  padding: 12px 6px;
+  border-top: 1px solid color-mix(in oklch, var(--color-base-content) 28%, transparent);
+  min-width: 0; border-radius: 12px;
+  transition: background .2s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease);
 }
-.sb-link:hover{background:oklch(0.30 0.04 60 / 0.4);color:var(--cream)}
-.sb-link svg{width:19px;height:19px;flex:none;stroke:currentColor}
-.sb-user{
-  display:flex;align-items:center;gap:11px;
-  margin-top:10px;padding:9px 11px;
-  background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;
+.item:first-child { border-top: none; }
+.item:hover {
+  background: var(--color-base-300);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px -20px oklch(0 0 0 / 0.85);
 }
-.sb-user img{width:38px;height:38px;border-radius:50%;object-fit:cover;flex:none}
-.sb-user .who{min-width:0;flex:1}
-.sb-user .who b{display:block;font-size:13.5px;font-weight:600;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb-user .who span{display:block;font-size:12px;color:var(--cream-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* ---- Main ---- */
-.main{display:flex;flex-direction:column;min-width:0;background:var(--bg)}
-
-.topbar{
-  position:sticky;top:0;z-index:50;
-  display:flex;align-items:center;gap:16px;
-  padding:12px clamp(18px,3vw,40px);
-  background:oklch(0.185 0.028 55 / 0.86);
-  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--line-soft);
+.item .thumb {
+  width: 44px; height: 44px; border-radius: 12px; object-fit: cover; flex: none;
+  border: 1px solid color-mix(in oklch, var(--color-base-content) 28%, transparent);
+  background: var(--color-base-100);
 }
-.crumb{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--cream-soft);min-width:0;flex-wrap:wrap}
-.crumb a{color:var(--cream-soft);font-weight:500;border-radius:6px;transition:color .2s var(--ease)}
-.crumb a:hover{color:var(--cream)}
-.crumb .sep{width:15px;height:15px;flex:none;color:var(--cream-soft);opacity:.55}
-.crumb .here{color:var(--cream);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.topbar-spacer{flex:1}
-.hamburger{
-  display:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;
-  width:44px;height:44px;align-items:center;justify-content:center;flex:none;
+.it-text { flex: 1; min-width: 0; }
+.it-name {
+  font-family: var(--font-display); font-weight: 600; font-size: 1.06rem; letter-spacing: -0.01em;
+  color: var(--color-base-content); line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.hamburger span{display:block;width:18px;height:2px;background:var(--cream);position:relative}
-.hamburger span::before,.hamburger span::after{content:"";position:absolute;left:0;width:18px;height:2px;background:var(--cream)}
-.hamburger span::before{top:-6px}.hamburger span::after{top:6px}
-
-/* avatar + dropdown */
-.acct{position:relative;flex:none}
-.acct-btn{
-  display:flex;align-items:center;gap:9px;
-  min-height:44px;padding:4px 10px 4px 4px;
-  background:var(--surface);border:1px solid var(--line-soft);border-radius:999px;
-  color:var(--cream);font-size:14px;font-weight:600;
-  transition:background .2s var(--ease),border-color .2s var(--ease);
+.it-desc {
+  font-size: 12.8px; color: color-mix(in oklch, var(--color-base-content) 70%, transparent);
+  line-height: 1.35; margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40ch;
 }
-.acct-btn:hover{background:var(--surface-2)}
-.acct-btn img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none}
-.acct-btn .nm{display:none}
-.acct-btn .chev{width:16px;height:16px;color:var(--cream-soft);transition:transform .25s var(--ease)}
-.acct-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
-.acct-menu{
-  position:absolute;right:0;top:calc(100% + 10px);min-width:224px;
-  background:var(--surface);border:1px solid var(--line);border-radius:16px;
-  padding:8px;box-shadow:0 18px 40px -22px oklch(0 0 0 / 0.85);
-  display:none;flex-direction:column;gap:2px;
+.price {
+  font-family: var(--font-body); font-weight: 600; font-size: 15px;
+  color: var(--color-secondary); font-variant-numeric: tabular-nums;
+  flex: none; min-width: 46px; text-align: right;
 }
-.acct-menu.open{display:flex}
-.acct-head{padding:9px 11px 11px;border-bottom:1px solid var(--line-soft);margin-bottom:6px}
-.acct-head b{display:block;font-size:14px;color:var(--cream)}
-.acct-head span{display:block;font-size:12.5px;color:var(--cream-soft);margin-top:2px}
-.acct-menu a{
-  display:flex;align-items:center;gap:11px;
-  min-height:44px;padding:0 11px;border-radius:10px;
-  color:var(--cream);font-size:14px;font-weight:500;
-  transition:background .18s var(--ease);
-}
-.acct-menu a:hover{background:oklch(0.30 0.04 60 / 0.5)}
-.acct-menu a svg{width:17px;height:17px;flex:none;stroke:currentColor;color:var(--cream-soft)}
-.acct-menu a.danger:hover{color:var(--tomato-bright)}
-
-/* page body */
-.page{padding:clamp(22px,3.4vw,38px) clamp(18px,3vw,40px) 80px;max-width:1320px;width:100%}
-.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(20px,2.6vw,30px)}
-.page-head h1{font-size:clamp(2rem,4.1vw,2.9rem);color:var(--cream);letter-spacing:-0.035em}
-.page-head h1 em{font-style:normal;color:var(--saffron)}
-.page-head .subtitle{margin-top:10px;color:var(--cream-soft);font-size:clamp(0.98rem,1.4vw,1.08rem);max-width:56ch;line-height:1.5}
-.page-head .ph-text{min-width:0}
-.head-actions{display:flex;gap:12px;flex-wrap:wrap}
-
-/* ============ EDITOR LAYOUT ============ */
-.editor{display:grid;grid-template-columns:280px minmax(0,1fr);gap:clamp(16px,1.8vw,22px);align-items:start}
-
-/* shared drag grip */
-.grip{
-  display:inline-flex;align-items:center;justify-content:center;flex:none;
-  width:26px;height:44px;border:none;background:transparent;border-radius:8px;
-  color:var(--cream-soft);cursor:grab;
-  transition:color .2s var(--ease),background .2s var(--ease);
-}
-.grip:hover{color:var(--saffron);background:oklch(0.785 0.14 68 / 0.10)}
-.grip:active{cursor:grabbing}
-.grip svg{width:16px;height:16px;fill:currentColor;pointer-events:none}
-
-/* row icon buttons (edit / delete) */
-.rbtn{
-  width:40px;height:40px;border-radius:11px;flex:none;
-  display:inline-flex;align-items:center;justify-content:center;
-  background:var(--surface);border:1px solid var(--line-soft);color:var(--cream-soft);
-  transition:background .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease),transform .25s var(--ease);
-}
-.rbtn svg{width:17px;height:17px;stroke:currentColor;fill:none}
-.rbtn:hover{background:var(--surface-2);border-color:var(--saffron);color:var(--saffron);transform:translateY(-1px)}
-.rbtn.del:hover{border-color:var(--tomato-bright);color:var(--tomato-bright)}
-
-/* ---- LEFT: menu list panel ---- */
-.menu-panel{
-  position:sticky;top:84px;
-  background:var(--surface);border:1px solid var(--line-soft);
-  border-radius:24px;padding:16px;
-}
-.mp-head{display:flex;align-items:center;justify-content:space-between;padding:4px 6px 12px}
-.mp-head h2{font-family:"Boska";font-weight:600;font-size:1.18rem;color:var(--cream);letter-spacing:-0.02em}
-.mp-head .count{
-  font-size:11px;font-weight:600;color:var(--cream-soft);
-  background:var(--bg);border:1px solid var(--line-soft);border-radius:999px;padding:2px 9px;
-}
-.menu-list{display:flex;flex-direction:column;gap:6px}
-/* menu rows — accepted "Hierarchy" treatment (live V1): Boska name, saffron time-chip, status dot */
-.menu-row{
-  display:flex;align-items:center;gap:6px;width:100%;
-  padding:9px 11px;min-height:48px;
-  background:transparent;border:1px solid transparent;border-radius:14px;
-  color:var(--cream);text-align:left;
-  transition:background .25s var(--ease),border-color .25s var(--ease);
-}
-.menu-row:hover{background:oklch(0.30 0.04 60 / 0.45)}
-.menu-row .grip{width:20px;height:34px;border-radius:8px;opacity:0;color:oklch(0.55 0.03 60);transition:opacity .2s,color .2s}
-.menu-row:hover .grip{opacity:1}
-.menu-row .mr-pick{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;color:inherit;cursor:pointer;font:inherit}
-.menu-row .v-dot{width:7px;height:7px;border-radius:50%;flex:none;background:oklch(0.5 0.03 60);transition:background .25s,box-shadow .25s}
-.menu-row .v-name{font-family:"Boska",Georgia,serif;font-weight:600;font-size:1.06rem;letter-spacing:-0.01em;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.menu-row .v-time{margin-left:auto;flex:none;font-size:.72rem;font-weight:600;color:var(--saffron);background:oklch(0.785 0.14 68 / 0.14);padding:3px 9px;border-radius:999px;font-variant-numeric:tabular-nums}
-/* selected menu: saffron tint + glowing dot + saffron name (no side-stripe) */
-.menu-row[aria-current="true"]{background:oklch(0.785 0.14 68 / 0.12);border-color:oklch(0.785 0.14 68 / 0.4)}
-.menu-row[aria-current="true"] .v-dot{background:var(--saffron);box-shadow:0 0 10px oklch(0.785 0.14 68 / 0.6)}
-.menu-row[aria-current="true"] .v-name{color:var(--saffron)}
-.menu-row[aria-current="true"] .grip{color:var(--saffron)}
-.mp-add{margin-top:10px;width:100%}
-.ghost-add{
-  display:flex;align-items:center;justify-content:center;gap:9px;width:100%;
-  min-height:46px;padding:0 16px;
-  background:transparent;border:1px dashed var(--line);border-radius:14px;
-  color:var(--cream-soft);font-family:"Supreme";font-weight:600;font-size:13.5px;
-  transition:border-color .25s var(--ease),color .25s var(--ease),background .25s var(--ease),transform .3s var(--ease);
-}
-.ghost-add:hover{border-color:var(--saffron);color:var(--cream);background:oklch(0.785 0.14 68 / 0.06);transform:translateY(-1px)}
-.ghost-add svg{width:16px;height:16px;stroke:currentColor;flex:none}
-
-/* ---- RIGHT: categories ---- */
-.cats{display:flex;flex-direction:column;gap:clamp(14px,1.6vw,18px);min-width:0}
-.cat{
-  background:var(--surface);border:1px solid var(--line-soft);
-  border-radius:24px;padding:clamp(14px,1.6vw,20px);min-width:0;
-}
-.cat-head{display:flex;align-items:center;gap:10px;padding:2px 2px 14px;flex-wrap:wrap}
-.cat-head .ct{display:flex;align-items:baseline;gap:10px;flex:1;min-width:0}
-.cat-head h2{font-family:"Boska";font-weight:700;font-size:1.5rem;color:var(--cream);letter-spacing:-0.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cat-head .ct .num{font-size:13px;font-weight:600;color:var(--cream-soft);flex:none}
-.cat-head .ca{display:flex;align-items:center;gap:8px;flex:none}
-
-/* item rows */
-.items{display:flex;flex-direction:column}
-.item{
-  display:flex;align-items:center;gap:clamp(10px,1.2vw,14px);
-  padding:12px 6px;border-top:1px solid var(--line-soft);min-width:0;
-  border-radius:12px;
-  transition:background .2s var(--ease),transform .25s var(--ease),box-shadow .25s var(--ease);
-}
-.item:first-child{border-top:none}
-.item:hover{
-  background:var(--surface-2);transform:translateY(-1px);
-  box-shadow:0 12px 26px -20px oklch(0 0 0 / 0.85);
-}
-.item .thumb{
-  width:44px;height:44px;border-radius:12px;object-fit:cover;flex:none;
-  border:1px solid var(--line-soft);background:var(--bg);
-}
-.item .it-text{flex:1;min-width:0}
-.item .it-name{font-family:"Boska";font-weight:600;font-size:1.06rem;letter-spacing:-0.01em;color:var(--cream);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.item .it-desc{font-size:12.8px;color:var(--cream-soft);line-height:1.35;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40ch}
-.item .price{
-  font-family:"Supreme";font-weight:600;font-size:15px;color:var(--saffron);
-  font-variant-numeric:tabular-nums;flex:none;min-width:46px;text-align:right;
-}
-.item .it-actions{display:flex;align-items:center;gap:7px;flex:none}
+.it-actions { display: flex; align-items: center; gap: 7px; flex: none; }
 
 /* ---- 3-way segmented status toggle ---- */
-.seg{
-  display:inline-flex;align-items:center;gap:2px;flex:none;
-  background:var(--bg);border:1px solid var(--line-soft);border-radius:999px;padding:3px;
+.seg {
+  display: inline-flex; align-items: center; gap: 2px; flex: none;
+  background: var(--color-base-100);
+  border: 1px solid color-mix(in oklch, var(--color-base-content) 28%, transparent);
+  border-radius: 999px; padding: 3px;
 }
-.seg button{
-  display:inline-flex;align-items:center;gap:6px;
-  min-height:38px;padding:0 11px;border:none;background:transparent;border-radius:999px;
-  color:var(--cream-soft);font-family:"Supreme";font-weight:600;font-size:12.5px;white-space:nowrap;
-  transition:background .2s var(--ease),color .2s var(--ease);
+.seg button {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 38px; padding: 0 11px;
+  border: none; background: transparent; border-radius: 999px;
+  color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+  font-family: var(--font-body); font-weight: 600; font-size: 12.5px; white-space: nowrap;
+  transition: background .2s var(--ease), color .2s var(--ease);
 }
-.seg button .sdot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.55;flex:none}
-.seg button:hover{color:var(--cream)}
-.seg button[aria-checked="true"] .sdot{opacity:1}
-.seg button[aria-checked="true"][data-val="available"]{background:oklch(0.72 0.15 150 / 0.20);color:var(--green-bright)}
-.seg button[aria-checked="true"][data-val="soldout"]{background:oklch(0.66 0.19 32 / 0.22);color:var(--tomato-bright)}
-.seg button[aria-checked="true"][data-val="unavailable"]{background:var(--surface-2);color:var(--cream)}
+.seg button .sdot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: .55; flex: none; }
+.seg button:hover { color: var(--color-base-content); }
+.seg button[aria-checked="true"] .sdot { opacity: 1; }
+.seg button[aria-checked="true"][data-val="available"] {
+  background: color-mix(in oklch, var(--color-success) 20%, transparent);
+  color: color-mix(in oklch, var(--color-success) 90%, white);
+}
+.seg button[aria-checked="true"][data-val="soldout"] {
+  background: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  color: oklch(0.66 0.19 32); /* tomato-bright brand shade — no token slot */
+}
+.seg button[aria-checked="true"][data-val="unavailable"] {
+  background: var(--color-base-300);
+  color: var(--color-base-content);
+}
 
-.cat .cat-add{margin-top:14px}
-.add-cat-wrap{margin-top:2px}
+/* ---- Item edit panel (right slide-in — NOT the app shell drawer) ---- */
+.edit-scrim {
+  position: fixed; inset: 0; z-index: 55;
+  background: oklch(0.13 0.02 50 / 0.62);
+  backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+  opacity: 0; visibility: hidden;
+  transition: opacity .3s var(--ease), visibility .3s var(--ease);
+}
+.edit-scrim.show { opacity: 1; visibility: visible; }
 
-/* ============ EDIT DRAWER ============ */
-.scrim{
-  position:fixed;inset:0;z-index:55;background:oklch(0.13 0.02 50 / 0.62);
-  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
-  opacity:0;visibility:hidden;transition:opacity .3s var(--ease),visibility .3s var(--ease);
+.edit-panel {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 70;
+  width: min(440px, 100vw);
+  background: var(--color-base-200);
+  border-left: 1px solid color-mix(in oklch, var(--color-base-content) 50%, transparent);
+  box-shadow: -24px 0 60px -30px oklch(0 0 0 / 0.85);
+  display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform .42s var(--ease);
+  will-change: transform;
 }
-.scrim.show{opacity:1;visibility:visible}
+.edit-panel.open { transform: translateX(0); }
 
-.drawer{
-  position:fixed;top:0;right:0;bottom:0;z-index:70;
-  width:min(440px,100vw);
-  background:var(--surface);border-left:1px solid var(--line);
-  box-shadow:-24px 0 60px -30px oklch(0 0 0 / 0.85);
-  display:flex;flex-direction:column;
-  transform:translateX(100%);
-  transition:transform .42s var(--ease);
-  will-change:transform;
+.dr-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 18px 20px;
+  border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 28%, transparent);
+  flex: none;
 }
-.drawer.open{transform:translateX(0)}
-.dr-head{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:18px 20px;border-bottom:1px solid var(--line-soft);flex:none;
+.dr-head h2 {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; letter-spacing: -0.03em;
+  color: var(--color-base-content);
 }
-.dr-head h2{font-family:"Boska";font-weight:700;font-size:1.5rem;color:var(--cream);letter-spacing:-0.03em}
-.dr-close{
-  width:44px;height:44px;border-radius:12px;flex:none;
-  display:inline-flex;align-items:center;justify-content:center;
-  background:var(--surface-2);border:1px solid var(--line-soft);color:var(--cream-soft);
-  transition:background .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease);
+.dr-close {
+  width: 44px; height: 44px; border-radius: 12px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--color-base-300);
+  border: 1px solid color-mix(in oklch, var(--color-base-content) 28%, transparent);
+  color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+  transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
 }
-.dr-close:hover{color:var(--cream);border-color:var(--line)}
-.dr-close svg{width:18px;height:18px;stroke:currentColor}
-.dr-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:18px}
-.field{display:flex;flex-direction:column;gap:8px}
-.field > label,.field > .flabel{font-size:13px;font-weight:600;color:var(--cream);letter-spacing:.01em}
-.field .hint{font-size:12px;color:var(--cream-soft)}
-.input,.textarea{
-  width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;
-  color:var(--cream);font-family:"Supreme";font-size:15px;
-  padding:0 14px;height:48px;
-  transition:border-color .2s var(--ease),background .2s var(--ease);
+.dr-close:hover {
+  color: var(--color-base-content);
+  border-color: color-mix(in oklch, var(--color-base-content) 50%, transparent);
 }
-.textarea{height:auto;min-height:92px;padding:12px 14px;line-height:1.5;resize:vertical}
-.input::placeholder,.textarea::placeholder{color:oklch(0.66 0.02 70)}
-.input:focus,.textarea:focus{border-color:var(--saffron);outline:none}
-.price-wrap{position:relative}
-.price-wrap .cur{
-  position:absolute;left:14px;top:50%;transform:translateY(-50%);
-  color:var(--saffron);font-weight:600;font-variant-numeric:tabular-nums;pointer-events:none;
-}
-.price-wrap .input{padding-left:28px;color:var(--saffron);font-weight:600;font-variant-numeric:tabular-nums}
+.dr-close svg { width: 18px; height: 18px; stroke: currentColor; }
 
-/* image upload */
-.upload{
-  display:flex;align-items:center;gap:14px;
-  padding:14px;border:1px dashed var(--line);border-radius:16px;background:var(--bg);
-  transition:border-color .25s var(--ease),background .25s var(--ease);
-}
-.upload.drag{border-color:var(--saffron);background:oklch(0.785 0.14 68 / 0.07)}
-.upload .preview{width:64px;height:64px;border-radius:12px;object-fit:cover;flex:none;border:1px solid var(--line-soft)}
-.upload .up-text{flex:1;min-width:0}
-.upload .up-text b{display:block;font-size:13.5px;color:var(--cream);font-weight:600}
-.upload .up-text span{display:block;font-size:12px;color:var(--cream-soft);margin-top:2px}
-.upload .up-btn{
-  margin-top:8px;display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 12px;
-  background:var(--surface-2);border:1px solid var(--line);border-radius:999px;color:var(--cream);
-  font-size:12.5px;font-weight:600;
-}
-.upload .up-btn:hover{border-color:var(--saffron);color:var(--saffron)}
-.upload .up-btn svg{width:14px;height:14px;stroke:currentColor}
+.dr-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 18px; }
 
-/* tags */
-.tags{display:flex;flex-wrap:wrap;gap:8px}
-.tag{
-  display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 14px;
-  background:var(--bg);border:1px solid var(--line);border-radius:999px;
-  color:var(--cream-soft);font-family:"Supreme";font-weight:600;font-size:13px;
-  transition:background .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease);
+/* Form field groups in the edit panel */
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field > label, .field > .flabel {
+  font-size: 13px; font-weight: 600; color: var(--color-base-content); letter-spacing: .01em;
 }
-.tag .tk{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.5}
-.tag:hover{color:var(--cream);border-color:var(--line)}
-.tag[aria-pressed="true"]{background:var(--saffron);color:var(--bg-deep);border-color:var(--saffron)}
-.tag[aria-pressed="true"] .tk{opacity:.7;background:var(--bg-deep)}
+.field .hint { font-size: 12px; color: color-mix(in oklch, var(--color-base-content) 60%, transparent); }
 
-.dr-foot{
-  display:flex;gap:12px;padding:16px 20px;border-top:1px solid var(--line-soft);flex:none;
-  background:var(--surface);
-}
-.dr-foot .btn{flex:1}
+/* Input backgrounds in edit panel */
+.dr-body .input, .dr-body .textarea { background: var(--color-base-100); }
+/* Textarea: auto height (app.css height only targets .input/.select) */
+.dr-body .textarea { height: auto !important; min-height: 92px; padding: 12px 14px; line-height: 1.5; resize: vertical; }
 
-/* ============ entrance ============ */
-.js .stagger{opacity:0;transform:translateY(20px)}
-.js .stagger.in{opacity:1;transform:none;transition:opacity .55s var(--ease),transform .55s var(--ease)}
+/* Price field: $ prefix overlay */
+.price-wrap { position: relative; }
+.price-wrap .cur {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--color-secondary); font-weight: 600; font-variant-numeric: tabular-nums; pointer-events: none;
+}
+.price-wrap .input { padding-left: 28px; color: var(--color-secondary); font-weight: 600; font-variant-numeric: tabular-nums; }
 
-/* ============ RESPONSIVE ============ */
-@media (min-width:1100px){
-  .acct-btn .nm{display:inline}
+/* Image upload zone */
+.upload {
+  display: flex; align-items: center; gap: 14px; padding: 14px;
+  border: 1px dashed color-mix(in oklch, var(--color-base-content) 50%, transparent);
+  border-radius: 16px; background: var(--color-base-100);
+  transition: border-color .25s var(--ease), background .25s var(--ease);
 }
-@media (max-width:1040px){
-  .item .it-desc{display:none}
+.upload.drag {
+  border-color: var(--color-secondary);
+  background: color-mix(in oklch, var(--color-secondary) 7%, transparent);
 }
-@media (max-width:900px){
-  .app{grid-template-columns:minmax(0,1fr)}
-  .main{min-width:0}
-  .sidebar{
-    position:fixed;top:0;left:0;bottom:0;width:min(300px,86vw);
-    transform:translateX(-100%);transition:transform .35s var(--ease);
-    box-shadow:0 18px 50px -20px oklch(0 0 0 / 0.7);
+.upload .preview {
+  width: 64px; height: 64px; border-radius: 12px; object-fit: cover; flex: none;
+  border: 1px solid color-mix(in oklch, var(--color-base-content) 28%, transparent);
+}
+.upload .up-text { flex: 1; min-width: 0; }
+.upload .up-text b { display: block; font-size: 13.5px; color: var(--color-base-content); font-weight: 600; }
+.upload .up-text span { display: block; font-size: 12px; color: color-mix(in oklch, var(--color-base-content) 60%, transparent); margin-top: 2px; }
+.upload .up-btn {
+  margin-top: 8px; display: inline-flex; align-items: center; gap: 7px;
+  min-height: 36px; padding: 0 12px;
+  background: var(--color-base-300);
+  border: 1px solid color-mix(in oklch, var(--color-base-content) 50%, transparent);
+  border-radius: 999px; color: var(--color-base-content); font-size: 12.5px; font-weight: 600; cursor: pointer;
+}
+.upload .up-btn:hover { border-color: var(--color-secondary); color: var(--color-secondary); }
+.upload .up-btn svg { width: 14px; height: 14px; stroke: currentColor; }
+
+/* Tag chips */
+.tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: 38px; padding: 0 14px;
+  background: var(--color-base-100);
+  border: 1px solid color-mix(in oklch, var(--color-base-content) 50%, transparent);
+  border-radius: 999px;
+  color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+  font-family: var(--font-body); font-weight: 600; font-size: 13px;
+  transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+}
+.tag .tk { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: .5; }
+.tag:hover { color: var(--color-base-content); }
+.tag[aria-pressed="true"] {
+  background: var(--color-secondary); color: var(--color-secondary-content); border-color: var(--color-secondary);
+}
+.tag[aria-pressed="true"] .tk { opacity: .7; background: var(--color-secondary-content); }
+
+/* Edit panel footer */
+.dr-foot {
+  display: flex; gap: 12px; padding: 16px 20px;
+  border-top: 1px solid color-mix(in oklch, var(--color-base-content) 28%, transparent);
+  flex: none; background: var(--color-base-200);
+}
+.dr-foot .btn { flex: 1; }
+
+/* ---- Responsive ---- */
+@media (max-width: 1040px) { .it-desc { display: none; } }
+@media (max-width: 960px) {
+  .editor { grid-template-columns: minmax(0,1fr); }
+  .menu-panel-sticky { position: static !important; }
+  .menu-list { flex-direction: row; overflow-x: auto; gap: 10px; padding-bottom: 4px; scroll-snap-type: x mandatory; min-width: 0; }
+  .menu-row { flex: 0 0 220px; scroll-snap-align: start; }
+  .mp-add { margin-top: 0; }
+  .ghost-add { min-width: 160px; }
+  .mp-add .ghost-add { min-height: 60px; }
+  .it-desc { display: block; }
+}
+@media (max-width: 680px) {
+  .item { flex-wrap: wrap; row-gap: 10px; }
+  .it-text { flex: 1 1 60%; }
+  .price { order: 3; }
+  .seg { order: 4; flex: 1 1 100%; justify-content: space-between; }
+  .seg button { flex: 1; justify-content: center; }
+  .it-actions { order: 5; margin-left: auto; }
+  .it-desc { display: block !important; white-space: normal; max-width: none; }
+}
+@media (max-width: 560px) {
+  .edit-panel { width: 100vw; }
+  .menu-row { flex: 0 0 200px; }
+  /* Hide "Add item" label in category headers — icon alone is sufficient at this width */
+  .cat-add-label { display: none; }
+  .js-add { gap: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .edit-panel, .edit-scrim,
+  .grip, .rbtn, .menu-row, .ghost-add, .item, .seg button, .tag, .upload {
+    transition-duration: .01ms !important;
   }
-  .sidebar.open{transform:translateX(0)}
-  .hamburger{display:inline-flex}
-  .topbar{padding-left:16px;padding-right:16px}
-  .editor{grid-template-columns:minmax(0,1fr)}
-  .menu-panel{position:static;min-width:0}
-  .menu-list{flex-direction:row;overflow-x:auto;gap:10px;padding-bottom:4px;scroll-snap-type:x mandatory;min-width:0}
-  .menu-row{flex:0 0 220px;scroll-snap-align:start}
-  .mp-add{margin-top:0}
-  .ghost-add{min-width:160px}
-  .mp-add .ghost-add{min-height:60px}
-  .item .it-desc{display:block}
-}
-@media (max-width:680px){
-  .item{flex-wrap:wrap;row-gap:10px}
-  .item .it-text{flex:1 1 60%}
-  .item .price{order:3}
-  .item .seg{order:4;flex:1 1 100%;justify-content:space-between}
-  .item .seg button{flex:1;justify-content:center}
-  .item .it-actions{order:5;margin-left:auto}
-  .item .it-desc{display:block;white-space:normal;max-width:none}
-}
-@media (max-width:560px){
-  .page{padding-left:16px;padding-right:16px}
-  .page-head{align-items:flex-start}
-  .head-actions{width:100%}
-  .head-actions .btn{flex:1}
-  .drawer{width:100vw}
-  .menu-row{flex:0 0 200px}
-}
-
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none !important;transition-duration:.01ms !important}
-  .js .stagger{opacity:1 !important;transform:none !important}
-  html{scroll-behavior:auto}
 }
 </style>
 </head>
-<body>
+<body class="min-h-screen bg-base-100 text-base-content">
 
-<div class="app">
+<!-- daisyUI drawer shell — lg:drawer-open = persistent sidebar ≥1024px -->
+<div class="drawer lg:drawer-open">
+  <input id="app-drawer" type="checkbox" class="drawer-toggle" aria-label="Toggle navigation">
 
-  <!-- ============ SIDEBAR (matches dashboard) ============ -->
-  <aside class="sidebar" id="sidebar" aria-label="Restaurants and account">
-    <a class="sb-brand" href="/index.html" aria-label="Menufic home">Menufic<span class="dot" aria-hidden="true"></span></a>
+  <!-- ============ MAIN CONTENT ============ -->
+  <div class="drawer-content flex min-h-screen min-w-0 flex-col">
 
-    <nav aria-label="Your restaurants" style="display:flex;flex-direction:column;min-height:0;flex:1">
-      <div class="sb-section"><span>Restaurants</span><span class="count">3</span></div>
-      <div class="sb-list">
-        <a class="sb-item" href="/app/restaurant.html" aria-current="page">
-          <img class="thumb" src="../assets/img/photo-1432139555190-58524dae6a55.jpg" alt="">
-          <span class="nm">Saffron &amp; Smoke</span>
-          <span class="sb-dot" aria-hidden="true"></span>
-        </a>
-        <a class="sb-item" href="/app/restaurant.html">
-          <img class="thumb" src="../assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="">
-          <span class="nm">Bella Trattoria</span>
-          <span class="sb-dot" aria-hidden="true"></span>
-        </a>
-        <a class="sb-item" href="/app/restaurant.html">
-          <img class="thumb" src="../assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="">
-          <span class="nm">Verde Kitchen</span>
-          <span class="sb-dot" aria-hidden="true"></span>
-        </a>
-      </div>
-    </nav>
+    <!-- Sticky top bar -->
+    <header class="sticky top-0 z-20 flex items-center gap-4 border-b border-base-content/10 bg-base-100/85 px-[clamp(1rem,3vw,2.5rem)] py-3 backdrop-blur-lg">
 
-    <div class="sb-foot">
-      <a class="sb-link" href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        Settings
-      </a>
-      <a class="sb-link" href="/index.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Sign out
-      </a>
-
-      <div class="sb-user">
-        <img src="../assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran">
-        <span class="who">
-          <b>Arun Kajendran</b>
-          <span>a.kajendran@gmail.com</span>
-        </span>
-      </div>
-    </div>
-  </aside>
-
-  <!-- scrim for mobile nav -->
-  <div class="scrim" id="navScrim" hidden></div>
-
-  <!-- ============ MAIN ============ -->
-  <div class="main">
-
-    <header class="topbar">
-      <button class="hamburger" id="hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">
-        <span aria-hidden="true"></span>
+      <!-- Hamburger (hidden at lg+) -->
+      <button id="hamburger" type="button"
+        class="inline-flex size-11 shrink-0 items-center justify-center rounded-xl border border-base-content/20 bg-base-200 text-base-content lg:hidden"
+        aria-label="Open navigation" aria-expanded="false" aria-controls="app-drawer">
+        <svg class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
       </button>
-      <nav class="crumb" aria-label="Breadcrumb">
-        <a href="/app/dashboard.html">My Restaurants</a>
-        <svg class="sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-        <a href="/app/restaurant.html">Saffron &amp; Smoke</a>
-        <svg class="sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-        <span class="here" aria-current="page">Menus</span>
-      </nav>
-      <span class="topbar-spacer"></span>
 
-      <div class="acct">
-        <button class="acct-btn" id="acctBtn" aria-haspopup="true" aria-expanded="false" aria-controls="acctMenu">
-          <img src="../assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran, account menu">
-          <span class="nm">Arun</span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      <!-- Breadcrumb -->
+      <nav class="flex min-w-0 overflow-hidden items-center gap-2 text-sm text-base-content/70" aria-label="Breadcrumb">
+        <a href="/app/dashboard.html" class="shrink-0 whitespace-nowrap font-medium transition-colors hover:text-base-content">My Restaurants</a>
+        <svg class="size-[15px] shrink-0 opacity-55" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        <a href="/app/restaurant.html" class="shrink-0 whitespace-nowrap font-medium transition-colors hover:text-base-content">Saffron &amp; Smoke</a>
+        <svg class="size-[15px] shrink-0 opacity-55" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        <span class="truncate font-semibold text-base-content" aria-current="page">Menus</span>
+      </nav>
+
+      <span class="flex-1"></span>
+
+      <!-- Account dropdown (JS-controlled; NOT daisyUI dropdown) -->
+      <div class="relative shrink-0" id="acct">
+        <button id="acctBtn"
+          class="group inline-flex h-11 items-center gap-2 rounded-full border border-base-content/10 bg-base-200 py-1 pe-3 ps-1 text-sm font-semibold transition-colors hover:bg-base-300"
+          aria-haspopup="true" aria-expanded="false" aria-controls="acctMenu">
+          <img class="size-9 rounded-full object-cover" src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran, account menu">
+          <span class="hidden min-[1100px]:inline">Arun</span>
+          <svg class="size-4 text-base-content/60 transition-transform duration-200 group-aria-[expanded=true]:rotate-180"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
         </button>
-        <div class="acct-menu" id="acctMenu" role="menu" aria-label="Account">
-          <div class="acct-head">
-            <b>Arun Kajendran</b>
-            <span>a.kajendran@gmail.com</span>
-          </div>
-          <a href="#" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Account</a>
-          <a href="#" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
-          <a href="/index.html" role="menuitem" class="danger"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</a>
-        </div>
+        <ul id="acctMenu" role="menu" aria-label="Account"
+          class="menu absolute end-0 top-[calc(100%+0.625rem)] z-30 hidden w-56 gap-0.5 rounded-2xl border border-base-content/10 bg-base-200 p-2 shadow-floating">
+          <li>
+            <div class="mb-1.5 border-b border-base-content/10 px-3 pb-3 pt-2">
+              <span class="block text-[14px] font-semibold text-base-content">Arun Kajendran</span>
+              <span class="mt-0.5 block text-[12.5px] text-base-content/60">a.kajendran@gmail.com</span>
+            </div>
+          </li>
+          <li><a href="#" role="menuitem" class="gap-3 font-medium">
+            <svg class="size-[17px] flex-none stroke-current text-base-content/60" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Account
+          </a></li>
+          <li><a href="#" role="menuitem" class="gap-3 font-medium">
+            <svg class="size-[17px] flex-none stroke-current text-base-content/60" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Settings
+          </a></li>
+          <li><a href="/index.html" role="menuitem" class="gap-3 font-medium hover:text-primary">
+            <svg class="size-[17px] flex-none stroke-current text-base-content/60" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out
+          </a></li>
+        </ul>
       </div>
     </header>
 
-    <!-- page -->
-    <main class="page">
-      <div class="page-head">
-        <div class="ph-text">
-          <h1 class="stagger" data-delay="0">Menu editor <em>·</em> Saffron &amp; Smoke</h1>
-          <p class="subtitle stagger" data-delay="0">Drag to reorder, set what's available tonight, and tune prices and photos. Changes preview live before you publish.</p>
+    <!-- Page content -->
+    <main class="w-full max-w-[1320px] px-[clamp(1rem,3vw,2.5rem)] pb-20 pt-[clamp(1.5rem,4vw,2.75rem)]">
+
+      <!-- Page head -->
+      <div class="mb-[clamp(20px,2.6vw,30px)] flex flex-wrap items-end justify-between gap-6">
+        <div class="min-w-0">
+          <h1 class="stagger text-[clamp(2rem,4.1vw,2.9rem)] tracking-[-0.035em]" data-delay="0">
+            Menu editor <em class="not-italic text-secondary">·</em> Saffron &amp; Smoke
+          </h1>
+          <p class="stagger mt-2.5 max-w-[56ch] text-[clamp(0.98rem,1.4vw,1.08rem)] leading-[1.5] text-base-content/70" data-delay="0">
+            Drag to reorder, set what's available tonight, and tune prices and photos. Changes preview live before you publish.
+          </p>
         </div>
-        <div class="head-actions stagger" data-delay="1">
+        <div class="stagger flex flex-wrap gap-3" data-delay="1">
           <a class="btn btn-ghost" href="/public/index.html">
-            <svg class="gicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             Preview
           </a>
           <a class="btn btn-primary" href="#">
-            <svg class="gicon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+            <svg class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
             Publish menu
           </a>
         </div>
       </div>
 
+      <!-- Two-column editor -->
       <div class="editor">
 
-        <!-- ===== LEFT: menus ===== -->
-        <aside class="menu-panel stagger" data-delay="2" aria-label="Menus">
-          <div class="mp-head">
-            <h2>Menus</h2>
-            <span class="count">3</span>
+        <!-- ===== LEFT: menu list panel ===== -->
+        <aside class="menu-panel-sticky stagger rounded-3xl border border-base-content/[.28] bg-base-200 p-4" style="top:80px;position:sticky" data-delay="2" aria-label="Menus">
+          <div class="flex items-center justify-between px-1.5 pb-3 pt-1">
+            <h2 class="font-display font-semibold tracking-tight" style="font-size:1.18rem;letter-spacing:-0.02em">Menus</h2>
+            <span class="rounded-full border border-base-content/[.28] bg-base-100 px-2.5 py-px text-[11px] font-semibold text-base-content/70">3</span>
           </div>
           <div class="menu-list" role="list">
             <div class="menu-row" role="listitem">
@@ -635,7 +488,7 @@ p{margin:0;text-wrap:pretty}
               </button>
             </div>
           </div>
-          <div class="mp-add">
+          <div class="mp-add mt-2.5">
             <button class="ghost-add" type="button">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
               Add menu
@@ -643,29 +496,28 @@ p{margin:0;text-wrap:pretty}
           </div>
         </aside>
 
-        <!-- ===== RIGHT: categories of the Dinner menu ===== -->
-        <section class="cats stagger" data-delay="3" aria-label="Dinner menu categories">
+        <!-- ===== RIGHT: categories ===== -->
+        <section class="stagger flex flex-col gap-[clamp(14px,1.6vw,18px)] min-w-0" data-delay="3" aria-label="Dinner menu categories">
 
           <!-- Category: Mains -->
-          <section class="cat">
-            <header class="cat-head">
+          <section class="min-w-0 rounded-3xl border border-base-content/[.28] bg-base-200 p-[clamp(14px,1.6vw,20px)]">
+            <header class="flex flex-wrap items-center gap-2.5 px-0.5 pb-3.5 pt-0.5">
               <button class="grip" type="button" aria-label="Drag to reorder Mains category"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></button>
-              <div class="ct">
-                <h2>Mains</h2>
-                <span class="num">3 items</span>
+              <div class="flex min-w-0 flex-1 items-baseline gap-2.5">
+                <h2 class="truncate font-display text-2xl font-bold tracking-[-0.03em]">Mains</h2>
+                <span class="shrink-0 text-[13px] font-semibold text-base-content/70">3 items</span>
               </div>
-              <div class="ca">
+              <div class="flex shrink-0 items-center gap-2">
                 <button class="rbtn" type="button" aria-label="Edit Mains category"><svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>
                 <button class="rbtn del" type="button" aria-label="Delete Mains category"><svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
-                <button class="btn-sm js-add" type="button" data-cat="Mains"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add item</button>
+                <button class="btn btn-ghost !h-10 !min-h-0 !px-3.5 gap-1.5 text-[13.5px] js-add" type="button" data-cat="Mains"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="cat-add-label">Add item</span></button>
               </div>
             </header>
 
             <div class="items">
-              <!-- Smoked short rib -->
-              <article class="item" data-name="Smoked short rib" data-desc="36-hour cook, burnt-honey glaze" data-price="28" data-img="../assets/img/photo-1432139555190-58524dae6a55.jpg" data-status="available">
+              <article class="item" data-name="Smoked short rib" data-desc="36-hour cook, burnt-honey glaze" data-price="28" data-img="/assets/img/photo-1432139555190-58524dae6a55.jpg" data-status="available">
                 <button class="grip" type="button" aria-label="Drag to reorder Smoked short rib"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></button>
-                <img class="thumb" src="../assets/img/photo-1432139555190-58524dae6a55.jpg" alt="Sliced smoked short rib glazed and glistening" loading="lazy">
+                <img class="thumb" src="/assets/img/photo-1432139555190-58524dae6a55.jpg" alt="Sliced smoked short rib glazed and glistening" loading="lazy">
                 <div class="it-text">
                   <div class="it-name">Smoked short rib</div>
                   <div class="it-desc">36-hour cook, burnt-honey glaze</div>
@@ -682,10 +534,9 @@ p{margin:0;text-wrap:pretty}
                 </div>
               </article>
 
-              <!-- Wood-fired margherita -->
-              <article class="item" data-name="Wood-fired margherita" data-desc="San Marzano, basil oil" data-price="19" data-img="../assets/img/photo-1565299624946-b28f40a0ae38.jpg" data-status="available">
+              <article class="item" data-name="Wood-fired margherita" data-desc="San Marzano, basil oil" data-price="19" data-img="/assets/img/photo-1565299624946-b28f40a0ae38.jpg" data-status="available">
                 <button class="grip" type="button" aria-label="Drag to reorder Wood-fired margherita"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></button>
-                <img class="thumb" src="../assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="Bubbling wood-fired margherita pizza" loading="lazy">
+                <img class="thumb" src="/assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="Bubbling wood-fired margherita pizza" loading="lazy">
                 <div class="it-text">
                   <div class="it-name">Wood-fired margherita</div>
                   <div class="it-desc">San Marzano, basil oil</div>
@@ -702,10 +553,9 @@ p{margin:0;text-wrap:pretty}
                 </div>
               </article>
 
-              <!-- Saffron prawns (sold out) -->
-              <article class="item" data-name="Saffron prawns" data-desc="chilli butter, charred lemon" data-price="22" data-img="../assets/img/photo-1484723091739-30a097e8f929.jpg" data-status="soldout">
+              <article class="item" data-name="Saffron prawns" data-desc="chilli butter, charred lemon" data-price="22" data-img="/assets/img/photo-1484723091739-30a097e8f929.jpg" data-status="soldout">
                 <button class="grip" type="button" aria-label="Drag to reorder Saffron prawns"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></button>
-                <img class="thumb" src="../assets/img/photo-1484723091739-30a097e8f929.jpg" alt="Saffron prawns in chilli butter with charred lemon" loading="lazy">
+                <img class="thumb" src="/assets/img/photo-1484723091739-30a097e8f929.jpg" alt="Saffron prawns in chilli butter with charred lemon" loading="lazy">
                 <div class="it-text">
                   <div class="it-name">Saffron prawns</div>
                   <div class="it-desc">chilli butter, charred lemon</div>
@@ -725,25 +575,24 @@ p{margin:0;text-wrap:pretty}
           </section>
 
           <!-- Category: Small plates -->
-          <section class="cat">
-            <header class="cat-head">
+          <section class="min-w-0 rounded-3xl border border-base-content/[.28] bg-base-200 p-[clamp(14px,1.6vw,20px)]">
+            <header class="flex flex-wrap items-center gap-2.5 px-0.5 pb-3.5 pt-0.5">
               <button class="grip" type="button" aria-label="Drag to reorder Small plates category"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></button>
-              <div class="ct">
-                <h2>Small plates</h2>
-                <span class="num">2 items</span>
+              <div class="flex min-w-0 flex-1 items-baseline gap-2.5">
+                <h2 class="truncate font-display text-2xl font-bold tracking-[-0.03em]">Small plates</h2>
+                <span class="shrink-0 text-[13px] font-semibold text-base-content/70">2 items</span>
               </div>
-              <div class="ca">
+              <div class="flex shrink-0 items-center gap-2">
                 <button class="rbtn" type="button" aria-label="Edit Small plates category"><svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>
                 <button class="rbtn del" type="button" aria-label="Delete Small plates category"><svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
-                <button class="btn-sm js-add" type="button" data-cat="Small plates"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add item</button>
+                <button class="btn btn-ghost !h-10 !min-h-0 !px-3.5 gap-1.5 text-[13.5px] js-add" type="button" data-cat="Small plates"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add item</button>
               </div>
             </header>
 
             <div class="items">
-              <!-- Red shrimp broth -->
-              <article class="item" data-name="Red shrimp broth" data-desc="smoked tomato, fennel" data-price="16" data-img="../assets/img/photo-1455619452474-d2be8b1e70cd.jpg" data-status="available">
+              <article class="item" data-name="Red shrimp broth" data-desc="smoked tomato, fennel" data-price="16" data-img="/assets/img/photo-1455619452474-d2be8b1e70cd.jpg" data-status="available">
                 <button class="grip" type="button" aria-label="Drag to reorder Red shrimp broth"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></button>
-                <img class="thumb" src="../assets/img/photo-1455619452474-d2be8b1e70cd.jpg" alt="Bowl of red shrimp broth with smoked tomato and fennel" loading="lazy">
+                <img class="thumb" src="/assets/img/photo-1455619452474-d2be8b1e70cd.jpg" alt="Bowl of red shrimp broth with smoked tomato and fennel" loading="lazy">
                 <div class="it-text">
                   <div class="it-name">Red shrimp broth</div>
                   <div class="it-desc">smoked tomato, fennel</div>
@@ -760,10 +609,9 @@ p{margin:0;text-wrap:pretty}
                 </div>
               </article>
 
-              <!-- Charred sharing board -->
-              <article class="item" data-name="Charred sharing board" data-desc="for the table" data-price="24" data-img="../assets/img/photo-1424847651672-bf20a4b0982b.jpg" data-status="available">
+              <article class="item" data-name="Charred sharing board" data-desc="for the table" data-price="24" data-img="/assets/img/photo-1424847651672-bf20a4b0982b.jpg" data-status="available">
                 <button class="grip" type="button" aria-label="Drag to reorder Charred sharing board"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></button>
-                <img class="thumb" src="../assets/img/photo-1424847651672-bf20a4b0982b.jpg" alt="Sharing board of charred plates laid out for the table" loading="lazy">
+                <img class="thumb" src="/assets/img/photo-1424847651672-bf20a4b0982b.jpg" alt="Sharing board of charred plates laid out for the table" loading="lazy">
                 <div class="it-text">
                   <div class="it-name">Charred sharing board</div>
                   <div class="it-desc">for the table</div>
@@ -783,25 +631,24 @@ p{margin:0;text-wrap:pretty}
           </section>
 
           <!-- Category: Sides -->
-          <section class="cat">
-            <header class="cat-head">
+          <section class="min-w-0 rounded-3xl border border-base-content/[.28] bg-base-200 p-[clamp(14px,1.6vw,20px)]">
+            <header class="flex flex-wrap items-center gap-2.5 px-0.5 pb-3.5 pt-0.5">
               <button class="grip" type="button" aria-label="Drag to reorder Sides category"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></button>
-              <div class="ct">
-                <h2>Sides</h2>
-                <span class="num">2 items</span>
+              <div class="flex min-w-0 flex-1 items-baseline gap-2.5">
+                <h2 class="truncate font-display text-2xl font-bold tracking-[-0.03em]">Sides</h2>
+                <span class="shrink-0 text-[13px] font-semibold text-base-content/70">2 items</span>
               </div>
-              <div class="ca">
+              <div class="flex shrink-0 items-center gap-2">
                 <button class="rbtn" type="button" aria-label="Edit Sides category"><svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>
                 <button class="rbtn del" type="button" aria-label="Delete Sides category"><svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
-                <button class="btn-sm js-add" type="button" data-cat="Sides"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add item</button>
+                <button class="btn btn-ghost !h-10 !min-h-0 !px-3.5 gap-1.5 text-[13.5px] js-add" type="button" data-cat="Sides"><svg class="size-4" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add item</button>
               </div>
             </header>
 
             <div class="items">
-              <!-- Burnt-honey carrots (reused photo) -->
-              <article class="item" data-name="Burnt-honey carrots" data-desc="cumin, whipped feta" data-price="9" data-img="../assets/img/photo-1414235077428-338989a2e8c0.jpg" data-status="available">
+              <article class="item" data-name="Burnt-honey carrots" data-desc="cumin, whipped feta" data-price="9" data-img="/assets/img/photo-1414235077428-338989a2e8c0.jpg" data-status="available">
                 <button class="grip" type="button" aria-label="Drag to reorder Burnt-honey carrots"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></button>
-                <img class="thumb" src="../assets/img/photo-1414235077428-338989a2e8c0.jpg" alt="Burnt-honey carrots plated on a warm table setting" loading="lazy">
+                <img class="thumb" src="/assets/img/photo-1414235077428-338989a2e8c0.jpg" alt="Burnt-honey carrots plated on a warm table setting" loading="lazy">
                 <div class="it-text">
                   <div class="it-name">Burnt-honey carrots</div>
                   <div class="it-desc">cumin, whipped feta</div>
@@ -818,10 +665,9 @@ p{margin:0;text-wrap:pretty}
                 </div>
               </article>
 
-              <!-- Sourdough & cultured butter (unavailable, reused photo) -->
-              <article class="item" data-name="Sourdough &amp; cultured butter" data-desc="baked in-house daily" data-price="6" data-img="../assets/img/photo-1424847651672-bf20a4b0982b.jpg" data-status="unavailable">
+              <article class="item" data-name="Sourdough &amp; cultured butter" data-desc="baked in-house daily" data-price="6" data-img="/assets/img/photo-1424847651672-bf20a4b0982b.jpg" data-status="unavailable">
                 <button class="grip" type="button" aria-label="Drag to reorder Sourdough and cultured butter"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></button>
-                <img class="thumb" src="../assets/img/photo-1424847651672-bf20a4b0982b.jpg" alt="Sourdough with cultured butter on a sharing board" loading="lazy">
+                <img class="thumb" src="/assets/img/photo-1424847651672-bf20a4b0982b.jpg" alt="Sourdough with cultured butter on a sharing board" loading="lazy">
                 <div class="it-text">
                   <div class="it-name">Sourdough &amp; cultured butter</div>
                   <div class="it-desc">baked in-house daily</div>
@@ -841,7 +687,7 @@ p{margin:0;text-wrap:pretty}
           </section>
 
           <!-- Add category -->
-          <div class="add-cat-wrap">
+          <div class="mt-0.5">
             <button class="ghost-add" type="button">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
               Add category
@@ -849,44 +695,152 @@ p{margin:0;text-wrap:pretty}
           </div>
 
         </section>
-      </div>
-    </main>
-  </div>
-</div>
+      </div><!-- /editor -->
 
-<!-- ============ EDIT DRAWER ============ -->
-<div class="scrim" id="drawerScrim" hidden></div>
-<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+    </main>
+  </div><!-- /drawer-content -->
+
+  <!-- ============ SIDEBAR ============ -->
+  <div class="drawer-side z-40">
+    <label for="app-drawer" class="drawer-overlay" aria-label="Close navigation"></label>
+    <aside id="sidebar" class="flex min-h-screen w-[260px] flex-col border-e border-base-content/10 bg-cocoa-deep px-4 pb-4 pt-5">
+
+      <!-- Brand mark -->
+      <a href="/index.html" aria-label="Menufic home"
+        class="mb-[18px] inline-flex items-center gap-2 px-2 py-1.5 font-display text-2xl font-bold tracking-[-0.04em] text-base-content">
+        Menufic
+        <span class="mb-[-2px] size-[9px] rounded-full bg-primary" aria-hidden="true"></span>
+      </a>
+
+      <!-- Restaurants navigation — two-level: restaurant (location) + per-section subnav -->
+      <nav aria-label="Your restaurants" class="flex min-h-0 flex-1 flex-col">
+        <div class="mb-2 mt-1.5 flex items-center justify-between px-2.5 text-[12px] font-semibold tracking-[.04em] text-base-content/60">
+          <span>Restaurants</span>
+          <span class="rounded-full border border-base-content/[.28] bg-base-200 px-2 py-px text-[11px]">3</span>
+        </div>
+        <ul class="app-nav menu min-h-0 flex-1 flex-nowrap gap-0.5 overflow-y-auto p-0">
+          <!-- Active restaurant: aria-current="location" = ancestor of current page -->
+          <li>
+            <a href="/app/restaurant.html" aria-current="location" class="gap-2.5 py-1.5">
+              <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover"
+                src="/assets/img/photo-1432139555190-58524dae6a55.jpg" alt="">
+              <span class="min-w-0 flex-1 truncate text-[14.5px]">Saffron &amp; Smoke</span>
+              <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
+            </a>
+            <!-- Sub-nav: current section = Menus, gets aria-current="page" -->
+            <nav class="app-subnav mb-2.5 mt-1 ml-[17px] flex flex-col gap-0.5 border-l border-base-content/25 pl-[14px]"
+              aria-label="Saffron and Smoke sections">
+              <a href="/app/menu-editor.html" aria-current="page"
+                class="flex min-h-[40px] items-center gap-2.5 rounded-[10px] px-2.5 py-[5px] text-[13.5px] font-medium text-base-content/70 transition-colors duration-200 hover:bg-base-300/40 hover:text-base-content">
+                <svg class="size-4 flex-none stroke-current opacity-85" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18M3 12h18M3 19h12"/></svg>
+                Menus
+              </a>
+              <a href="/app/banners.html"
+                class="flex min-h-[40px] items-center gap-2.5 rounded-[10px] px-2.5 py-[5px] text-[13.5px] font-medium text-base-content/70 transition-colors duration-200 hover:bg-base-300/40 hover:text-base-content">
+                <svg class="size-4 flex-none stroke-current opacity-85" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg>
+                Banners
+              </a>
+              <a href="/app/theme.html"
+                class="flex min-h-[40px] items-center gap-2.5 rounded-[10px] px-2.5 py-[5px] text-[13.5px] font-medium text-base-content/70 transition-colors duration-200 hover:bg-base-300/40 hover:text-base-content">
+                <svg class="size-4 flex-none stroke-current opacity-85" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2a10 10 0 0 0 0 20c.6 0 1-.5 1-1 0-.3-.1-.5-.3-.7-.2-.3-.3-.5-.3-.8 0-.6.4-1 1-1H15a5 5 0 0 0 5-5c0-4.4-3.6-7.5-8-7.5z"/></svg>
+                Theme
+              </a>
+              <a href="/app/analytics.html"
+                class="flex min-h-[40px] items-center gap-2.5 rounded-[10px] px-2.5 py-[5px] text-[13.5px] font-medium text-base-content/70 transition-colors duration-200 hover:bg-base-300/40 hover:text-base-content">
+                <svg class="size-4 flex-none stroke-current opacity-85" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+                Analytics
+              </a>
+              <a href="/app/team.html"
+                class="flex min-h-[40px] items-center gap-2.5 rounded-[10px] px-2.5 py-[5px] text-[13.5px] font-medium text-base-content/70 transition-colors duration-200 hover:bg-base-300/40 hover:text-base-content">
+                <svg class="size-4 flex-none stroke-current opacity-85" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/></svg>
+                Team
+              </a>
+              <a href="/app/qr.html"
+                class="flex min-h-[40px] items-center gap-2.5 rounded-[10px] px-2.5 py-[5px] text-[13.5px] font-medium text-base-content/70 transition-colors duration-200 hover:bg-base-300/40 hover:text-base-content">
+                <svg class="size-4 flex-none stroke-current opacity-85" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v7h-7"/></svg>
+                QR
+              </a>
+            </nav>
+          </li>
+          <li>
+            <a href="/app/restaurant.html" class="gap-2.5 py-1.5">
+              <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover"
+                src="/assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="">
+              <span class="min-w-0 flex-1 truncate text-[14.5px]">Bella Trattoria</span>
+              <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
+            </a>
+          </li>
+          <li>
+            <a href="/app/restaurant.html" class="gap-2.5 py-1.5">
+              <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover"
+                src="/assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="">
+              <span class="min-w-0 flex-1 truncate text-[14.5px]">Verde Kitchen</span>
+              <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar footer: settings / sign out + user card -->
+      <div class="mt-auto border-t border-base-content/10 pt-3.5">
+        <ul class="menu gap-0.5 p-0">
+          <li><a href="#" class="gap-3 text-[14.5px] font-medium text-base-content/70">
+            <svg class="size-[19px] flex-none stroke-current" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Settings
+          </a></li>
+          <li><a href="/index.html" class="gap-3 text-[14.5px] font-medium text-base-content/70">
+            <svg class="size-[19px] flex-none stroke-current" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out
+          </a></li>
+        </ul>
+        <div class="mt-2.5 flex items-center gap-2.5 rounded-2xl border border-base-content/10 bg-base-200 px-3 py-2.5">
+          <img class="size-[38px] shrink-0 rounded-full object-cover" src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran">
+          <div class="min-w-0 flex-1">
+            <b class="block truncate text-[13.5px] font-semibold text-base-content">Arun Kajendran</b>
+            <span class="block truncate text-[12px] text-base-content/60">a.kajendran@gmail.com</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div><!-- /drawer-side -->
+</div><!-- /drawer -->
+
+<!-- ============ ITEM EDIT PANEL (right slide-in, NOT the app shell drawer) ============ -->
+<div class="edit-scrim" id="editScrim" hidden></div>
+<aside class="edit-panel" id="editPanel" role="dialog" aria-modal="true" aria-labelledby="editPanelTitle" aria-hidden="true">
   <header class="dr-head">
-    <h2 id="drawerTitle">Edit item</h2>
-    <button class="dr-close" type="button" id="drawerClose" aria-label="Close editor">
+    <h2 id="editPanelTitle">Edit item</h2>
+    <button class="dr-close" type="button" id="editClose" aria-label="Close editor">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
   </header>
   <form class="dr-body" id="itemForm" onsubmit="return false">
     <div class="field">
       <label for="fName">Name</label>
-      <input class="input" id="fName" name="name" type="text" placeholder="e.g. Smoked short rib" autocomplete="off">
+      <input class="input w-full" id="fName" name="name" type="text" placeholder="e.g. Smoked short rib" autocomplete="off">
     </div>
     <div class="field">
       <label for="fDesc">Description</label>
-      <textarea class="textarea" id="fDesc" name="description" placeholder="A short, appetising line — what makes it special."></textarea>
+      <textarea class="textarea w-full" id="fDesc" name="description" placeholder="A short, appetising line — what makes it special."></textarea>
     </div>
     <div class="field">
       <label for="fPrice">Price</label>
       <div class="price-wrap">
         <span class="cur" aria-hidden="true">$</span>
-        <input class="input" id="fPrice" name="price" type="number" min="0" step="1" inputmode="decimal" placeholder="0">
+        <input class="input w-full" id="fPrice" name="price" type="number" min="0" step="1" inputmode="decimal" placeholder="0">
       </div>
     </div>
     <div class="field">
       <span class="flabel" id="upLabel">Image</span>
       <div class="upload" id="uploadZone" role="button" tabindex="0" aria-labelledby="upLabel" aria-describedby="upDesc">
-        <img class="preview" id="uploadPreview" src="../assets/img/photo-1432139555190-58524dae6a55.jpg" alt="Current dish photo preview">
+        <img class="preview" id="uploadPreview" src="/assets/img/photo-1432139555190-58524dae6a55.jpg" alt="Current dish photo preview">
         <div class="up-text">
           <b>Drag a photo here</b>
           <span id="upDesc">or browse — JPG or PNG, square works best.</span>
-          <span class="up-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Browse files</span>
+          <button class="up-btn" type="button" aria-hidden="true" tabindex="-1">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Browse files
+          </button>
         </div>
       </div>
     </div>
@@ -909,8 +863,8 @@ p{margin:0;text-wrap:pretty}
     </div>
   </form>
   <footer class="dr-foot">
-    <button class="btn btn-ghost" type="button" id="drawerCancel">Cancel</button>
-    <button class="btn btn-primary" type="button" id="drawerSave">Save</button>
+    <button class="btn btn-ghost" type="button" id="editCancel">Cancel</button>
+    <button class="btn btn-primary" type="button" id="editSave">Save</button>
   </footer>
 </aside>
 
@@ -919,38 +873,42 @@ p{margin:0;text-wrap:pretty}
   "use strict";
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---- Sidebar drawer (mobile) ---- */
-  var sidebar = document.getElementById("sidebar");
-  var burger = document.getElementById("hamburger");
-  var navScrim = document.getElementById("navScrim");
+  /* ---- Sidebar drawer (daisyUI checkbox-driven) ---- */
+  var drawerInput = document.getElementById("app-drawer");
+  var sidebar     = document.getElementById("sidebar");
+  var burger      = document.getElementById("hamburger");
+
   function openNav(){
-    sidebar.classList.add("open");
+    drawerInput.checked = true;
     burger.setAttribute("aria-expanded","true");
-    navScrim.hidden = false;
-    requestAnimationFrame(function(){ navScrim.classList.add("show"); });
   }
   function closeNav(){
-    sidebar.classList.remove("open");
+    drawerInput.checked = false;
     burger.setAttribute("aria-expanded","false");
-    navScrim.classList.remove("show");
-    setTimeout(function(){ navScrim.hidden = true; }, 300);
   }
   burger.addEventListener("click", function(){
-    if(sidebar.classList.contains("open")) closeNav(); else openNav();
+    if(drawerInput.checked) closeNav(); else openNav();
   });
-  navScrim.addEventListener("click", closeNav);
+  /* Sync aria-expanded when daisyUI overlay label closes the drawer */
+  drawerInput.addEventListener("change", function(){
+    burger.setAttribute("aria-expanded", drawerInput.checked ? "true" : "false");
+  });
+  /* Close drawer on nav-link click at mobile widths */
   sidebar.addEventListener("click", function(e){
-    if(e.target.closest("a") && window.matchMedia("(max-width:900px)").matches) closeNav();
+    if(e.target.closest("a") && !window.matchMedia("(min-width:1024px)").matches) closeNav();
   });
 
   /* ---- Account dropdown ---- */
-  var acctBtn = document.getElementById("acctBtn");
+  var acctBtn  = document.getElementById("acctBtn");
   var acctMenu = document.getElementById("acctMenu");
-  function closeAcct(){ acctMenu.classList.remove("open"); acctBtn.setAttribute("aria-expanded","false"); }
+  function closeAcct(){
+    acctMenu.classList.add("hidden");
+    acctBtn.setAttribute("aria-expanded","false");
+  }
   acctBtn.addEventListener("click", function(e){
     e.stopPropagation();
-    var open = acctMenu.classList.toggle("open");
-    acctBtn.setAttribute("aria-expanded", open ? "true":"false");
+    var wasHidden = acctMenu.classList.toggle("hidden");
+    acctBtn.setAttribute("aria-expanded", !wasHidden ? "true" : "false");
   });
   document.addEventListener("click", function(e){
     if(!acctMenu.contains(e.target) && e.target !== acctBtn) closeAcct();
@@ -995,19 +953,19 @@ p{margin:0;text-wrap:pretty}
     });
   });
 
-  /* ---- Edit drawer (focus trap + restore) ---- */
-  var drawer = document.getElementById("drawer");
-  var drawerScrim = document.getElementById("drawerScrim");
-  var drawerClose = document.getElementById("drawerClose");
-  var drawerCancel = document.getElementById("drawerCancel");
-  var drawerSave = document.getElementById("drawerSave");
-  var fName = document.getElementById("fName");
-  var fDesc = document.getElementById("fDesc");
-  var fPrice = document.getElementById("fPrice");
+  /* ---- Item edit panel (focus trap + focus restore) ---- */
+  var editPanel   = document.getElementById("editPanel");
+  var editScrim   = document.getElementById("editScrim");
+  var editClose   = document.getElementById("editClose");
+  var editCancel  = document.getElementById("editCancel");
+  var editSave    = document.getElementById("editSave");
+  var fName       = document.getElementById("fName");
+  var fDesc       = document.getElementById("fDesc");
+  var fPrice      = document.getElementById("fPrice");
   var uploadPreview = document.getElementById("uploadPreview");
-  var formSeg = document.getElementById("formSeg");
+  var formSeg     = document.getElementById("formSeg");
   var lastFocused = null;
-  var drawerOpen = false;
+  var editPanelOpen = false;
 
   function setFormStatus(val){
     Array.prototype.slice.call(formSeg.querySelectorAll('[role="radio"]')).forEach(function(r){
@@ -1015,58 +973,58 @@ p{margin:0;text-wrap:pretty}
     });
   }
   function focusables(){
-    return Array.prototype.slice.call(drawer.querySelectorAll(
+    return Array.prototype.slice.call(editPanel.querySelectorAll(
       'button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])'
     )).filter(function(el){ return !el.disabled && el.offsetParent !== null; });
   }
-  function openDrawer(data){
+  function openEditPanel(data){
     lastFocused = document.activeElement;
     data = data || {};
     fName.value = data.name ? data.name.replace(/&amp;/g,"&") : "";
     fDesc.value = data.desc || "";
     fPrice.value = data.price || "";
-    uploadPreview.src = data.img || "../assets/img/photo-1432139555190-58524dae6a55.jpg";
+    uploadPreview.src = data.img || "/assets/img/photo-1432139555190-58524dae6a55.jpg";
     setFormStatus(data.status || "available");
-    drawer.classList.add("open");
-    drawer.setAttribute("aria-hidden","false");
-    drawerScrim.hidden = false;
-    requestAnimationFrame(function(){ drawerScrim.classList.add("show"); });
-    drawerOpen = true;
+    editPanel.classList.add("open");
+    editPanel.setAttribute("aria-hidden","false");
+    editScrim.hidden = false;
+    requestAnimationFrame(function(){ editScrim.classList.add("show"); });
+    editPanelOpen = true;
     setTimeout(function(){ fName.focus(); }, reduce ? 0 : 120);
   }
-  function closeDrawer(){
-    drawer.classList.remove("open");
-    drawer.setAttribute("aria-hidden","true");
-    drawerScrim.classList.remove("show");
-    setTimeout(function(){ drawerScrim.hidden = true; }, 300);
-    drawerOpen = false;
+  function closeEditPanel(){
+    editPanel.classList.remove("open");
+    editPanel.setAttribute("aria-hidden","true");
+    editScrim.classList.remove("show");
+    setTimeout(function(){ editScrim.hidden = true; }, 300);
+    editPanelOpen = false;
     if(lastFocused && lastFocused.focus) lastFocused.focus();
   }
 
-  /* open from any item edit button */
+  /* Open from any item edit button */
   Array.prototype.slice.call(document.querySelectorAll(".js-edit")).forEach(function(btn){
     btn.addEventListener("click", function(){
       var item = btn.closest(".item");
-      openDrawer({
-        name: item.getAttribute("data-name"),
-        desc: item.getAttribute("data-desc"),
-        price: item.getAttribute("data-price"),
-        img: item.getAttribute("data-img"),
+      openEditPanel({
+        name:   item.getAttribute("data-name"),
+        desc:   item.getAttribute("data-desc"),
+        price:  item.getAttribute("data-price"),
+        img:    item.getAttribute("data-img"),
         status: item.getAttribute("data-status")
       });
     });
   });
-  /* open blank from any "+ Add item" */
+  /* Open blank from any "+ Add item" */
   Array.prototype.slice.call(document.querySelectorAll(".js-add")).forEach(function(btn){
-    btn.addEventListener("click", function(){ openDrawer({}); });
+    btn.addEventListener("click", function(){ openEditPanel({}); });
   });
 
-  drawerClose.addEventListener("click", closeDrawer);
-  drawerCancel.addEventListener("click", closeDrawer);
-  drawerSave.addEventListener("click", closeDrawer);
-  drawerScrim.addEventListener("click", closeDrawer);
+  editClose.addEventListener("click", closeEditPanel);
+  editCancel.addEventListener("click", closeEditPanel);
+  editSave.addEventListener("click", closeEditPanel);
+  editScrim.addEventListener("click", closeEditPanel);
 
-  /* upload zone visual drag affordance */
+  /* Upload zone visual drag affordance */
   var uploadZone = document.getElementById("uploadZone");
   ["dragenter","dragover"].forEach(function(ev){
     uploadZone.addEventListener(ev, function(e){ e.preventDefault(); uploadZone.classList.add("drag"); });
@@ -1075,15 +1033,15 @@ p{margin:0;text-wrap:pretty}
     uploadZone.addEventListener(ev, function(e){ e.preventDefault(); uploadZone.classList.remove("drag"); });
   });
 
-  /* ---- Escape + focus trap ---- */
+  /* ---- Escape (priority: edit panel > dropdown > nav drawer) + focus trap ---- */
   document.addEventListener("keydown", function(e){
     if(e.key === "Escape"){
-      if(drawerOpen){ closeDrawer(); return; }
+      if(editPanelOpen){ closeEditPanel(); return; }
       closeAcct();
-      if(sidebar.classList.contains("open")){ closeNav(); burger.focus(); }
+      if(drawerInput.checked){ closeNav(); burger.focus(); }
       return;
     }
-    if(e.key === "Tab" && drawerOpen){
+    if(e.key === "Tab" && editPanelOpen){
       var f = focusables();
       if(!f.length) return;
       var first = f[0], last = f[f.length-1];
