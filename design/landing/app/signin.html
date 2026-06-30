@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="js">
+<html lang="en" class="js" data-theme="menufic">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,179 +8,72 @@
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <!-- Plated identity fonts (same as the landing page) -->
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=boska@400,500,700&f[]=supreme@400,500,600,700&display=swap">
+<link rel="stylesheet" href="/assets/css/styles.css">
 <style>
-:root{
-  --bg: oklch(0.18 0.03 45);
-  --bg-deep: oklch(0.155 0.026 52);
-  --surface: oklch(0.235 0.034 46);
-  --surface-2: oklch(0.295 0.04 48);
-  --saffron: oklch(0.785 0.14 68);
-  --saffron-deep: oklch(0.72 0.14 70);
-  --tomato: oklch(0.56 0.19 32);
-  --tomato-bright: oklch(0.66 0.19 32);
-  --green: oklch(0.72 0.15 150);
-  --cream: oklch(0.96 0.015 78);
-  --cream-soft: oklch(0.83 0.022 78);
-  --line: oklch(0.42 0.03 48 / 0.5);
-  --line-soft: oklch(0.42 0.03 58 / 0.28);
-  --ease: cubic-bezier(0.16,1,0.3,1);
-}
-
-*,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{
-  margin:0;
-  min-height:100svh;
-  background:var(--bg);
-  color:var(--cream);
-  font-family:"Supreme",system-ui,sans-serif;
-  font-size:17px;
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-  overflow-x:hidden;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:32px 20px;
-}
-a{color:inherit;text-decoration:none}
-h1{
-  font-family:"Boska",Georgia,serif;
-  font-weight:700;
-  letter-spacing:-0.03em;
-  line-height:1.02;
-  margin:0;
-  text-wrap:balance;
-}
-p{margin:0;text-wrap:pretty}
-:focus-visible{outline:3px solid var(--saffron);outline-offset:3px;border-radius:8px}
-
-/* ============ warm scene background ============ */
-.scene{
-  position:fixed;inset:0;z-index:0;pointer-events:none;
+/* ---- signin.html island styles ----
+   Three bespoke elements that cannot be expressed as daisyUI/Tailwind classes:
+   .scene / .grain  — auth-page-specific gradient backdrop + SVG noise texture.
+   .google-btn      — Google OAuth button; white bg + #1f1f1f text per Google brand
+                      guidelines; border-radius + font-family consume shared tokens.
+   .auth-card       — multi-layer depth shadow specific to the auth card surface. */
+.scene {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background:
     radial-gradient(60% 50% at 50% 30%, oklch(0.80 0.135 78 / 0.13), transparent 70%),
     radial-gradient(50% 50% at 82% 88%, oklch(0.605 0.18 30 / 0.12), transparent 68%),
     radial-gradient(70% 60% at 14% 84%, oklch(0.30 0.04 60 / 0.5), transparent 72%),
-    linear-gradient(180deg, var(--bg-deep), var(--bg) 42%, var(--bg));
+    linear-gradient(180deg, var(--color-cocoa-deep), var(--color-base-100) 42%, var(--color-base-100));
 }
-.grain{
-  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
-  mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+.grain {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .5;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
 }
-
-/* ============ layout ============ */
-.auth{
-  position:relative;z-index:2;
-  width:100%;max-width:420px;
-  display:flex;flex-direction:column;align-items:center;gap:22px;
+/* Google OAuth button: Google brand guidelines require white background + dark text.
+   border-radius and font-family reference shared theme tokens (--radius-pill, --font-body). */
+.google-btn {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  width: 100%; min-height: 54px; padding: 0 22px;
+  background: #fff; color: #1f1f1f;
+  font-family: var(--font-body); font-weight: 600; font-size: 16px;
+  border: 1px solid transparent; border-radius: var(--radius-pill);
+  box-shadow: 0 12px 30px -14px oklch(0 0 0 / 0.85);
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
+              box-shadow 0.3s cubic-bezier(0.16,1,0.3,1),
+              background 0.25s cubic-bezier(0.16,1,0.3,1);
 }
-
-/* ============ card ============ */
-.card{
-  width:100%;
-  background:var(--surface);
-  border:1px solid var(--line-soft);
-  border-radius:24px;
-  padding:clamp(28px,6vw,40px) clamp(24px,5vw,36px);
-  text-align:center;
+.google-btn:hover {
+  background: #f4f4f4;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px -16px oklch(0 0 0 / 0.9);
+}
+.google-btn .gmark { width: 20px; height: 20px; flex: none; }
+/* Deep atmospheric shadow for the auth card — not reused across app pages. */
+.auth-card {
   box-shadow:
     0 1px 0 oklch(0.85 0.13 78 / 0.06) inset,
     0 30px 70px -34px oklch(0 0 0 / 0.85),
     0 14px 36px -20px oklch(0 0 0 / 0.7);
 }
-
-.wordmark{
-  font-family:"Boska",Georgia,serif;font-weight:700;font-size:27px;letter-spacing:-0.04em;
-  color:var(--cream);display:inline-flex;align-items:center;gap:8px;
-}
-.wordmark .dot{width:9px;height:9px;border-radius:50%;background:var(--tomato);margin-bottom:-3px}
-
-.card h1{
-  font-size:clamp(2rem,7vw,2.6rem);
-  color:var(--cream);
-  margin-top:26px;
-}
-.card .sub{
-  margin-top:12px;
-  color:var(--cream-soft);
-  font-size:1.02rem;
-  line-height:1.55;
-  max-width:34ch;
-  margin-left:auto;margin-right:auto;
-}
-
-/* ============ Google sign-in (standard, credible) ============ */
-.google-btn{
-  margin-top:30px;
-  display:flex;align-items:center;justify-content:center;gap:12px;
-  width:100%;min-height:54px;padding:0 22px;
-  background:#fff;color:#1f1f1f;
-  font-family:"Supreme",system-ui,sans-serif;font-weight:600;font-size:16px;
-  border:1px solid transparent;border-radius:999px;
-  box-shadow:0 12px 30px -14px oklch(0 0 0 / 0.85);
-  transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .25s var(--ease);
-}
-.google-btn:hover{
-  background:#f4f4f4;
-  transform:translateY(-2px);
-  box-shadow:0 18px 40px -16px oklch(0 0 0 / 0.9);
-}
-.google-btn .gmark{width:20px;height:20px;flex:none}
-
-.legal{
-  margin-top:18px;
-  font-size:12.5px;line-height:1.5;color:var(--cream-soft);
-  max-width:30ch;margin-left:auto;margin-right:auto;
-}
-.legal a{color:var(--cream);font-weight:500;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:2px}
-.legal a:hover{text-decoration-color:var(--saffron)}
-
-/* free reassurance line */
-.reassure{
-  margin-top:22px;
-  display:inline-flex;align-items:center;gap:8px;
-  font-size:13px;font-weight:600;color:var(--cream-soft);
-}
-.reassure .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none}
-
-/* ============ back link ============ */
-.back{
-  display:inline-flex;align-items:center;gap:9px;
-  min-height:44px;padding:0 8px;
-  color:var(--cream-soft);font-size:15px;font-weight:500;
-  transition:color .2s var(--ease);
-}
-.back .arr{transition:transform .3s var(--ease)}
-.back:hover{color:var(--cream)}
-.back:hover .arr{transform:translateX(-4px)}
-
-/* ============ staggered entrance ============ */
-.js .stagger{opacity:0;transform:translateY(22px)}
-.js .stagger.in{opacity:1;transform:none;transition:opacity .6s var(--ease),transform .6s var(--ease)}
-
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none !important;transition-duration:.01ms !important}
-  .js .stagger{opacity:1 !important;transform:none !important}
-}
 </style>
 </head>
-<body>
+<body class="min-h-svh bg-base-100 text-base-content flex flex-col items-center justify-center py-8 px-5 antialiased overflow-x-hidden">
 
 <div class="scene" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
 
-<main class="auth">
-  <section class="card" aria-labelledby="auth-h">
-    <a class="wordmark stagger" data-delay="0" href="/index.html" aria-label="Menufic home">Menufic<span class="dot" aria-hidden="true"></span></a>
+<main class="relative z-[2] w-full max-w-[420px] flex flex-col items-center gap-[22px]">
+  <section class="card bg-base-200 auth-card w-full text-center border border-base-content/[0.28] px-[clamp(24px,5vw,36px)] py-[clamp(28px,6vw,40px)]" aria-labelledby="auth-h">
 
-    <h1 id="auth-h" class="stagger" data-delay="1">Welcome back</h1>
-    <p class="sub stagger" data-delay="2">Sign in to manage your menus. It's free, always.</p>
+    <a class="inline-flex items-center gap-2 font-display font-bold text-[27px] tracking-[-0.04em] text-base-content stagger" data-delay="0" href="/index.html" aria-label="Menufic home">
+      Menufic<span class="-mb-[3px] inline-block size-[9px] rounded-full bg-primary" aria-hidden="true"></span>
+    </a>
 
-    <a class="google-btn stagger" data-delay="3" href="/app/dashboard.html">
+    <h1 id="auth-h" class="text-[clamp(2rem,7vw,2.6rem)] mt-[26px] stagger" data-delay="1">Welcome back</h1>
+
+    <p class="mt-3 text-base-content/70 text-[1.02rem] leading-[1.55] max-w-[34ch] mx-auto text-pretty stagger" data-delay="2">Sign in to manage your menus. It's free, always.</p>
+
+    <a class="google-btn mt-[30px] stagger" data-delay="3" href="/app/dashboard.html">
       <svg class="gmark" viewBox="0 0 48 48" aria-hidden="true">
         <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
         <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
@@ -190,12 +83,21 @@ p{margin:0;text-wrap:pretty}
       Sign in with Google
     </a>
 
-    <p class="legal stagger" data-delay="4">By continuing you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>.</p>
+    <p class="mt-[18px] text-[12.5px] leading-[1.5] text-base-content/70 max-w-[30ch] mx-auto stagger" data-delay="4">
+      By continuing you agree to our
+      <a class="text-base-content font-medium underline decoration-base-content/50 underline-offset-2 hover:decoration-secondary transition-colors" href="#">Terms</a>
+      &amp;
+      <a class="text-base-content font-medium underline decoration-base-content/50 underline-offset-2 hover:decoration-secondary transition-colors" href="#">Privacy Policy</a>.
+    </p>
 
-    <p class="reassure stagger" data-delay="5"><span class="pulse" aria-hidden="true"></span>No card, no trial, no catch.</p>
+    <p class="mt-[22px] inline-flex items-center gap-2 text-[13px] font-semibold text-base-content/70 stagger" data-delay="5">
+      <span class="size-2 rounded-full bg-success shrink-0" aria-hidden="true"></span>No card, no trial, no catch.
+    </p>
   </section>
 
-  <a class="back stagger" data-delay="6" href="/index.html"><span class="arr" aria-hidden="true">&larr;</span> Back to home</a>
+  <a class="group inline-flex items-center gap-[9px] min-h-[44px] px-2 text-base-content/70 text-[15px] font-medium transition-colors hover:text-base-content stagger" data-delay="6" href="/index.html">
+    <span class="transition-transform duration-300 group-hover:-translate-x-1" aria-hidden="true">&larr;</span> Back to home
+  </a>
 </main>
 
 <script>
