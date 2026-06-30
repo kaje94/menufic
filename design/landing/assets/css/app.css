@@ -134,15 +134,19 @@
      active treatment to saffron = ATTENTION (Two-Accent Rule). Scoped to
      `.app-nav` so it never leaks into other menus. Full tonal tint + saffron
      text + saffron dot — never a side-stripe (DESIGN.md §6). */
-  .app-nav :where(li > a)[aria-current="page"] {
+  /* page = current page; location = selected-restaurant ancestor in two-level sidebars */
+  .app-nav :where(li > a)[aria-current="page"],
+  .app-nav :where(li > a)[aria-current="location"] {
     background-color: color-mix(in oklch, var(--color-secondary) 13%, transparent);
     color: var(--color-secondary);
     font-weight: 600;
   }
-  .app-nav :where(li > a)[aria-current="page"] .nav-dot {
+  .app-nav :where(li > a)[aria-current="page"] .nav-dot,
+  .app-nav :where(li > a)[aria-current="location"] .nav-dot {
     background-color: var(--color-secondary);
   }
-  .app-nav :where(li > a)[aria-current="page"] .nav-thumb {
+  .app-nav :where(li > a)[aria-current="page"] .nav-thumb,
+  .app-nav :where(li > a)[aria-current="location"] .nav-thumb {
     border-color: color-mix(in oklch, var(--color-secondary) 55%, transparent);
   }
 }
