@@ -1,684 +1,234 @@
 <!DOCTYPE html>
-<html lang="en" class="js">
+<html lang="en" class="js" data-theme="menufic">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Analytics · Saffron &amp; Smoke · Menufic</title>
 <meta name="description" content="See how your menu is performing — page views, unique visitors, most-viewed dishes, peak hours and where your guests are, all on one warm dark dashboard.">
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<!-- Same identity fonts as the landing page and dashboard -->
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=boska@400,500,700&f[]=supreme@400,500,600,700&display=swap">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<!-- Analytics island: chart visuals — bespoke rules that cannot be expressed as Tailwind utilities.
+     All colours reference theme tokens; documented literal carve-outs noted inline. -->
 <style>
-:root{
-  --bg: oklch(0.18 0.03 45);
-  --bg-deep: oklch(0.155 0.026 52);
-  --surface: oklch(0.235 0.034 46);
-  --surface-2: oklch(0.295 0.04 48);
-  --saffron: oklch(0.785 0.14 68);
-  --saffron-deep: oklch(0.72 0.14 70);
-  --tomato: oklch(0.56 0.19 32);
-  --tomato-bright: oklch(0.66 0.19 32);
-  --green: oklch(0.72 0.15 150);
-  --green-bright: oklch(0.82 0.15 150);
-  --cream: oklch(0.96 0.015 78);
-  --cream-soft: oklch(0.83 0.022 78);
-  --line: oklch(0.42 0.03 48 / 0.5);
-  --line-soft: oklch(0.42 0.03 58 / 0.28);
-  --ease: cubic-bezier(0.16,1,0.3,1);
-  --sidebar-w: 260px;
-  /* data-viz */
-  --viz: var(--saffron);
-  --viz-soft: oklch(0.785 0.14 68 / 0.16);
-  --viz-track: oklch(0.42 0.03 48 / 0.22);
-  --viz-muted: oklch(0.62 0.045 62);   /* desktop / secondary series */
-}
+/* ---- Line chart (SVG: views over time) ---- */
+.linechart .grid-line { stroke: color-mix(in oklch, var(--color-base-content) 10%, transparent); stroke-width: 1; }
+.linechart .axis-label { fill: var(--color-info); font-family: var(--font-body); font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.linechart .day-label  { fill: var(--color-info); font-family: var(--font-body); font-size: 14px; font-weight: 600; text-anchor: middle; }
+.linechart .area       { fill: url(#viewsArea); }
+.linechart .line       { fill: none; stroke: var(--color-secondary); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.linechart .pt         { fill: var(--color-secondary); stroke: var(--color-base-300); stroke-width: 3; }
+.linechart .pt-peak    { fill: var(--color-base-300); stroke: var(--color-secondary); stroke-width: 3.5; }
 
-*,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--cream);
-  font-family:"Supreme",system-ui,sans-serif;
-  font-size:16px;
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-  overflow-x:hidden;
-}
-img{max-width:100%;display:block}
-a{color:inherit;text-decoration:none}
-button{font-family:inherit;cursor:pointer}
-h1,h2,h3{
-  font-family:"Boska",Georgia,serif;
-  font-weight:700;
-  letter-spacing:-0.03em;
-  line-height:1.05;
-  margin:0;
-  text-wrap:balance;
-}
-p{margin:0;text-wrap:pretty}
-:focus-visible{outline:3px solid var(--saffron);outline-offset:3px;border-radius:6px}
+/* ---- Horizontal bars (popular items) ---- */
+.hbar-track { height: 12px; border-radius: 999px; background: color-mix(in oklch, var(--color-base-content) 10%, transparent); overflow: hidden; min-width: 0; }
+.hbar-fill  { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--color-accent), var(--color-secondary)); }
 
-/* ============ BUTTONS (from landing/dashboard) ============ */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  min-height:48px;padding:0 22px;
-  border-radius:999px;border:1px solid transparent;
-  font-family:"Supreme";font-weight:600;font-size:16px;color:var(--cream);
-  transition:transform .35s var(--ease),background .25s var(--ease),box-shadow .35s var(--ease);
-}
-.btn-primary{
-  background:var(--tomato);color:#fff;
-  box-shadow:0 10px 30px -10px oklch(0.605 0.18 30 / 0.7);
-}
-.btn-primary:hover{background:var(--tomato-bright);transform:translateY(-2px);box-shadow:0 16px 40px -12px oklch(0.605 0.18 30 / 0.8)}
-.btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}
-.btn-ghost:hover{background:oklch(0.30 0.04 60 / 0.5);transform:translateY(-2px)}
-.gicon{width:18px;height:18px;flex:none}
+/* ---- Vertical bars (peak hours) ---- */
+.vbars { display: flex; align-items: flex-end; gap: clamp(4px, 0.8vw, 9px); height: 200px; min-width: 0; }
+.vbar  { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1 1 0; min-width: 0; height: 100%; }
+.vbar-col  { flex: 1; width: 100%; display: flex; align-items: flex-end; min-width: 0; }
+.vbar-fill { width: 100%; border-radius: 7px 7px 3px 3px; min-width: 0; background: linear-gradient(180deg, var(--color-secondary), var(--color-accent)); }
+/* Peak highlight: brighter saffron stop — oklch(0.87 0.13 70) has no brand token; documented carve-out */
+.vbar.peak .vbar-fill { background: linear-gradient(180deg, oklch(0.87 0.13 70), var(--color-secondary)); }
+.vbar-lab { font-size: 10.5px; font-weight: 600; color: var(--color-info); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-/* ============ APP SHELL ============ */
-.app{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);min-height:100vh}
-
-/* ---- Sidebar ---- */
-.sidebar{
-  position:sticky;top:0;align-self:start;
-  height:100vh;
-  background:var(--bg-deep);
-  border-right:1px solid var(--line-soft);
-  display:flex;flex-direction:column;
-  padding:22px 16px 16px;
-  z-index:60;
-}
-.sb-brand{
-  font-family:"Boska";font-weight:700;font-size:24px;letter-spacing:-0.04em;
-  color:var(--cream);display:inline-flex;align-items:center;gap:8px;
-  padding:6px 8px 4px;margin-bottom:18px;
-}
-.sb-brand .dot{width:9px;height:9px;border-radius:50%;background:var(--tomato);margin-bottom:-2px}
-.sb-section{
-  font-size:12px;font-weight:600;color:var(--cream-soft);
-  letter-spacing:.04em;padding:0 10px;margin:6px 0 8px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.sb-section .count{
-  font-size:11px;font-weight:600;color:var(--cream-soft);
-  background:var(--surface);border:1px solid var(--line-soft);
-  border-radius:999px;padding:1px 8px;
-}
-.sb-list{display:flex;flex-direction:column;gap:3px;margin:0 0 4px}
-.sb-item{
-  display:flex;align-items:center;gap:11px;
-  width:100%;min-height:46px;padding:6px 10px;
-  border:none;background:transparent;border-radius:12px;text-align:left;
-  color:var(--cream-soft);font-size:14.5px;font-weight:500;
-  transition:background .2s var(--ease),color .2s var(--ease);
-}
-.sb-item:hover{background:oklch(0.30 0.04 60 / 0.4);color:var(--cream)}
-.sb-item .thumb{
-  width:34px;height:34px;border-radius:9px;object-fit:cover;flex:none;
-  border:1px solid var(--line-soft);
-}
-.sb-item .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb-item .sb-dot{width:7px;height:7px;border-radius:50%;flex:none;background:transparent}
-.sb-item[aria-current="page"]{
-  background:oklch(0.785 0.14 68 / 0.13);
-  color:var(--saffron);font-weight:600;
-}
-.sb-item[aria-current="page"] .sb-dot{background:var(--saffron)}
-.sb-item[aria-current="page"] .thumb{border-color:oklch(0.785 0.14 68 / 0.55)}
-
-/* ---- sidebar sub-nav (active restaurant sections) ---- */
-.sb-sub{
-  display:flex;flex-direction:column;gap:2px;
-  margin:4px 0 4px 17px;padding-left:11px;
-  border-left:1px solid var(--line-soft);
-}
-.sb-sublink{
-  display:flex;align-items:center;gap:10px;
-  min-height:40px;padding:5px 10px;border-radius:10px;
-  color:var(--cream-soft);font-size:13.5px;font-weight:500;
-  transition:background .2s var(--ease),color .2s var(--ease);
-}
-.sb-sublink svg{width:16px;height:16px;flex:none;stroke:currentColor;fill:none}
-.sb-sublink:hover{background:oklch(0.30 0.04 60 / 0.4);color:var(--cream)}
-.sb-sublink[aria-current="page"]{
-  background:oklch(0.785 0.14 68 / 0.13);color:var(--saffron);font-weight:600;
-}
-
-.sb-scroll{overflow-y:auto;min-height:0;flex:1}
-
-.sb-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-soft);display:flex;flex-direction:column;gap:3px}
-.sb-link{
-  display:flex;align-items:center;gap:12px;
-  width:100%;min-height:46px;padding:6px 12px;
-  border:none;background:transparent;border-radius:12px;text-align:left;
-  color:var(--cream-soft);font-size:14.5px;font-weight:500;
-  transition:background .2s var(--ease),color .2s var(--ease);
-}
-.sb-link:hover{background:oklch(0.30 0.04 60 / 0.4);color:var(--cream)}
-.sb-link svg{width:19px;height:19px;flex:none;stroke:currentColor}
-.sb-user{
-  display:flex;align-items:center;gap:11px;
-  margin-top:10px;padding:9px 11px;
-  background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;
-}
-.sb-user img{width:38px;height:38px;border-radius:50%;object-fit:cover;flex:none}
-.sb-user .who{min-width:0;flex:1}
-.sb-user .who b{display:block;font-size:13.5px;font-weight:600;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb-user .who span{display:block;font-size:12px;color:var(--cream-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* ---- Main ---- */
-.main{display:flex;flex-direction:column;min-width:0;background:var(--bg)}
-
-.topbar{
-  position:sticky;top:0;z-index:50;
-  display:flex;align-items:center;gap:16px;
-  padding:12px clamp(18px,3vw,40px);
-  background:oklch(0.185 0.028 55 / 0.86);
-  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--line-soft);
-}
-.crumb{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--cream-soft);min-width:0;flex-wrap:wrap}
-.crumb a{color:var(--cream-soft);font-weight:500;border-radius:6px;transition:color .2s var(--ease)}
-.crumb a:hover{color:var(--cream)}
-.crumb .sep{width:15px;height:15px;flex:none;color:var(--cream-soft);opacity:.55}
-.crumb .here{color:var(--cream);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.topbar-spacer{flex:1}
-.hamburger{
-  display:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;
-  width:44px;height:44px;align-items:center;justify-content:center;flex:none;
-}
-.hamburger span{display:block;width:18px;height:2px;background:var(--cream);position:relative}
-.hamburger span::before,.hamburger span::after{content:"";position:absolute;left:0;width:18px;height:2px;background:var(--cream)}
-.hamburger span::before{top:-6px}.hamburger span::after{top:6px}
-
-/* avatar + dropdown */
-.acct{position:relative;flex:none}
-.acct-btn{
-  display:flex;align-items:center;gap:9px;
-  min-height:44px;padding:4px 10px 4px 4px;
-  background:var(--surface);border:1px solid var(--line-soft);border-radius:999px;
-  color:var(--cream);font-size:14px;font-weight:600;
-  transition:background .2s var(--ease),border-color .2s var(--ease);
-}
-.acct-btn:hover{background:var(--surface-2)}
-.acct-btn img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none}
-.acct-btn .nm{display:none}
-.acct-btn .chev{width:16px;height:16px;color:var(--cream-soft);transition:transform .25s var(--ease)}
-.acct-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
-.acct-menu{
-  position:absolute;right:0;top:calc(100% + 10px);min-width:224px;
-  background:var(--surface);border:1px solid var(--line);border-radius:16px;
-  padding:8px;box-shadow:0 18px 40px -22px oklch(0 0 0 / 0.85);
-  display:none;flex-direction:column;gap:2px;
-}
-.acct-menu.open{display:flex}
-.acct-head{padding:9px 11px 11px;border-bottom:1px solid var(--line-soft);margin-bottom:6px}
-.acct-head b{display:block;font-size:14px;color:var(--cream)}
-.acct-head span{display:block;font-size:12.5px;color:var(--cream-soft);margin-top:2px}
-.acct-menu a{
-  display:flex;align-items:center;gap:11px;
-  min-height:44px;padding:0 11px;border-radius:10px;
-  color:var(--cream);font-size:14px;font-weight:500;
-  transition:background .18s var(--ease);
-}
-.acct-menu a:hover{background:oklch(0.30 0.04 60 / 0.5)}
-.acct-menu a svg{width:17px;height:17px;flex:none;stroke:currentColor;color:var(--cream-soft)}
-.acct-menu a.danger:hover{color:var(--tomato-bright)}
-
-/* page body */
-.page{padding:clamp(22px,3.4vw,38px) clamp(18px,3vw,40px) 80px;max-width:1320px;width:100%}
-.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(20px,2.6vw,30px)}
-.page-head h1{font-size:clamp(2rem,4.4vw,3rem);color:var(--cream);letter-spacing:-0.035em}
-.page-head .subtitle{margin-top:10px;color:var(--cream-soft);font-size:clamp(0.98rem,1.4vw,1.08rem);max-width:54ch;line-height:1.5}
-.page-head .ph-text{min-width:0}
-
-/* ---- restaurant section tab strip (mirrors sidebar sub-nav) ---- */
-.sectionbar{
-  display:flex;gap:6px;overflow-x:auto;margin-bottom:clamp(20px,2.6vw,28px);
-  padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;
-}
-.sectionbar a{
-  display:inline-flex;align-items:center;gap:8px;white-space:nowrap;flex:none;
-  min-height:42px;padding:0 16px;border-radius:999px;
-  background:var(--surface);border:1px solid var(--line-soft);
-  color:var(--cream-soft);font-size:14px;font-weight:600;
-  transition:background .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease);
-}
-.sectionbar a svg{width:16px;height:16px;flex:none;stroke:currentColor;fill:none}
-.sectionbar a:hover{background:var(--surface-2);color:var(--cream)}
-.sectionbar a[aria-current="page"]{
-  background:oklch(0.785 0.14 68 / 0.15);border-color:oklch(0.785 0.14 68 / 0.45);color:var(--saffron);
-}
-
-/* ---- date-range selector ---- */
-.daterange{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.range-group{
-  display:inline-flex;align-items:center;gap:3px;
-  background:var(--surface);border:1px solid var(--line-soft);border-radius:999px;padding:4px;
-}
-.range-group a{
-  display:inline-flex;align-items:center;justify-content:center;
-  min-height:44px;padding:0 16px;border-radius:999px;
-  color:var(--cream-soft);font-size:14px;font-weight:600;white-space:nowrap;
-  transition:background .2s var(--ease),color .2s var(--ease);
-}
-.range-group a:hover{color:var(--cream)}
-.range-group a[aria-current="true"]{background:var(--saffron);color:var(--bg-deep)}
-.range-custom{
-  display:inline-flex;align-items:center;gap:8px;
-  min-height:48px;padding:0 16px;border-radius:999px;
-  background:transparent;border:1px solid var(--line);color:var(--cream);
-  font-size:14px;font-weight:600;white-space:nowrap;
-  transition:background .2s var(--ease),border-color .2s var(--ease),transform .3s var(--ease);
-}
-.range-custom svg{width:16px;height:16px;flex:none;stroke:currentColor;fill:none}
-.range-custom:hover{border-color:var(--saffron);background:oklch(0.785 0.14 68 / 0.07);transform:translateY(-1px)}
-
-/* ============ STAT CARDS ============ */
-.stats{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:clamp(14px,1.8vw,22px);margin-bottom:clamp(18px,2.4vw,26px);
-}
-.stat{
-  display:flex;flex-direction:column;gap:12px;min-width:0;
-  background:var(--surface);border:1px solid var(--line-soft);
-  border-radius:24px;padding:clamp(18px,2vw,24px);
-  transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .35s var(--ease);
-}
-.stat:hover{transform:translateY(-3px);box-shadow:0 18px 40px -24px oklch(0 0 0 / 0.85);border-color:var(--line)}
-.stat-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.stat-icon{
-  width:44px;height:44px;border-radius:13px;flex:none;
-  display:inline-flex;align-items:center;justify-content:center;
-  background:oklch(0.785 0.14 68 / 0.14);color:var(--saffron);
-}
-.stat-icon svg{width:21px;height:21px;stroke:currentColor;fill:none}
-.trend{
-  display:inline-flex;align-items:center;gap:5px;flex:none;
-  font-size:12.5px;font-weight:600;border-radius:999px;padding:4px 10px;white-space:nowrap;
-}
-.trend.up{color:var(--green-bright);background:oklch(0.72 0.15 150 / 0.14);border:1px solid oklch(0.72 0.15 150 / 0.4)}
-.trend svg{width:13px;height:13px;stroke:currentColor;fill:none}
-.stat-num{
-  font-family:"Boska",Georgia,serif;font-weight:700;letter-spacing:-0.03em;line-height:1;
-  font-size:clamp(2.1rem,4.4vw,2.9rem);color:var(--cream);font-variant-numeric:tabular-nums;
-}
-.stat-label{font-size:13.5px;color:var(--cream-soft);font-weight:500}
-/* most-viewed item variant */
-.stat-item{display:flex;align-items:center;gap:14px;min-width:0}
-.stat-item img{
-  width:60px;height:60px;border-radius:14px;object-fit:cover;flex:none;
-  border:1px solid oklch(0.785 0.14 68 / 0.45);
-}
-.stat-item .si-text{min-width:0}
-.stat-item .si-name{
-  font-family:"Boska",Georgia,serif;font-weight:600;font-size:1.35rem;letter-spacing:-0.02em;
-  color:var(--cream);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.stat-item .si-views{margin-top:3px;font-size:14px;color:var(--saffron);font-weight:600;font-variant-numeric:tabular-nums}
-
-/* ============ CHARTS ============ */
-.charts{
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:clamp(14px,1.8vw,22px);margin-bottom:clamp(18px,2.4vw,26px);
-}
-.chart{
-  display:flex;flex-direction:column;min-width:0;
-  background:var(--surface-2);border:1px solid var(--line-soft);
-  border-radius:24px;padding:clamp(16px,1.9vw,22px);
-}
-.chart.span2{grid-column:1 / -1}
-.chart-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
-.chart-head h2{font-family:"Boska";font-weight:600;font-size:1.22rem;color:var(--cream);letter-spacing:-0.02em}
-.chart-head .ch-sub{font-size:12.5px;color:var(--cream-soft);font-weight:500}
-
-/* views over time (svg) */
-.linechart{width:100%;height:auto;display:block;overflow:visible}
-.linechart .grid-line{stroke:var(--line-soft);stroke-width:1}
-.linechart .axis-label{fill:var(--cream-soft);font-family:"Supreme",sans-serif;font-size:13px;font-weight:500;font-variant-numeric:tabular-nums}
-.linechart .day-label{fill:var(--cream-soft);font-family:"Supreme",sans-serif;font-size:14px;font-weight:600;text-anchor:middle}
-.linechart .area{fill:url(#viewsArea)}
-.linechart .line{fill:none;stroke:var(--saffron);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-.linechart .pt{fill:var(--saffron);stroke:var(--surface-2);stroke-width:3}
-.linechart .pt-peak{fill:var(--surface-2);stroke:var(--saffron);stroke-width:3.5}
-
-/* popular items — horizontal bars */
-.hbars{display:flex;flex-direction:column;gap:13px;min-width:0}
-.hbar{display:grid;grid-template-columns:1fr;gap:6px;min-width:0}
-.hbar-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;min-width:0}
-.hbar-name{font-size:14px;font-weight:500;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.hbar-val{font-size:13.5px;font-weight:600;color:var(--saffron);font-variant-numeric:tabular-nums;flex:none}
-.hbar-track{height:12px;border-radius:999px;background:var(--viz-track);overflow:hidden;min-width:0}
-.hbar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--saffron-deep),var(--saffron))}
-
-/* peak hours — vertical bars */
-.vbars{display:flex;align-items:flex-end;gap:clamp(4px,0.8vw,9px);height:200px;min-width:0}
-.vbar{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1 1 0;min-width:0;height:100%}
-.vbar-col{flex:1;width:100%;display:flex;align-items:flex-end;min-width:0}
-.vbar-fill{
-  width:100%;border-radius:7px 7px 3px 3px;min-width:0;
-  background:linear-gradient(180deg,var(--saffron),var(--saffron-deep));
-}
-.vbar.peak .vbar-fill{background:linear-gradient(180deg,oklch(0.83 0.145 70),var(--saffron))}
-.vbar-lab{font-size:10.5px;font-weight:600;color:var(--cream-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
-
-/* device breakdown — donut */
-.donut-wrap{display:flex;align-items:center;gap:clamp(16px,2.4vw,28px);flex-wrap:wrap}
-.donut{
-  position:relative;width:160px;height:160px;border-radius:50%;flex:none;
-  background:conic-gradient(
-    var(--saffron) 0 68%,
-    var(--viz-muted) 68% 92%,
-    var(--tomato-bright) 92% 100%
+/* ---- Donut chart (device breakdown) ---- */
+/* Segment colours: mobile=secondary(saffron), desktop=accent(saffron-deep), tablet=primary(tomato).
+   All three are brand tokens. --viz-muted (off-palette amber) replaced with --color-accent. */
+.donut-wrap { display: flex; align-items: center; gap: clamp(16px, 2.4vw, 28px); flex-wrap: wrap; }
+.donut {
+  position: relative; width: 160px; height: 160px; border-radius: 50%; flex: none;
+  background: conic-gradient(
+    var(--color-secondary) 0 68%,
+    var(--color-accent)    68% 92%,
+    var(--color-primary)   92% 100%
   );
 }
-.donut::after{
-  content:"";position:absolute;inset:26px;border-radius:50%;
-  background:var(--surface-2);
-}
-.donut-center{
-  position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;z-index:1;text-align:center;
-}
-.donut-center b{font-family:"Boska",Georgia,serif;font-weight:700;font-size:1.55rem;color:var(--cream);letter-spacing:-0.02em;line-height:1;font-variant-numeric:tabular-nums}
-.donut-center span{font-size:11.5px;color:var(--cream-soft);margin-top:3px}
-.legend{display:flex;flex-direction:column;gap:11px;min-width:0;flex:1}
-.legend li{display:flex;align-items:center;gap:10px;list-style:none}
-.legend ul{margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
-.legend .sw{width:13px;height:13px;border-radius:4px;flex:none}
-.legend .sw.mobile{background:var(--saffron)}
-.legend .sw.desktop{background:var(--viz-muted)}
-.legend .sw.tablet{background:var(--tomato-bright)}
-.legend .lg-name{flex:1;font-size:14px;color:var(--cream);min-width:0}
-.legend .lg-pct{font-size:14px;font-weight:600;color:var(--cream);font-variant-numeric:tabular-nums}
+.donut::after { content: ""; position: absolute; inset: 26px; border-radius: 50%; background: var(--color-base-300); }
+.donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; text-align: center; }
+.donut-center b    { font-family: var(--font-display); font-weight: 700; font-size: 1.55rem; color: var(--color-base-content); letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+.donut-center span { font-size: 11.5px; color: var(--color-info); margin-top: 3px; }
+.legend ul { margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+.legend li { display: flex; align-items: center; gap: 10px; list-style: none; }
+.legend .sw         { width: 13px; height: 13px; border-radius: 4px; flex: none; }
+.legend .sw.mobile  { background: var(--color-secondary); }
+.legend .sw.desktop { background: var(--color-accent); }
+.legend .sw.tablet  { background: var(--color-primary); }
 
-/* ============ LOCATION TABLE ============ */
-.loc-card{
-  background:var(--surface);border:1px solid var(--line-soft);
-  border-radius:24px;padding:clamp(16px,1.9vw,24px);min-width:0;overflow-x:auto;
-}
-.loc-card h2{font-family:"Boska";font-weight:600;font-size:1.22rem;color:var(--cream);letter-spacing:-0.02em;margin-bottom:4px}
-.loc-card .ch-sub{font-size:12.5px;color:var(--cream-soft);margin-bottom:16px}
-table.loc{width:100%;border-collapse:collapse;min-width:380px}
-table.loc caption{text-align:left;font-size:0;height:0}
-table.loc th,table.loc td{padding:13px 12px;text-align:left;font-size:14.5px}
-table.loc thead th{
-  font-size:12px;font-weight:600;color:var(--cream-soft);letter-spacing:.02em;
-  border-bottom:1px solid var(--line);padding-bottom:11px;
-}
-table.loc tbody td{border-bottom:1px solid var(--line-soft);color:var(--cream)}
-table.loc tbody tr:last-child td{border-bottom:none}
-table.loc .city{font-weight:600;color:var(--cream)}
-table.loc .country{color:var(--cream-soft)}
-table.loc th.num,table.loc td.num{text-align:right;font-variant-numeric:tabular-nums}
-table.loc td.num{color:var(--saffron);font-weight:600}
-table.loc tbody tr{transition:background .18s var(--ease)}
-table.loc tbody tr:hover td{background:oklch(0.30 0.04 60 / 0.25)}
-
-/* scrim */
-.scrim{
-  position:fixed;inset:0;z-index:55;background:oklch(0.13 0.02 50 / 0.6);
-  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
-  opacity:0;visibility:hidden;transition:opacity .3s var(--ease),visibility .3s var(--ease);
-}
-.scrim.show{opacity:1;visibility:visible}
-
-/* ============ entrance ============ */
-.js .stagger{opacity:0;transform:translateY(20px)}
-.js .stagger.in{opacity:1;transform:none;transition:opacity .55s var(--ease),transform .55s var(--ease)}
-
-/* ============ RESPONSIVE ============ */
-@media (min-width:1100px){
-  .acct-btn .nm{display:inline}
-}
-@media (max-width:980px){
-  .stats{grid-template-columns:1fr}
-}
-@media (max-width:900px){
-  .app{grid-template-columns:minmax(0,1fr)}
-  .main{min-width:0}
-  .sidebar{
-    position:fixed;top:0;left:0;bottom:0;width:min(300px,86vw);
-    transform:translateX(-100%);transition:transform .35s var(--ease);
-    box-shadow:0 18px 50px -20px oklch(0 0 0 / 0.7);
-  }
-  .sidebar.open{transform:translateX(0)}
-  .hamburger{display:inline-flex}
-  .topbar{padding-left:16px;padding-right:16px}
-  .charts{grid-template-columns:1fr}
-  .chart.span2{grid-column:auto}
-}
-@media (max-width:560px){
-  .page{padding-left:16px;padding-right:16px}
-  .page-head{align-items:flex-start}
-  .daterange{width:100%}
-  .range-group{flex:1;justify-content:space-between}
-  .range-group a{flex:1}
-  .vbars{height:170px}
-  .donut-wrap{justify-content:center}
-}
-
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none !important;transition-duration:.01ms !important}
-  .js .stagger{opacity:1 !important;transform:none !important}
-  html{scroll-behavior:auto}
+@media (max-width: 560px) {
+  .vbars { height: 170px; }
+  .donut-wrap { justify-content: center; }
 }
 </style>
 </head>
-<body>
+<body class="min-h-screen bg-base-100 text-base-content">
 
-<div class="app">
+<div class="drawer lg:drawer-open">
+  <input id="app-drawer" type="checkbox" class="drawer-toggle" aria-label="Toggle navigation">
 
-  <!-- ============ SIDEBAR (matches dashboard) ============ -->
-  <aside class="sidebar" id="sidebar" aria-label="Restaurants and account">
-    <a class="sb-brand" href="/index.html" aria-label="Menufic home">Menufic<span class="dot" aria-hidden="true"></span></a>
+  <!-- ===================== CONTENT ===================== -->
+  <div class="drawer-content flex min-h-screen min-w-0 flex-col">
 
-    <nav class="sb-scroll" aria-label="Your restaurants">
-      <div class="sb-section"><span>Restaurants</span><span class="count">3</span></div>
-      <div class="sb-list">
-        <a class="sb-item" href="/app/restaurant.html" aria-current="page">
-          <img class="thumb" src="/assets/img/photo-1432139555190-58524dae6a55.jpg" alt="">
-          <span class="nm">Saffron &amp; Smoke</span>
-          <span class="sb-dot" aria-hidden="true"></span>
-        </a>
-
-        <!-- active restaurant section sub-nav -->
-        <nav class="sb-sub" aria-label="Saffron and Smoke sections">
-          <a class="sb-sublink" href="/app/menu-editor.html">
-            <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Menus
-          </a>
-          <a class="sb-sublink" href="/app/banners.html">
-            <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>Banners
-          </a>
-          <a class="sb-sublink" href="/app/theme.html">
-            <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 1 1 0-20 8 8 0 0 1 0 16h-2a2 2 0 0 0 0 4z"/></svg>Theme
-          </a>
-          <a class="sb-sublink" href="/app/analytics.html" aria-current="page">
-            <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/></svg>Analytics
-          </a>
-          <a class="sb-sublink" href="/app/team.html">
-            <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/></svg>Team
-          </a>
-          <a class="sb-sublink" href="/app/qr.html">
-            <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 21v.01M17 21h.01M21 14v3"/></svg>QR
-          </a>
-        </nav>
-
-        <a class="sb-item" href="/app/restaurant.html">
-          <img class="thumb" src="/assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="">
-          <span class="nm">Bella Trattoria</span>
-          <span class="sb-dot" aria-hidden="true"></span>
-        </a>
-        <a class="sb-item" href="/app/restaurant.html">
-          <img class="thumb" src="/assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="">
-          <span class="nm">Verde Kitchen</span>
-          <span class="sb-dot" aria-hidden="true"></span>
-        </a>
-      </div>
-    </nav>
-
-    <div class="sb-foot">
-      <a class="sb-link" href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        Settings
-      </a>
-      <a class="sb-link" href="/index.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Sign out
-      </a>
-
-      <div class="sb-user">
-        <img src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran">
-        <span class="who">
-          <b>Arun Kajendran</b>
-          <span>a.kajendran@gmail.com</span>
-        </span>
-      </div>
-    </div>
-  </aside>
-
-  <!-- scrim for mobile nav -->
-  <div class="scrim" id="navScrim" hidden></div>
-
-  <!-- ============ MAIN ============ -->
-  <div class="main">
-
-    <header class="topbar">
-      <button class="hamburger" id="hamburger" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">
-        <span aria-hidden="true"></span>
+    <!-- sticky top bar -->
+    <header class="sticky top-0 z-20 flex items-center gap-4 border-b border-base-content/10 bg-base-100/85 px-[clamp(1rem,3vw,2.5rem)] py-3 backdrop-blur-lg">
+      <button id="hamburger" type="button"
+              class="inline-flex size-11 shrink-0 items-center justify-center rounded-xl border border-base-content/20 bg-base-200 text-base-content lg:hidden"
+              aria-label="Open navigation" aria-expanded="false" aria-controls="app-drawer">
+        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
-      <nav class="crumb" aria-label="Breadcrumb">
-        <a href="/app/dashboard.html">My Restaurants</a>
-        <svg class="sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-        <a href="/app/restaurant.html">Saffron &amp; Smoke</a>
-        <svg class="sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-        <span class="here" aria-current="page">Analytics</span>
-      </nav>
-      <span class="topbar-spacer"></span>
 
-      <div class="acct">
-        <button class="acct-btn" id="acctBtn" aria-haspopup="true" aria-expanded="false" aria-controls="acctMenu">
-          <img src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran, account menu">
-          <span class="nm">Arun</span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      <nav class="flex min-w-0 items-center gap-2 text-sm text-base-content/70" aria-label="Breadcrumb">
+        <a class="font-medium transition-colors hover:text-base-content" href="/app/dashboard.html">My Restaurants</a>
+        <svg class="size-[15px] shrink-0 opacity-55" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        <a class="font-medium transition-colors hover:text-base-content" href="/app/restaurant.html">Saffron &amp; Smoke</a>
+        <svg class="size-[15px] shrink-0 opacity-55" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        <span class="truncate font-semibold text-base-content" aria-current="page">Analytics</span>
+      </nav>
+
+      <span class="flex-1"></span>
+
+      <!-- account dropdown (JS-controlled for deterministic aria-expanded) -->
+      <div class="relative shrink-0" id="acct">
+        <button id="acctBtn" type="button"
+                class="group inline-flex h-11 items-center gap-2 rounded-full border border-base-content/10 bg-base-200 py-1 pe-3 ps-1 text-sm font-semibold transition-colors hover:bg-base-300"
+                aria-haspopup="true" aria-expanded="false" aria-controls="acctMenu">
+          <img class="size-9 rounded-full object-cover" src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran, account menu">
+          <span class="hidden min-[1100px]:inline">Arun</span>
+          <svg class="size-4 text-base-content/70 transition-transform duration-200 group-aria-[expanded=true]:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
         </button>
-        <div class="acct-menu" id="acctMenu" role="menu" aria-label="Account">
-          <div class="acct-head">
-            <b>Arun Kajendran</b>
-            <span>a.kajendran@gmail.com</span>
-          </div>
-          <a href="#" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Account</a>
-          <a href="/admin/review.html" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>Admin</a>
-          <a href="#" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a>
-          <a href="/index.html" role="menuitem" class="danger"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</a>
-        </div>
+        <ul id="acctMenu" role="menu" aria-label="Account"
+            class="menu absolute end-0 top-[calc(100%+0.625rem)] z-30 hidden w-56 gap-0.5 rounded-2xl border border-base-content/10 bg-base-200 p-2 shadow-floating">
+          <li class="menu-title px-3 pb-2.5 pt-2 leading-tight">
+            <span class="block text-sm font-semibold text-base-content">Arun Kajendran</span>
+            <span class="mt-0.5 block text-xs font-normal normal-case text-base-content/70">a.kajendran@gmail.com</span>
+          </li>
+          <li><a href="#" role="menuitem"><svg class="size-[17px] text-base-content/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Account</a></li>
+          <li><a href="/admin/review.html" role="menuitem"><svg class="size-[17px] text-base-content/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>Admin</a></li>
+          <li><a href="#" role="menuitem"><svg class="size-[17px] text-base-content/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</a></li>
+          <li><a href="/index.html" role="menuitem" class="hover:text-[var(--color-primary)]"><svg class="size-[17px] text-base-content/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</a></li>
+        </ul>
       </div>
     </header>
 
-    <!-- page -->
-    <main class="page">
+    <!-- ===================== PAGE ===================== -->
+    <main class="w-full max-w-[1320px] px-[clamp(1rem,3vw,2.5rem)] pb-20 pt-[clamp(1.375rem,3.4vw,2.375rem)]">
 
-      <!-- restaurant section tabs -->
+      <!-- per-restaurant section tab strip -->
       <nav class="sectionbar" aria-label="Saffron and Smoke sections">
-        <a href="/app/menu-editor.html"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Menus</a>
-        <a href="/app/banners.html"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>Banners</a>
-        <a href="/app/theme.html"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 1 1 0-20 8 8 0 0 1 0 16h-2a2 2 0 0 0 0 4z"/></svg>Theme</a>
-        <a href="/app/analytics.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/></svg>Analytics</a>
-        <a href="/app/team.html"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/></svg>Team</a>
-        <a href="/app/qr.html"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 21v.01M17 21h.01M21 14v3"/></svg>QR</a>
+        <a href="/app/menu-editor.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Menus
+        </a>
+        <a href="/app/banners.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>Banners
+        </a>
+        <a href="/app/theme.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 1 1 0-20 8 8 0 0 1 0 16h-2a2 2 0 0 0 0 4z"/></svg>Theme
+        </a>
+        <a href="/app/analytics.html" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/></svg>Analytics
+        </a>
+        <a href="/app/team.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/></svg>Team
+        </a>
+        <a href="/app/qr.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 21v.01M17 21h.01M21 14v3"/></svg>QR
+        </a>
       </nav>
 
-      <div class="page-head">
-        <div class="ph-text">
-          <h1 class="stagger" data-delay="0">Analytics</h1>
-          <p class="subtitle stagger" data-delay="0">How guests are finding and reading the Saffron &amp; Smoke menu — views, visitors, top dishes and when they show up.</p>
+      <!-- page head: title + date-range toggle -->
+      <div class="mb-[clamp(1.25rem,2.6vw,1.875rem)] flex flex-wrap items-end justify-between gap-6">
+        <div class="min-w-0">
+          <h1 class="stagger text-[clamp(2rem,4.4vw,3rem)] tracking-[-0.035em]" data-delay="0">Analytics</h1>
+          <p class="stagger mt-2.5 max-w-[54ch] text-pretty text-[clamp(0.98rem,1.4vw,1.08rem)] leading-relaxed text-base-content/70" data-delay="0">How guests are finding and reading the Saffron &amp; Smoke menu — views, visitors, top dishes and when they show up.</p>
         </div>
 
-        <div class="daterange stagger" data-delay="1" role="group" aria-label="Date range">
-          <div class="range-group">
-            <a href="/app/analytics.html?range=today">Today</a>
-            <a href="/app/analytics.html?range=7d" aria-current="true">7 days</a>
-            <a href="/app/analytics.html?range=30d">30 days</a>
+        <!-- date-range segmented control + custom range -->
+        <div class="stagger flex flex-wrap items-center gap-2.5 max-[560px]:w-full" data-delay="1" role="group" aria-label="Date range">
+          <div class="inline-flex items-center gap-[3px] rounded-full border border-base-content/10 bg-base-200 p-1 max-[560px]:flex-1 max-[560px]:justify-between">
+            <a class="inline-flex min-h-[44px] items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-semibold text-base-content/60 transition-colors hover:text-base-content" href="/app/analytics.html?range=today">Today</a>
+            <a class="inline-flex min-h-[44px] items-center justify-center whitespace-nowrap rounded-full bg-secondary px-4 text-sm font-semibold text-secondary-content max-[560px]:flex-1" href="/app/analytics.html?range=7d" aria-current="true">7 days</a>
+            <a class="inline-flex min-h-[44px] items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-semibold text-base-content/60 transition-colors hover:text-base-content" href="/app/analytics.html?range=30d">30 days</a>
           </div>
-          <a class="range-custom" href="/app/analytics.html?range=custom">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <a class="inline-flex min-h-[48px] items-center gap-2 whitespace-nowrap rounded-full border border-base-content/20 bg-transparent px-4 text-sm font-semibold text-base-content transition-[border-color,background-color,transform] duration-300 hover:-translate-y-px hover:border-secondary hover:bg-secondary/7"
+             href="/app/analytics.html?range=custom">
+            <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
             Custom range
           </a>
         </div>
       </div>
 
-      <!-- ===== SUMMARY STAT CARDS ===== -->
-      <section class="stats" aria-label="Summary">
+      <!-- ===== SUMMARY STAT TILES ===== -->
+      <section class="mb-[clamp(18px,2.4vw,26px)] grid grid-cols-[repeat(3,minmax(0,1fr))] gap-[clamp(14px,1.8vw,22px)] max-[980px]:grid-cols-1" aria-label="Summary">
 
-        <article class="stat stagger" data-delay="2">
-          <div class="stat-top">
-            <span class="stat-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <article class="stagger card flex min-w-0 flex-col gap-3 border border-base-content/10 bg-base-200 p-[clamp(18px,2vw,24px)] transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-[3px] hover:border-base-content/20 hover:shadow-floating" data-delay="2">
+          <div class="flex items-center justify-between gap-3">
+            <span class="inline-flex size-11 shrink-0 items-center justify-center rounded-[13px] bg-secondary/[0.14] text-secondary" aria-hidden="true">
+              <svg class="size-[21px]" viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </span>
-            <span class="trend up"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>+12% vs last week</span>
+            <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-success/40 bg-success/15 px-2.5 py-1 text-[12.5px] font-semibold text-success">
+              <svg class="size-[13px]" viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>+12% vs last week
+            </span>
           </div>
-          <div class="stat-num">12,480</div>
-          <div class="stat-label">Total page views</div>
+          <div class="[font-family:var(--font-display)] text-[clamp(2.1rem,4.4vw,2.9rem)] font-bold leading-none tracking-[-0.03em] tabular-nums">12,480</div>
+          <div class="text-[13.5px] font-medium text-base-content/70">Total page views</div>
         </article>
 
-        <article class="stat stagger" data-delay="3">
-          <div class="stat-top">
-            <span class="stat-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/></svg>
+        <article class="stagger card flex min-w-0 flex-col gap-3 border border-base-content/10 bg-base-200 p-[clamp(18px,2vw,24px)] transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-[3px] hover:border-base-content/20 hover:shadow-floating" data-delay="3">
+          <div class="flex items-center justify-between gap-3">
+            <span class="inline-flex size-11 shrink-0 items-center justify-center rounded-[13px] bg-secondary/[0.14] text-secondary" aria-hidden="true">
+              <svg class="size-[21px]" viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/></svg>
             </span>
-            <span class="trend up"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>+8% vs last week</span>
+            <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-success/40 bg-success/15 px-2.5 py-1 text-[12.5px] font-semibold text-success">
+              <svg class="size-[13px]" viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>+8% vs last week
+            </span>
           </div>
-          <div class="stat-num">8,240</div>
-          <div class="stat-label">Unique visitors</div>
+          <div class="[font-family:var(--font-display)] text-[clamp(2.1rem,4.4vw,2.9rem)] font-bold leading-none tracking-[-0.03em] tabular-nums">8,240</div>
+          <div class="text-[13.5px] font-medium text-base-content/70">Unique visitors</div>
         </article>
 
-        <article class="stat stagger" data-delay="4">
-          <div class="stat-top">
-            <span class="stat-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.6 6.6L21 9.2l-5 4.4L17.6 21 12 17.3 6.4 21 8 13.6l-5-4.4 6.4-.6z"/></svg>
+        <!-- most-viewed item tile (bespoke content, same card shell) -->
+        <article class="stagger card flex min-w-0 flex-col gap-3 border border-base-content/10 bg-base-200 p-[clamp(18px,2vw,24px)] transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-[3px] hover:border-base-content/20 hover:shadow-floating" data-delay="4">
+          <div class="flex items-center justify-between gap-3">
+            <span class="inline-flex size-11 shrink-0 items-center justify-center rounded-[13px] bg-secondary/[0.14] text-secondary" aria-hidden="true">
+              <svg class="size-[21px]" viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor"><path d="M12 2l2.6 6.6L21 9.2l-5 4.4L17.6 21 12 17.3 6.4 21 8 13.6l-5-4.4 6.4-.6z"/></svg>
             </span>
-            <span class="stat-label" style="flex:none">Most-viewed item</span>
+            <span class="shrink-0 text-[13.5px] font-medium text-base-content/70">Most-viewed item</span>
           </div>
-          <div class="stat-item">
-            <img src="/assets/img/photo-1432139555190-58524dae6a55.jpg" alt="Smoked short rib, glazed and glistening under warm light">
-            <div class="si-text">
-              <div class="si-name">Smoked short rib</div>
-              <div class="si-views">1,284 views</div>
+          <div class="flex min-w-0 items-center gap-3.5">
+            <img class="size-[60px] shrink-0 rounded-[14px] border border-secondary/45 object-cover" src="/assets/img/photo-1432139555190-58524dae6a55.jpg" alt="Smoked short rib, glazed and glistening under warm light">
+            <div class="min-w-0">
+              <div class="[font-family:var(--font-display)] truncate text-[1.35rem] font-semibold leading-[1.1] tracking-[-0.02em]">Smoked short rib</div>
+              <div class="mt-[3px] tabular-nums text-[14px] font-semibold text-secondary">1,284 views</div>
             </div>
           </div>
         </article>
       </section>
 
       <!-- ===== CHARTS ===== -->
-      <section class="charts" aria-label="Charts">
+      <section class="mb-[clamp(18px,2.4vw,26px)] grid grid-cols-2 gap-[clamp(14px,1.8vw,22px)] max-[900px]:grid-cols-1" aria-label="Charts">
 
-        <!-- Views over time -->
-        <article class="chart span2 stagger" data-delay="5">
-          <div class="chart-head">
-            <h2>Views over time</h2>
-            <span class="ch-sub">Last 7 days · 12,480 total</span>
+        <!-- Views over time — full-width span -->
+        <article class="stagger col-span-2 flex min-w-0 flex-col rounded-[var(--radius-box)] border border-base-content/10 bg-base-300 p-[clamp(16px,1.9vw,22px)] max-[900px]:col-span-1" data-delay="5">
+          <div class="mb-4 flex flex-wrap items-baseline justify-between gap-3">
+            <h2 class="[font-family:var(--font-display)] text-[1.22rem] font-semibold tracking-[-0.02em]">Views over time</h2>
+            <span class="text-[12.5px] font-medium text-base-content/70">Last 7 days · 12,480 total</span>
           </div>
-          <svg class="linechart" viewBox="0 0 720 260" role="img" aria-label="Line chart of daily page views over the last 7 days, ranging from about 1,380 on Saturday to 2,480 on Sunday.">
+          <svg class="linechart block h-auto w-full overflow-visible" viewBox="0 0 720 260" role="img" aria-label="Line chart of daily page views over the last 7 days, ranging from about 1,380 on Saturday to 2,480 on Sunday.">
             <defs>
               <linearGradient id="viewsArea" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="oklch(0.785 0.14 68)" stop-opacity="0.34"/>
-                <stop offset="100%" stop-color="oklch(0.785 0.14 68)" stop-opacity="0"/>
+                <stop offset="0%" stop-color="var(--color-secondary)" stop-opacity="0.34"/>
+                <stop offset="100%" stop-color="var(--color-secondary)" stop-opacity="0"/>
               </linearGradient>
             </defs>
-            <!-- gridlines -->
             <line class="grid-line" x1="44" y1="24"  x2="708" y2="24"/>
             <line class="grid-line" x1="44" y1="117" x2="708" y2="117"/>
             <line class="grid-line" x1="44" y1="210" x2="708" y2="210"/>
-            <!-- y labels -->
             <text class="axis-label" x="36" y="28"  text-anchor="end">2.6k</text>
             <text class="axis-label" x="36" y="121" text-anchor="end">1.3k</text>
             <text class="axis-label" x="36" y="214" text-anchor="end">0</text>
-            <!-- area + line -->
             <path class="area" d="M44,101.3 L154.7,89.8 L265.3,95.5 L376,68.3 L486.7,78.4 L597.3,111.3 L708,32.6 L708,210 L44,210 Z"/>
             <path class="line" d="M44,101.3 L154.7,89.8 L265.3,95.5 L376,68.3 L486.7,78.4 L597.3,111.3 L708,32.6"/>
-            <!-- points -->
             <circle class="pt" cx="44"    cy="101.3" r="4.5"/>
             <circle class="pt" cx="154.7" cy="89.8"  r="4.5"/>
             <circle class="pt" cx="265.3" cy="95.5"  r="4.5"/>
@@ -686,7 +236,6 @@ table.loc tbody tr:hover td{background:oklch(0.30 0.04 60 / 0.25)}
             <circle class="pt" cx="486.7" cy="78.4"  r="4.5"/>
             <circle class="pt" cx="597.3" cy="111.3" r="4.5"/>
             <circle class="pt-peak" cx="708" cy="32.6" r="5.5"/>
-            <!-- day labels -->
             <text class="day-label" x="44"    y="234">Mon</text>
             <text class="day-label" x="154.7" y="234">Tue</text>
             <text class="day-label" x="265.3" y="234">Wed</text>
@@ -697,45 +246,45 @@ table.loc tbody tr:hover td{background:oklch(0.30 0.04 60 / 0.25)}
           </svg>
         </article>
 
-        <!-- Popular items -->
-        <article class="chart stagger" data-delay="6">
-          <div class="chart-head">
-            <h2>Popular items</h2>
-            <span class="ch-sub">By views</span>
+        <!-- Popular items (horizontal bars) -->
+        <article class="stagger flex min-w-0 flex-col rounded-[var(--radius-box)] border border-base-content/10 bg-base-300 p-[clamp(16px,1.9vw,22px)]" data-delay="6">
+          <div class="mb-4 flex flex-wrap items-baseline justify-between gap-3">
+            <h2 class="[font-family:var(--font-display)] text-[1.22rem] font-semibold tracking-[-0.02em]">Popular items</h2>
+            <span class="text-[12.5px] font-medium text-base-content/70">By views</span>
           </div>
-          <div class="hbars">
-            <div class="hbar">
-              <div class="hbar-top"><span class="hbar-name">Smoked short rib</span><span class="hbar-val">1,284</span></div>
+          <div class="flex min-w-0 flex-col gap-[13px]">
+            <div class="grid min-w-0 grid-cols-1 gap-1.5">
+              <div class="flex min-w-0 items-baseline justify-between gap-3"><span class="min-w-0 truncate text-[14px] font-medium">Smoked short rib</span><span class="shrink-0 tabular-nums text-[13.5px] font-semibold text-secondary">1,284</span></div>
               <div class="hbar-track"><div class="hbar-fill" style="width:100%"></div></div>
             </div>
-            <div class="hbar">
-              <div class="hbar-top"><span class="hbar-name">Wood-fired margherita</span><span class="hbar-val">1,042</span></div>
+            <div class="grid min-w-0 grid-cols-1 gap-1.5">
+              <div class="flex min-w-0 items-baseline justify-between gap-3"><span class="min-w-0 truncate text-[14px] font-medium">Wood-fired margherita</span><span class="shrink-0 tabular-nums text-[13.5px] font-semibold text-secondary">1,042</span></div>
               <div class="hbar-track"><div class="hbar-fill" style="width:81.2%"></div></div>
             </div>
-            <div class="hbar">
-              <div class="hbar-top"><span class="hbar-name">Red shrimp broth</span><span class="hbar-val">868</span></div>
+            <div class="grid min-w-0 grid-cols-1 gap-1.5">
+              <div class="flex min-w-0 items-baseline justify-between gap-3"><span class="min-w-0 truncate text-[14px] font-medium">Red shrimp broth</span><span class="shrink-0 tabular-nums text-[13.5px] font-semibold text-secondary">868</span></div>
               <div class="hbar-track"><div class="hbar-fill" style="width:67.6%"></div></div>
             </div>
-            <div class="hbar">
-              <div class="hbar-top"><span class="hbar-name">Saffron prawns</span><span class="hbar-val">712</span></div>
+            <div class="grid min-w-0 grid-cols-1 gap-1.5">
+              <div class="flex min-w-0 items-baseline justify-between gap-3"><span class="min-w-0 truncate text-[14px] font-medium">Saffron prawns</span><span class="shrink-0 tabular-nums text-[13.5px] font-semibold text-secondary">712</span></div>
               <div class="hbar-track"><div class="hbar-fill" style="width:55.5%"></div></div>
             </div>
-            <div class="hbar">
-              <div class="hbar-top"><span class="hbar-name">Charred sharing board</span><span class="hbar-val">596</span></div>
+            <div class="grid min-w-0 grid-cols-1 gap-1.5">
+              <div class="flex min-w-0 items-baseline justify-between gap-3"><span class="min-w-0 truncate text-[14px] font-medium">Charred sharing board</span><span class="shrink-0 tabular-nums text-[13.5px] font-semibold text-secondary">596</span></div>
               <div class="hbar-track"><div class="hbar-fill" style="width:46.4%"></div></div>
             </div>
-            <div class="hbar">
-              <div class="hbar-top"><span class="hbar-name">Burnt-honey carrots</span><span class="hbar-val">432</span></div>
+            <div class="grid min-w-0 grid-cols-1 gap-1.5">
+              <div class="flex min-w-0 items-baseline justify-between gap-3"><span class="min-w-0 truncate text-[14px] font-medium">Burnt-honey carrots</span><span class="shrink-0 tabular-nums text-[13.5px] font-semibold text-secondary">432</span></div>
               <div class="hbar-track"><div class="hbar-fill" style="width:33.6%"></div></div>
             </div>
           </div>
         </article>
 
-        <!-- Peak hours -->
-        <article class="chart stagger" data-delay="7">
-          <div class="chart-head">
-            <h2>Peak hours</h2>
-            <span class="ch-sub">Views by hour of day</span>
+        <!-- Peak hours (vertical bars) -->
+        <article class="stagger flex min-w-0 flex-col rounded-[var(--radius-box)] border border-base-content/10 bg-base-300 p-[clamp(16px,1.9vw,22px)]" data-delay="7">
+          <div class="mb-4 flex flex-wrap items-baseline justify-between gap-3">
+            <h2 class="[font-family:var(--font-display)] text-[1.22rem] font-semibold tracking-[-0.02em]">Peak hours</h2>
+            <span class="text-[12.5px] font-medium text-base-content/70">Views by hour of day</span>
           </div>
           <div class="vbars" role="img" aria-label="Vertical bar chart of views by hour from 11am to 11pm, peaking at 8pm.">
             <div class="vbar"><div class="vbar-col"><div class="vbar-fill" style="height:28%"></div></div><span class="vbar-lab">11a</span></div>
@@ -754,11 +303,11 @@ table.loc tbody tr:hover td{background:oklch(0.30 0.04 60 / 0.25)}
           </div>
         </article>
 
-        <!-- Device breakdown -->
-        <article class="chart stagger" data-delay="8">
-          <div class="chart-head">
-            <h2>Device breakdown</h2>
-            <span class="ch-sub">Share of sessions</span>
+        <!-- Device breakdown (donut) -->
+        <article class="stagger flex min-w-0 flex-col rounded-[var(--radius-box)] border border-base-content/10 bg-base-300 p-[clamp(16px,1.9vw,22px)]" data-delay="8">
+          <div class="mb-4 flex flex-wrap items-baseline justify-between gap-3">
+            <h2 class="[font-family:var(--font-display)] text-[1.22rem] font-semibold tracking-[-0.02em]">Device breakdown</h2>
+            <span class="text-[12.5px] font-medium text-base-content/70">Share of sessions</span>
           </div>
           <div class="donut-wrap">
             <div class="donut" role="img" aria-label="Donut chart: 68% mobile, 24% desktop, 8% tablet.">
@@ -767,11 +316,11 @@ table.loc tbody tr:hover td{background:oklch(0.30 0.04 60 / 0.25)}
                 <span>on mobile</span>
               </div>
             </div>
-            <div class="legend">
+            <div class="legend min-w-0 flex-1">
               <ul>
-                <li><span class="sw mobile" aria-hidden="true"></span><span class="lg-name">Mobile</span><span class="lg-pct">68%</span></li>
-                <li><span class="sw desktop" aria-hidden="true"></span><span class="lg-name">Desktop</span><span class="lg-pct">24%</span></li>
-                <li><span class="sw tablet" aria-hidden="true"></span><span class="lg-name">Tablet</span><span class="lg-pct">8%</span></li>
+                <li><span class="sw mobile" aria-hidden="true"></span><span class="flex-1 min-w-0 text-[14px]">Mobile</span><span class="tabular-nums text-[14px] font-semibold">68%</span></li>
+                <li><span class="sw desktop" aria-hidden="true"></span><span class="flex-1 min-w-0 text-[14px]">Desktop</span><span class="tabular-nums text-[14px] font-semibold">24%</span></li>
+                <li><span class="sw tablet" aria-hidden="true"></span><span class="flex-1 min-w-0 text-[14px]">Tablet</span><span class="tabular-nums text-[14px] font-semibold">8%</span></li>
               </ul>
             </div>
           </div>
@@ -779,30 +328,150 @@ table.loc tbody tr:hover td{background:oklch(0.30 0.04 60 / 0.25)}
       </section>
 
       <!-- ===== LOCATION TABLE ===== -->
-      <section class="loc-card stagger" data-delay="9" aria-labelledby="loc-title">
-        <h2 id="loc-title">Location breakdown</h2>
-        <p class="ch-sub">Where your guests viewed the menu from</p>
-        <table class="loc">
-          <caption>Menu views by city over the last 7 days</caption>
-          <thead>
-            <tr>
-              <th scope="col">City</th>
-              <th scope="col">Country</th>
-              <th scope="col" class="num">Views</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td class="city">London</td><td class="country">United Kingdom</td><td class="num">3,210</td></tr>
-            <tr><td class="city">Manchester</td><td class="country">United Kingdom</td><td class="num">1,980</td></tr>
-            <tr><td class="city">Dublin</td><td class="country">Ireland</td><td class="num">940</td></tr>
-            <tr><td class="city">Birmingham</td><td class="country">United Kingdom</td><td class="num">610</td></tr>
-            <tr><td class="city">Leeds</td><td class="country">United Kingdom</td><td class="num">420</td></tr>
-            <tr><td class="city">Edinburgh</td><td class="country">United Kingdom</td><td class="num">360</td></tr>
-          </tbody>
-        </table>
+      <section class="stagger min-w-0 overflow-x-auto rounded-[var(--radius-box)] border border-base-content/10 bg-base-200 p-[clamp(16px,1.9vw,24px)]" data-delay="9" aria-labelledby="loc-title">
+        <h2 id="loc-title" class="[font-family:var(--font-display)] text-[1.22rem] font-semibold tracking-[-0.02em]">Location breakdown</h2>
+        <p class="mb-4 mt-1 text-[12.5px] text-base-content/70">Where your guests viewed the menu from</p>
+        <div class="overflow-x-auto">
+          <table class="table min-w-[380px]">
+            <caption class="sr-only">Menu views by city over the last 7 days</caption>
+            <thead>
+              <tr>
+                <th class="pb-3 text-xs font-semibold tracking-[0.02em] text-base-content/70">City</th>
+                <th class="pb-3 text-xs font-semibold tracking-[0.02em] text-base-content/70">Country</th>
+                <th class="pb-3 text-right text-xs font-semibold tracking-[0.02em] text-base-content/70">Views</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="transition-colors duration-150 hover:bg-base-300/30"><td class="py-[13px] text-[14.5px] font-semibold">London</td><td class="py-[13px] text-[14.5px] text-base-content/70">United Kingdom</td><td class="py-[13px] text-right tabular-nums text-[14.5px] font-semibold text-secondary">3,210</td></tr>
+              <tr class="transition-colors duration-150 hover:bg-base-300/30"><td class="py-[13px] text-[14.5px] font-semibold">Manchester</td><td class="py-[13px] text-[14.5px] text-base-content/70">United Kingdom</td><td class="py-[13px] text-right tabular-nums text-[14.5px] font-semibold text-secondary">1,980</td></tr>
+              <tr class="transition-colors duration-150 hover:bg-base-300/30"><td class="py-[13px] text-[14.5px] font-semibold">Dublin</td><td class="py-[13px] text-[14.5px] text-base-content/70">Ireland</td><td class="py-[13px] text-right tabular-nums text-[14.5px] font-semibold text-secondary">940</td></tr>
+              <tr class="transition-colors duration-150 hover:bg-base-300/30"><td class="py-[13px] text-[14.5px] font-semibold">Birmingham</td><td class="py-[13px] text-[14.5px] text-base-content/70">United Kingdom</td><td class="py-[13px] text-right tabular-nums text-[14.5px] font-semibold text-secondary">610</td></tr>
+              <tr class="transition-colors duration-150 hover:bg-base-300/30"><td class="py-[13px] text-[14.5px] font-semibold">Leeds</td><td class="py-[13px] text-[14.5px] text-base-content/70">United Kingdom</td><td class="py-[13px] text-right tabular-nums text-[14.5px] font-semibold text-secondary">420</td></tr>
+              <tr><td class="py-[13px] text-[14.5px] font-semibold">Edinburgh</td><td class="py-[13px] text-[14.5px] text-base-content/70">United Kingdom</td><td class="py-[13px] text-right tabular-nums text-[14.5px] font-semibold text-secondary">360</td></tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
     </main>
+  </div>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <div class="drawer-side z-40">
+    <label for="app-drawer" class="drawer-overlay" aria-label="Close navigation"></label>
+    <aside class="flex min-h-screen w-[260px] flex-col border-e border-base-content/10 bg-cocoa-deep px-4 pb-4 pt-5" aria-label="Restaurants and account">
+
+      <a class="mb-4 inline-flex items-center gap-2 px-2 pb-1 pt-1.5 text-2xl font-bold tracking-[-0.04em] text-base-content [font-family:var(--font-display)]" href="/index.html" aria-label="Menufic home">
+        Menufic<span class="-mb-0.5 size-2.5 rounded-full bg-primary" aria-hidden="true"></span>
+      </a>
+
+      <div class="min-h-0 flex-1 overflow-y-auto">
+
+        <!-- restaurants list -->
+        <nav aria-label="Your restaurants">
+          <div class="flex items-center justify-between px-2.5 pb-2 pt-1.5 text-xs font-semibold tracking-wide text-base-content/70">
+            <span>Restaurants</span>
+            <span class="rounded-full border border-base-content/10 bg-base-200 px-2 py-px text-[11px] font-semibold">3</span>
+          </div>
+          <ul class="app-nav menu gap-0.5 p-0">
+            <li>
+              <!-- aria-current="location": active restaurant ancestor, not the current page -->
+              <a href="/app/restaurant.html" aria-current="location" class="gap-2.5 py-1.5">
+                <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover" src="/assets/img/photo-1432139555190-58524dae6a55.jpg" alt="">
+                <span class="min-w-0 flex-1 truncate text-[14.5px]">Saffron &amp; Smoke</span>
+                <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li>
+              <a href="/app/restaurant.html" class="gap-2.5 py-1.5">
+                <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover" src="/assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="">
+                <span class="min-w-0 flex-1 truncate text-[14.5px]">Bella Trattoria</span>
+                <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li>
+              <a href="/app/restaurant.html" class="gap-2.5 py-1.5">
+                <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover" src="/assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="">
+                <span class="min-w-0 flex-1 truncate text-[14.5px]">Verde Kitchen</span>
+                <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="my-2.5 border-t border-base-content/10"></div>
+
+        <!-- per-restaurant section nav -->
+        <nav aria-label="Saffron and Smoke sections">
+          <div class="px-2.5 pb-2 pt-1.5 text-xs font-semibold tracking-wide text-base-content/70">Saffron &amp; Smoke</div>
+          <ul class="app-nav menu gap-0.5 p-0">
+            <li>
+              <a href="/app/menu-editor.html" class="gap-3 py-1.5 text-[14.5px]">
+                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+                Menus
+              </a>
+            </li>
+            <li>
+              <a href="/app/banners.html" class="gap-3 py-1.5 text-[14.5px]">
+                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>
+                Banners
+              </a>
+            </li>
+            <li>
+              <a href="/app/theme.html" class="gap-3 py-1.5 text-[14.5px]">
+                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 1 1 0-20 8 8 0 0 1 0 16h-2a2 2 0 0 0 0 4z"/></svg>
+                Theme
+              </a>
+            </li>
+            <li>
+              <!-- aria-current="page": this is the current page -->
+              <a href="/app/analytics.html" aria-current="page" class="gap-3 py-1.5 text-[14.5px]">
+                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/></svg>
+                Analytics
+              </a>
+            </li>
+            <li>
+              <a href="/app/team.html" class="gap-3 py-1.5 text-[14.5px]">
+                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/></svg>
+                Team
+              </a>
+            </li>
+            <li>
+              <a href="/app/qr.html" class="gap-3 py-1.5 text-[14.5px]">
+                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 21v.01M17 21h.01M21 14v3"/></svg>
+                QR
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+      </div>
+
+      <!-- sidebar footer -->
+      <div class="mt-auto border-t border-base-content/10 pt-3.5">
+        <ul class="menu gap-0.5 p-0">
+          <li>
+            <a href="#" class="gap-3 py-1.5 text-[14.5px]">
+              <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Settings
+            </a>
+          </li>
+          <li>
+            <a href="/index.html" class="gap-3 py-1.5 text-[14.5px]">
+              <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sign out
+            </a>
+          </li>
+        </ul>
+        <div class="mt-2.5 flex items-center gap-2.5 rounded-2xl border border-base-content/10 bg-base-200 px-3 py-2.5">
+          <img class="size-[38px] shrink-0 rounded-full object-cover" src="/assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Arun Kajendran">
+          <span class="min-w-0 flex-1">
+            <b class="block truncate text-[13.5px] font-semibold text-base-content">Arun Kajendran</b>
+            <span class="block truncate text-xs text-base-content/70">a.kajendran@gmail.com</span>
+          </span>
+        </div>
+      </div>
+    </aside>
   </div>
 </div>
 
@@ -810,49 +479,38 @@ table.loc tbody tr:hover td{background:oklch(0.30 0.04 60 / 0.25)}
 (function(){
   "use strict";
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var mqMobile = window.matchMedia("(max-width:1023px)");
 
-  /* ---- Sidebar drawer (mobile) ---- */
-  var sidebar = document.getElementById("sidebar");
+  /* ---- Sidebar drawer (mobile) — daisyUI checkbox drives slide/overlay ---- */
+  var drawer = document.getElementById("app-drawer");
   var burger = document.getElementById("hamburger");
-  var scrim = document.getElementById("navScrim");
-  function openNav(){
-    sidebar.classList.add("open");
-    burger.setAttribute("aria-expanded","true");
-    scrim.hidden = false;
-    requestAnimationFrame(function(){ scrim.classList.add("show"); });
-  }
-  function closeNav(){
-    sidebar.classList.remove("open");
-    burger.setAttribute("aria-expanded","false");
-    scrim.classList.remove("show");
-    setTimeout(function(){ scrim.hidden = true; }, 300);
-  }
-  burger.addEventListener("click", function(){
-    if(sidebar.classList.contains("open")) closeNav(); else openNav();
-  });
-  scrim.addEventListener("click", closeNav);
-  sidebar.addEventListener("click", function(e){
-    if(e.target.closest("a") && window.matchMedia("(max-width:900px)").matches) closeNav();
+  var drawerSide = document.querySelector(".drawer-side");
+  function syncBurger(){ burger.setAttribute("aria-expanded", drawer.checked ? "true" : "false"); }
+  burger.addEventListener("click", function(){ drawer.checked = !drawer.checked; syncBurger(); });
+  drawer.addEventListener("change", syncBurger);
+  drawerSide.addEventListener("click", function(e){
+    if(e.target.closest("a") && mqMobile.matches){ drawer.checked = false; syncBurger(); }
   });
 
   /* ---- Account dropdown ---- */
+  var acct    = document.getElementById("acct");
   var acctBtn = document.getElementById("acctBtn");
   var acctMenu = document.getElementById("acctMenu");
-  function closeAcct(){ acctMenu.classList.remove("open"); acctBtn.setAttribute("aria-expanded","false"); }
+  function closeAcct(){ acctMenu.classList.add("hidden"); acctBtn.setAttribute("aria-expanded","false"); }
   acctBtn.addEventListener("click", function(e){
     e.stopPropagation();
-    var open = acctMenu.classList.toggle("open");
-    acctBtn.setAttribute("aria-expanded", open ? "true":"false");
+    var open = acctMenu.classList.toggle("hidden") === false;
+    acctBtn.setAttribute("aria-expanded", open ? "true" : "false");
   });
   document.addEventListener("click", function(e){
-    if(!acctMenu.contains(e.target) && e.target !== acctBtn) closeAcct();
+    if(!acct.contains(e.target)) closeAcct();
   });
 
   /* ---- Escape closes overlays ---- */
   document.addEventListener("keydown", function(e){
     if(e.key === "Escape"){
       closeAcct();
-      if(sidebar.classList.contains("open")){ closeNav(); burger.focus(); }
+      if(drawer.checked){ drawer.checked = false; syncBurger(); burger.focus(); }
     }
   });
 
