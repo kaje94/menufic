@@ -292,22 +292,32 @@ Declared in the Tailwind `@theme` block so they are available as design-system-l
 | `--shadow-accent-glow-hover` | `0 16px 40px -12px oklch(0.56 0.19 32 / 0.8)` |
 | `--shadow-floating` | `0 18px 40px -22px oklch(0 0 0 / 0.8)` |
 | `--shadow-nav` | `0 8px 30px -18px oklch(0 0 0 / 0.8)` |
+| `--color-cocoa-deep` | `oklch(0.155 0.026 52)` | Deepest well — app sidebar anchor + card/overlay scrims (a step darker than base-100, so it can't map to a base-2xx slot) |
 
 ### 7.4 Custom @layer inventory
 
-A thin `@layer` handles the handful of rules that cannot be expressed as theme variables alone. Every rule below has a reason it cannot be a variable.
+A thin set of explicit rules handles the handful of cases that cannot be expressed as theme variables alone. Every rule below has a reason it cannot be a variable.
+
+**Unlayered (must beat daisyUI's utilities layer)**
+
+> daisyUI v5 emits its component CSS into the `utilities` cascade layer, which outranks `@layer components`. Unlayered author rules sit above all `@layer` rules (CSS Cascade Layers), so brand overrides of daisyUI *components* must be unlayered. New brand classes that don't collide with a daisyUI component (e.g. `.app-nav`, which daisyUI's `menu` has no active-state for) belong in `@layer components`. Base defaults (`body`, headings) stay in `@layer base`.
+
+| Rule | What it does | Why unlayered, not `@layer components` |
+|---|---|---|
+| `.btn` (shape, height, font, transition) | Pill radius (`--radius-pill`), 48px min/height, Supreme 600, 300ms cubic-bezier lift transition | daisyUI's `.btn` CSS is in the `utilities` layer; `@layer components` cannot win — the override must be unlayered |
+| `.btn:hover` | `translateY(-2px)` tactile lift | Hover state for a daisyUI component requires an unlayered rule |
+| `.btn-primary` | Applies `--shadow-accent-glow` | Variant override of a daisyUI component — must be unlayered |
+| `.btn-primary:hover` | Deepens to `--shadow-accent-glow-hover` | Variant hover — same reason |
+| `.btn-ghost` | Transparent, 1px `color-mix` border (22% base-content), cream text; `base-200` warm fill on hover | Ghost semantics diverge from daisyUI's default; unlayered to win over daisyUI's `utilities`-layer definition |
+| `.input, .select` | `height: 48px` | daisyUI ships `.input`/`.select` in the `utilities` layer; height override must be unlayered |
+| `.card` | `box-shadow` transition only | daisyUI ships `.card` in the `utilities` layer; flat-at-rest transition override must be unlayered |
+| `:focus-visible` | 3px saffron (`--color-secondary`) outline, 3px offset, 6px border-radius — `!important`, global, never removed (§5 Buttons) | daisyUI strips or recolours `outline` on individual components; `!important` + unlayered together guarantee the brand focus ring always wins |
 
 **@layer components**
 
 | Rule | What it does | Why the layer, not a var |
 |---|---|---|
-| `.btn` (shape, height, font, transition) | Pill radius (`--radius-pill`), 48px min/height, Supreme 600, 300ms cubic-bezier lift transition | daisyUI buttons default to `--radius-field`; buttons must be pill (999px) while inputs stay at 12px — one radius var cannot serve both |
-| `.btn:hover` | `translateY(-2px)` tactile lift | Motion is a response to state; cannot be a static custom property |
-| `.btn-primary` | Applies `--shadow-accent-glow` | Shadow is applied to a specific variant, not a global default |
-| `.btn-primary:hover` | Deepens to `--shadow-accent-glow-hover` | Hover state requires an explicit rule |
-| `.btn-ghost` | Transparent, 1px `color-mix` border (22% base-content), cream text; `base-200` warm fill on hover | Ghost semantics diverge from daisyUI's default ghost; the border uses a dynamic `color-mix` expression |
-| `.input, .select` | `height: 48px` | Enforces §5 Inputs 48px height; daisyUI's default shell is shorter |
-| `.card` | `box-shadow` transition only | Flat at rest, animated to floating on hover (Tonal-First Rule); the transition must be present even when shadow is zero |
+| `.app-nav[aria-current]` (active link) | Saffron tonal fill (13% secondary), saffron text + dot/thumb border | daisyUI's `menu` component has no active-state styling; this brand class doesn't collide with any daisyUI component definition, so `@layer components` is safe and appropriate |
 
 **@layer utilities**
 
@@ -323,7 +333,6 @@ A thin `@layer` handles the handful of rules that cannot be expressed as theme v
 
 | Rule | What it does |
 |---|---|
-| `:focus-visible` | 3px saffron (`--color-secondary`) outline, 3px offset, 6px border-radius — global, never removed (§5 Buttons) |
 | `body` | `font-family: var(--font-body)` (Supreme) |
 | `h1, h2, h3, h4` | `font-family: var(--font-display)` (Boska) + `text-wrap: balance` |
 
