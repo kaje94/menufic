@@ -18,9 +18,11 @@
    TOKENIZATION: all colours reference daisyUI/Tailwind tokens
    (var(--color-*), var(--radius-box), var(--shadow-floating))
    Pure-black shadow stops are a documented carve-out.
-   --p-* vars are the LIVE CUSTOMIZATION mechanism — JS sets them
-   on #device at runtime. DO NOT rewire to daisyUI vars here;
-   Task 17 will do that once the public menu is migrated.
+   #device carries data-theme="menufic-public" and is customised via
+   INLINE overrides of daisyUI's own vars (--color-primary,
+   --radius-box, --radius-field, --color-base-100/200/content) — the
+   same runtime-theming contract the real public menu uses
+   (DESIGN.md §7.6). See the OWNER THEME PREVIEW ISLAND block below.
    ============================================================ */
 
 /* ---- Studio 2-col layout (page-specific) ---- */
@@ -274,31 +276,30 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* ============================================================
-   OWNER THEME PREVIEW ISLAND — signature component
-   --p-* vars are set by JS on #device at runtime (applyPrimary /
-   applyRadius / applyFont / applyTheme). DO NOT rewire these to
-   daisyUI names — Task 17 will do that after the public menu page
-   is migrated. The owner's warm light look is deliberately
-   separate from the dark Menufic App chrome around it.
+   OWNER THEME PREVIEW ISLAND — signature component (Task 17)
+   #device carries data-theme="menufic-public" so it inherits the
+   REAL public-menu theme (base colours + primary) by default. Live
+   customization overrides those SAME daisyUI vars inline on #device
+   at runtime (applyPrimary / applyRadius / applyFont / applyTheme) —
+   identical mechanism to the production public menu (DESIGN.md §7.6).
+   --menu-muted / --menu-line / --menu-font are page-scoped extras for
+   slots daisyUI has no token for (muted text, hairline borders, the
+   builder's preview-only font swap). The owner's warm light look is
+   deliberately separate from the dark Menufic App chrome around it.
    pure-black shadow stop = documented carve-out.
    ============================================================ */
 .device {
-  --p-bg:      #f6efe2;
-  --p-surface: #fffdf8;
-  --p-primary: #c45a36;
-  --p-text:    #3a2a1d;
-  --p-muted:   #8a7461;
-  --p-line:    #e3d6c2;
-  --p-radius:  14px;
-  --p-font:    "Gambetta", Georgia, serif;
+  --menu-muted: #8a7461;
+  --menu-line:  #e3d6c2;
+  --menu-font:  "Gambetta", Georgia, serif;
 
   width: 100%;
   max-width: 390px;
-  background: var(--p-bg);
-  color: var(--p-text);
+  background: var(--color-base-100);
+  color: var(--color-base-content);
   border-radius: 26px;
   overflow: hidden;
-  border: 1px solid var(--p-line);
+  border: 1px solid var(--menu-line);
   box-shadow: 0 18px 50px -22px oklch(0 0 0 / 0.7);
   font-family: "General Sans", system-ui, sans-serif;
   transition: max-width .4s cubic-bezier(0.16,1,0.3,1);
@@ -321,7 +322,7 @@ input[type="range"]::-moz-range-thumb {
   top: 12px;
   left: 12px;
   z-index: 2;
-  background: var(--p-primary);
+  background: var(--color-primary);
   color: #fff;
   font-size: 11px;
   font-weight: 600;
@@ -331,7 +332,7 @@ input[type="range"]::-moz-range-thumb {
 }
 .dv-head { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 16px 18px; }
 .dv-head h2 {
-  font-family: var(--p-font);
+  font-family: var(--menu-font);
   font-weight: 600;
   color: #fff;
   font-size: clamp(1.5rem, 5vw, 2rem);
@@ -359,16 +360,16 @@ input[type="range"]::-moz-range-thumb {
   font-weight: 600;
   padding: 7px 14px;
   border-radius: 999px;
-  border: 1px solid var(--p-line);
-  background: var(--p-surface);
-  color: var(--p-muted);
+  border: 1px solid var(--menu-line);
+  background: var(--color-base-200);
+  color: var(--menu-muted);
 }
-.dv-tab.active { background: var(--p-primary); color: #fff; border-color: var(--p-primary); }
+.dv-tab.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
 
 .dv-cat {
-  font-family: var(--p-font);
+  font-family: var(--menu-font);
   font-weight: 600;
-  color: var(--p-text);
+  color: var(--color-base-content);
   font-size: 1.18rem;
   letter-spacing: -0.01em;
   display: flex;
@@ -377,25 +378,25 @@ input[type="range"]::-moz-range-thumb {
   margin: 22px 0 12px;
 }
 .dv-cat:first-of-type { margin-top: 0; }
-.dv-cat::after { content: ""; flex: 1; height: 1px; background: var(--p-line); }
+.dv-cat::after { content: ""; flex: 1; height: 1px; background: var(--menu-line); }
 
 .dv-item {
   display: flex;
   gap: 13px;
   align-items: flex-start;
-  background: var(--p-surface);
-  border: 1px solid var(--p-line);
-  border-radius: var(--p-radius);
+  background: var(--color-base-200);
+  border: 1px solid var(--menu-line);
+  border-radius: var(--radius-box);
   padding: 11px;
   margin-bottom: 10px;
 }
 .dv-item img {
   width: 62px;
   height: 62px;
-  border-radius: calc(var(--p-radius) - 4px);
+  border-radius: calc(var(--radius-box) - 4px);
   object-fit: cover;
   flex: none;
-  border: 1px solid var(--p-line);
+  border: 1px solid var(--menu-line);
 }
 .dv-item .it { flex: 1; min-width: 0; }
 .dv-item .it-top {
@@ -405,24 +406,24 @@ input[type="range"]::-moz-range-thumb {
   gap: 10px;
 }
 .dv-item .it-name {
-  font-family: var(--p-font);
+  font-family: var(--menu-font);
   font-weight: 600;
   font-size: 1.02rem;
-  color: var(--p-text);
+  color: var(--color-base-content);
   line-height: 1.2;
 }
 .dv-item .it-price {
   font-family: "General Sans", sans-serif;
   font-weight: 600;
   font-size: 0.96rem;
-  color: var(--p-primary);
+  color: var(--color-primary);
   flex: none;
   font-variant-numeric: tabular-nums;
 }
 .dv-item .it-desc {
   font-family: "General Sans", sans-serif;
   font-size: 12.5px;
-  color: var(--p-muted);
+  color: var(--menu-muted);
   margin-top: 4px;
   line-height: 1.45;
 }
@@ -431,8 +432,8 @@ input[type="range"]::-moz-range-thumb {
   margin-top: 7px;
   font-size: 10.5px;
   font-weight: 600;
-  color: var(--p-primary);
-  background: color-mix(in srgb, var(--p-primary) 12%, transparent);
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
   padding: 3px 9px;
   border-radius: 999px;
 }
@@ -443,11 +444,11 @@ input[type="range"]::-moz-range-thumb {
   font-family: "General Sans", sans-serif;
   text-align: center;
   font-size: 11.5px;
-  color: var(--p-muted);
+  color: var(--menu-muted);
   padding: 18px;
-  border-top: 1px solid var(--p-line);
+  border-top: 1px solid var(--menu-line);
 }
-.dv-foot b { color: var(--p-text); }
+.dv-foot b { color: var(--color-base-content); }
 </style>
 </head>
 <body class="min-h-screen bg-base-100 text-base-content">
@@ -648,7 +649,7 @@ input[type="range"]::-moz-range-thumb {
 
           <!-- Dotted stage — preview device lives here -->
           <div class="preview-stage">
-            <article class="device" id="device" aria-label="Public menu preview for Saffron and Smoke">
+            <article class="device" id="device" data-theme="menufic-public" aria-label="Public menu preview for Saffron and Smoke">
               <div class="dv-cover">
                 <span class="badge">Open · 5–11pm</span>
                 <img src="/assets/img/photo-1432139555190-58524dae6a55.jpg" alt="Charred short rib glistening under warm light at Saffron and Smoke" loading="lazy">
@@ -895,9 +896,12 @@ input[type="range"]::-moz-range-thumb {
   var presetGrid = document.getElementById("presetGrid");
   var swatchRow  = document.getElementById("swatchRow");
 
-  /* Preset definitions — each entry rethemes the OWNER preview via --p-* vars.
-     These vars are set on #device inline; Task 17 will repoint them to daisyUI
-     names once the public menu page is migrated. */
+  /* Preset definitions — each entry rethemes the OWNER preview. applyTheme()
+     writes these values inline on #device as daisyUI's own vars (--color-base-100/
+     200/content, --color-primary, --radius-box/--radius-field, --menu-font) —
+     the identical mechanism the real public menu runtime uses (DESIGN.md §7.6).
+     Key names below (bg/surface/text/primary/muted/line/font/radius) are just
+     this array's own labels; see applyTheme() for the var each one maps to. */
   var presets = [
     {id:"bistro",   name:"Classic Bistro",  bg:"#f6efe2", surface:"#fffdf8", primary:"#c45a36", text:"#3a2a1d", muted:"#8a7461", line:"#e3d6c2", font:'"Gambetta",Georgia,serif',      radius:14},
     {id:"minimal",  name:"Modern Minimal",  bg:"#ffffff", surface:"#fafafa", primary:"#141414", text:"#161616", muted:"#8a8a8a", line:"#e6e6e6", font:'"General Sans",sans-serif',      radius:4},
@@ -910,29 +914,34 @@ input[type="range"]::-moz-range-thumb {
   ];
   var current = presets[0];
 
-  /* --- Core appliers — set --p-* CSS vars on #device --- */
+  /* --- Core appliers — set daisyUI's own vars on #device, inline ---
+     Same runtime-theming contract as the real public menu (DESIGN.md §7.6):
+     --color-primary / --radius-box / --radius-field / font-family are
+     overridden inline on the themed root. --menu-muted / --menu-line /
+     --menu-font are page-scoped extras for slots daisyUI has no token for. */
   function applyPrimary(hex){
-    device.style.setProperty("--p-primary", hex);
+    device.style.setProperty("--color-primary", hex);
     hexRead.textContent = hex.toUpperCase();
     colorIn.value = hex;
     syncSwatch(hex);
   }
   function applyRadius(px){
-    device.style.setProperty("--p-radius", px + "px");
+    device.style.setProperty("--radius-box", px + "px");
+    device.style.setProperty("--radius-field", px + "px");
     radiusRead.textContent = px + "px";
     radius.value = px;
     radius.style.setProperty("--fill", (px/16*100) + "%");
   }
   function applyFont(val){
-    device.style.setProperty("--p-font", val);
+    device.style.setProperty("--menu-font", val);
     fontSel.value = val;
   }
   function applyTheme(p){
-    device.style.setProperty("--p-bg",      p.bg);
-    device.style.setProperty("--p-surface", p.surface);
-    device.style.setProperty("--p-text",    p.text);
-    device.style.setProperty("--p-muted",   p.muted);
-    device.style.setProperty("--p-line",    p.line);
+    device.style.setProperty("--color-base-100",   p.bg);
+    device.style.setProperty("--color-base-200",   p.surface);
+    device.style.setProperty("--color-base-content", p.text);
+    device.style.setProperty("--menu-muted", p.muted);
+    device.style.setProperty("--menu-line",  p.line);
     applyPrimary(p.primary);
     applyRadius(p.radius);
     applyFont(p.font);
@@ -1012,9 +1021,10 @@ input[type="range"]::-moz-range-thumb {
     applyTheme(current);
   });
 
-  /* --- Init state --- */
-  applyRadius(parseInt(radius.value, 10));
-  syncSwatch(colorIn.value);
+  /* --- Init state: apply the default preset so #device's inline overrides
+     match the pressed preset/picker/slider exactly (data-theme alone would
+     show the theme's own default terracotta, a close but distinct hex). --- */
+  applyTheme(current);
 
   /* --- Entrance stagger --- */
   var staggers = Array.prototype.slice.call(document.querySelectorAll(".stagger"));
