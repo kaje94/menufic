@@ -464,8 +464,8 @@ const { crumb, currentRestaurantId } = Astro.props;
 
 Each task follows the **Page Migration Recipe** above. Each ends with: `npm run build` clean, `node scripts/shot.mjs http://localhost:4321/<route> shots/<name>` showing `overflowPx<=0` and `consoleErrors=0` at all three widths, and a visual parity note vs. the source page.
 
-### Task 12: `/` landing (`index.html`, BrandLayout, VideoHero + LiveMenuDevice)
-- [ ] Build `src/pages/index.astro` per recipe; compose `BrandLayout`, `<VideoHero client:visible />`, `<LiveMenuDevice client:visible />`, and the landing sections (features, pricing, etc.) inline from `index.html`. Rewrite CTA links to `/app/signin`, `/app/dashboard`. Verify + commit `feat(design): migrate landing page`.
+### Task 12: `/` landing (`index.html`, BrandLayout, VideoHero — which nests LiveMenuDevice)
+- [ ] Build `src/pages/index.astro` per recipe; compose `BrandLayout`, `<VideoHero client:visible />` (VideoHero already nests LiveMenuDevice per Task 11 — do NOT mount a separate `<LiveMenuDevice>`), and the landing sections (features, pricing, etc.) inline from `index.html`. Rewrite CTA links to `/app/signin`, `/app/dashboard`. NOTE (from Task 11): the interactive hero tab-morph/theme-bubble demo JS was NOT ported into the island — if the landing needs that page-level interactivity for fidelity, port it here as a small client component; otherwise the static hero is acceptable. Verify + commit `feat(design): migrate landing page`.
 
 ### Task 13: `/app/signin` (`app/signin.html`, BrandLayout)
 - [ ] Build `src/pages/app/signin.astro`; compose `BrandLayout` + the auth card inline. Verify + commit `feat(design): migrate signin page`.
@@ -473,8 +473,8 @@ Each task follows the **Page Migration Recipe** above. Each ends with: `npm run 
 ### Task 14: `/app/dashboard` (`app/dashboard.html`, AppShell)
 - [ ] Build `src/pages/app/dashboard.astro`: `<AppShell crumb="My Restaurants">`, `<main>` with page header inline + `restaurants.map(r => <RestaurantCard r={r} />)` + `<EmptyState>` add-card + footer note. Verify + commit `feat(design): migrate dashboard page`.
 
-### Task 15: `/app/restaurant` (`app/restaurant.html`, AppShell, LiveMenuDevice)
-- [ ] Build `src/pages/app/restaurant.astro`: `<AppShell crumb="Saffron & Smoke" currentRestaurantId="saffron-smoke">`, `<SectionBar>` for the per-restaurant tabs, restaurant detail inline, `<LiveMenuDevice client:visible />`. Verify + commit.
+### Task 15: `/app/restaurant` (`app/restaurant.html`, AppShell) — NO device
+- [ ] Build `src/pages/app/restaurant.astro`: `<AppShell crumb="Saffron & Smoke" currentRestaurantId="saffron-smoke">`, `<SectionBar>` for the per-restaurant tabs, restaurant detail inline. NOTE (corrected at Task 11): `restaurant.html` has NO live-menu device — do NOT mount `<LiveMenuDevice>`. Port whatever the source actually contains. Also resolve two-level sidebar `aria-current` here (see ledger Task 9 note: restaurant = `location`, active SectionBar tab = `page`) — pass `currentRestaurantId` so the sidebar tints the restaurant. Verify + commit.
 
 ### Task 16: `/app/menu-editor` (`app/menu-editor.html`, AppShell) — includes the dish row (moved from Task 6)
 - [ ] First extend `Dish` in `src/data/types.ts` with `availability: 'available' | 'soldout' | 'unavailable'`, and set each dish's value from its `data-status` in `menu-editor.html` (re-transcribe faithfully).
