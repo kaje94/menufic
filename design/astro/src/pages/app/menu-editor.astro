@@ -232,7 +232,8 @@ const categories = [
 .menu-row {
   display: flex; align-items: center; gap: 6px; width: 100%;
   padding: 9px 11px; min-height: 48px;
-  background: transparent; border: 1px solid transparent; border-radius: 14px;
+  background: transparent; border: 1px solid transparent;
+  border-radius: 14px; /* source-transcribed carve-out — not a --radius-* token */
   color: var(--color-base-content); text-align: left;
   transition: background .25s var(--ease), border-color .25s var(--ease);
 }
@@ -279,7 +280,7 @@ const categories = [
   width: 100%; min-height: 46px; padding: 0 16px;
   background: transparent;
   border: 1px dashed color-mix(in oklch, var(--color-base-content) 50%, transparent);
-  border-radius: 14px;
+  border-radius: 14px; /* source-transcribed carve-out — not a --radius-* token */
   color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
   font-family: var(--font-body); font-weight: 600; font-size: 13.5px;
   transition: border-color .25s var(--ease), color .25s var(--ease),
@@ -296,7 +297,7 @@ const categories = [
 /* ---- Item edit panel (right slide-in — NOT the app shell drawer) ---- */
 .edit-scrim {
   position: fixed; inset: 0; z-index: 55;
-  background: oklch(0.13 0.02 50 / 0.62);
+  background: oklch(0.13 0.02 50 / 0.62); /* source-transcribed carve-out — matches VideoHero.tsx's tone */
   backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
   opacity: 0; visibility: hidden;
   transition: opacity .3s var(--ease), visibility .3s var(--ease);
