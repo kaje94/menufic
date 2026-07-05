@@ -5,10 +5,16 @@ import type { Restaurant } from '../../data/types';
 // "Saffron & Smoke"). The inline status badge markup is replaced with
 // <StatusBadge> (Task 5). `stagger`/`data-delay` (entrance animation) are
 // list-position concerns owned by the page that maps over restaurants, not by
-// this fixed `({ r }) => ...` signature — omitted here, see task-6-report.md.
-export default function RestaurantCard({ r }: { r: Restaurant }) {
+// this fixed `({ r }) => ...` signature — omitted by default, see
+// task-6-report.md. Task 14 added the optional `delay` prop below so the
+// dashboard page can restore the source's per-card entrance stagger without
+// hardcoding index math inside this component.
+export default function RestaurantCard({ r, delay }: { r: Restaurant; delay?: number }) {
   return (
-    <article className="card group overflow-hidden border border-base-content/10 bg-base-200 transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-base-content/20 hover:shadow-floating focus-within:-translate-y-1 focus-within:shadow-floating">
+    <article
+      className={`card group overflow-hidden border border-base-content/10 bg-base-200 transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-base-content/20 hover:shadow-floating focus-within:-translate-y-1 focus-within:shadow-floating${delay !== undefined ? ' stagger' : ''}`}
+      {...(delay !== undefined ? { 'data-delay': delay } : {})}
+    >
       <figure className="relative aspect-[16/10] overflow-hidden bg-base-300">
         <a className="absolute inset-0 z-[1]" href="/app/restaurant" aria-label={`Open ${r.name}`}></a>
         <img

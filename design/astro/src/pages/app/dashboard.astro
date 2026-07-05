@@ -1,0 +1,55 @@
+---
+import AppShell from '../../layouts/AppShell.astro';
+import RestaurantCard from '../../components/app/RestaurantCard.tsx';
+import { restaurants } from '../../data/restaurants';
+
+// Migrated from design/landing/app/dashboard.html lines ~66-187. The app
+// shell (topbar/sidebar/scripts) is owned by AppShell.astro — only the
+// <main> page content lives here.
+---
+<AppShell crumb="My Restaurants">
+  <main class="w-full max-w-[1240px] px-[clamp(1rem,3vw,2.5rem)] pb-16 pt-[clamp(1.5rem,4vw,2.75rem)]">
+
+    <div class="mb-[clamp(1.5rem,3vw,2.375rem)] flex flex-wrap items-end justify-between gap-6">
+      <div class="min-w-0">
+        <h1 class="stagger text-[clamp(2.1rem,4.4vw,3.1rem)] font-bold tracking-[-0.035em] text-base-content" data-delay="0">My Restaurants</h1>
+        <p class="stagger measure mt-3 text-pretty text-[clamp(1rem,1.5vw,1.12rem)] leading-relaxed text-base-content/70" data-delay="0">Each one is a live, themeable menu. Open a restaurant to edit its dishes, or publish it to share with a link and QR code.</p>
+      </div>
+      <a class="btn btn-primary stagger" data-delay="1" href="#">
+        <svg class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        New restaurant
+      </a>
+    </div>
+
+    <section class="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-[clamp(1.125rem,2.2vw,1.625rem)]" aria-label="Your restaurants">
+
+      {restaurants.map((r, i) => {
+        const cardProps = { key: r.id, r, delay: 2 + i };
+        return <RestaurantCard {...cardProps} />;
+      })}
+
+      {/*
+        Not using <EmptyState>: the source add-card is a single clickable
+        <a> that IS the dashed box (hover/focus-visible lift + border/bg/text
+        transitions live on the anchor itself), whereas EmptyState renders a
+        plain, non-interactive <div> with the same box styling. Wrapping
+        EmptyState's div inside this <a> would double up the
+        border/radius/padding; porting the source verbatim keeps single-
+        element semantics and preserves the interactive states.
+      */}
+      <a class="stagger flex min-h-full flex-col items-center justify-center gap-3.5 rounded-[var(--radius-box)] border border-dashed border-base-content/30 px-6 py-9 text-center text-base-content/70 transition-[transform,border-color,background-color,color] duration-300 hover:-translate-y-1 hover:border-secondary hover:bg-secondary/[0.06] hover:text-base-content focus-visible:-translate-y-1 focus-visible:border-secondary focus-visible:bg-secondary/[0.06] focus-visible:text-base-content" data-delay={2 + restaurants.length} href="#" aria-label="Add a new restaurant">
+        <span class="inline-flex size-[54px] items-center justify-center rounded-2xl border border-dashed border-base-content/30 bg-base-200 text-secondary" aria-hidden="true">
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+        <span class="text-[1.2rem] font-semibold tracking-[-0.02em] text-base-content [font-family:var(--font-display)]">Add new restaurant</span>
+        <span class="max-w-[26ch] text-[13px] leading-snug text-base-content/70">Start a fresh menu — name it, add a few dishes, and publish.</span>
+      </a>
+
+    </section>
+
+    <p class="mt-7 flex items-center gap-2.5 text-[13px] text-base-content/70">
+      <svg class="size-4 shrink-0 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      New owners land here on an empty state with a single prompt to create their first restaurant.
+    </p>
+  </main>
+</AppShell>
