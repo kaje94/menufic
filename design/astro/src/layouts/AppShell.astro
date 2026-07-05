@@ -1,0 +1,29 @@
+---
+import BaseHead from './BaseHead.astro';
+import Topbar from '../components/app/Topbar.tsx';
+import Sidebar from '../components/app/Sidebar.tsx';
+import PageMotion from '../components/PageMotion.tsx';
+import DrawerA11y from '../components/app/DrawerA11y.tsx';
+import { restaurants, owner } from '../data/restaurants';
+import '../styles/app.css';
+interface Props { crumb: string; currentRestaurantId?: string; }
+const { crumb, currentRestaurantId } = Astro.props;
+---
+<html lang="en" data-theme="menufic">
+  <head><BaseHead title={`${crumb} · Menufic`} /></head>
+  <body class="min-h-screen bg-base-100 text-base-content">
+    <div class="drawer lg:drawer-open">
+      <input id="app-drawer" type="checkbox" class="drawer-toggle" aria-label="Toggle navigation" />
+      <div class="drawer-content flex min-h-screen min-w-0 flex-col">
+        <Topbar crumb={crumb} client:load />
+        <slot />
+      </div>
+      <div class="drawer-side z-40">
+        <label for="app-drawer" class="drawer-overlay" aria-label="Close navigation"></label>
+        <Sidebar restaurants={restaurants} owner={owner} currentRestaurantId={currentRestaurantId} />
+      </div>
+    </div>
+    <PageMotion client:idle />
+    <DrawerA11y drawerId="app-drawer" client:idle />
+  </body>
+</html>
