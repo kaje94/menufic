@@ -1,10 +1,23 @@
 ---
-interface Props { title: string; description?: string; }
-const { title, description = 'Menufic — beautiful digital menus.' } = Astro.props;
+// `menuFonts`: opt-in loader for the OWNER-MENU preview typefaces (Gambetta /
+// Sentient / General Sans / Clash Display). These are ONLY selectable inside
+// the theme builder's font control and rendered by the public menu — never
+// the Menufic app chrome (which uses Boska/Supreme, always loaded below).
+// Default off so every existing page is byte-for-byte unaffected. Set true on
+// /app/theme (Task 18) and the public menu (Task 22) so `--menu-font` resolves
+// to a real face instead of the serif/sans fallback. Font families + weights
+// are transcribed verbatim from design/landing/app/theme.html's <head>.
+interface Props { title: string; description?: string; menuFonts?: boolean; }
+const { title, description = 'Menufic — beautiful digital menus.', menuFonts = false } = Astro.props;
 ---
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<!-- Menufic identity fonts (app chrome) — always loaded. -->
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=boska@400,500,700&f[]=supreme@400,500,600,700&display=swap" />
+{/* Owner-menu preview fonts ONLY (selectable inside the theme builder / used by the public menu, never the chrome). */}
+{menuFonts && (
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=gambetta@400,500,600,700&f[]=sentient@400,500,700&f[]=general-sans@400,500,600&f[]=clash-display@400,500,600&display=swap" />
+)}

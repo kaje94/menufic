@@ -1,0 +1,50 @@
+---
+import AppShell from '../../layouts/AppShell.astro';
+import ThemeBuilderPreview from '../../components/islands/ThemeBuilderPreview.tsx';
+
+// Migrated from design/landing/app/theme.html (~1046 lines). The app shell
+// (topbar / sidebar / drawer / account-menu / stagger entrance) is owned by
+// AppShell.astro. The theme-builder studio itself — the 2-col controls panel
+// + the live owner-menu preview device, plus ALL its bespoke CSS and the
+// applyTheme/applyPrimary/applyRadius/applyFont logic — is owned by the
+// ThemeBuilderPreview island (Task 11). This page only ports the surrounding
+// <main> chrome (page header + published pill) and mounts the island where the
+// source's <div class="studio"> lived. The island renders the WHOLE studio
+// (controls + preview), so nothing here duplicates its controls or preview.
+//
+// FONTS (the Task-18 gap): the island's font control offers menu typefaces
+// (Gambetta / Sentient / General Sans / Clash Display) that the Astro app did
+// not load, so --menu-font fell back to Georgia/system. `menuFonts` on AppShell
+// (→ BaseHead) opts this page into the source's owner-menu Fontshare <link>, so
+// the font control now visibly swaps the rendered preview typeface. Default-off
+// prop keeps every other page unaffected; the public menu (Task 22) reuses the
+// SAME switch by setting menuFonts on its layout/BaseHead.
+//
+// The source <main> is left-aligned (w-full max-w-[1320px], NO mx-auto) —
+// matched (same call as menu-editor.astro). The source's inline <script>
+// (drawer / account dropdown / Escape / stagger) is dropped: it duplicates
+// AppShell's own islands. The un-converted applyTheme() studio script is not
+// ported here either — it lives (as React state) inside the island.
+---
+<AppShell crumb="Saffron & Smoke" currentRestaurantId="saffron-smoke" currentSection="/app/theme" menuFonts>
+  <main class="w-full max-w-[1320px] px-[clamp(1rem,3vw,2.5rem)] pb-16 pt-[clamp(1.5rem,4vw,2.75rem)]">
+
+    <!-- Page header -->
+    <div class="mb-[clamp(20px,2.6vw,30px)] flex flex-wrap items-end justify-between gap-6">
+      <div class="min-w-0">
+        <h1 class="stagger text-[clamp(2.1rem,4.4vw,3.1rem)] tracking-[-0.035em]" data-delay="0">Theme</h1>
+        <p class="stagger mt-[10px] max-w-[56ch] text-[clamp(1rem,1.5vw,1.1rem)] leading-[1.5] text-base-content/70 text-pretty" data-delay="0">
+          Style the public menu for <strong class="font-semibold text-base-content">Saffron &amp; Smoke</strong>. Pick a preset, set fonts, colour and corners &mdash; the preview on the right updates live. The controls use Menufic&rsquo;s dark studio; the preview shows your customers&rsquo; warm, light menu.
+        </p>
+      </div>
+      <!-- Published status — herb-green confirm (Two-Accent Rule) -->
+      <span class="stagger inline-flex items-center gap-2 rounded-full border border-success/40 bg-success/15 px-3 py-[5px] text-[12.5px] font-semibold text-success" data-delay="1">
+        <span class="size-2 shrink-0 rounded-full bg-success" aria-hidden="true"></span>
+        Published &amp; live
+      </span>
+    </div>
+
+    <!-- Theme builder studio (island owns controls + preview + bespoke CSS) -->
+    <ThemeBuilderPreview client:visible />
+  </main>
+</AppShell>

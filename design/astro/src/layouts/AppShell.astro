@@ -6,11 +6,11 @@ import PageMotion from '../components/PageMotion.tsx';
 import DrawerA11y from '../components/app/DrawerA11y.tsx';
 import { restaurants, owner } from '../data/restaurants';
 import '../styles/app.css';
-interface Props { crumb: string; currentRestaurantId?: string; currentSection?: string; }
-const { crumb, currentRestaurantId, currentSection } = Astro.props;
+interface Props { crumb: string; currentRestaurantId?: string; currentSection?: string; menuFonts?: boolean; }
+const { crumb, currentRestaurantId, currentSection, menuFonts = false } = Astro.props;
 ---
 <html lang="en" data-theme="menufic">
-  <head><BaseHead title={`${crumb} · Menufic`} /></head>
+  <head><BaseHead title={`${crumb} · Menufic`} menuFonts={menuFonts} /></head>
   <body class="min-h-screen bg-base-100 text-base-content">
     <div class="drawer lg:drawer-open">
       <input id="app-drawer" type="checkbox" class="drawer-toggle" aria-label="Toggle navigation" />
