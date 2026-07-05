@@ -6,8 +6,8 @@ import PageMotion from '../components/PageMotion.tsx';
 import DrawerA11y from '../components/app/DrawerA11y.tsx';
 import { restaurants, owner } from '../data/restaurants';
 import '../styles/app.css';
-interface Props { crumb: string; currentRestaurantId?: string; }
-const { crumb, currentRestaurantId } = Astro.props;
+interface Props { crumb: string; currentRestaurantId?: string; currentSection?: string; }
+const { crumb, currentRestaurantId, currentSection } = Astro.props;
 ---
 <html lang="en" data-theme="menufic">
   <head><BaseHead title={`${crumb} · Menufic`} /></head>
@@ -20,7 +20,7 @@ const { crumb, currentRestaurantId } = Astro.props;
       </div>
       <div class="drawer-side z-40">
         <label for="app-drawer" class="drawer-overlay" aria-label="Close navigation"></label>
-        <Sidebar restaurants={restaurants} owner={owner} currentRestaurantId={currentRestaurantId} />
+        <Sidebar restaurants={restaurants} owner={owner} currentRestaurantId={currentRestaurantId} currentSection={currentSection} />
       </div>
     </div>
     <PageMotion client:idle />
