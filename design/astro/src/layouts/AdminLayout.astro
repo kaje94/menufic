@@ -50,10 +50,20 @@ const isRestaurants = path === '/admin/restaurants';
      admin/restaurants.html). Intentionally utilitarian: near-default
      daisyUI, admin-blue accent (NOT brand saffron), Supreme throughout.
      Unlayered (like app.css's daisyUI overrides) so it reliably wins.
-     All colors reference theme tokens EXCEPT the admin-blue accent below,
-     which the source explicitly calls out as a raw, non-token color
-     ("utilitarian blue — intentionally NOT brand saffron") — i.e. a
-     deliberate exception to the brand palette, kept as-is. */
+     All colors reference theme tokens EXCEPT the admin-only custom
+     properties below, which the source explicitly calls out as raw,
+     non-token colors ("utilitarian blue — intentionally NOT brand
+     saffron") — i.e. a deliberate exception to the brand palette, kept
+     as-is. */
+
+  /* Deliberate off-brand utilitarian Admin palette — source-faithful.
+     Intentionally NOT the saffron brand system; kept local, NOT tokenized
+     into app.css so the shared brand palette stays clean. */
+  body {
+    --admin-accent: oklch(0.63 0.18 230); /* wordmark dot + active tab underline */
+    --admin-chip-bg: oklch(0.3 0.09 240); /* userchip avatar background */
+    --admin-chip-ink: oklch(0.87 0.06 240); /* userchip avatar text */
+  }
 
   /* Headings use body font on the whole Admin surface (utility portal, not
      a display surface) — beats the global `@layer base { h1-h4 {...} }`
@@ -94,7 +104,7 @@ const isRestaurants = path === '/admin/restaurants';
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: oklch(0.63 0.18 230);
+    background: var(--admin-accent);
   }
   .wordmark .tag {
     font-size: 10px;
@@ -125,8 +135,8 @@ const isRestaurants = path === '/admin/restaurants';
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    background: oklch(0.3 0.09 240);
-    color: oklch(0.87 0.06 240);
+    background: var(--admin-chip-bg);
+    color: var(--admin-chip-ink);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -182,13 +192,16 @@ const isRestaurants = path === '/admin/restaurants';
   /* Active tab: admin-blue underline — utilitarian, not brand saffron */
   .tab[aria-current='page'] {
     color: var(--color-base-content);
-    border-bottom-color: oklch(0.63 0.18 230);
+    border-bottom-color: var(--admin-accent);
   }
 
   @media (max-width: 520px) {
     .topbar {
       height: auto;
       padding: 10px 12px;
+    }
+    :global(main) {
+      padding: 16px 12px 56px;
     }
   }
 </style>
