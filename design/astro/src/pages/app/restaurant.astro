@@ -1,0 +1,166 @@
+---
+import AppShell from '../../layouts/AppShell.astro';
+import StatusBadge from '../../components/app/StatusBadge.tsx';
+import { restaurants } from '../../data/restaurants';
+
+// Migrated from design/landing/app/restaurant.html lines ~96-237. The app
+// shell (topbar/sidebar/scripts) is owned by AppShell.astro — only the
+// <main> page content lives here.
+//
+// This prototype only ever shows one restaurant hub, so the record is
+// looked up once here (rather than duplicating its fields as literals).
+//
+// NOTE: the source has NO live-menu device (grep-confirmed at Task 11 —
+// only the `rhero-cover` photo) and NO per-restaurant tab strip / nested
+// sub-nav inside <main> (the old Tailwind migration's Task 7 called this
+// same "tabs" assumption a red herring). Its "sections" are a bespoke
+// 6-card action grid, ported inline verbatim below — SectionBar/SubNav
+// model nav *links*, not this page's clickable content tiles, so neither
+// is used here.
+const restaurant = restaurants.find((r) => r.id === 'saffron-smoke')!;
+---
+<AppShell crumb="Saffron & Smoke" currentRestaurantId="saffron-smoke">
+  <main class="w-full max-w-[1240px] px-[clamp(1rem,3vw,2.5rem)] pb-16 pt-[clamp(1.5rem,4vw,2.75rem)]">
+
+    <!-- Restaurant hero -->
+    <section class="stagger group/rhero mb-[clamp(1.625rem,3vw,2.5rem)] overflow-hidden rounded-[var(--radius-box)] border border-base-content/12 bg-base-200"
+             data-delay="0" aria-label="Saffron and Smoke overview">
+
+      <!-- Cover image + gradient overlay (Tailwind gradient div, matching the
+           RestaurantCard/PublicLayout idiom, in place of the source's
+           `.rhero-cover::after` bespoke pseudo-element) -->
+      <div class="relative aspect-[32/9] min-h-[170px] overflow-hidden bg-base-300 max-[560px]:aspect-video">
+        <img class="h-full w-full object-cover" src={restaurant.image}
+             alt="Charred short rib glistening under warm light — the signature plate at Saffron and Smoke">
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-cocoa-deep/10 to-cocoa-deep/55" aria-hidden="true"></div>
+        <!-- Reveals on parent hover / focus-within via group utilities -->
+        <button type="button"
+                class="absolute end-3.5 top-3.5 z-10 inline-flex min-h-[44px] -translate-y-1 items-center gap-2 rounded-full border border-base-content/30 bg-cocoa-deep/70 px-[15px] text-[13.5px] font-semibold text-base-content opacity-0 backdrop-blur-[6px] transition-[opacity,transform,border-color,color] duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-secondary hover:text-secondary group-hover/rhero:translate-y-0 group-hover/rhero:opacity-100 group-focus-within/rhero:translate-y-0 group-focus-within/rhero:opacity-100">
+          <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+          Edit cover
+        </button>
+      </div>
+
+      <!-- Hero body -->
+      <div class="flex flex-wrap items-end justify-between gap-6 p-[clamp(1.25rem,2.6vw,1.875rem)] max-[560px]:items-start">
+        <div class="flex min-w-0 flex-col gap-2.5">
+          <!-- Published status (static — no publish/unpublish wiring, prototype "dead" action) -->
+          <StatusBadge status={restaurant.status} />
+          <h1 class="text-[clamp(2rem,4.2vw,2.85rem)] tracking-[-0.035em]">{restaurant.name}</h1>
+          <p class="flex items-center gap-2 text-[clamp(0.98rem,1.4vw,1.08rem)] text-base-content/70">
+            <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            {restaurant.cuisine} · {restaurant.location}
+          </p>
+          <span class="inline-flex items-center gap-2 text-[13.5px] text-base-content/70">
+            <svg class="size-[15px] shrink-0 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <b class="font-semibold text-base-content">menufic.com/r/{restaurant.id}</b>
+          </span>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 max-[560px]:w-full">
+          <a class="btn btn-ghost max-[560px]:flex-1" href="/public">
+            <svg class="size-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            View public menu
+          </a>
+          <button class="btn btn-ghost max-[560px]:flex-1" type="button">
+            <svg class="size-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+            Unpublish
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section heading -->
+    <h2 class="stagger mb-1.5 text-[1.35rem] tracking-[-0.02em]" data-delay="1">Manage this restaurant</h2>
+    <p class="stagger mb-[clamp(1.125rem,2.2vw,1.5rem)] text-[14.5px] text-base-content/70" data-delay="1">Everything diners see — and everything you measure — in one place.</p>
+
+    <!-- Action card grid -->
+    <section class="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-[clamp(1rem,2vw,1.375rem)]"
+             aria-label="Restaurant management tools">
+
+      <a class="stagger group/acard flex min-w-0 flex-col gap-3.5 rounded-[20px] border border-base-content/12 bg-base-200 p-[22px] transition-[transform,box-shadow,border-color] duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-base-content/25 hover:shadow-floating focus-visible:-translate-y-1 focus-visible:shadow-floating"
+         data-delay="2" href="/app/menu-editor">
+        <span class="inline-flex size-[50px] shrink-0 items-center justify-center rounded-[14px] border border-secondary/28 bg-secondary/13 text-secondary transition-[background-color,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/acard:border-secondary/50 group-hover/acard:bg-secondary/20" aria-hidden="true">
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/><circle cx="19" cy="17" r="2"/></svg>
+        </span>
+        <div class="flex min-w-0 flex-col gap-1.5">
+          <h3 class="flex items-center gap-2.5 text-[1.28rem] font-semibold leading-[1.15] tracking-[-0.02em]">
+            Menus
+            <svg class="size-[17px] shrink-0 -translate-x-1 text-secondary opacity-0 transition-[opacity,transform] duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/acard:translate-x-0 group-hover/acard:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </h3>
+          <p class="text-[14px] leading-[1.45] text-base-content/70">Create and organize your menus.</p>
+        </div>
+      </a>
+
+      <a class="stagger group/acard flex min-w-0 flex-col gap-3.5 rounded-[20px] border border-base-content/12 bg-base-200 p-[22px] transition-[transform,box-shadow,border-color] duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-base-content/25 hover:shadow-floating focus-visible:-translate-y-1 focus-visible:shadow-floating"
+         data-delay="2" href="/app/banners">
+        <span class="inline-flex size-[50px] shrink-0 items-center justify-center rounded-[14px] border border-secondary/28 bg-secondary/13 text-secondary transition-[background-color,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/acard:border-secondary/50 group-hover/acard:bg-secondary/20" aria-hidden="true">
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.6"/><path d="m21 16-5-5-9 9"/></svg>
+        </span>
+        <div class="flex min-w-0 flex-col gap-1.5">
+          <h3 class="flex items-center gap-2.5 text-[1.28rem] font-semibold leading-[1.15] tracking-[-0.02em]">
+            Banners
+            <svg class="size-[17px] shrink-0 -translate-x-1 text-secondary opacity-0 transition-[opacity,transform] duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/acard:translate-x-0 group-hover/acard:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </h3>
+          <p class="text-[14px] leading-[1.45] text-base-content/70">Manage your carousel images.</p>
+        </div>
+      </a>
+
+      <a class="stagger group/acard flex min-w-0 flex-col gap-3.5 rounded-[20px] border border-base-content/12 bg-base-200 p-[22px] transition-[transform,box-shadow,border-color] duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-base-content/25 hover:shadow-floating focus-visible:-translate-y-1 focus-visible:shadow-floating"
+         data-delay="3" href="/app/theme">
+        <span class="inline-flex size-[50px] shrink-0 items-center justify-center rounded-[14px] border border-secondary/28 bg-secondary/13 text-secondary transition-[background-color,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/acard:border-secondary/50 group-hover/acard:bg-secondary/20" aria-hidden="true">
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.2"/><circle cx="17.5" cy="10.5" r="2.2"/><circle cx="8.5" cy="7.5" r="2.2"/><circle cx="6.5" cy="12.5" r="2.2"/><path d="M12 22a10 10 0 1 1 0-20 8 8 0 0 1 8 8c0 4-4 4-4 7a3 3 0 0 1-4 5z"/></svg>
+        </span>
+        <div class="flex min-w-0 flex-col gap-1.5">
+          <h3 class="flex items-center gap-2.5 text-[1.28rem] font-semibold leading-[1.15] tracking-[-0.02em]">
+            Theme
+            <svg class="size-[17px] shrink-0 -translate-x-1 text-secondary opacity-0 transition-[opacity,transform] duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/acard:translate-x-0 group-hover/acard:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </h3>
+          <p class="text-[14px] leading-[1.45] text-base-content/70">Customize your menu's look.</p>
+        </div>
+      </a>
+
+      <a class="stagger group/acard flex min-w-0 flex-col gap-3.5 rounded-[20px] border border-base-content/12 bg-base-200 p-[22px] transition-[transform,box-shadow,border-color] duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-base-content/25 hover:shadow-floating focus-visible:-translate-y-1 focus-visible:shadow-floating"
+         data-delay="3" href="/app/analytics">
+        <span class="inline-flex size-[50px] shrink-0 items-center justify-center rounded-[14px] border border-secondary/28 bg-secondary/13 text-secondary transition-[background-color,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/acard:border-secondary/50 group-hover/acard:bg-secondary/20" aria-hidden="true">
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg>
+        </span>
+        <div class="flex min-w-0 flex-col gap-1.5">
+          <h3 class="flex items-center gap-2.5 text-[1.28rem] font-semibold leading-[1.15] tracking-[-0.02em]">
+            Analytics
+            <svg class="size-[17px] shrink-0 -translate-x-1 text-secondary opacity-0 transition-[opacity,transform] duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/acard:translate-x-0 group-hover/acard:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </h3>
+          <p class="text-[14px] leading-[1.45] text-base-content/70">See who's viewing your menu.</p>
+        </div>
+      </a>
+
+      <a class="stagger group/acard flex min-w-0 flex-col gap-3.5 rounded-[20px] border border-base-content/12 bg-base-200 p-[22px] transition-[transform,box-shadow,border-color] duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-base-content/25 hover:shadow-floating focus-visible:-translate-y-1 focus-visible:shadow-floating"
+         data-delay="4" href="/app/team">
+        <span class="inline-flex size-[50px] shrink-0 items-center justify-center rounded-[14px] border border-secondary/28 bg-secondary/13 text-secondary transition-[background-color,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/acard:border-secondary/50 group-hover/acard:bg-secondary/20" aria-hidden="true">
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+        <div class="flex min-w-0 flex-col gap-1.5">
+          <h3 class="flex items-center gap-2.5 text-[1.28rem] font-semibold leading-[1.15] tracking-[-0.02em]">
+            Team
+            <svg class="size-[17px] shrink-0 -translate-x-1 text-secondary opacity-0 transition-[opacity,transform] duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/acard:translate-x-0 group-hover/acard:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </h3>
+          <p class="text-[14px] leading-[1.45] text-base-content/70">Manage members and roles.</p>
+        </div>
+      </a>
+
+      <a class="stagger group/acard flex min-w-0 flex-col gap-3.5 rounded-[20px] border border-base-content/12 bg-base-200 p-[22px] transition-[transform,box-shadow,border-color] duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-base-content/25 hover:shadow-floating focus-visible:-translate-y-1 focus-visible:shadow-floating"
+         data-delay="4" href="/app/qr">
+        <span class="inline-flex size-[50px] shrink-0 items-center justify-center rounded-[14px] border border-secondary/28 bg-secondary/13 text-secondary transition-[background-color,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/acard:border-secondary/50 group-hover/acard:bg-secondary/20" aria-hidden="true">
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 21v.01M17 21v-3M21 14v3"/></svg>
+        </span>
+        <div class="flex min-w-0 flex-col gap-1.5">
+          <h3 class="flex items-center gap-2.5 text-[1.28rem] font-semibold leading-[1.15] tracking-[-0.02em]">
+            QR code
+            <svg class="size-[17px] shrink-0 -translate-x-1 text-secondary opacity-0 transition-[opacity,transform] duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/acard:translate-x-0 group-hover/acard:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </h3>
+          <p class="text-[14px] leading-[1.45] text-base-content/70">Download and share your QR.</p>
+        </div>
+      </a>
+
+    </section>
+  </main>
+</AppShell>
