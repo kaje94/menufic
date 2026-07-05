@@ -1,0 +1,179 @@
+@import "tailwindcss";
+@source "../**/*.{astro,tsx,ts}";
+@plugin "daisyui";
+
+/* ---- menufic (Brand + App + Admin): warm cocoa dark ---- */
+@plugin "daisyui/theme" {
+  name: "menufic";
+  default: true;
+  prefersdark: true;
+  color-scheme: dark;
+
+  --color-base-100: oklch(0.18 0.03 45);    /* cocoa-bg */
+  --color-base-200: oklch(0.235 0.034 46);  /* surface */
+  --color-base-300: oklch(0.295 0.04 48);   /* surface-2 */
+  --color-base-content: oklch(0.96 0.015 78); /* cream */
+
+  --color-primary: oklch(0.56 0.19 32);     /* tomato — ACT */
+  --color-primary-content: oklch(1 0 0);    /* white */
+  --color-secondary: oklch(0.785 0.14 68);  /* saffron — ATTENTION */
+  --color-secondary-content: oklch(0.155 0.026 52); /* cocoa-deep */
+  --color-accent: oklch(0.72 0.14 70);      /* saffron-deep */
+  --color-accent-content: oklch(0.155 0.026 52);
+  --color-neutral: oklch(0.295 0.04 48);    /* surface-2 */
+  --color-neutral-content: oklch(0.96 0.015 78);
+
+  --color-info: oklch(0.83 0.022 78);       /* cream-soft */
+  --color-info-content: oklch(0.155 0.026 52);
+  --color-success: oklch(0.72 0.15 150);    /* herb-green — CONFIRM */
+  --color-success-content: oklch(0.155 0.026 52);
+  --color-warning: oklch(0.785 0.14 68);    /* saffron */
+  --color-warning-content: oklch(0.155 0.026 52);
+  --color-error: oklch(0.50 0.17 25);       /* danger-red (functional state, NOT tomato) */
+  --color-error-content: oklch(0.96 0.015 78);
+
+  --radius-selector: 999px;  /* pills: badges, chips */
+  --radius-field: 12px;      /* inputs/selects (DESIGN.md sm) */
+  --radius-box: 24px;        /* cards/panels (DESIGN.md lg) */
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* ---- menufic-public (diner Public menu): owner's LIGHT default ----
+   Runtime: theme builder overrides --color-primary / --radius-box /
+   --radius-field / font-family INLINE on the menu root. */
+@plugin "daisyui/theme" {
+  name: "menufic-public";
+  color-scheme: light;
+
+  --color-base-100: oklch(0.97 0.01 78);    /* warm light bg (NOT pure white) */
+  --color-base-200: oklch(0.94 0.012 78);
+  --color-base-300: oklch(0.90 0.014 78);
+  --color-base-content: oklch(0.25 0.02 40);
+
+  --color-primary: oklch(0.55 0.16 35);     /* terracotta default; owner-overridable */
+  --color-primary-content: oklch(0.98 0.01 78);
+  --color-secondary: oklch(0.72 0.14 70);
+  --color-secondary-content: oklch(0.20 0.02 40);
+  --color-success: oklch(0.62 0.15 150);
+  --color-success-content: oklch(0.98 0.01 78);
+
+  --radius-selector: 999px;
+  --radius-field: 12px;
+  --radius-box: 18px;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* ---- Tailwind tokens (fonts, pill radius, the Shadow Vocabulary) ---- */
+@theme {
+  --font-display: "Boska", Georgia, serif;
+  --font-body: "Supreme", system-ui, sans-serif;
+  --radius-pill: 999px;
+  --shadow-accent-glow: 0 10px 30px -10px oklch(0.56 0.19 32 / 0.7);
+  --shadow-accent-glow-hover: 0 16px 40px -12px oklch(0.56 0.19 32 / 0.8);
+  --shadow-floating: 0 18px 40px -22px oklch(0 0 0 / 0.8);
+  --shadow-nav: 0 8px 30px -18px oklch(0 0 0 / 0.8);
+  /* Cocoa-deep: the deepest well — footers + the app sidebar anchor.
+     A step DARKER than base-100, so it can't map to a base-2xx slot (those go lighter). */
+  --color-cocoa-deep: oklch(0.155 0.026 52);
+}
+
+/* ── daisyUI component overrides — MUST stay UNLAYERED ──────────────────
+   daisyUI v5 emits its component CSS into the `utilities` cascade layer,
+   which outranks Tailwind's `components` layer. So brand overrides for
+   daisyUI *components* live unlayered, where they reliably win (e.g. pill
+   buttons beat daisyUI's 12px radius-field default; the 48px input shell
+   beats daisyUI's shorter one). Per-instance Tailwind utilities still
+   override these by source order — verified on this page. */
+
+/* Buttons: pill + tactile lift (DESIGN.md §5 Buttons) */
+.btn {
+  border-radius: var(--radius-pill);
+  min-height: 48px;
+  height: 48px;
+  padding-inline: 24px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), background-color 300ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1), border-color 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { box-shadow: var(--shadow-accent-glow); }
+.btn-primary:hover { box-shadow: var(--shadow-accent-glow-hover); }
+
+/* Ghost: transparent, 1px line border, cream text, warm fill on hover */
+.btn-ghost {
+  background: transparent;
+  color: var(--color-base-content);
+  border: 1px solid color-mix(in oklch, var(--color-base-content) 22%, transparent);
+}
+.btn-ghost:hover { background: var(--color-base-200); }
+
+/* Inputs/selects: 48px shell (DESIGN.md §5 Inputs) */
+.input, .select { height: 48px; }
+
+/* Cards float only on lift (Tonal-First) */
+.card { transition: box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Global saffron focus ring — never removed (DESIGN.md §5).
+   `!important` is deliberate: daisyUI tints each component's outline to its
+   own colour (e.g. `.btn { outline-color: var(--btn-color) }`) and strips the
+   outline entirely on menu/tab/toggle parts. The brand ring must win over all
+   of them so every focusable shows the same saffron ring. */
+:focus-visible {
+  outline: 3px solid var(--color-secondary) !important;
+  outline-offset: 3px !important;
+  border-radius: 6px;
+}
+
+@layer utilities {
+  .shadow-floating { box-shadow: var(--shadow-floating); }
+  .shadow-nav { box-shadow: var(--shadow-nav); }
+  .measure { max-width: 70ch; }       /* body 65–75ch */
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+}
+
+@layer base {
+  /* Display headings default to Boska; body to Supreme */
+  body { font-family: var(--font-body); }
+  h1, h2, h3, h4 { font-family: var(--font-display); text-wrap: balance; }
+}
+
+@layer utilities {
+  /* Entrance stagger — JS adds `.in` in delay order (reused by App pages).
+     Gated on `.js` so a no-JS / failed-JS load still shows everything. */
+  .js .stagger { opacity: 0; transform: translateY(22px); }
+  .js .stagger.in {
+    opacity: 1;
+    transform: none;
+    transition: opacity 550ms cubic-bezier(0.16, 1, 0.3, 1),
+                transform 550ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Reveal-on-scroll — JS IntersectionObserver adds `.in` when the element
+     enters the viewport (Brand landing sections). Same `.js` no-JS guard as
+     `.stagger`; a longer, single-element reveal rather than a load-time stagger. */
+  .js .reveal { opacity: 0; transform: translateY(30px); }
+  .js .reveal.in {
+    opacity: 1;
+    transform: none;
+    transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+                transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/* Motion is opt-out everywhere (DESIGN.md §6 / WCAG): damp transitions,
+   keep all content visible, never animate the reveal. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js .stagger { opacity: 1 !important; transform: none !important; }
+  .js .reveal { opacity: 1 !important; transform: none !important; }
+}

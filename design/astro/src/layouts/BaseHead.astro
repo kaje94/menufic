@@ -1,0 +1,10 @@
+---
+interface Props { title: string; description?: string; }
+const { title, description = 'Menufic — beautiful digital menus.' } = Astro.props;
+---
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=boska@400,500,700&f[]=supreme@400,500,600,700&display=swap" />
