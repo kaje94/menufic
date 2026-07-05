@@ -296,20 +296,21 @@ const MAP = {
 
 ---
 
-### Task 6: Domain cards — `RestaurantCard`, `DishCard`
+### Task 6: Domain card — `RestaurantCard`
+
+> **Re-scoped during execution:** originally `RestaurantCard` + `DishCard`. `DishCard` was dropped — the menu-editor dish row is an interactive island (drag grip, availability segmented control, ~40 bespoke CSS rules) used only on the menu-editor page, i.e. a single-file island, not a reusable domain card. It moves to **Task 16**, which also extends `Dish` with an `availability: 'available' | 'soldout' | 'unavailable'` field. `RestaurantCard` (pure daisyUI + Tailwind + `StatusBadge`) is the only deliverable here.
 
 **Files:**
-- Create: `design/astro/src/components/app/RestaurantCard.tsx`, `DishCard.tsx`
+- Create: `design/astro/src/components/app/RestaurantCard.tsx`
 
 **Interfaces:**
-- Consumes: `Restaurant`, `Dish` (Task 3); `StatusBadge` (Task 5).
+- Consumes: `Restaurant` (Task 3); `StatusBadge` (Task 5).
 - Produces:
   - `RestaurantCard`: `({ r }: { r: Restaurant })` → the full card from `dashboard.html` lines ~83–110 (figure + hover edit/delete buttons + card-body + `StatusBadge`). Edit hover uses `hover:border-secondary hover:text-secondary`; delete uses `hover:border-error hover:text-error`.
-  - `DishCard`: `({ d }: { d: Dish })` → dish row/card from `menu-editor.html`.
 
-- [ ] **Step 1: Write both**, mapping props into the verbatim markup; replace the inline badge with `<StatusBadge status={r.status} />`.
+- [ ] **Step 1: Write it**, mapping props into the verbatim markup; replace the inline badge with `<StatusBadge status={r.status} />`.
 
-- [ ] **Step 2: Verify** `npx astro check` clean. Commit `feat(design): RestaurantCard + DishCard`.
+- [ ] **Step 2: Verify** `npx astro check` clean. Commit `feat(design): RestaurantCard`.
 
 ---
 
@@ -475,8 +476,10 @@ Each task follows the **Page Migration Recipe** above. Each ends with: `npm run 
 ### Task 15: `/app/restaurant` (`app/restaurant.html`, AppShell, LiveMenuDevice)
 - [ ] Build `src/pages/app/restaurant.astro`: `<AppShell crumb="Saffron & Smoke" currentRestaurantId="saffron-smoke">`, `<SectionBar>` for the per-restaurant tabs, restaurant detail inline, `<LiveMenuDevice client:visible />`. Verify + commit.
 
-### Task 16: `/app/menu-editor` (`app/menu-editor.html`, AppShell)
-- [ ] Build page: `<AppShell>` + `<SectionBar>` + `dishes.map(d => <DishCard d={d} />)` + editor panels inline. Verify + commit.
+### Task 16: `/app/menu-editor` (`app/menu-editor.html`, AppShell) — includes the dish row (moved from Task 6)
+- [ ] First extend `Dish` in `src/data/types.ts` with `availability: 'available' | 'soldout' | 'unavailable'`, and set each dish's value from its `data-status` in `menu-editor.html` (re-transcribe faithfully).
+- [ ] Build the dish row as a co-located island `DishRow` (an `.astro` component with scoped `<style>`, or `.tsx` + a CSS module) that faithfully ports the `.item` row from `menu-editor.html` lines ~518–535 and its bespoke `<style>` rules (`.item`, `.grip`, `.thumb`, `.it-text`/`.it-name`/`.it-desc`, `.price`, `.seg`+`.sdot` availability radiogroup with the `data-val` color mapping, `.it-actions`/`.rbtn`), including the responsive reflow rules. The segmented control renders statically reflecting `d.availability` (prototype fidelity; live toggling not required).
+- [ ] Build page: `<AppShell>` + `<SectionBar>` + `dishes.map(d => <DishRow d={d} />)` + editor panels inline. Verify + commit.
 
 ### Task 17: `/app/banners` (`app/banners.html`, AppShell)
 - [ ] Build page: `<AppShell>` + `<SectionBar>` + banners grid inline. Verify + commit.
