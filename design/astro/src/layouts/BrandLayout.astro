@@ -1,0 +1,28 @@
+---
+import BaseHead from './BaseHead.astro';
+import BrandNav from '../components/brand/BrandNav.tsx';
+import Footer from '../components/brand/Footer.tsx';
+import PageMotion from '../components/PageMotion.tsx';
+import '../styles/app.css';
+
+// Body class ported verbatim from design/landing/index.html line 569.
+// The heavy landing sections (hero, marquee, pricing, etc.) are NOT owned by
+// this layout — they're page content (Task 12); this stays thin: nav + slot
+// + footer + the shared entrance-motion island.
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description } = Astro.props;
+---
+<html lang="en" data-theme="menufic">
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
+  <body class="min-h-screen overflow-x-hidden bg-base-100 text-base-content text-[17px] leading-[1.6] antialiased">
+    <BrandNav client:load />
+    <slot />
+    <Footer />
+    <PageMotion client:idle />
+  </body>
+</html>

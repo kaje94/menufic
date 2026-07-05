@@ -1,0 +1,194 @@
+---
+import BaseHead from './BaseHead.astro';
+import PageMotion from '../components/PageMotion.tsx';
+import '../styles/app.css';
+
+// The Admin surface has its OWN utilitarian shell (topbar + an "Admin
+// sections" tabsbar) — deliberately NOT the App sidebar/drawer. Ported from
+// design/landing/admin/review.html (identical markup + CSS in
+// admin/restaurants.html — this genuinely IS the shared Admin shell, per
+// that file's own "Shell chrome ... matches admin/restaurants.html for
+// cross-page consistency" comment).
+//
+// Active tab is derived from Astro.url.pathname rather than a prop, since
+// the brief fixes Props to { title } only. Only two Admin routes exist today
+// (clean-route equivalents of admin/review.html and admin/restaurants.html);
+// anything other than /admin/restaurants defaults to the Review-queue tab.
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, '');
+const isRestaurants = path === '/admin/restaurants';
+---
+<html lang="en" data-theme="menufic">
+  <head>
+    <BaseHead title={title} />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="wordmark" href="/admin/review"><span class="dot"></span>Menufic <span class="tag">Admin</span></a>
+      <div class="topbar-spacer"></div>
+      <div class="userchip"><span class="avatar">A</span>Arun (Admin)</div>
+      <a class="exit-link" href="/app/dashboard">Exit to app &rarr;</a>
+    </header>
+
+    <nav class="tabsbar" aria-label="Admin sections">
+      <a class="tab" href="/admin/review" aria-current={isRestaurants ? undefined : 'page'}>Review queue</a>
+      <a class="tab" href="/admin/restaurants" aria-current={isRestaurants ? 'page' : undefined}>Restaurants</a>
+    </nav>
+
+    <slot />
+
+    <PageMotion client:idle />
+  </body>
+</html>
+
+<style>
+  /* ── Bespoke Admin shell CSS (FLAGGED) ──────────────────────────────
+     Ported verbatim from admin/review.html's <style> (identical in
+     admin/restaurants.html). Intentionally utilitarian: near-default
+     daisyUI, admin-blue accent (NOT brand saffron), Supreme throughout.
+     Unlayered (like app.css's daisyUI overrides) so it reliably wins.
+     All colors reference theme tokens EXCEPT the admin-blue accent below,
+     which the source explicitly calls out as a raw, non-token color
+     ("utilitarian blue — intentionally NOT brand saffron") — i.e. a
+     deliberate exception to the brand palette, kept as-is. */
+
+  /* Headings use body font on the whole Admin surface (utility portal, not
+     a display surface) — beats the global `@layer base { h1-h4 {...} }`
+     rule. :global() is required because <main>/headings are page content
+     rendered through <slot />, outside this layout's own scope. */
+  :global(main h1),
+  :global(.meta h3) {
+    font-family: var(--font-body);
+    text-wrap: auto;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+    height: 56px;
+    background: var(--color-base-200);
+    border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-wrap: wrap;
+  }
+  .wordmark {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    color: var(--color-base-content);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
+  }
+  /* Admin dot: utilitarian blue — intentionally NOT brand saffron (see note above) */
+  .wordmark .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: oklch(0.63 0.18 230);
+  }
+  .wordmark .tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: color-mix(in oklch, var(--color-base-content) 44%, transparent);
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 18%, transparent);
+    border-radius: 4px;
+    padding: 1px 6px;
+  }
+  .topbar-spacer {
+    flex: 1 1 auto;
+  }
+  .userchip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    padding: 5px 10px;
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    border-radius: 6px;
+    background: var(--color-base-300);
+    white-space: nowrap;
+  }
+  .userchip .avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: oklch(0.3 0.09 240);
+    color: oklch(0.87 0.06 240);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .exit-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    text-decoration: none;
+    padding: 8px 12px;
+    min-height: 40px;
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .exit-link:hover {
+    color: var(--color-base-content);
+    border-color: color-mix(in oklch, var(--color-base-content) 28%, transparent);
+  }
+
+  .tabsbar {
+    background: var(--color-base-200);
+    border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    padding: 0 16px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    position: sticky;
+    top: 56px;
+    z-index: 19;
+  }
+  .tab {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: color-mix(in oklch, var(--color-base-content) 54%, transparent);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab:hover {
+    color: var(--color-base-content);
+  }
+  /* Active tab: admin-blue underline — utilitarian, not brand saffron */
+  .tab[aria-current='page'] {
+    color: var(--color-base-content);
+    border-bottom-color: oklch(0.63 0.18 230);
+  }
+
+  @media (max-width: 520px) {
+    .topbar {
+      height: auto;
+      padding: 10px 12px;
+    }
+  }
+</style>

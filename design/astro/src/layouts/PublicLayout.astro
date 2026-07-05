@@ -1,0 +1,142 @@
+---
+import BaseHead from './BaseHead.astro';
+import PageMotion from '../components/PageMotion.tsx';
+import '../styles/app.css';
+
+// Diner-facing Public menu — LIGHT theme (menufic-public), NOT the dark
+// Brand/App/Admin system. Ported from design/landing/public/index.html:
+// the "Back to editor" link + banner header + footer are chrome (this
+// layout); the sticky search/tabs bar and the <main> menu panels are menu
+// CONTENT (Task 22) and arrive through <slot />.
+//
+// The banner/footer text below (restaurant name, address, phone, images) is
+// carried over verbatim from the source's one worked example (Saffron &
+// Smoke) — same convention as the App surface's hardcoded sample data. No
+// restaurant data is threaded through Props (brief fixes it to { title }),
+// so this is static chrome for now; see task-10-report.md Concerns for the
+// case to parameterize it later.
+//
+// The banner's autoplay/dot-click carousel behavior and the tabs/search
+// interactivity from the source's page <script> are NOT wired here — they
+// belong to the Task 22 menu content, not this thin layout. The three
+// slides + dots are ported statically (slide 1 in the active/aria-current
+// state), so the markup matches source pixel-for-pixel; only the imperative
+// JS is deferred.
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+<html lang="en" data-theme="menufic-public">
+  <head>
+    <BaseHead title={title} />
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=gambetta@400,500,600,700&f[]=general-sans@400,500,600,700&display=swap"
+    />
+  </head>
+  <body class="bg-base-100 text-base-content">
+    <a
+      href="/app/restaurant"
+      class="fixed left-3.5 top-3.5 z-[120] inline-flex min-h-10 items-center gap-1.5 rounded-full border border-base-content/15 bg-base-100/85 px-3.5 text-[13px] font-medium text-base-content shadow-sm backdrop-blur-md transition-[background-color,transform] duration-200 hover:-translate-y-px hover:bg-base-100"
+      aria-label="Back to the menu editor"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      Back to editor
+    </a>
+
+    <header class="relative w-full overflow-hidden">
+      <div class="banner-track flex w-full" id="bannerTrack">
+        <div class="relative h-[clamp(320px,52vh,520px)] w-full shrink-0 grow-0 basis-full">
+          <img class="size-full object-cover" src="/img/photo-1432139555190-58524dae6a55.jpg" alt="A glowing wood-fired grill with smoke rising over flame-charred meat" loading="eager" />
+          <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-cocoa-deep/10 via-cocoa-deep/35 to-cocoa-deep/85" aria-hidden="true"></div>
+        </div>
+        <div class="relative h-[clamp(320px,52vh,520px)] w-full shrink-0 grow-0 basis-full">
+          <img class="size-full object-cover" src="/img/photo-1484723091739-30a097e8f929.jpg" alt="A spread of plated dishes on a warm wooden restaurant table" loading="lazy" />
+          <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-cocoa-deep/10 via-cocoa-deep/35 to-cocoa-deep/85" aria-hidden="true"></div>
+        </div>
+        <div class="relative h-[clamp(320px,52vh,520px)] w-full shrink-0 grow-0 basis-full">
+          <img class="size-full object-cover" src="/img/photo-1565299624946-b28f40a0ae38.jpg" alt="A wood-fired margherita pizza fresh from the oven" loading="lazy" />
+          <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-cocoa-deep/10 via-cocoa-deep/35 to-cocoa-deep/85" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <div class="absolute inset-x-0 bottom-0 z-[2] mx-auto w-full max-w-[1180px] px-5 pb-[clamp(22px,4vw,40px)]">
+        <span class="mb-2.5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-secondary">
+          <span class="h-px w-[26px] bg-secondary/70" aria-hidden="true"></span>
+          Wood-fired &amp; Small plates
+        </span>
+        <h1 class="text-[clamp(2.4rem,8vw,4.6rem)] font-semibold leading-[0.98] tracking-[-0.01em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)]">Saffron &amp; Smoke</h1>
+        <div class="mt-3.5 flex flex-wrap gap-x-4.5 gap-y-2">
+          <a class="group inline-flex min-h-10 items-center gap-2 py-1.5 text-[14.5px] font-medium text-white/95" href="https://www.google.com/maps/search/?api=1&query=12+Dock+Street+Downtown" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="border-b border-white/35 transition-colors duration-200 group-hover:border-white">12 Dock Street, Downtown</span>
+          </a>
+          <a class="group inline-flex min-h-10 items-center gap-2 py-1.5 text-[14.5px] font-medium text-white/95" href="tel:+442079460123">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
+            <span class="border-b border-white/35 transition-colors duration-200 group-hover:border-white">+44 20 7946 0123</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="absolute bottom-3.5 right-4.5 z-[3] flex gap-1.5" role="tablist" aria-label="Banner images" id="bannerDots">
+        <button type="button" class="h-[9px] w-[9px] rounded-full bg-white/45 transition-[background-color,width] duration-300 aria-[current=true]:w-[22px] aria-[current=true]:bg-white" aria-label="Show banner image 1" aria-current="true"></button>
+        <button type="button" class="h-[9px] w-[9px] rounded-full bg-white/45 transition-[background-color,width] duration-300 aria-[current=true]:w-[22px] aria-[current=true]:bg-white" aria-label="Show banner image 2"></button>
+        <button type="button" class="h-[9px] w-[9px] rounded-full bg-white/45 transition-[background-color,width] duration-300 aria-[current=true]:w-[22px] aria-[current=true]:bg-white" aria-label="Show banner image 3"></button>
+      </div>
+    </header>
+
+    <slot />
+
+    <footer class="mt-[30px] border-t border-base-content/10 px-5 pb-10 pt-[34px] text-center">
+      <a class="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3.5 text-[13px] text-base-content/60 transition-colors hover:bg-base-200 hover:text-base-content" href="/">Powered by <strong class="font-semibold text-primary">Menufic</strong></a>
+      <p class="mt-2.5 text-[12.5px] text-base-content/55">Saffron &amp; Smoke &middot; 12 Dock Street, Downtown &middot; Open daily 7am&ndash;11pm</p>
+    </footer>
+
+    <PageMotion client:idle />
+  </body>
+</html>
+
+<style>
+  /* ── Bespoke Public-menu CSS (FLAGGED) ──────────────────────────────
+     Ported verbatim from public/index.html's <style> — the source itself
+     calls this out as "the only genuinely bespoke CSS" on that page;
+     everything else there is daisyUI/Tailwind utilities. Two pieces: */
+
+  /* 1) Font pair: Gambetta (display) + General Sans (body) — the owner's
+     default "Classic Bistro" preset (app/theme.html .device), deliberately
+     separate from Menufic's own Boska/Supreme brand type (DESIGN.md §7.6):
+     the diner-facing menu never uses Menufic's own dark-brand chrome type.
+     Overrides the shared `@layer base { h1-h4 {...} }` rule (unlayered, so
+     it wins). :global() on the heading/price selectors: those elements are
+     menu CONTENT rendered through <slot /> (Task 22), outside this layout's
+     own scope — plain scoped selectors would not reach them. */
+  body {
+    font-family: 'General Sans', system-ui, sans-serif;
+  }
+  :global(h1),
+  :global(h2),
+  :global(h3),
+  :global(h4) {
+    font-family: 'Gambetta', Georgia, serif;
+    text-wrap: balance;
+  }
+  :global(.price-display) {
+    font-family: 'Gambetta', Georgia, serif;
+  }
+
+  /* 2) Banner carousel transition curve (brand ease, DESIGN.md §4
+     Elevation). The scrim/dots/layout above are Tailwind utilities; only
+     this transition timing is bespoke. JS that drives the actual slide
+     (setting `transform: translateX()` on this track) is Task 22's
+     interactivity, not this layout — the track is static here (slide 1). */
+  .banner-track {
+    transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .banner-track {
+      transition: none;
+    }
+  }
+</style>
