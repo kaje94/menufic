@@ -21,6 +21,6 @@ export interface TeamMember {
   id: string;
   name: string;
   email: string;
-  role: 'Owner' | 'Manager' | 'Editor';
+  role: 'Owner' | 'Editor' | 'Viewer';
   avatar: string;
 }

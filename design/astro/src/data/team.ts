@@ -1,10 +1,7 @@
 import type { TeamMember } from './types';
 
 // Transcribed from design/landing/app/team.html (Members table, Saffron & Smoke).
-// NOTE: the source uses three role badges — Owner, Editor, Viewer — but the TeamMember
-// type only allows 'Owner' | 'Manager' | 'Editor' (no 'Viewer'). Priya Nair's source role
-// ("Viewer") is mapped to 'Manager' here so the fixture set exercises all three type
-// values; flagged in task-3-report.md as an assumption to confirm.
+// The source uses three role badges — Owner, Editor, Viewer — matched exactly below.
 export const team: TeamMember[] = [
   {
     id: 'arun-kajendran',
@@ -33,7 +30,7 @@ export const team: TeamMember[] = [
     id: 'priya-nair',
     name: 'Priya Nair',
     email: 'priya@saffronsmoke.com',
-    role: 'Manager', // source badge reads "Viewer" — see note above
+    role: 'Viewer',
     avatar: '/img/photo-1438761681033-6461ffad8d80.jpg',
   },
 ];
