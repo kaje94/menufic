@@ -318,6 +318,8 @@ A thin set of explicit rules handles the handful of cases that cannot be express
 | Rule | What it does | Why the layer, not a var |
 |---|---|---|
 | `.app-nav[aria-current]` (active link) | Saffron tonal fill (13% secondary), saffron text + dot/thumb border | daisyUI's `menu` component has no active-state styling; this brand class doesn't collide with any daisyUI component definition, so `@layer components` is safe and appropriate |
+| `.sectionbar` | Horizontal scrollable pill tab strip (reused by menu-editor, banners, theme, analytics, team); active item gets saffron tonal fill | No daisyUI component provides a horizontal scrolling pill-tab pattern; scoped to `.sectionbar` so it can't leak into `.app-nav` or other menus |
+| `.app-subnav` | Per-restaurant sub-nav, indented under the active restaurant in the sidebar (theme, menu-editor, banners, analytics, team, qr); active item gets the same saffron tonal treatment as `.app-nav` | A second, nested navigation level daisyUI's `menu` has no equivalent for; scoped to `.app-subnav` so it can't leak into other menus |
 
 **@layer utilities**
 
@@ -359,12 +361,14 @@ Markup stays semantic; daisyUI classes are the single source of truth. The three
 
 The `menufic-public` theme provides a warm-light base (`color-scheme: light`; `base-100` is a warm near-white, not pure white). At runtime the Theme Builder writes daisyUI's own CSS variables **inline on the menu root element** — no class swaps, no separate stylesheets:
 
+- `--color-base-100` / `--color-base-200` — page background / card surface for the preset's tone (dark presets like "Dark Elegant" flip these to near-black)
+- `--color-base-content` — body/heading text colour, paired to the preset's base tone
 - `--color-primary` — owner's chosen accent colour (default: terracotta `oklch(0.55 0.16 35)`)
 - `--radius-box` — card / panel corner radius
 - `--radius-field` — input / chip corner radius
-- `font-family` — owner's selected font
+- `--menu-font` — owner's selected font (a page-scoped var, not `font-family` directly — see below)
 
-Presets are inline var bundles that write all four properties at once. The customization contract is therefore stable: adding a preset means defining its four var values; Menufic's App and Brand surfaces are never affected by any owner-level change.
+`design/landing/app/theme.html`'s preset array also carries `muted` and `line` values (applied as `--menu-muted` / `--menu-line`) for slots daisyUI has no token for — muted body text and hairline borders. These two are page-scoped extras, not part of the daisyUI contract above; production's actual runtime-theming surface is the seven vars listed (base-100, base-200, base-content, primary, radius-box, radius-field, menu-font). Presets are inline var bundles that write all seven at once. The customization contract is therefore stable: adding a preset means defining its seven var values (plus the two page-scoped extras, if the preset needs a distinct muted/line tone); Menufic's App and Brand surfaces are never affected by any owner-level change.
 
 ### 7.7 Two-Accent Rule carve-out for error
 
