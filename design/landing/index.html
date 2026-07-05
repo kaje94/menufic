@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="js" data-theme="menufic">
+<html lang="en" class="js scroll-smooth" data-theme="menufic">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,78 +36,13 @@
   --line: oklch(0.42 0.03 48 / 0.5);         /* hairline — ~50% alpha */
   --line-soft: oklch(0.42 0.03 58 / 0.28);   /* quietest separations */
   --ease: cubic-bezier(0.16,1,0.3,1);
-  --maxw: 1200px;
-  --r: 18px;
 }
 
-/* Reset (box-sizing/margins/img/a/button) + base body font + saffron
-   :focus-visible ring + Boska heading family all come from styles.css.
-   Only this page's editorial rhythm, the hero overflow guard, and the
-   heading weight/tracking (which Tailwind preflight strips) stay local. */
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
-body{font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-button{cursor:pointer}
-h1,h2,h3{font-weight:700;letter-spacing:-0.03em;line-height:1.02}
-p{text-wrap:pretty}
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+/* Page-level: only the hero overflow guard needs a local rule; scroll-smooth,
+   body font/size, headings, buttons, nav, cards, badges, footer, the type
+   scale and the saffron focus ring are all daisyUI + Tailwind utilities now. */
 
-/* ============ BUTTONS ============
-   Shape (pill/48px/Supreme 600), hover-lift, primary accent-glow and the
-   ghost variant all come from daisyUI + the unlayered .btn overrides in
-   styles.css. Only the press feedback + brand icon sizing are page-local. */
-.btn:active{transform:translateY(0) scale(.985);transition-duration:.08s}
-.gicon{width:18px;height:18px;flex:none}
-
-/* ============ NAV (condensing sticky) ============ */
-.nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  transition:background .4s var(--ease),box-shadow .4s var(--ease),border-color .4s var(--ease);
-  padding:18px 0;
-  border-bottom:1px solid transparent;
-}
-.nav.condensed{
-  background:oklch(0.185 0.028 55 / 0.92);
-  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--line-soft);
-  padding:10px 0;
-  box-shadow:var(--shadow-nav);
-}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}
-.wordmark{
-  font-family:"Boska";font-weight:700;font-size:25px;letter-spacing:-0.04em;
-  color:var(--cream);display:inline-flex;align-items:center;gap:8px;
-}
-.wordmark .dot{width:9px;height:9px;border-radius:50%;background:var(--tomato);margin-bottom:-2px}
-.nav-links{display:flex;align-items:center;gap:30px}
-.nav-links a{color:var(--cream-soft);font-size:15px;font-weight:500;transition:color .2s var(--ease)}
-.nav-links a:hover{color:var(--cream)}
-.nav-cta{display:flex;align-items:center;gap:14px}
-.hamburger{display:none;background:none;border:1px solid var(--line);border-radius:12px;width:48px;height:48px;align-items:center;justify-content:center}
-.hamburger span{display:block;width:20px;height:2px;background:var(--cream);position:relative}
-.hamburger span::before,.hamburger span::after{content:"";position:absolute;left:0;width:20px;height:2px;background:var(--cream)}
-.hamburger span::before{top:-6px}.hamburger span::after{top:6px}
-
-@media (max-width:880px){
-  .nav-links{
-    display:none;position:absolute;top:100%;left:0;right:0;
-    flex-direction:column;align-items:flex-start;gap:6px;
-    background:oklch(0.185 0.028 55 / 0.98);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
-    padding:16px 24px 24px;border-bottom:1px solid var(--line-soft);
-  }
-  .nav-links.open{display:flex}
-  .nav-links a{padding:12px 4px;font-size:17px;width:100%}
-  .hamburger{display:inline-flex}
-  .nav-cta .btn-text-hide{display:none}
-}
-
-/* ============ shared reveal / stagger ============ */
-.js .reveal{opacity:0;transform:translateY(30px)}
-.js .reveal.in{opacity:1;transform:none;transition:opacity .7s var(--ease),transform .7s var(--ease)}
-.js .stagger{opacity:0;transform:translateY(24px)}
-.js .stagger.in{opacity:1;transform:none;transition:opacity .45s var(--ease),transform .45s var(--ease)}
-
-/* ============ live menu UI (shared phone component) ============ */
+/* ============ live menu UI (shared phone component — hero + how-it-works) ============ */
 .phone{
   position:relative;z-index:3;
   border-radius:42px;background:oklch(0.22 0.02 60);
@@ -336,14 +271,6 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
   .bubble .ic{width:18px;height:18px}
   .bubble .ic svg{width:11px;height:11px}
 }
-
-/* ============ SECTION SHELL ============ */
-.section{padding:clamp(72px,10vw,128px) 0;position:relative}
-.section-head{max-width:680px;margin-bottom:48px}
-.section-head.center{margin-left:auto;margin-right:auto;text-align:center}
-.section-head h2{font-size:clamp(2rem,4.6vw,3.4rem);color:var(--cream)}
-.section-head .lede{margin-top:18px;font-size:clamp(1.05rem,1.6vw,1.2rem);color:var(--cream-soft);max-width:66ch;line-height:1.55}
-.section-head.center .lede{margin-left:auto;margin-right:auto}
 
 /* ============ HOW IT WORKS (scroll-scrubbed assembly — V1) ============ */
 .how{background:linear-gradient(180deg,var(--bg),oklch(0.205 0.03 56),var(--bg))}
@@ -609,92 +536,7 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
   .preview-frame.desktop{width:min(560px,92vw)}
 }
 
-/* ============ FEATURES — alternating immersive spotlights (E3) ============ */
-.spotlights{background:var(--bg)}
-.spot{
-  display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,72px);align-items:center;
-  padding:clamp(52px,7vw,84px) 0;
-}
-.spot + .spot{border-top:1px solid var(--line-soft)}
-.spot-text{min-width:0;max-width:480px}
-.spot:nth-child(even) .spot-visual{order:-1}
-.spot-index{font-family:"Boska";font-size:14px;font-weight:600;color:var(--saffron);display:inline-flex;align-items:center;gap:11px;margin-bottom:16px}
-.spot-index::before{content:"";width:30px;height:1px;background:var(--saffron);opacity:.6}
-.spot h3{font-size:clamp(1.8rem,3.4vw,2.7rem);color:var(--cream)}
-.spot .benefit{margin-top:16px;font-size:clamp(1.05rem,1.7vw,1.22rem);color:var(--cream-soft);line-height:1.5;max-width:40ch}
-.spot-supports{margin-top:22px;display:flex;flex-wrap:wrap;gap:9px}
-.spot-supports span{font-size:13.5px;font-weight:500;color:var(--cream);background:var(--surface);border:1px solid var(--line-soft);border-radius:999px;padding:7px 15px}
-.spot-visual{min-width:0;display:flex;justify-content:center}
-.spot-photo{position:relative;width:100%;border-radius:24px;overflow:hidden;border:1px solid var(--line-soft);box-shadow:0 40px 80px -44px oklch(0 0 0 /0.85)}
-.spot-photo img{width:100%;height:100%;aspect-ratio:5/4;object-fit:cover}
-.spot-photo::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px oklch(0.85 0.05 80 /0.06);border-radius:24px}
-.mock{
-  width:100%;max-width:480px;background:var(--surface-2);border:1px solid var(--line-soft);
-  border-radius:24px;padding:clamp(22px,3vw,34px);box-shadow:0 40px 80px -44px oklch(0 0 0 /0.8);min-width:0;
-}
-.mk-analytics .mk-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
-.mk-analytics .mk-stat{font-family:"Boska";font-weight:700;font-size:clamp(2rem,4vw,2.8rem);color:var(--cream);letter-spacing:-0.02em}
-.mk-analytics .mk-delta{font-size:13px;font-weight:600;color:var(--green);background:oklch(0.72 0.15 150 /0.14);border-radius:999px;padding:4px 11px}
-.mk-analytics .mk-cap{font-size:13.5px;color:var(--cream-soft)}
-.mk-analytics .mk-chart{display:flex;align-items:flex-end;gap:8px;height:128px;margin-top:22px}
-.mk-analytics .mk-bar{flex:1;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--saffron),var(--saffron-deep));min-width:0}
-.mk-analytics .mk-days{display:flex;justify-content:space-between;gap:8px;margin-top:9px;font-size:11px;color:var(--cream-soft)}
-.mk-analytics .mk-days span{flex:1;text-align:center}
-.mk-qr{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
-.mk-qr .qrcard{background:#fff;border-radius:16px;padding:13px;line-height:0;flex:none}
-.mk-qr .qrcard img{width:128px;height:128px}
-.mk-qr .qrmeta b{display:block;font-family:"Boska";font-weight:600;font-size:1.15rem;color:var(--cream);margin-bottom:8px}
-.mk-qr .qrmeta .row{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--cream-soft);margin-top:8px}
-.mk-qr .qrmeta .row svg{color:var(--saffron);flex:none}
-@media (max-width:820px){
-  .spot{grid-template-columns:1fr;gap:30px;padding:48px 0}
-  .spot:nth-child(even) .spot-visual{order:0}
-  .spot-text{max-width:560px}
-}
-
-/* ============ PRICING — giant Free. Forever. band (E3) ============ */
-.pricing{
-  position:relative;overflow:hidden;text-align:center;
-  background:
-    radial-gradient(circle at 18% 12%, oklch(0.605 0.18 30 /0.16), transparent 46%),
-    radial-gradient(circle at 86% 88%, oklch(0.80 0.135 78 /0.14), transparent 48%),
-    linear-gradient(180deg,var(--bg-deep),oklch(0.20 0.03 56));
-  padding:clamp(84px,12vw,150px) 0;
-}
-.pricing .pr-free{
-  font-family:"Boska";font-weight:700;
-  font-size:clamp(4rem,15vw,9.5rem);line-height:0.86;letter-spacing:-0.05em;
-  color:var(--cream);margin:0 0 8px;
-}
-.pricing .pr-free em{font-style:normal;color:var(--saffron)}
-.pricing .pr-kicker{font-size:clamp(1.05rem,1.8vw,1.3rem);color:var(--cream-soft);max-width:50ch;margin:18px auto 0;line-height:1.55}
-.compare{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:46px auto 0;max-width:760px}
-.cmp{
-  flex:1 1 200px;max-width:240px;min-width:0;
-  background:var(--surface);border:1px solid var(--line-soft);border-radius:18px;
-  padding:22px 20px;text-align:left;
-}
-.cmp .cmp-feat{font-size:14.5px;font-weight:600;color:var(--cream);line-height:1.3}
-.cmp .cmp-prices{display:flex;align-items:baseline;gap:12px;margin-top:14px;flex-wrap:wrap}
-.cmp .cmp-was{font-family:"Boska";font-weight:600;font-size:1.4rem;color:var(--cream-soft);text-decoration:line-through;text-decoration-color:var(--tomato);text-decoration-thickness:2px}
-.cmp .cmp-now{font-family:"Boska";font-weight:700;font-size:1.7rem;color:var(--saffron);letter-spacing:-0.02em}
-.cmp .cmp-tag{display:block;font-size:12px;color:var(--cream-soft);margin-top:8px}
-.cmp .cmp-tag b{color:var(--cream);font-weight:600}
-.pricing .pr-note{margin:42px auto 0;max-width:54ch;color:var(--cream-soft);font-size:clamp(1.02rem,1.6vw,1.18rem);line-height:1.55}
-.pricing .pr-note b{color:var(--cream);font-weight:600}
-.pricing .pr-cta{margin-top:34px;display:flex;justify-content:center}
-@media (max-width:560px){
-  .compare{flex-direction:column;align-items:stretch;max-width:340px}
-  .cmp{max-width:none}
-}
-
-/* ============ TESTIMONIALS — D card style as a marquee ============ */
-.testimonials{
-  position:relative;background:var(--surface);overflow:hidden;
-  background-image:
-    radial-gradient(circle at 20% 30%, oklch(0.30 0.04 60 /0.6), transparent 40%),
-    radial-gradient(circle at 82% 76%, oklch(0.22 0.03 56 /0.7), transparent 42%);
-}
+/* ============ TESTIMONIALS marquee — seamless-loop mechanism (cards are daisyUI) ============ */
 .marquee{position:relative;margin-top:14px;overflow:hidden;
   -webkit-mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
   mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
@@ -706,59 +548,14 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
 .marquee:hover .marquee-track,
 .marquee:focus-within .marquee-track{animation-play-state:paused}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.tcard{
-  flex:0 0 auto;width:min(340px,82vw);
-  background:var(--bg);border:1px solid var(--line-soft);border-radius:22px;
-  padding:30px;display:flex;flex-direction:column;min-width:0;
-}
-.tcard .stars{color:var(--saffron);font-size:15px;letter-spacing:2px;margin-bottom:16px}
-.tcard blockquote{margin:0;font-family:"Boska";font-weight:500;font-size:1.12rem;line-height:1.36;color:var(--cream);letter-spacing:-0.01em}
-.tcard .who{margin-top:auto;padding-top:24px;display:flex;align-items:center;gap:13px}
-.tcard .who img,.tcard .who .av{width:46px;height:46px;border-radius:50%;object-fit:cover;flex:none}
-.tcard .who .av{display:flex;align-items:center;justify-content:center;font-family:"Boska";font-weight:700;font-size:18px;color:var(--bg);background:var(--saffron)}
-.tcard .who .av.t{background:var(--tomato);color:var(--cream)}
-.tcard .who .av.g{background:var(--green);color:var(--bg)}
-.tcard .who b{display:block;font-size:15px;color:var(--cream);font-weight:600}
-.tcard .who span{font-size:13.5px;color:var(--cream-soft)}
 /* reduced-motion / no-JS fallback: manual horizontal scroll, no animation */
 .marquee.static{overflow-x:auto;-webkit-overflow-scrolling:touch;
   -webkit-mask:none;mask:none;padding-bottom:8px;
 }
 .marquee.static .marquee-track{animation:none;width:max-content}
 
-/* ============ CLOSING ============ */
-.closing{position:relative;overflow:hidden;text-align:center;padding:clamp(96px,14vw,170px) 0}
-.closing-bg{position:absolute;inset:0;z-index:0}
-.closing-bg img{width:100%;height:100%;object-fit:cover;object-position:center}
-.closing-bg::after{content:"";position:absolute;inset:0;background:
-  linear-gradient(180deg,oklch(0.155 0.026 52 /0.9),oklch(0.155 0.026 52 /0.94)),
-  radial-gradient(circle at 50% 28%, oklch(0.80 0.135 78 /0.16), transparent 58%)}
-.closing-inner{position:relative;z-index:2}
-.closing h2{font-size:clamp(2.3rem,6vw,4.4rem);color:var(--cream)}
-.closing p{margin:22px auto 0;max-width:52ch;color:var(--cream-soft);font-size:clamp(1.05rem,1.8vw,1.3rem)}
-.closing .cl-actions{margin-top:38px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
-
-/* ============ FOOTER ============ */
-.footer{background:var(--bg-deep);border-top:1px solid var(--line-soft);padding:64px 0 36px}
-.footer-top{display:grid;grid-template-columns:1.4fr repeat(3,0.9fr);gap:40px 32px}
-.footer .wordmark{font-size:25px}
-.footer .tag{color:var(--cream-soft);font-size:15px;margin-top:14px;max-width:32ch;line-height:1.55}
-.footer-col h6{font-size:13px;color:var(--cream-soft);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin:0 0 16px}
-.footer-col a{display:block;color:var(--cream);font-size:15px;margin-bottom:11px;transition:color .2s var(--ease)}
-.footer-col a:hover{color:var(--saffron)}
-.footer-bottom{margin-top:52px;padding-top:24px;border-top:1px solid var(--line-soft);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--cream-soft);font-size:13.5px}
-.footer-bottom .pwr{color:var(--saffron)}
-@media (max-width:760px){
-  .footer-top{grid-template-columns:1fr 1fr;gap:34px 24px}
-  .footer-brand{grid-column:1 / -1}
-}
-@media (max-width:440px){
-  .footer-top{grid-template-columns:1fr}
-}
-
+/* ============ page-level reduced-motion off-switches for the signature bits ============ */
 @media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none !important;transition-duration:.01ms !important}
-  .js .stagger,.js .reveal{opacity:1 !important;transform:none !important}
   .js .step,.js .step .mini{opacity:1 !important;transform:none !important}
   .js #hero-h .hl-in{transform:none !important}
   .hero-composition.float{animation:none}
@@ -769,25 +566,25 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
 }
 </style>
 </head>
-<body class="min-h-screen overflow-x-hidden bg-base-100 text-base-content">
+<body class="min-h-screen overflow-x-hidden bg-base-100 text-base-content text-[17px] leading-[1.6] antialiased">
 
-<!-- ============ NAV ============ -->
-<header class="nav" id="nav">
-  <div class="wrap nav-inner">
-    <a class="wordmark" href="#top" aria-label="Menufic home">Menufic<span class="dot" aria-hidden="true"></span></a>
-    <nav class="nav-links" id="navLinks" aria-label="Primary">
-      <a href="#how">How it works</a>
-      <a href="#studio">See a menu</a>
-      <a href="#features">Features</a>
-      <a href="#pricing">Pricing</a>
+<!-- ============ NAV — condensing sticky (state via data-condensed / data-open) ============ -->
+<header id="nav" data-condensed="false" class="fixed inset-x-0 top-0 z-50 border-b border-transparent py-[18px] transition-[background-color,box-shadow,border-color,padding] duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] data-[condensed=true]:border-base-content/10 data-[condensed=true]:bg-base-100/90 data-[condensed=true]:py-2.5 data-[condensed=true]:shadow-nav data-[condensed=true]:backdrop-blur-[14px]">
+  <div class="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-5 px-6">
+    <a class="inline-flex items-center gap-2 font-display text-[25px] font-bold tracking-[-0.04em] text-base-content" href="#top" aria-label="Menufic home">Menufic<span class="mb-[-2px] h-[9px] w-[9px] rounded-full bg-primary" aria-hidden="true"></span></a>
+    <nav id="navLinks" data-open="false" aria-label="Primary" class="max-md:absolute max-md:inset-x-0 max-md:top-full max-md:hidden max-md:flex-col max-md:items-start max-md:gap-1.5 max-md:border-b max-md:border-base-content/10 max-md:bg-base-100/95 max-md:px-6 max-md:pb-6 max-md:pt-4 max-md:backdrop-blur-[14px] max-md:data-[open=true]:flex md:flex md:items-center md:gap-[30px]">
+      <a class="font-medium text-info transition-colors hover:text-base-content max-md:w-full max-md:py-3 max-md:text-[17px]" href="#how">How it works</a>
+      <a class="font-medium text-info transition-colors hover:text-base-content max-md:w-full max-md:py-3 max-md:text-[17px]" href="#studio">See a menu</a>
+      <a class="font-medium text-info transition-colors hover:text-base-content max-md:w-full max-md:py-3 max-md:text-[17px]" href="#features">Features</a>
+      <a class="font-medium text-info transition-colors hover:text-base-content max-md:w-full max-md:py-3 max-md:text-[17px]" href="#pricing">Pricing</a>
     </nav>
-    <div class="nav-cta">
-      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
-        <span aria-hidden="true"></span>
+    <div class="flex items-center gap-3.5">
+      <button id="hamburger" class="btn btn-ghost btn-square md:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
       <a class="btn btn-primary" href="/app/signin.html">
-        <svg class="gicon" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
-        <span class="btn-text-hide">Get started</span>
+        <svg class="h-[18px] w-[18px] shrink-0" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+        <span class="max-md:hidden">Get started</span>
       </a>
     </div>
   </div>
@@ -807,14 +604,14 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
   <div class="hero-scrim" aria-hidden="true"></div>
   <div class="hero-grain" aria-hidden="true"></div>
 
-  <div class="wrap hero-inner">
+  <div class="hero-inner mx-auto w-full max-w-[1200px] px-6">
     <div class="hero-copy">
       <h1 id="hero-h" class="stagger" data-delay="0"><span class="hl-line"><span class="hl-in">A digital menu</span></span><span class="hl-line"><span class="hl-in em">for your restaurant.</span></span></h1>
       <p class="hero-sub stagger" data-delay="1">Add your dishes, choose a theme, and hit publish. Menufic gives you a menu to share by link or QR. No design skills, and free forever.</p>
 
       <div class="hero-actions stagger" data-delay="2">
         <a class="btn btn-primary" href="/app/signin.html">
-          <svg class="gicon" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+          <svg class="h-[18px] w-[18px] shrink-0" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
           Get started, it's free
         </a>
         <a class="see-live" href="#studio"><span class="see-live-label">See a live menu</span> <span class="arr" aria-hidden="true">→</span></a>
@@ -899,11 +696,11 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
 </section>
 
 <!-- ============ HOW IT WORKS — scroll-scrubbed assembly (V1) ============ -->
-<section class="section how" id="how" aria-labelledby="how-h">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <h2 id="how-h">From your dishes to a shareable menu in three steps.</h2>
-      <p class="lede">You won't sit through setup calls or learn design tools. Create your restaurant, add your dishes, and share the link or QR code, and that's the whole thing.</p>
+<section id="how" class="how relative py-[clamp(72px,10vw,128px)]" aria-labelledby="how-h">
+  <div class="mx-auto w-full max-w-[1200px] px-6">
+    <div class="reveal mb-12 max-w-[680px]">
+      <h2 id="how-h" class="text-[clamp(2rem,4.6vw,3.4rem)] font-bold tracking-[-0.03em] text-base-content">From your dishes to a shareable menu in three steps.</h2>
+      <p class="mt-[18px] max-w-[66ch] text-[clamp(1.05rem,1.6vw,1.2rem)] leading-[1.55] text-info text-pretty">You won't sit through setup calls or learn design tools. Create your restaurant, add your dishes, and share the link or QR code, and that's the whole thing.</p>
     </div>
 
     <div class="how-grid">
@@ -1029,8 +826,8 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
 </section>
 
 <!-- ============ THEME BUILDER STUDIO (E3 studio, upgraded to a live custom builder) ============ -->
-<section class="section studio" id="studio" aria-labelledby="studio-h">
-  <div class="wrap">
+<section id="studio" class="studio relative py-[clamp(72px,10vw,128px)]" aria-labelledby="studio-h">
+  <div class="mx-auto w-full max-w-[1200px] px-6">
     <div class="studio-grid">
       <div class="studio-stage reveal">
         <div class="preview-frame" id="previewFrame">
@@ -1143,88 +940,104 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
 </section>
 
 <!-- ============ FEATURES — alternating immersive spotlights (E3) ============ -->
-<section class="section spotlights" id="features" aria-labelledby="feat-h">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <h2 id="feat-h">Everything you need. Nothing you'll pay for.</h2>
-      <p class="lede">The tools that make your menu look professional and stay effortless to run, all included and all free.</p>
+<section id="features" class="relative bg-base-100 py-[clamp(72px,10vw,128px)]" aria-labelledby="feat-h">
+  <div class="mx-auto w-full max-w-[1200px] px-6">
+    <div class="reveal mb-12 max-w-[680px]">
+      <h2 id="feat-h" class="text-[clamp(2rem,4.6vw,3.4rem)] font-bold tracking-[-0.03em] text-base-content">Everything you need. Nothing you'll pay for.</h2>
+      <p class="mt-[18px] max-w-[66ch] text-[clamp(1.05rem,1.6vw,1.2rem)] leading-[1.55] text-info text-pretty">The tools that make your menu look professional and stay effortless to run, all included and all free.</p>
     </div>
 
     <!-- Feature 1: Theme customisation (photo) -->
-    <div class="spot reveal">
-      <div class="spot-text">
-        <span class="spot-index" aria-hidden="true">Theme</span>
-        <h3>Make it match your room.</h3>
-        <p class="benefit">Pick an accent, corner style and font, and your whole menu restyles to feel like your restaurant.</p>
-        <div class="spot-supports"><span>Colour</span><span>Corners</span><span>Typography</span></div>
+    <div class="reveal grid items-center gap-[clamp(32px,5vw,72px)] py-[clamp(52px,7vw,84px)] md:grid-cols-2">
+      <div class="min-w-0 max-w-[480px]">
+        <span class="mb-4 inline-flex items-center gap-[11px] font-display text-[14px] font-semibold text-secondary before:h-px before:w-[30px] before:bg-secondary before:opacity-60" aria-hidden="true">Theme</span>
+        <h3 class="text-[clamp(1.8rem,3.4vw,2.7rem)] font-bold tracking-[-0.03em] text-base-content">Make it match your room.</h3>
+        <p class="mt-4 max-w-[40ch] text-[clamp(1.05rem,1.7vw,1.22rem)] leading-[1.5] text-info">Pick an accent, corner style and font, and your whole menu restyles to feel like your restaurant.</p>
+        <div class="mt-[22px] flex flex-wrap gap-[9px]">
+          <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Colour</span>
+          <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Corners</span>
+          <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Typography</span>
+        </div>
       </div>
-      <div class="spot-visual">
-        <figure class="spot-photo" style="margin:0">
-          <img src="assets/img/photo-1555396273-367ea4eb4db5.jpg" alt="A warm restaurant interior with set tables, the kind of atmosphere a menu's theme should echo" loading="lazy">
+      <div class="flex min-w-0 justify-center">
+        <figure class="relative m-0 w-full overflow-hidden rounded-[24px] border border-base-content/[0.08] shadow-floating">
+          <img class="aspect-[5/4] h-full w-full object-cover" src="assets/img/photo-1555396273-367ea4eb4db5.jpg" alt="A warm restaurant interior with set tables, the kind of atmosphere a menu's theme should echo" loading="lazy">
         </figure>
       </div>
     </div>
 
     <!-- Feature 2: Analytics (mockup) -->
-    <div class="spot reveal">
-      <div class="spot-text">
-        <span class="spot-index" aria-hidden="true">Analytics</span>
-        <h3>See what's working.</h3>
-        <p class="benefit">Live counts show how many people open your menu and which dishes they look at most.</p>
-        <div class="spot-supports"><span>Daily views</span><span>Top dishes</span><span>Trends</span></div>
+    <div class="reveal grid items-center gap-[clamp(32px,5vw,72px)] border-t border-base-content/[0.08] py-[clamp(52px,7vw,84px)] md:grid-cols-2">
+      <div class="min-w-0 max-w-[480px]">
+        <span class="mb-4 inline-flex items-center gap-[11px] font-display text-[14px] font-semibold text-secondary before:h-px before:w-[30px] before:bg-secondary before:opacity-60" aria-hidden="true">Analytics</span>
+        <h3 class="text-[clamp(1.8rem,3.4vw,2.7rem)] font-bold tracking-[-0.03em] text-base-content">See what's working.</h3>
+        <p class="mt-4 max-w-[40ch] text-[clamp(1.05rem,1.7vw,1.22rem)] leading-[1.5] text-info">Live counts show how many people open your menu and which dishes they look at most.</p>
+        <div class="mt-[22px] flex flex-wrap gap-[9px]">
+          <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Daily views</span>
+          <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Top dishes</span>
+          <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Trends</span>
+        </div>
       </div>
-      <div class="spot-visual">
-        <div class="mock mk-analytics" role="img" aria-label="An analytics panel showing 2,418 menu views this week, up 18 percent, with a bar chart rising across the week.">
-          <div class="mk-top">
-            <div class="mk-stat">2,418</div>
-            <div class="mk-delta">▲ 18%</div>
+      <div class="flex min-w-0 justify-center">
+        <div class="w-full min-w-0 max-w-[480px] rounded-[24px] border border-base-content/[0.08] bg-base-300 p-[clamp(22px,3vw,34px)] shadow-floating" role="img" aria-label="An analytics panel showing 2,418 menu views this week, up 18 percent, with a bar chart rising across the week.">
+          <div class="mb-1.5 flex items-baseline justify-between gap-3">
+            <div class="font-display text-[clamp(2rem,4vw,2.8rem)] font-bold tracking-[-0.02em] text-base-content">2,418</div>
+            <div class="rounded-full bg-success/15 px-[11px] py-1 text-[13px] font-semibold text-success">▲ 18%</div>
           </div>
-          <div class="mk-cap">Menu views this week</div>
-          <div class="mk-chart" aria-hidden="true">
-            <span class="mk-bar" style="height:42%"></span>
-            <span class="mk-bar" style="height:58%"></span>
-            <span class="mk-bar" style="height:49%"></span>
-            <span class="mk-bar" style="height:71%"></span>
-            <span class="mk-bar" style="height:63%"></span>
-            <span class="mk-bar" style="height:88%"></span>
-            <span class="mk-bar" style="height:100%"></span>
+          <div class="text-[13.5px] text-info">Menu views this week</div>
+          <div class="mt-[22px] flex h-[128px] items-end gap-2" aria-hidden="true">
+            <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:42%"></span>
+            <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:58%"></span>
+            <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:49%"></span>
+            <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:71%"></span>
+            <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:63%"></span>
+            <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:88%"></span>
+            <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:100%"></span>
           </div>
-          <div class="mk-days" aria-hidden="true"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          <div class="mt-[9px] flex justify-between gap-2 text-[11px] text-info" aria-hidden="true"><span class="flex-1 text-center">M</span><span class="flex-1 text-center">T</span><span class="flex-1 text-center">W</span><span class="flex-1 text-center">T</span><span class="flex-1 text-center">F</span><span class="flex-1 text-center">S</span><span class="flex-1 text-center">S</span></div>
         </div>
       </div>
     </div>
 
     <!-- Feature 3: Team management (photo) -->
-    <div class="spot reveal">
-      <div class="spot-text">
-        <span class="spot-index" aria-hidden="true">Team</span>
-        <h3>Bring your team in.</h3>
-        <p class="benefit">Invite staff to update the menu while you stay in control of what goes live.</p>
-        <div class="spot-supports"><span>Invite staff</span><span>Roles</span><span>Shared edits</span></div>
+    <div class="reveal grid items-center gap-[clamp(32px,5vw,72px)] border-t border-base-content/[0.08] py-[clamp(52px,7vw,84px)] md:grid-cols-2">
+      <div class="min-w-0 max-w-[480px]">
+        <span class="mb-4 inline-flex items-center gap-[11px] font-display text-[14px] font-semibold text-secondary before:h-px before:w-[30px] before:bg-secondary before:opacity-60" aria-hidden="true">Team</span>
+        <h3 class="text-[clamp(1.8rem,3.4vw,2.7rem)] font-bold tracking-[-0.03em] text-base-content">Bring your team in.</h3>
+        <p class="mt-4 max-w-[40ch] text-[clamp(1.05rem,1.7vw,1.22rem)] leading-[1.5] text-info">Invite staff to update the menu while you stay in control of what goes live.</p>
+        <div class="mt-[22px] flex flex-wrap gap-[9px]">
+          <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Invite staff</span>
+          <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Roles</span>
+          <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Shared edits</span>
+        </div>
       </div>
-      <div class="spot-visual">
-        <figure class="spot-photo" style="margin:0">
-          <img src="assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="The bar of a busy restaurant with stools and a team ready for service" loading="lazy">
+      <div class="flex min-w-0 justify-center md:order-first">
+        <figure class="relative m-0 w-full overflow-hidden rounded-[24px] border border-base-content/[0.08] shadow-floating">
+          <img class="aspect-[5/4] h-full w-full object-cover" src="assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="The bar of a busy restaurant with stools and a team ready for service" loading="lazy">
         </figure>
       </div>
     </div>
 
     <!-- Feature 4: QR sharing (mockup) -->
-    <div class="spot reveal">
-      <div class="spot-text">
-        <span class="spot-index" aria-hidden="true">QR sharing</span>
-        <h3>One code, everywhere.</h3>
-        <p class="benefit">Print one QR for tables, windows and flyers, and it always points to your latest menu.</p>
-        <div class="spot-supports"><span>Tables</span><span>Windows</span><span>Bio link</span></div>
+    <div class="reveal grid items-center gap-[clamp(32px,5vw,72px)] border-t border-base-content/[0.08] py-[clamp(52px,7vw,84px)] md:grid-cols-2">
+      <div class="min-w-0 max-w-[480px]">
+        <span class="mb-4 inline-flex items-center gap-[11px] font-display text-[14px] font-semibold text-secondary before:h-px before:w-[30px] before:bg-secondary before:opacity-60" aria-hidden="true">QR sharing</span>
+        <h3 class="text-[clamp(1.8rem,3.4vw,2.7rem)] font-bold tracking-[-0.03em] text-base-content">One code, everywhere.</h3>
+        <p class="mt-4 max-w-[40ch] text-[clamp(1.05rem,1.7vw,1.22rem)] leading-[1.5] text-info">Print one QR for tables, windows and flyers, and it always points to your latest menu.</p>
+        <div class="mt-[22px] flex flex-wrap gap-[9px]">
+          <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Tables</span>
+          <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Windows</span>
+          <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Bio link</span>
+        </div>
       </div>
-      <div class="spot-visual">
-        <div class="mock mk-qr">
-          <span class="qrcard"><img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://menufic.com/r/verde-kitchen" alt="Scannable QR code for the Verde Kitchen menu" width="128" height="128"></span>
-          <div class="qrmeta">
-            <b>menufic.com/r/verde-kitchen</b>
-            <div class="row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Update once, everywhere updates</div>
-            <div class="row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Download &amp; print at any size</div>
-            <div class="row"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> No app for guests to install</div>
+      <div class="flex min-w-0 justify-center">
+        <div class="flex w-full min-w-0 max-w-[480px] flex-wrap items-center gap-[22px] rounded-[24px] border border-base-content/[0.08] bg-base-300 p-[clamp(22px,3vw,34px)] shadow-floating">
+          <span class="flex-none rounded-[16px] bg-white p-[13px] leading-[0]"><img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://menufic.com/r/verde-kitchen" alt="Scannable QR code for the Verde Kitchen menu" width="128" height="128"></span>
+          <div class="min-w-0">
+            <b class="mb-2 block font-display text-[1.15rem] font-semibold text-base-content">menufic.com/r/verde-kitchen</b>
+            <div class="mt-2 flex items-center gap-[9px] text-[14px] text-info"><svg class="shrink-0 text-secondary" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Update once, everywhere updates</div>
+            <div class="mt-2 flex items-center gap-[9px] text-[14px] text-info"><svg class="shrink-0 text-secondary" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Download &amp; print at any size</div>
+            <div class="mt-2 flex items-center gap-[9px] text-[14px] text-info"><svg class="shrink-0 text-secondary" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> No app for guests to install</div>
           </div>
         </div>
       </div>
@@ -1233,34 +1046,34 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
 </section>
 
 <!-- ============ PRICING — giant Free. Forever. band (E3) ============ -->
-<section class="pricing" id="pricing" aria-labelledby="price-h">
-  <div class="wrap">
-    <h2 id="price-h" class="pr-free reveal"><em>Free.</em> Forever.</h2>
-    <p class="pr-kicker reveal">Other menu tools charge you monthly for the basics. Here's what each of them costs on Menufic.</p>
+<section id="pricing" class="relative overflow-hidden py-[clamp(84px,12vw,150px)] text-center bg-[radial-gradient(circle_at_18%_12%,oklch(0.605_0.18_30/0.16),transparent_46%),radial-gradient(circle_at_86%_88%,oklch(0.80_0.135_78/0.14),transparent_48%),linear-gradient(180deg,var(--color-cocoa-deep),oklch(0.20_0.03_56))]" aria-labelledby="price-h">
+  <div class="mx-auto w-full max-w-[1200px] px-6">
+    <h2 id="price-h" class="reveal m-0 mb-2 font-display text-[clamp(4rem,15vw,9.5rem)] font-bold leading-[0.86] tracking-[-0.05em] text-base-content"><em class="not-italic text-secondary">Free.</em> Forever.</h2>
+    <p class="reveal mx-auto mt-[18px] max-w-[50ch] text-[clamp(1.05rem,1.8vw,1.3rem)] leading-[1.55] text-info">Other menu tools charge you monthly for the basics. Here's what each of them costs on Menufic.</p>
 
-    <div class="compare reveal">
-      <div class="cmp">
-        <div class="cmp-feat">Theme customisation</div>
-        <div class="cmp-prices"><span class="cmp-was">$29/mo</span><span class="cmp-now">$0</span></div>
-        <span class="cmp-tag">Elsewhere a premium tier. <b>Free here.</b></span>
+    <div class="reveal mx-auto mt-[46px] flex max-w-[760px] flex-wrap justify-center gap-3.5 max-[560px]:max-w-[340px] max-[560px]:flex-col max-[560px]:items-stretch">
+      <div class="min-w-0 max-w-[240px] flex-1 basis-[200px] rounded-[18px] border border-base-content/[0.08] bg-base-200 px-5 py-[22px] text-left max-[560px]:max-w-none">
+        <div class="text-[14.5px] font-semibold leading-[1.3] text-base-content">Theme customisation</div>
+        <div class="mt-3.5 flex flex-wrap items-baseline gap-3"><span class="font-display text-[1.4rem] font-semibold text-info line-through decoration-primary decoration-2">$29/mo</span><span class="font-display text-[1.7rem] font-bold tracking-[-0.02em] text-secondary">$0</span></div>
+        <span class="mt-2 block text-[12px] text-info">Elsewhere a premium tier. <b class="font-semibold text-base-content">Free here.</b></span>
       </div>
-      <div class="cmp">
-        <div class="cmp-feat">Analytics &amp; insights</div>
-        <div class="cmp-prices"><span class="cmp-was">$15/mo</span><span class="cmp-now">$0</span></div>
-        <span class="cmp-tag">Elsewhere an add-on. <b>Free here.</b></span>
+      <div class="min-w-0 max-w-[240px] flex-1 basis-[200px] rounded-[18px] border border-base-content/[0.08] bg-base-200 px-5 py-[22px] text-left max-[560px]:max-w-none">
+        <div class="text-[14.5px] font-semibold leading-[1.3] text-base-content">Analytics &amp; insights</div>
+        <div class="mt-3.5 flex flex-wrap items-baseline gap-3"><span class="font-display text-[1.4rem] font-semibold text-info line-through decoration-primary decoration-2">$15/mo</span><span class="font-display text-[1.7rem] font-bold tracking-[-0.02em] text-secondary">$0</span></div>
+        <span class="mt-2 block text-[12px] text-info">Elsewhere an add-on. <b class="font-semibold text-base-content">Free here.</b></span>
       </div>
-      <div class="cmp">
-        <div class="cmp-feat">QR codes &amp; team seats</div>
-        <div class="cmp-prices"><span class="cmp-was">$12/mo</span><span class="cmp-now">$0</span></div>
-        <span class="cmp-tag">Elsewhere metered. <b>Free here.</b></span>
+      <div class="min-w-0 max-w-[240px] flex-1 basis-[200px] rounded-[18px] border border-base-content/[0.08] bg-base-200 px-5 py-[22px] text-left max-[560px]:max-w-none">
+        <div class="text-[14.5px] font-semibold leading-[1.3] text-base-content">QR codes &amp; team seats</div>
+        <div class="mt-3.5 flex flex-wrap items-baseline gap-3"><span class="font-display text-[1.4rem] font-semibold text-info line-through decoration-primary decoration-2">$12/mo</span><span class="font-display text-[1.7rem] font-bold tracking-[-0.02em] text-secondary">$0</span></div>
+        <span class="mt-2 block text-[12px] text-info">Elsewhere metered. <b class="font-semibold text-base-content">Free here.</b></span>
       </div>
     </div>
 
-    <p class="pr-note reveal"><b>Free since launch, over 3 years ago.</b> No hidden fees. No premium tiers. No credit card, ever.</p>
+    <p class="reveal mx-auto mt-[42px] max-w-[54ch] text-[clamp(1.02rem,1.6vw,1.18rem)] leading-[1.55] text-info"><b class="font-semibold text-base-content">Free since launch, over 3 years ago.</b> No hidden fees. No premium tiers. No credit card, ever.</p>
 
-    <div class="pr-cta reveal">
+    <div class="reveal mt-[34px] flex justify-center">
       <a class="btn btn-primary" href="/app/signin.html">
-        <svg class="gicon" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+        <svg class="h-[18px] w-[18px] shrink-0" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
         Get started, it's free
       </a>
     </div>
@@ -1268,113 +1081,113 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
 </section>
 
 <!-- ============ TESTIMONIALS — D card style as a continuous marquee ============ -->
-<section class="section testimonials" aria-labelledby="test-h">
-  <div class="wrap">
-    <div class="section-head center reveal">
-      <h2 id="test-h">Restaurant owners actually use it.</h2>
-      <p class="lede">From food trucks to family bistros, here's what they say after switching to Menufic.</p>
+<section class="relative overflow-hidden bg-base-200 py-[clamp(72px,10vw,128px)] bg-[radial-gradient(circle_at_20%_30%,oklch(0.30_0.04_60/0.6),transparent_40%),radial-gradient(circle_at_82%_76%,oklch(0.22_0.03_56/0.7),transparent_42%)]" aria-labelledby="test-h">
+  <div class="mx-auto w-full max-w-[1200px] px-6">
+    <div class="reveal mx-auto mb-12 max-w-[680px] text-center">
+      <h2 id="test-h" class="text-[clamp(2rem,4.6vw,3.4rem)] font-bold tracking-[-0.03em] text-base-content">Restaurant owners actually use it.</h2>
+      <p class="mx-auto mt-[18px] max-w-[66ch] text-[clamp(1.05rem,1.6vw,1.2rem)] leading-[1.55] text-info text-pretty">From food trucks to family bistros, here's what they say after switching to Menufic.</p>
     </div>
   </div>
 
   <div class="marquee" id="marquee">
     <div class="marquee-track" id="marqueeTrack" aria-label="Testimonials from restaurant owners">
       <!-- SET A (the original 6) -->
-      <figure class="tcard">
-        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote>"I scribbled our specials on a chalkboard for years. Now there's a QR on every table and our dishes finally look as good as they taste."</blockquote>
-        <figcaption class="who">
-          <img src="assets/img/photo-1438761681033-6461ffad8d80.jpg" alt="Maria Conti, owner of Bella Trattoria, smiling warmly" loading="lazy">
-          <div><b>Maria Conti</b><span>Owner, Bella Trattoria</span></div>
+      <figure class="tcard flex w-[min(340px,82vw)] flex-none flex-col rounded-[22px] border border-base-content/[0.08] bg-base-100 p-[30px]">
+        <div class="mb-4 text-[15px] tracking-[2px] text-secondary" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote class="m-0 font-display text-[1.12rem] font-medium leading-[1.36] tracking-[-0.01em] text-base-content">"I scribbled our specials on a chalkboard for years. Now there's a QR on every table and our dishes finally look as good as they taste."</blockquote>
+        <figcaption class="mt-auto flex items-center gap-[13px] pt-6">
+          <img class="h-[46px] w-[46px] flex-none rounded-full object-cover" src="assets/img/photo-1438761681033-6461ffad8d80.jpg" alt="Maria Conti, owner of Bella Trattoria, smiling warmly" loading="lazy">
+          <div class="min-w-0"><b class="block text-[15px] font-semibold text-base-content">Maria Conti</b><span class="text-[13.5px] text-info">Owner, Bella Trattoria</span></div>
         </figcaption>
       </figure>
-      <figure class="tcard">
-        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote>"We change the grill menu nightly. I update prices from my phone between services and it's live before the doors open. Didn't believe it was free."</blockquote>
-        <figcaption class="who">
-          <img src="assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Daniel Okafor, owner of Saffron and Smoke, in his kitchen" loading="lazy">
-          <div><b>Daniel Okafor</b><span>Owner, Saffron &amp; Smoke</span></div>
+      <figure class="tcard flex w-[min(340px,82vw)] flex-none flex-col rounded-[22px] border border-base-content/[0.08] bg-base-100 p-[30px]">
+        <div class="mb-4 text-[15px] tracking-[2px] text-secondary" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote class="m-0 font-display text-[1.12rem] font-medium leading-[1.36] tracking-[-0.01em] text-base-content">"We change the grill menu nightly. I update prices from my phone between services and it's live before the doors open. Didn't believe it was free."</blockquote>
+        <figcaption class="mt-auto flex items-center gap-[13px] pt-6">
+          <img class="h-[46px] w-[46px] flex-none rounded-full object-cover" src="assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="Daniel Okafor, owner of Saffron and Smoke, in his kitchen" loading="lazy">
+          <div class="min-w-0"><b class="block text-[15px] font-semibold text-base-content">Daniel Okafor</b><span class="text-[13.5px] text-info">Owner, Saffron &amp; Smoke</span></div>
         </figcaption>
       </figure>
-      <figure class="tcard">
-        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote>"No printing costs, no designer, no website headache. I built our whole menu in an afternoon and the green theme suits our little cafe perfectly."</blockquote>
-        <figcaption class="who">
-          <img src="assets/img/photo-1494790108377-be9c29b29330.jpg" alt="Priya Nair, owner of Verde Kitchen, in her bright cafe" loading="lazy">
-          <div><b>Priya Nair</b><span>Owner, Verde Kitchen</span></div>
+      <figure class="tcard flex w-[min(340px,82vw)] flex-none flex-col rounded-[22px] border border-base-content/[0.08] bg-base-100 p-[30px]">
+        <div class="mb-4 text-[15px] tracking-[2px] text-secondary" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote class="m-0 font-display text-[1.12rem] font-medium leading-[1.36] tracking-[-0.01em] text-base-content">"No printing costs, no designer, no website headache. I built our whole menu in an afternoon and the green theme suits our little cafe perfectly."</blockquote>
+        <figcaption class="mt-auto flex items-center gap-[13px] pt-6">
+          <img class="h-[46px] w-[46px] flex-none rounded-full object-cover" src="assets/img/photo-1494790108377-be9c29b29330.jpg" alt="Priya Nair, owner of Verde Kitchen, in her bright cafe" loading="lazy">
+          <div class="min-w-0"><b class="block text-[15px] font-semibold text-base-content">Priya Nair</b><span class="text-[13.5px] text-info">Owner, Verde Kitchen</span></div>
         </figcaption>
       </figure>
-      <figure class="tcard">
-        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote>"Our food truck moves every day. The QR sticker on the window means regulars always find tonight's menu, wherever we park."</blockquote>
-        <figcaption class="who">
-          <span class="av t" aria-hidden="true">TG</span>
-          <div><b>Tom Gallagher</b><span>Owner, Smoke &amp; Barrel Truck</span></div>
+      <figure class="tcard flex w-[min(340px,82vw)] flex-none flex-col rounded-[22px] border border-base-content/[0.08] bg-base-100 p-[30px]">
+        <div class="mb-4 text-[15px] tracking-[2px] text-secondary" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote class="m-0 font-display text-[1.12rem] font-medium leading-[1.36] tracking-[-0.01em] text-base-content">"Our food truck moves every day. The QR sticker on the window means regulars always find tonight's menu, wherever we park."</blockquote>
+        <figcaption class="mt-auto flex items-center gap-[13px] pt-6">
+          <span class="flex h-[46px] w-[46px] flex-none items-center justify-center rounded-full bg-primary font-display text-[18px] font-bold text-primary-content" aria-hidden="true">TG</span>
+          <div class="min-w-0"><b class="block text-[15px] font-semibold text-base-content">Tom Gallagher</b><span class="text-[13.5px] text-info">Owner, Smoke &amp; Barrel Truck</span></div>
         </figcaption>
       </figure>
-      <figure class="tcard">
-        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote>"I'm not techy at all. I had our tapas menu online before my coffee went cold, and editing a price is genuinely two taps."</blockquote>
-        <figcaption class="who">
-          <span class="av" aria-hidden="true">EM</span>
-          <div><b>Elena Marín</b><span>Owner, Calle Ocho Tapas</span></div>
+      <figure class="tcard flex w-[min(340px,82vw)] flex-none flex-col rounded-[22px] border border-base-content/[0.08] bg-base-100 p-[30px]">
+        <div class="mb-4 text-[15px] tracking-[2px] text-secondary" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote class="m-0 font-display text-[1.12rem] font-medium leading-[1.36] tracking-[-0.01em] text-base-content">"I'm not techy at all. I had our tapas menu online before my coffee went cold, and editing a price is genuinely two taps."</blockquote>
+        <figcaption class="mt-auto flex items-center gap-[13px] pt-6">
+          <span class="flex h-[46px] w-[46px] flex-none items-center justify-center rounded-full bg-secondary font-display text-[18px] font-bold text-secondary-content" aria-hidden="true">EM</span>
+          <div class="min-w-0"><b class="block text-[15px] font-semibold text-base-content">Elena Marín</b><span class="text-[13.5px] text-info">Owner, Calle Ocho Tapas</span></div>
         </figcaption>
       </figure>
-      <figure class="tcard">
-        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote>"The analytics surprised me. I could see which ramen people kept opening, so I made it the house special. Sales followed."</blockquote>
-        <figcaption class="who">
-          <span class="av g" aria-hidden="true">KT</span>
-          <div><b>Kenji Tanaka</b><span>Owner, Hana Ramen Bar</span></div>
+      <figure class="tcard flex w-[min(340px,82vw)] flex-none flex-col rounded-[22px] border border-base-content/[0.08] bg-base-100 p-[30px]">
+        <div class="mb-4 text-[15px] tracking-[2px] text-secondary" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote class="m-0 font-display text-[1.12rem] font-medium leading-[1.36] tracking-[-0.01em] text-base-content">"The analytics surprised me. I could see which ramen people kept opening, so I made it the house special. Sales followed."</blockquote>
+        <figcaption class="mt-auto flex items-center gap-[13px] pt-6">
+          <span class="flex h-[46px] w-[46px] flex-none items-center justify-center rounded-full bg-success font-display text-[18px] font-bold text-success-content" aria-hidden="true">KT</span>
+          <div class="min-w-0"><b class="block text-[15px] font-semibold text-base-content">Kenji Tanaka</b><span class="text-[13.5px] text-info">Owner, Hana Ramen Bar</span></div>
         </figcaption>
       </figure>
 
       <!-- SET B (duplicate of A for a seamless loop) — hidden from AT -->
-      <figure class="tcard" aria-hidden="true">
-        <div class="stars">★★★★★</div>
-        <blockquote>"I scribbled our specials on a chalkboard for years. Now there's a QR on every table and our dishes finally look as good as they taste."</blockquote>
-        <figcaption class="who">
-          <img src="assets/img/photo-1438761681033-6461ffad8d80.jpg" alt="" loading="lazy">
-          <div><b>Maria Conti</b><span>Owner, Bella Trattoria</span></div>
+      <figure class="tcard flex w-[min(340px,82vw)] flex-none flex-col rounded-[22px] border border-base-content/[0.08] bg-base-100 p-[30px]" aria-hidden="true">
+        <div class="mb-4 text-[15px] tracking-[2px] text-secondary">★★★★★</div>
+        <blockquote class="m-0 font-display text-[1.12rem] font-medium leading-[1.36] tracking-[-0.01em] text-base-content">"I scribbled our specials on a chalkboard for years. Now there's a QR on every table and our dishes finally look as good as they taste."</blockquote>
+        <figcaption class="mt-auto flex items-center gap-[13px] pt-6">
+          <img class="h-[46px] w-[46px] flex-none rounded-full object-cover" src="assets/img/photo-1438761681033-6461ffad8d80.jpg" alt="" loading="lazy">
+          <div class="min-w-0"><b class="block text-[15px] font-semibold text-base-content">Maria Conti</b><span class="text-[13.5px] text-info">Owner, Bella Trattoria</span></div>
         </figcaption>
       </figure>
-      <figure class="tcard" aria-hidden="true">
-        <div class="stars">★★★★★</div>
-        <blockquote>"We change the grill menu nightly. I update prices from my phone between services and it's live before the doors open. Didn't believe it was free."</blockquote>
-        <figcaption class="who">
-          <img src="assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="" loading="lazy">
-          <div><b>Daniel Okafor</b><span>Owner, Saffron &amp; Smoke</span></div>
+      <figure class="tcard flex w-[min(340px,82vw)] flex-none flex-col rounded-[22px] border border-base-content/[0.08] bg-base-100 p-[30px]" aria-hidden="true">
+        <div class="mb-4 text-[15px] tracking-[2px] text-secondary">★★★★★</div>
+        <blockquote class="m-0 font-display text-[1.12rem] font-medium leading-[1.36] tracking-[-0.01em] text-base-content">"We change the grill menu nightly. I update prices from my phone between services and it's live before the doors open. Didn't believe it was free."</blockquote>
+        <figcaption class="mt-auto flex items-center gap-[13px] pt-6">
+          <img class="h-[46px] w-[46px] flex-none rounded-full object-cover" src="assets/img/photo-1507003211169-0a1dd7228f2d.jpg" alt="" loading="lazy">
+          <div class="min-w-0"><b class="block text-[15px] font-semibold text-base-content">Daniel Okafor</b><span class="text-[13.5px] text-info">Owner, Saffron &amp; Smoke</span></div>
         </figcaption>
       </figure>
-      <figure class="tcard" aria-hidden="true">
-        <div class="stars">★★★★★</div>
-        <blockquote>"No printing costs, no designer, no website headache. I built our whole menu in an afternoon and the green theme suits our little cafe perfectly."</blockquote>
-        <figcaption class="who">
-          <img src="assets/img/photo-1494790108377-be9c29b29330.jpg" alt="" loading="lazy">
-          <div><b>Priya Nair</b><span>Owner, Verde Kitchen</span></div>
+      <figure class="tcard flex w-[min(340px,82vw)] flex-none flex-col rounded-[22px] border border-base-content/[0.08] bg-base-100 p-[30px]" aria-hidden="true">
+        <div class="mb-4 text-[15px] tracking-[2px] text-secondary">★★★★★</div>
+        <blockquote class="m-0 font-display text-[1.12rem] font-medium leading-[1.36] tracking-[-0.01em] text-base-content">"No printing costs, no designer, no website headache. I built our whole menu in an afternoon and the green theme suits our little cafe perfectly."</blockquote>
+        <figcaption class="mt-auto flex items-center gap-[13px] pt-6">
+          <img class="h-[46px] w-[46px] flex-none rounded-full object-cover" src="assets/img/photo-1494790108377-be9c29b29330.jpg" alt="" loading="lazy">
+          <div class="min-w-0"><b class="block text-[15px] font-semibold text-base-content">Priya Nair</b><span class="text-[13.5px] text-info">Owner, Verde Kitchen</span></div>
         </figcaption>
       </figure>
-      <figure class="tcard" aria-hidden="true">
-        <div class="stars">★★★★★</div>
-        <blockquote>"Our food truck moves every day. The QR sticker on the window means regulars always find tonight's menu, wherever we park."</blockquote>
-        <figcaption class="who">
-          <span class="av t">TG</span>
-          <div><b>Tom Gallagher</b><span>Owner, Smoke &amp; Barrel Truck</span></div>
+      <figure class="tcard flex w-[min(340px,82vw)] flex-none flex-col rounded-[22px] border border-base-content/[0.08] bg-base-100 p-[30px]" aria-hidden="true">
+        <div class="mb-4 text-[15px] tracking-[2px] text-secondary">★★★★★</div>
+        <blockquote class="m-0 font-display text-[1.12rem] font-medium leading-[1.36] tracking-[-0.01em] text-base-content">"Our food truck moves every day. The QR sticker on the window means regulars always find tonight's menu, wherever we park."</blockquote>
+        <figcaption class="mt-auto flex items-center gap-[13px] pt-6">
+          <span class="flex h-[46px] w-[46px] flex-none items-center justify-center rounded-full bg-primary font-display text-[18px] font-bold text-primary-content">TG</span>
+          <div class="min-w-0"><b class="block text-[15px] font-semibold text-base-content">Tom Gallagher</b><span class="text-[13.5px] text-info">Owner, Smoke &amp; Barrel Truck</span></div>
         </figcaption>
       </figure>
-      <figure class="tcard" aria-hidden="true">
-        <div class="stars">★★★★★</div>
-        <blockquote>"I'm not techy at all. I had our tapas menu online before my coffee went cold, and editing a price is genuinely two taps."</blockquote>
-        <figcaption class="who">
-          <span class="av">EM</span>
-          <div><b>Elena Marín</b><span>Owner, Calle Ocho Tapas</span></div>
+      <figure class="tcard flex w-[min(340px,82vw)] flex-none flex-col rounded-[22px] border border-base-content/[0.08] bg-base-100 p-[30px]" aria-hidden="true">
+        <div class="mb-4 text-[15px] tracking-[2px] text-secondary">★★★★★</div>
+        <blockquote class="m-0 font-display text-[1.12rem] font-medium leading-[1.36] tracking-[-0.01em] text-base-content">"I'm not techy at all. I had our tapas menu online before my coffee went cold, and editing a price is genuinely two taps."</blockquote>
+        <figcaption class="mt-auto flex items-center gap-[13px] pt-6">
+          <span class="flex h-[46px] w-[46px] flex-none items-center justify-center rounded-full bg-secondary font-display text-[18px] font-bold text-secondary-content">EM</span>
+          <div class="min-w-0"><b class="block text-[15px] font-semibold text-base-content">Elena Marín</b><span class="text-[13.5px] text-info">Owner, Calle Ocho Tapas</span></div>
         </figcaption>
       </figure>
-      <figure class="tcard" aria-hidden="true">
-        <div class="stars">★★★★★</div>
-        <blockquote>"The analytics surprised me. I could see which ramen people kept opening, so I made it the house special. Sales followed."</blockquote>
-        <figcaption class="who">
-          <span class="av g">KT</span>
-          <div><b>Kenji Tanaka</b><span>Owner, Hana Ramen Bar</span></div>
+      <figure class="tcard flex w-[min(340px,82vw)] flex-none flex-col rounded-[22px] border border-base-content/[0.08] bg-base-100 p-[30px]" aria-hidden="true">
+        <div class="mb-4 text-[15px] tracking-[2px] text-secondary">★★★★★</div>
+        <blockquote class="m-0 font-display text-[1.12rem] font-medium leading-[1.36] tracking-[-0.01em] text-base-content">"The analytics surprised me. I could see which ramen people kept opening, so I made it the house special. Sales followed."</blockquote>
+        <figcaption class="mt-auto flex items-center gap-[13px] pt-6">
+          <span class="flex h-[46px] w-[46px] flex-none items-center justify-center rounded-full bg-success font-display text-[18px] font-bold text-success-content">KT</span>
+          <div class="min-w-0"><b class="block text-[15px] font-semibold text-base-content">Kenji Tanaka</b><span class="text-[13.5px] text-info">Owner, Hana Ramen Bar</span></div>
         </figcaption>
       </figure>
     </div>
@@ -1382,16 +1195,17 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
 </section>
 
 <!-- ============ CLOSING ============ -->
-<section class="closing" aria-labelledby="close-h">
-  <div class="closing-bg" aria-hidden="true">
-    <img src="assets/img/photo-1414235077428-338989a2e8c0.jpg" alt="">
+<section class="relative overflow-hidden py-[clamp(96px,14vw,170px)] text-center" aria-labelledby="close-h">
+  <div class="absolute inset-0 z-0" aria-hidden="true">
+    <img class="h-full w-full object-cover object-center" src="assets/img/photo-1414235077428-338989a2e8c0.jpg" alt="">
+    <div class="absolute inset-0 bg-[linear-gradient(180deg,oklch(0.155_0.026_52/0.9),oklch(0.155_0.026_52/0.94)),radial-gradient(circle_at_50%_28%,oklch(0.80_0.135_78/0.16),transparent_58%)]"></div>
   </div>
-  <div class="wrap closing-inner reveal">
-    <h2 id="close-h">Start your free menu.</h2>
-    <p>Build yours in minutes, share it with a QR code, and keep it forever, completely free.</p>
-    <div class="cl-actions">
+  <div class="reveal relative z-[2] mx-auto w-full max-w-[1200px] px-6">
+    <h2 id="close-h" class="text-[clamp(2.3rem,6vw,4.4rem)] font-bold tracking-[-0.03em] text-base-content">Start your free menu.</h2>
+    <p class="mx-auto mt-[22px] max-w-[52ch] text-[clamp(1.05rem,1.8vw,1.3rem)] text-info text-pretty">Build yours in minutes, share it with a QR code, and keep it forever, completely free.</p>
+    <div class="mt-[38px] flex flex-wrap justify-center gap-4">
       <a class="btn btn-primary" href="/app/signin.html">
-        <svg class="gicon" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+        <svg class="h-[18px] w-[18px] shrink-0" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
         Start your free menu
       </a>
       <a class="btn btn-ghost" href="#studio">See a live menu</a>
@@ -1402,37 +1216,37 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
 </main>
 
 <!-- ============ FOOTER ============ -->
-<footer class="footer">
-  <div class="wrap">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a class="wordmark" href="#top" aria-label="Menufic home">Menufic<span class="dot" aria-hidden="true"></span></a>
-        <p class="tag">The genuinely free digital menu maker for restaurants of every size.</p>
+<footer class="border-t border-base-content/10 bg-cocoa-deep pb-9 pt-16">
+  <div class="mx-auto w-full max-w-[1200px] px-6">
+    <div class="grid grid-cols-1 gap-x-8 gap-y-9 min-[440px]:grid-cols-2 md:grid-cols-[1.4fr_repeat(3,0.9fr)]">
+      <div class="max-[760px]:col-span-full">
+        <a class="inline-flex items-center gap-2 font-display text-[25px] font-bold tracking-[-0.04em] text-base-content" href="#top" aria-label="Menufic home">Menufic<span class="mb-[-2px] h-[9px] w-[9px] rounded-full bg-primary" aria-hidden="true"></span></a>
+        <p class="mt-3.5 max-w-[32ch] text-[15px] leading-[1.55] text-info">The genuinely free digital menu maker for restaurants of every size.</p>
       </div>
-      <div class="footer-col">
-        <h6>Product</h6>
-        <a href="#how">How it works</a>
-        <a href="#studio">See a menu</a>
-        <a href="#features">Features</a>
-        <a href="#pricing">Pricing</a>
+      <div>
+        <h6 class="mb-4 text-[13px] font-semibold uppercase tracking-[0.04em] text-info">Product</h6>
+        <a class="mb-[11px] block text-[15px] text-base-content transition-colors hover:text-secondary" href="#how">How it works</a>
+        <a class="mb-[11px] block text-[15px] text-base-content transition-colors hover:text-secondary" href="#studio">See a menu</a>
+        <a class="mb-[11px] block text-[15px] text-base-content transition-colors hover:text-secondary" href="#features">Features</a>
+        <a class="mb-[11px] block text-[15px] text-base-content transition-colors hover:text-secondary" href="#pricing">Pricing</a>
       </div>
-      <div class="footer-col">
-        <h6>Company</h6>
-        <a href="#features">Features</a>
-        <a href="/app/signin.html">Get started</a>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
+      <div>
+        <h6 class="mb-4 text-[13px] font-semibold uppercase tracking-[0.04em] text-info">Company</h6>
+        <a class="mb-[11px] block text-[15px] text-base-content transition-colors hover:text-secondary" href="#features">Features</a>
+        <a class="mb-[11px] block text-[15px] text-base-content transition-colors hover:text-secondary" href="/app/signin.html">Get started</a>
+        <a class="mb-[11px] block text-[15px] text-base-content transition-colors hover:text-secondary" href="#">About</a>
+        <a class="mb-[11px] block text-[15px] text-base-content transition-colors hover:text-secondary" href="#">Contact</a>
       </div>
-      <div class="footer-col">
-        <h6>Legal</h6>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms &amp; Conditions</a>
-        <a href="#">Cookie Policy</a>
+      <div>
+        <h6 class="mb-4 text-[13px] font-semibold uppercase tracking-[0.04em] text-info">Legal</h6>
+        <a class="mb-[11px] block text-[15px] text-base-content transition-colors hover:text-secondary" href="#">Privacy Policy</a>
+        <a class="mb-[11px] block text-[15px] text-base-content transition-colors hover:text-secondary" href="#">Terms &amp; Conditions</a>
+        <a class="mb-[11px] block text-[15px] text-base-content transition-colors hover:text-secondary" href="#">Cookie Policy</a>
       </div>
     </div>
-    <div class="footer-bottom">
+    <div class="mt-[52px] flex flex-wrap justify-between gap-4 border-t border-base-content/10 pt-6 text-[13.5px] text-info">
       <span>© 2026 Menufic. All rights reserved.</span>
-      <span class="pwr">Powered by Menufic</span>
+      <span class="text-secondary">Powered by Menufic</span>
     </div>
   </div>
 </footer>
@@ -1443,20 +1257,21 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var isTouch = window.matchMedia && window.matchMedia("(hover: none)").matches;
 
-  /* ---- NAV condense + hamburger ---- */
+  /* ---- NAV condense + hamburger (state via data-condensed / data-open) ---- */
   var nav = document.getElementById("nav");
-  function onScroll(){ if(window.scrollY > 24){ nav.classList.add("condensed"); } else { nav.classList.remove("condensed"); } }
+  function onScroll(){ nav.dataset.condensed = window.scrollY > 24 ? "true" : "false"; }
   onScroll();
   window.addEventListener("scroll", onScroll, {passive:true});
 
   var burger = document.getElementById("hamburger");
   var navLinks = document.getElementById("navLinks");
   burger.addEventListener("click", function(){
-    var open = navLinks.classList.toggle("open");
+    var open = navLinks.dataset.open !== "true";
+    navLinks.dataset.open = open ? "true" : "false";
     burger.setAttribute("aria-expanded", open ? "true":"false");
   });
   navLinks.addEventListener("click", function(e){
-    if(e.target.tagName === "A"){ navLinks.classList.remove("open"); burger.setAttribute("aria-expanded","false"); }
+    if(e.target.tagName === "A"){ navLinks.dataset.open = "false"; burger.setAttribute("aria-expanded","false"); }
   });
 
   /* ---- Hero: crossfade-looping video (seamless loop via two layers) ---- */
