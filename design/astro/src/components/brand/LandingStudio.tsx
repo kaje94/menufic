@@ -81,8 +81,8 @@ const css = `
 .lst .demo-menu.light .demo-cover::after{background:linear-gradient(180deg,oklch(0 0 0 /0.04),oklch(0.18 0.02 80 /0.55))}
 .lst .demo-head{position:absolute;z-index:2;left:16px;right:16px;bottom:12px}
 .lst .demo-head .badge{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:oklch(1 0 0);background:var(--acc);border-radius:999px;padding:3px 10px;margin-bottom:8px;transition:background .35s var(--ease)}
-.lst .demo-head h4{font-family:var(--fontd);font-weight:700;font-size:clamp(20px,4vw,26px);letter-spacing:-0.02em;color:var(--demo-cream);line-height:1}
-.lst .demo-head .loc{font-size:11.5px;color:var(--demo-cream-soft);margin-top:5px}
+.lst .demo-head h4{font-family:var(--fontd);font-weight:700;font-size:clamp(20px,4vw,26px);letter-spacing:-0.02em;color:var(--cream);line-height:1}
+.lst .demo-head .loc{font-size:11.5px;color:var(--cream-soft);margin-top:5px}
 .lst .demo-tabs{display:flex;gap:8px;padding:12px 16px 4px;flex:none;overflow:hidden}
 .lst .demo-tabs .dt{font-size:11.5px;font-weight:600;color:var(--demo-cream-soft);padding:6px 12px;border-radius:calc(var(--rad) * 0.7);background:transparent;white-space:nowrap;transition:border-radius .35s var(--ease),color .35s var(--ease)}
 .lst .demo-tabs .dt.act{color:oklch(1 0 0);background:var(--acc);transition:background .35s var(--ease),border-radius .35s var(--ease)}
