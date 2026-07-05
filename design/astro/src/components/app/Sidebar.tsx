@@ -43,7 +43,7 @@ export default function Sidebar({
             return (
               <li key={restaurant.id}>
                 <a
-                  href={`/app/restaurant/${restaurant.id}`}
+                  href="/app/restaurant"
                   aria-current={active ? 'page' : undefined}
                   className={`gap-2.5 py-1.5 ${active ? 'bg-secondary/13 text-secondary font-semibold' : ''}`}
                 >
