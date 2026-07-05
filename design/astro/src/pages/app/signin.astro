@@ -97,7 +97,7 @@ import '../../styles/app.css';
     background: #fff; color: #1f1f1f;
     font-family: var(--font-body); font-weight: 600; font-size: 16px;
     border: 1px solid transparent; border-radius: var(--radius-pill);
-    box-shadow: 0 12px 30px -14px oklch(0 0 0 / 0.85);
+    box-shadow: var(--shadow-floating);
     transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
                 box-shadow 0.3s cubic-bezier(0.16,1,0.3,1),
                 background 0.25s cubic-bezier(0.16,1,0.3,1);
@@ -109,11 +109,13 @@ import '../../styles/app.css';
   }
   .google-btn .gmark { width: 20px; height: 20px; flex: none; }
 
-  /* Deep atmospheric shadow for the auth card — not reused across app pages. */
+  /* Auth-card elevation: reuses the shared --shadow-floating token for the
+     primary layer (visually equivalent to the prior bespoke literal), plus
+     a tighter secondary layer and inset saffron rim-light kept bespoke. */
   .auth-card {
     box-shadow:
       0 1px 0 oklch(0.85 0.13 78 / 0.06) inset,
-      0 30px 70px -34px oklch(0 0 0 / 0.85),
+      var(--shadow-floating),
       0 14px 36px -20px oklch(0 0 0 / 0.7);
   }
 </style>
