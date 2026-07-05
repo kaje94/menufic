@@ -1,9 +1,202 @@
 ---
-import '../styles/app.css';
+import BrandLayout from '../layouts/BrandLayout.astro';
+import VideoHero from '../components/brand/VideoHero.tsx';
+import HowItWorks from '../components/brand/HowItWorks.tsx';
+import LandingStudio from '../components/brand/LandingStudio.tsx';
+import Marquee from '../components/brand/Marquee.tsx';
+
+// Landing page — ported from design/landing/index.html.
+// BrandLayout owns <BrandNav> + <Footer> + <PageMotion> + app.css; this page
+// provides the middle content only. The four signature/landing islands
+// (hero, how-it-works, studio, marquee) carry their own bespoke CSS + JS;
+// features / pricing / closing are pure Tailwind + daisyUI utilities.
+// `<main id="top">` matches the nav/footer "Menufic home" (#top) anchor.
 ---
-<html lang="en" data-theme="menufic">
-  <head><meta charset="utf-8" /><title>Astro smoke</title></head>
-  <body class="bg-base-100 text-base-content p-10">
-    <h1 class="text-3xl font-bold">Astro is up</h1>
-  </body>
-</html>
+<BrandLayout
+  title="Menufic — beautiful digital menus"
+  description="Menufic is a genuinely free digital menu maker for restaurants. Build a themeable menu, publish it at menufic.com, and share it with a link and QR code. No design skills, no cost."
+>
+  <main id="top">
+
+    {/* HERO — video bg + composition + floating bubbles (nests LiveMenuDevice) */}
+    <VideoHero client:visible />
+
+    {/* HOW IT WORKS — scroll-scrubbed 3-step assembly */}
+    <HowItWorks client:visible />
+
+    {/* THEME BUILDER STUDIO — the landing's own live restyle sandbox */}
+    <LandingStudio client:visible />
+
+    {/* FEATURES — alternating immersive spotlights */}
+    <section id="features" class="relative bg-base-100 py-[clamp(72px,10vw,128px)]" aria-labelledby="feat-h">
+      <div class="mx-auto w-full max-w-[1200px] px-6">
+        <div class="reveal mb-12 max-w-[680px]">
+          <h2 id="feat-h" class="text-[clamp(2rem,4.6vw,3.4rem)] font-bold tracking-[-0.03em] text-base-content">Everything you need. Nothing you'll pay for.</h2>
+          <p class="mt-[18px] max-w-[66ch] text-[clamp(1.05rem,1.6vw,1.2rem)] leading-[1.55] text-info text-pretty">The tools that make your menu look professional and stay effortless to run, all included and all free.</p>
+        </div>
+
+        {/* Feature 1: Theme customisation (photo) */}
+        <div class="reveal grid items-center gap-[clamp(32px,5vw,72px)] py-[clamp(52px,7vw,84px)] md:grid-cols-2">
+          <div class="min-w-0 max-w-[480px]">
+            <span class="mb-4 inline-flex items-center gap-[11px] font-display text-[14px] font-semibold text-secondary before:h-px before:w-[30px] before:bg-secondary before:opacity-60" aria-hidden="true">Theme</span>
+            <h3 class="text-[clamp(1.8rem,3.4vw,2.7rem)] font-bold tracking-[-0.03em] text-base-content">Make it match your room.</h3>
+            <p class="mt-4 max-w-[40ch] text-[clamp(1.05rem,1.7vw,1.22rem)] leading-[1.5] text-info">Pick an accent, corner style and font, and your whole menu restyles to feel like your restaurant.</p>
+            <div class="mt-[22px] flex flex-wrap gap-[9px]">
+              <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Colour</span>
+              <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Corners</span>
+              <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Typography</span>
+            </div>
+          </div>
+          <div class="flex min-w-0 justify-center">
+            <figure class="relative m-0 w-full overflow-hidden rounded-[24px] border border-base-content/[0.08] shadow-floating">
+              <img class="aspect-[5/4] h-full w-full object-cover" src="/img/photo-1555396273-367ea4eb4db5.jpg" alt="A warm restaurant interior with set tables, the kind of atmosphere a menu's theme should echo" loading="lazy">
+            </figure>
+          </div>
+        </div>
+
+        {/* Feature 2: Analytics (mockup) */}
+        <div class="reveal grid items-center gap-[clamp(32px,5vw,72px)] border-t border-base-content/[0.08] py-[clamp(52px,7vw,84px)] md:grid-cols-2">
+          <div class="min-w-0 max-w-[480px]">
+            <span class="mb-4 inline-flex items-center gap-[11px] font-display text-[14px] font-semibold text-secondary before:h-px before:w-[30px] before:bg-secondary before:opacity-60" aria-hidden="true">Analytics</span>
+            <h3 class="text-[clamp(1.8rem,3.4vw,2.7rem)] font-bold tracking-[-0.03em] text-base-content">See what's working.</h3>
+            <p class="mt-4 max-w-[40ch] text-[clamp(1.05rem,1.7vw,1.22rem)] leading-[1.5] text-info">Live counts show how many people open your menu and which dishes they look at most.</p>
+            <div class="mt-[22px] flex flex-wrap gap-[9px]">
+              <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Daily views</span>
+              <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Top dishes</span>
+              <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Trends</span>
+            </div>
+          </div>
+          <div class="flex min-w-0 justify-center">
+            <div class="w-full min-w-0 max-w-[480px] rounded-[24px] border border-base-content/[0.08] bg-base-300 p-[clamp(22px,3vw,34px)] shadow-floating" role="img" aria-label="An analytics panel showing 2,418 menu views this week, up 18 percent, with a bar chart rising across the week.">
+              <div class="mb-1.5 flex items-baseline justify-between gap-3">
+                <div class="font-display text-[clamp(2rem,4vw,2.8rem)] font-bold tracking-[-0.02em] text-base-content">2,418</div>
+                <div class="rounded-full bg-success/15 px-[11px] py-1 text-[13px] font-semibold text-success">▲ 18%</div>
+              </div>
+              <div class="text-[13.5px] text-info">Menu views this week</div>
+              <div class="mt-[22px] flex h-[128px] items-end gap-2" aria-hidden="true">
+                <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:42%"></span>
+                <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:58%"></span>
+                <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:49%"></span>
+                <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:71%"></span>
+                <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:63%"></span>
+                <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:88%"></span>
+                <span class="min-w-0 flex-1 rounded-t-[6px] bg-gradient-to-t from-accent to-secondary" style="height:100%"></span>
+              </div>
+              <div class="mt-[9px] flex justify-between gap-2 text-[11px] text-info" aria-hidden="true"><span class="flex-1 text-center">M</span><span class="flex-1 text-center">T</span><span class="flex-1 text-center">W</span><span class="flex-1 text-center">T</span><span class="flex-1 text-center">F</span><span class="flex-1 text-center">S</span><span class="flex-1 text-center">S</span></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Feature 3: Team management (photo) */}
+        <div class="reveal grid items-center gap-[clamp(32px,5vw,72px)] border-t border-base-content/[0.08] py-[clamp(52px,7vw,84px)] md:grid-cols-2">
+          <div class="min-w-0 max-w-[480px]">
+            <span class="mb-4 inline-flex items-center gap-[11px] font-display text-[14px] font-semibold text-secondary before:h-px before:w-[30px] before:bg-secondary before:opacity-60" aria-hidden="true">Team</span>
+            <h3 class="text-[clamp(1.8rem,3.4vw,2.7rem)] font-bold tracking-[-0.03em] text-base-content">Bring your team in.</h3>
+            <p class="mt-4 max-w-[40ch] text-[clamp(1.05rem,1.7vw,1.22rem)] leading-[1.5] text-info">Invite staff to update the menu while you stay in control of what goes live.</p>
+            <div class="mt-[22px] flex flex-wrap gap-[9px]">
+              <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Invite staff</span>
+              <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Roles</span>
+              <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Shared edits</span>
+            </div>
+          </div>
+          <div class="flex min-w-0 justify-center md:order-first">
+            <figure class="relative m-0 w-full overflow-hidden rounded-[24px] border border-base-content/[0.08] shadow-floating">
+              <img class="aspect-[5/4] h-full w-full object-cover" src="/img/photo-1517248135467-4c7edcad34c4.jpg" alt="The bar of a busy restaurant with stools and a team ready for service" loading="lazy">
+            </figure>
+          </div>
+        </div>
+
+        {/* Feature 4: QR sharing (mockup) */}
+        <div class="reveal grid items-center gap-[clamp(32px,5vw,72px)] border-t border-base-content/[0.08] py-[clamp(52px,7vw,84px)] md:grid-cols-2">
+          <div class="min-w-0 max-w-[480px]">
+            <span class="mb-4 inline-flex items-center gap-[11px] font-display text-[14px] font-semibold text-secondary before:h-px before:w-[30px] before:bg-secondary before:opacity-60" aria-hidden="true">QR sharing</span>
+            <h3 class="text-[clamp(1.8rem,3.4vw,2.7rem)] font-bold tracking-[-0.03em] text-base-content">One code, everywhere.</h3>
+            <p class="mt-4 max-w-[40ch] text-[clamp(1.05rem,1.7vw,1.22rem)] leading-[1.5] text-info">Print one QR for tables, windows and flyers, and it always points to your latest menu.</p>
+            <div class="mt-[22px] flex flex-wrap gap-[9px]">
+              <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Tables</span>
+              <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Windows</span>
+              <span class="rounded-full border border-base-content/[0.08] bg-base-200 px-[15px] py-[7px] text-[13.5px] font-medium text-base-content">Bio link</span>
+            </div>
+          </div>
+          <div class="flex min-w-0 justify-center">
+            <div class="flex w-full min-w-0 max-w-[480px] flex-wrap items-center gap-[22px] rounded-[24px] border border-base-content/[0.08] bg-base-300 p-[clamp(22px,3vw,34px)] shadow-floating">
+              <span class="flex-none rounded-[16px] bg-white p-[13px] leading-[0]"><img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://menufic.com/r/verde-kitchen" alt="Scannable QR code for the Verde Kitchen menu" width="128" height="128"></span>
+              <div class="min-w-0">
+                <b class="mb-2 block font-display text-[1.15rem] font-semibold text-base-content">menufic.com/r/verde-kitchen</b>
+                <div class="mt-2 flex items-center gap-[9px] text-[14px] text-info"><svg class="shrink-0 text-secondary" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Update once, everywhere updates</div>
+                <div class="mt-2 flex items-center gap-[9px] text-[14px] text-info"><svg class="shrink-0 text-secondary" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Download &amp; print at any size</div>
+                <div class="mt-2 flex items-center gap-[9px] text-[14px] text-info"><svg class="shrink-0 text-secondary" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> No app for guests to install</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* PRICING — giant Free. Forever. band */}
+    <section id="pricing" class="relative overflow-hidden py-[clamp(84px,12vw,150px)] text-center bg-[radial-gradient(circle_at_18%_12%,oklch(0.605_0.18_30/0.16),transparent_46%),radial-gradient(circle_at_86%_88%,oklch(0.80_0.135_78/0.14),transparent_48%),linear-gradient(180deg,var(--color-cocoa-deep),oklch(0.20_0.03_56))]" aria-labelledby="price-h">
+      <div class="mx-auto w-full max-w-[1200px] px-6">
+        <h2 id="price-h" class="reveal m-0 mb-2 font-display text-[clamp(4rem,15vw,9.5rem)] font-bold leading-[0.86] tracking-[-0.05em] text-base-content"><em class="not-italic text-secondary">Free.</em> Forever.</h2>
+        <p class="reveal mx-auto mt-[18px] max-w-[50ch] text-[clamp(1.05rem,1.8vw,1.3rem)] leading-[1.55] text-info">Other menu tools charge you monthly for the basics. Here's what each of them costs on Menufic.</p>
+
+        <div class="reveal mx-auto mt-[46px] flex max-w-[760px] flex-wrap justify-center gap-3.5 max-[560px]:max-w-[340px] max-[560px]:flex-col max-[560px]:items-stretch">
+          <div class="min-w-0 max-w-[240px] flex-1 basis-[200px] rounded-[18px] border border-base-content/[0.08] bg-base-200 px-5 py-[22px] text-left max-[560px]:max-w-none">
+            <div class="text-[14.5px] font-semibold leading-[1.3] text-base-content">Theme customisation</div>
+            <div class="mt-3.5 flex flex-wrap items-baseline gap-3"><span class="font-display text-[1.4rem] font-semibold text-info line-through decoration-primary decoration-2">$29/mo</span><span class="font-display text-[1.7rem] font-bold tracking-[-0.02em] text-secondary">$0</span></div>
+            <span class="mt-2 block text-[12px] text-info">Elsewhere a premium tier. <b class="font-semibold text-base-content">Free here.</b></span>
+          </div>
+          <div class="min-w-0 max-w-[240px] flex-1 basis-[200px] rounded-[18px] border border-base-content/[0.08] bg-base-200 px-5 py-[22px] text-left max-[560px]:max-w-none">
+            <div class="text-[14.5px] font-semibold leading-[1.3] text-base-content">Analytics &amp; insights</div>
+            <div class="mt-3.5 flex flex-wrap items-baseline gap-3"><span class="font-display text-[1.4rem] font-semibold text-info line-through decoration-primary decoration-2">$15/mo</span><span class="font-display text-[1.7rem] font-bold tracking-[-0.02em] text-secondary">$0</span></div>
+            <span class="mt-2 block text-[12px] text-info">Elsewhere an add-on. <b class="font-semibold text-base-content">Free here.</b></span>
+          </div>
+          <div class="min-w-0 max-w-[240px] flex-1 basis-[200px] rounded-[18px] border border-base-content/[0.08] bg-base-200 px-5 py-[22px] text-left max-[560px]:max-w-none">
+            <div class="text-[14.5px] font-semibold leading-[1.3] text-base-content">QR codes &amp; team seats</div>
+            <div class="mt-3.5 flex flex-wrap items-baseline gap-3"><span class="font-display text-[1.4rem] font-semibold text-info line-through decoration-primary decoration-2">$12/mo</span><span class="font-display text-[1.7rem] font-bold tracking-[-0.02em] text-secondary">$0</span></div>
+            <span class="mt-2 block text-[12px] text-info">Elsewhere metered. <b class="font-semibold text-base-content">Free here.</b></span>
+          </div>
+        </div>
+
+        <p class="reveal mx-auto mt-[42px] max-w-[54ch] text-[clamp(1.02rem,1.6vw,1.18rem)] leading-[1.55] text-info"><b class="font-semibold text-base-content">Free since launch, over 3 years ago.</b> No hidden fees. No premium tiers. No credit card, ever.</p>
+
+        <div class="reveal mt-[34px] flex justify-center">
+          <a class="btn btn-primary" href="/app/signin">
+            <svg class="h-[18px] w-[18px] shrink-0" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+            Get started, it's free
+          </a>
+        </div>
+      </div>
+    </section>
+
+    {/* TESTIMONIALS — card marquee */}
+    <section class="relative overflow-hidden bg-base-200 py-[clamp(72px,10vw,128px)] bg-[radial-gradient(circle_at_20%_30%,oklch(0.30_0.04_60/0.6),transparent_40%),radial-gradient(circle_at_82%_76%,oklch(0.22_0.03_56/0.7),transparent_42%)]" aria-labelledby="test-h">
+      <div class="mx-auto w-full max-w-[1200px] px-6">
+        <div class="reveal mx-auto mb-12 max-w-[680px] text-center">
+          <h2 id="test-h" class="text-[clamp(2rem,4.6vw,3.4rem)] font-bold tracking-[-0.03em] text-base-content">Restaurant owners actually use it.</h2>
+          <p class="mx-auto mt-[18px] max-w-[66ch] text-[clamp(1.05rem,1.6vw,1.2rem)] leading-[1.55] text-info text-pretty">From food trucks to family bistros, here's what they say after switching to Menufic.</p>
+        </div>
+      </div>
+      <Marquee client:visible />
+    </section>
+
+    {/* CLOSING */}
+    <section class="relative overflow-hidden py-[clamp(96px,14vw,170px)] text-center" aria-labelledby="close-h">
+      <div class="absolute inset-0 z-0" aria-hidden="true">
+        <img class="h-full w-full object-cover object-center" src="/img/photo-1414235077428-338989a2e8c0.jpg" alt="">
+        <div class="absolute inset-0 bg-[linear-gradient(180deg,oklch(0.155_0.026_52/0.9),oklch(0.155_0.026_52/0.94)),radial-gradient(circle_at_50%_28%,oklch(0.80_0.135_78/0.16),transparent_58%)]"></div>
+      </div>
+      <div class="reveal relative z-[2] mx-auto w-full max-w-[1200px] px-6">
+        <h2 id="close-h" class="text-[clamp(2.3rem,6vw,4.4rem)] font-bold tracking-[-0.03em] text-base-content">Start your free menu.</h2>
+        <p class="mx-auto mt-[22px] max-w-[52ch] text-[clamp(1.05rem,1.8vw,1.3rem)] text-info text-pretty">Build yours in minutes, share it with a QR code, and keep it forever, completely free.</p>
+        <div class="mt-[38px] flex flex-wrap justify-center gap-4">
+          <a class="btn btn-primary" href="/app/signin">
+            <svg class="h-[18px] w-[18px] shrink-0" viewBox="0 0 48 48" aria-hidden="true"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 6 1.1 8.2 3l6.3-6.3C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+            Start your free menu
+          </a>
+          <a class="btn btn-ghost" href="#studio">See a live menu</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</BrandLayout>
