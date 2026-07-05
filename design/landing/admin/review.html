@@ -1,246 +1,469 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="menufic">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Review queue — Menufic Admin</title>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=supreme@400,500,600,700&display=swap">
+<link rel="stylesheet" href="/assets/css/styles.css">
 <style>
-  :root{
-    --bg:#12100e;            /* plain warm-neutral dark, plainer than the app cocoa */
-    --panel:#1a1715;
-    --panel-2:#211d1a;
-    --line:#322c28;
-    --line-strong:#433b35;
-    --text:#ece8e2;
-    --muted:#a59c92;
-    --muted-2:#79716a;
-    --accent:#6ea8ff;        /* utilitarian blue, not brand saffron */
-    --green:#53be70;
-    --green-bg:rgba(83,190,112,0.14);
-    --amber:#f3a64a;
-    --amber-bg:rgba(243,166,74,0.14);
-    --red:#f05940;
-    --red-bg:rgba(240,89,64,0.14);
-    --grey:#8a8079;
-    --grey-bg:rgba(138,128,121,0.14);
-    --radius:6px;
-    --focus:#8fbcff;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  html{-webkit-text-size-adjust:100%}
-  body{
-    font-family:"Supreme",system-ui,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    font-size:14px;
-    line-height:1.5;
-    min-width:0;
-    overflow-x:hidden;
-  }
-  a{color:inherit}
-  button{font-family:inherit}
-  :focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+  /* ═══ Admin portal island ═══════════════════════════════════════════
+     Admin is intentionally utilitarian: compact density, near-default
+     daisyUI, admin-blue accent (not brand saffron), Supreme throughout.
+     All colors reference menufic theme tokens (var(--color-*)).
+     Unlayered — after styles.css link, wins source-order conflicts.
+     Shell chrome (topbar/tabsbar/userchip/exit-link/table-wrap/row/
+     admin-btn/count-pill shape) matches admin/restaurants.html for
+     cross-page consistency; only page-specific pieces (AI badges,
+     preview card, reject box, approve/reject color variants) differ. */
 
-  /* ---------- Shell / navbar ---------- */
-  .topbar{
-    display:flex;align-items:center;gap:16px;
-    padding:0 16px;height:56px;
-    background:var(--panel);
-    border-bottom:1px solid var(--line);
-    position:sticky;top:0;z-index:20;
-    flex-wrap:wrap;
+  /* Headings use body font; this is a utility portal, not a display surface.
+     Beats @layer base { h1–h4 { font-family: var(--font-display) } }. */
+  main h1,
+  .meta h3 {
+    font-family: var(--font-body);
+    text-wrap: auto;
   }
-  .wordmark{
-    font-weight:700;font-size:15px;letter-spacing:-0.01em;
-    color:var(--text);white-space:nowrap;text-decoration:none;
-    display:flex;align-items:center;gap:7px;
-  }
-  .wordmark .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
-  .wordmark .tag{
-    font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
-    color:var(--muted-2);border:1px solid var(--line-strong);border-radius:4px;
-    padding:1px 6px;
-  }
-  .topbar-spacer{flex:1 1 auto}
-  .userchip{
-    display:flex;align-items:center;gap:8px;
-    font-size:12.5px;color:var(--muted);
-    padding:5px 10px;border:1px solid var(--line);border-radius:var(--radius);
-    background:var(--panel-2);white-space:nowrap;
-  }
-  .userchip .avatar{
-    width:22px;height:22px;border-radius:50%;
-    background:#3a4d6b;color:#cfe0ff;
-    display:flex;align-items:center;justify-content:center;
-    font-size:11px;font-weight:700;
-  }
-  .exit-link{
-    display:inline-flex;align-items:center;gap:6px;
-    font-size:12.5px;font-weight:600;color:var(--muted);
-    text-decoration:none;padding:8px 12px;min-height:40px;
-    border:1px solid var(--line);border-radius:var(--radius);
-    white-space:nowrap;
-  }
-  .exit-link:hover{color:var(--text);border-color:var(--line-strong)}
 
-  /* ---------- Tabs ---------- */
-  .tabsbar{
-    background:var(--panel);
-    border-bottom:1px solid var(--line);
-    padding:0 16px;
-    display:flex;gap:4px;overflow-x:auto;
-    position:sticky;top:56px;z-index:19;
+  /* ── Topbar ─────────────────────────────────────────────────────── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+    height: 56px;
+    background: var(--color-base-200);
+    border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-wrap: wrap;
   }
-  .tab{
-    display:inline-flex;align-items:center;
-    min-height:44px;padding:0 14px;
-    font-size:13.5px;font-weight:600;color:var(--muted);
-    text-decoration:none;white-space:nowrap;
-    border-bottom:2px solid transparent;margin-bottom:-1px;
+  .wordmark {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    color: var(--color-base-content);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
   }
-  .tab:hover{color:var(--text)}
-  .tab[aria-current="page"]{color:var(--text);border-bottom-color:var(--accent)}
+  /* Admin dot: utilitarian blue — intentionally NOT brand saffron */
+  .wordmark .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: oklch(0.63 0.18 230);
+  }
+  .wordmark .tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: color-mix(in oklch, var(--color-base-content) 44%, transparent);
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 18%, transparent);
+    border-radius: 4px;
+    padding: 1px 6px;
+  }
+  .topbar-spacer { flex: 1 1 auto; }
+  .userchip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    padding: 5px 10px;
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    border-radius: 6px;
+    background: var(--color-base-300);
+    white-space: nowrap;
+  }
+  .userchip .avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: oklch(0.30 0.09 240);
+    color: oklch(0.87 0.06 240);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .exit-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    text-decoration: none;
+    padding: 8px 12px;
+    min-height: 40px;
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .exit-link:hover {
+    color: var(--color-base-content);
+    border-color: color-mix(in oklch, var(--color-base-content) 28%, transparent);
+  }
 
-  /* ---------- Page ---------- */
-  main{padding:18px 16px 64px;max-width:1180px;margin:0 auto}
-  .page-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
-  h1{font-size:18px;font-weight:700;margin:0;letter-spacing:-0.01em}
-  .count-pill{
-    font-size:11.5px;font-weight:600;color:var(--amber);
-    background:var(--amber-bg);border:1px solid rgba(243,166,74,0.35);
-    border-radius:999px;padding:1px 9px;
+  /* ── Admin tabs nav ──────────────────────────────────────────────── */
+  .tabsbar {
+    background: var(--color-base-200);
+    border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    padding: 0 16px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    position: sticky;
+    top: 56px;
+    z-index: 19;
   }
-  .sub{color:var(--muted);font-size:12.5px;margin:2px 0 18px}
+  .tab {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: color-mix(in oklch, var(--color-base-content) 54%, transparent);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--color-base-content); }
+  /* Active tab: admin-blue underline — utilitarian, not brand saffron */
+  .tab[aria-current="page"] {
+    color: var(--color-base-content);
+    border-bottom-color: oklch(0.63 0.18 230);
+  }
 
-  /* ---------- Table ---------- */
-  .table-wrap{
-    min-width:0;width:100%;
-    overflow-x:auto;-webkit-overflow-scrolling:touch;
-    border:1px solid var(--line);border-radius:var(--radius);
-    background:var(--panel);
+  /* ── Page header ─────────────────────────────────────────────────── */
+  /* Pending count: saffron/warning-toned (Two-Accent Rule: saffron = attention;
+     these are the items actually awaiting the admin's action, unlike
+     restaurants.html's plain informational total). */
+  .count-pill {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--color-warning);
+    background: color-mix(in oklch, var(--color-warning) 14%, transparent);
+    border: 1px solid color-mix(in oklch, var(--color-warning) 35%, transparent);
+    border-radius: 999px;
+    padding: 1px 9px;
   }
-  table{border-collapse:collapse;width:100%;min-width:720px;font-size:13px}
-  thead th{
-    text-align:left;font-weight:600;font-size:11px;letter-spacing:0.04em;
-    text-transform:uppercase;color:var(--muted-2);
-    padding:10px 14px;border-bottom:1px solid var(--line);
-    background:var(--panel-2);white-space:nowrap;
-  }
-  tbody td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
-  tbody tr:last-child td{border-bottom:none}
-  .row-main{cursor:pointer}
-  .row-main:hover{background:var(--panel-2)}
-  .row-main[aria-expanded="true"]{background:var(--panel-2)}
-  .r-name{font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
-  .chev{color:var(--muted-2);transition:transform .18s ease;display:inline-block}
-  .row-main[aria-expanded="true"] .chev{transform:rotate(90deg)}
-  .r-email{color:var(--muted);font-size:12.5px;word-break:break-all}
-  .r-time{color:var(--muted);white-space:nowrap;font-size:12.5px}
 
-  /* ---------- Badges ---------- */
-  .badge{
-    display:inline-flex;align-items:center;gap:6px;
-    font-size:11.5px;font-weight:600;
-    padding:3px 9px;border-radius:4px;white-space:nowrap;
-    border:1px solid transparent;
+  /* ── Table wrapper ───────────────────────────────────────────────── */
+  .table-wrap {
+    min-width: 0;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    border-radius: 6px;
+    background: var(--color-base-200);
   }
-  .badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
-  .badge.pass{color:var(--green);background:var(--green-bg);border-color:rgba(83,190,112,0.3)}
-  .badge.flag{color:var(--amber);background:var(--amber-bg);border-color:rgba(243,166,74,0.3)}
-  .flag-reason{color:var(--muted);font-size:11.5px;display:block;margin-top:3px}
+  .table-wrap table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 720px;
+    font-size: 13px;
+  }
+  .table-wrap thead th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: color-mix(in oklch, var(--color-base-content) 40%, transparent);
+    padding: 10px 14px;
+    border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    background: var(--color-base-300);
+    white-space: nowrap;
+  }
+  .table-wrap tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    vertical-align: middle;
+  }
+  .table-wrap tbody tr:last-child td { border-bottom: none; }
 
-  /* ---------- Buttons ---------- */
-  .btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:7px;
-    min-height:40px;padding:0 14px;
-    font-size:13px;font-weight:600;
-    border-radius:var(--radius);border:1px solid var(--line-strong);
-    background:var(--panel-2);color:var(--text);
-    cursor:pointer;white-space:nowrap;text-decoration:none;
+  /* ── Row interactions ────────────────────────────────────────────── */
+  .row-main { cursor: pointer; }
+  .row-main:hover { background: var(--color-base-300); }
+  .row-main[aria-expanded="true"] { background: var(--color-base-300); }
+  .r-name { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .chev {
+    color: color-mix(in oklch, var(--color-base-content) 38%, transparent);
+    transition: transform 0.18s ease;
+    display: inline-block;
   }
-  .btn:hover{border-color:var(--muted-2)}
-  .btn-sm{min-height:40px;padding:0 12px;font-size:12.5px}
-  .btn-approve{background:var(--green-bg);border-color:rgba(83,190,112,0.45);color:#9ee2af}
-  .btn-approve:hover{background:rgba(83,190,112,0.22)}
-  .btn-reject{background:var(--red-bg);border-color:rgba(240,89,64,0.45);color:#ff9c8c}
-  .btn-reject:hover{background:rgba(240,89,64,0.22)}
-  .btn-send{background:var(--red);border-color:var(--red);color:#fff}
-  .btn-send:hover{filter:brightness(1.08)}
+  .row-main[aria-expanded="true"] .chev { transform: rotate(90deg); }
+  .r-owner {
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    font-size: 12.5px;
+    word-break: break-all;
+  }
+  .r-time {
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    white-space: nowrap;
+    font-size: 12.5px;
+  }
+  .cell-actions { white-space: nowrap; }
 
-  /* ---------- Detail row ---------- */
-  .detail-row td{padding:0;background:var(--bg)}
-  .detail-row[hidden]{display:none}
-  .detail-inner{
-    padding:18px 16px;
-    border-bottom:1px solid var(--line);
-    display:grid;grid-template-columns:1fr;gap:16px;
+  /* ── AI recommendation badge (dot + label) ───────────────────────── */
+  .badge-ai {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 4px;
+    white-space: nowrap;
+    border: 1px solid transparent;
   }
-  @media(min-width:760px){
-    .detail-inner{grid-template-columns:1fr 1fr}
+  .badge-ai::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    flex: none;
   }
-  .panel{
-    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
-    padding:14px;min-width:0;
+  .badge-ai-pass {
+    color: var(--color-success);
+    background: color-mix(in oklch, var(--color-success) 14%, transparent);
+    border-color: color-mix(in oklch, var(--color-success) 30%, transparent);
   }
-  .panel h3{
-    margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:0.05em;
-    text-transform:uppercase;color:var(--muted-2);
+  .badge-ai-flag {
+    color: var(--color-warning);
+    background: color-mix(in oklch, var(--color-warning) 14%, transparent);
+    border-color: color-mix(in oklch, var(--color-warning) 30%, transparent);
   }
-  /* menu preview */
-  .preview-card{background:var(--panel-2);border-radius:5px;padding:12px;border:1px solid var(--line)}
-  .preview-head{font-size:13px;font-weight:700;margin-bottom:2px}
-  .preview-cat{font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted-2);margin:10px 0 6px}
-  .preview-item{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed var(--line)}
-  .preview-item:last-child{border-bottom:none}
-  .preview-item .nm{font-weight:500}
-  .preview-item .ds{color:var(--muted);font-size:12px;margin-top:1px}
-  .preview-item .pr{color:var(--text);font-weight:600;white-space:nowrap}
-  .preview-note{font-size:11px;color:var(--muted-2);margin-top:8px}
+  .flag-reason {
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    font-size: 11.5px;
+    display: block;
+    margin-top: 3px;
+  }
 
-  /* AI panel */
-  .ai-line{display:flex;gap:8px;font-size:12.5px;padding:4px 0;color:var(--muted)}
-  .ai-line b{color:var(--text);font-weight:600}
-  .ai-checks{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
-  .chk{font-size:11px;color:var(--muted);background:var(--panel-2);border:1px solid var(--line);border-radius:4px;padding:2px 8px}
-  .ai-result{
-    margin-top:10px;padding:10px 12px;border-radius:5px;font-size:12.5px;
-    display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  /* ── Admin compact action buttons ────────────────────────────────── */
+  /* Base: 36px/6px-radius, not brand 48px pills (matches restaurants.html). */
+  .admin-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 36px;
+    height: 36px;
+    padding: 0 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 20%, transparent);
+    background: var(--color-base-300);
+    color: var(--color-base-content);
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: var(--font-body);
+    text-decoration: none;
   }
-  .ai-result.pass{background:var(--green-bg);border:1px solid rgba(83,190,112,0.3);color:#9ee2af}
-  .ai-result.flag{background:var(--amber-bg);border:1px solid rgba(243,166,74,0.3);color:#f3c084}
-  .ai-result .conf{font-variant-numeric:tabular-nums;font-weight:700}
+  .admin-btn:hover {
+    border-color: color-mix(in oklch, var(--color-base-content) 36%, transparent);
+  }
+  /* Approve & publish: tonal success (green = confirm) */
+  .admin-btn-approve {
+    color: var(--color-success);
+    background: color-mix(in oklch, var(--color-success) 14%, transparent);
+    border-color: color-mix(in oklch, var(--color-success) 30%, transparent);
+  }
+  .admin-btn-approve:hover {
+    background: color-mix(in oklch, var(--color-success) 24%, transparent);
+  }
+  /* Reject… (reveals the comment box): tonal error — danger-red, distinct from tomato */
+  .admin-btn-reject {
+    color: var(--color-error);
+    background: color-mix(in oklch, var(--color-error) 14%, transparent);
+    border-color: color-mix(in oklch, var(--color-error) 30%, transparent);
+  }
+  .admin-btn-reject:hover {
+    background: color-mix(in oklch, var(--color-error) 24%, transparent);
+  }
+  /* Send rejection: the actual committed destructive action — solid error */
+  .admin-btn-send {
+    background: var(--color-error);
+    border-color: var(--color-error);
+    color: var(--color-error-content);
+  }
+  .admin-btn-send:hover {
+    background: color-mix(in oklch, var(--color-error) 88%, white);
+  }
 
-  .actions-bar{
-    grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
-    padding-top:4px;
+  /* ── Expandable detail row ───────────────────────────────────────── */
+  .detail-row td { padding: 0; background: var(--color-base-100); }
+  .detail-row[hidden] { display: none; }
+  .detail-inner {
+    padding: 18px 16px;
+    border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
-  .actions-bar .hint{color:var(--muted-2);font-size:11.5px;margin-left:auto}
+  @media (min-width: 760px) {
+    .detail-inner { grid-template-columns: 1fr 1fr; }
+  }
+  .meta {
+    background: var(--color-base-200);
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    border-radius: 6px;
+    padding: 14px;
+    min-width: 0;
+  }
+  .meta h3 {
+    margin: 0 0 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: color-mix(in oklch, var(--color-base-content) 44%, transparent);
+  }
 
-  .reject-box[hidden]{display:none}
-  .reject-box{
-    grid-column:1/-1;background:var(--panel);border:1px solid rgba(240,89,64,0.4);
-    border-radius:var(--radius);padding:14px;
+  /* ── Menu preview card ────────────────────────────────────────────── */
+  .preview-card {
+    background: var(--color-base-300);
+    border-radius: 6px;
+    padding: 12px;
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
   }
-  .reject-box label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text)}
-  .reject-box textarea{
-    width:100%;min-height:84px;resize:vertical;
-    background:var(--bg);color:var(--text);
-    border:1px solid var(--line-strong);border-radius:5px;
-    padding:10px;font-family:inherit;font-size:13px;line-height:1.5;
+  .preview-head { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .preview-tagline {
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    font-size: 12.5px;
+    word-break: break-all;
   }
-  .reject-box textarea:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
-  .reject-actions{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+  .preview-cat {
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: color-mix(in oklch, var(--color-base-content) 44%, transparent);
+    margin: 10px 0 6px;
+  }
+  .preview-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px dashed color-mix(in oklch, var(--color-base-content) 12%, transparent);
+  }
+  .preview-item:last-child { border-bottom: none; }
+  .preview-item .nm { font-weight: 500; font-size: 13px; }
+  .preview-item .ds {
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    font-size: 12px;
+    margin-top: 1px;
+  }
+  .preview-item .pr { color: var(--color-base-content); font-weight: 600; white-space: nowrap; font-size: 13px; }
+  .preview-note {
+    font-size: 11px;
+    color: color-mix(in oklch, var(--color-base-content) 44%, transparent);
+    margin-top: 8px;
+  }
 
-  .cell-actions{white-space:nowrap}
-  @media(max-width:520px){
-    .topbar{height:auto;padding:10px 12px}
-    main{padding:16px 12px 56px}
+  /* ── AI pre-screen panel ──────────────────────────────────────────── */
+  .ai-line {
+    display: flex;
+    gap: 8px;
+    font-size: 12.5px;
+    padding: 4px 0;
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
   }
-  @media(prefers-reduced-motion:reduce){
-    *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+  .ai-line b { color: var(--color-base-content); font-weight: 600; }
+  .ai-checks { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+  .chk {
+    font-size: 11px;
+    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+    background: var(--color-base-300);
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+    border-radius: 4px;
+    padding: 2px 8px;
+  }
+  .ai-result {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .ai-result.pass {
+    background: color-mix(in oklch, var(--color-success) 14%, transparent);
+    border: 1px solid color-mix(in oklch, var(--color-success) 30%, transparent);
+    color: var(--color-success);
+  }
+  .ai-result.flag {
+    background: color-mix(in oklch, var(--color-warning) 14%, transparent);
+    border: 1px solid color-mix(in oklch, var(--color-warning) 30%, transparent);
+    color: var(--color-warning);
+  }
+  .ai-result .conf { font-variant-numeric: tabular-nums; font-weight: 700; }
+
+  /* ── Actions bar + reject comment box ────────────────────────────── */
+  .detail-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    padding-top: 4px;
+  }
+  .detail-actions .hint {
+    color: color-mix(in oklch, var(--color-base-content) 44%, transparent);
+    font-size: 11.5px;
+    margin-left: auto;
+  }
+  .reject-box[hidden] { display: none; }
+  .reject-box {
+    grid-column: 1 / -1;
+    background: var(--color-base-200);
+    border: 1px solid color-mix(in oklch, var(--color-error) 40%, transparent);
+    border-radius: 6px;
+    padding: 14px;
+  }
+  .reject-box label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--color-base-content);
+  }
+  .reject-box textarea {
+    width: 100%;
+    min-height: 84px;
+    resize: vertical;
+    background: var(--color-base-100);
+    color: var(--color-base-content);
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 24%, transparent);
+    border-radius: 6px;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .reject-actions { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+
+  /* ── Responsive ──────────────────────────────────────────────────── */
+  @media (max-width: 520px) {
+    .topbar { height: auto; padding: 10px 12px; }
+    main { padding: 16px 12px 56px; }
   }
 </style>
 </head>
@@ -258,15 +481,15 @@
   <a class="tab" href="/admin/restaurants.html">Restaurants</a>
 </nav>
 
-<main>
-  <div class="page-head">
-    <h1>Review queue</h1>
+<main class="px-4 pt-[18px] pb-16 max-w-[1180px] mx-auto">
+  <div class="flex items-baseline gap-3 flex-wrap mb-1">
+    <h1 class="text-lg font-bold m-0 -tracking-[0.01em]">Review queue</h1>
     <span class="count-pill">3 pending</span>
   </div>
-  <p class="sub">First-time publish requests awaiting approval. Oldest first. AI pre-screening shown per row; you make the final call.</p>
+  <p class="text-[12.5px] text-base-content/60 mt-0.5 mb-4">First-time publish requests awaiting approval. Oldest first. AI pre-screening shown per row; you make the final call.</p>
 
   <div class="table-wrap">
-    <table>
+    <table class="table">
       <thead>
         <tr>
           <th scope="col">Restaurant</th>
@@ -281,19 +504,19 @@
         <!-- Row 1: Verde Kitchen -->
         <tr class="row-main" aria-expanded="false" aria-controls="d-verde" data-toggle>
           <td><span class="r-name"><span class="chev">&rsaquo;</span>Verde Kitchen</span></td>
-          <td class="r-email">arun@verdekitchen.com</td>
+          <td class="r-owner">arun@verdekitchen.com</td>
           <td class="r-time">2 hours ago</td>
-          <td><span class="badge pass">AI: Pass</span></td>
-          <td class="cell-actions"><button type="button" class="btn btn-sm" data-review>Review</button></td>
+          <td><span class="badge-ai badge-ai-pass">AI: Pass</span></td>
+          <td class="cell-actions"><button type="button" class="admin-btn" data-review>Review</button></td>
         </tr>
         <tr class="detail-row" id="d-verde" hidden>
           <td colspan="5">
             <div class="detail-inner">
-              <div class="panel">
+              <div class="meta">
                 <h3>Menu preview (public view)</h3>
                 <div class="preview-card">
                   <div class="preview-head">Verde Kitchen</div>
-                  <div class="r-email">Plant-forward bowls &amp; small plates</div>
+                  <div class="preview-tagline">Plant-forward bowls &amp; small plates</div>
                   <div class="preview-cat">Mains</div>
                   <div class="preview-item">
                     <div><div class="nm">Charred Broccolini Bowl</div><div class="ds">Farro, tahini, preserved lemon, dukkah</div></div>
@@ -311,7 +534,7 @@
                   <div class="preview-note">12 items across 3 categories · 1 menu</div>
                 </div>
               </div>
-              <div class="panel">
+              <div class="meta">
                 <h3>AI pre-screen details</h3>
                 <div class="ai-line"><b>Checked for:</b></div>
                 <div class="ai-checks">
@@ -327,9 +550,9 @@
                 </div>
               </div>
 
-              <div class="actions-bar">
-                <button type="button" class="btn btn-approve" data-approve>&#10003; Approve &amp; publish</button>
-                <button type="button" class="btn btn-reject" data-reject-toggle aria-expanded="false">Reject…</button>
+              <div class="detail-actions">
+                <button type="button" class="admin-btn admin-btn-approve" data-approve>&#10003; Approve &amp; publish</button>
+                <button type="button" class="admin-btn admin-btn-reject" data-reject-toggle aria-expanded="false">Reject…</button>
                 <span class="hint">Approving emails the owner and publishes the menu.</span>
               </div>
 
@@ -337,8 +560,8 @@
                 <label for="rej-verde">Rejection comment (sent to owner — required)</label>
                 <textarea id="rej-verde" placeholder="Explain what needs to change before this menu can be published…"></textarea>
                 <div class="reject-actions">
-                  <button type="button" class="btn btn-send" data-send>Send rejection</button>
-                  <button type="button" class="btn btn-sm" data-reject-cancel>Cancel</button>
+                  <button type="button" class="admin-btn admin-btn-send" data-send>Send rejection</button>
+                  <button type="button" class="admin-btn" data-reject-cancel>Cancel</button>
                 </div>
               </div>
             </div>
@@ -348,22 +571,22 @@
         <!-- Row 2: Tony's Pizzeria (FLAG) -->
         <tr class="row-main" aria-expanded="false" aria-controls="d-tony" data-toggle>
           <td><span class="r-name"><span class="chev">&rsaquo;</span>Tony's Pizzeria</span></td>
-          <td class="r-email">tony@tonyspizza.co</td>
+          <td class="r-owner">tony@tonyspizza.co</td>
           <td class="r-time">5 hours ago</td>
           <td>
-            <span class="badge flag">AI: Flag</span>
+            <span class="badge-ai badge-ai-flag">AI: Flag</span>
             <span class="flag-reason">Placeholder text detected</span>
           </td>
-          <td class="cell-actions"><button type="button" class="btn btn-sm" data-review>Review</button></td>
+          <td class="cell-actions"><button type="button" class="admin-btn" data-review>Review</button></td>
         </tr>
         <tr class="detail-row" id="d-tony" hidden>
           <td colspan="5">
             <div class="detail-inner">
-              <div class="panel">
+              <div class="meta">
                 <h3>Menu preview (public view)</h3>
                 <div class="preview-card">
                   <div class="preview-head">Tony's Pizzeria</div>
-                  <div class="r-email">Wood-fired Neapolitan pizza</div>
+                  <div class="preview-tagline">Wood-fired Neapolitan pizza</div>
                   <div class="preview-cat">Pizza</div>
                   <div class="preview-item">
                     <div><div class="nm">Margherita</div><div class="ds">San Marzano, fior di latte, basil</div></div>
@@ -374,13 +597,13 @@
                     <div class="pr">£12.00</div>
                   </div>
                   <div class="preview-item">
-                    <div><div class="nm">Lorem ipsum pizza</div><div class="ds" style="color:var(--amber)">Lorem ipsum dolor sit amet description here</div></div>
+                    <div><div class="nm">Lorem ipsum pizza</div><div class="ds" style="color:var(--color-warning)">Lorem ipsum dolor sit amet description here</div></div>
                     <div class="pr">£0.00</div>
                   </div>
                   <div class="preview-note">9 items across 2 categories · 1 menu</div>
                 </div>
               </div>
-              <div class="panel">
+              <div class="meta">
                 <h3>AI pre-screen details</h3>
                 <div class="ai-line"><b>Checked for:</b></div>
                 <div class="ai-checks">
@@ -396,9 +619,9 @@
                 </div>
               </div>
 
-              <div class="actions-bar">
-                <button type="button" class="btn btn-approve" data-approve>&#10003; Approve &amp; publish</button>
-                <button type="button" class="btn btn-reject" data-reject-toggle aria-expanded="false">Reject…</button>
+              <div class="detail-actions">
+                <button type="button" class="admin-btn admin-btn-approve" data-approve>&#10003; Approve &amp; publish</button>
+                <button type="button" class="admin-btn admin-btn-reject" data-reject-toggle aria-expanded="false">Reject…</button>
                 <span class="hint">Flagged: confirm placeholder content is resolved before approving.</span>
               </div>
 
@@ -406,8 +629,8 @@
                 <label for="rej-tony">Rejection comment (sent to owner — required)</label>
                 <textarea id="rej-tony" placeholder="Explain what needs to change before this menu can be published…">Please replace the "Lorem ipsum pizza" placeholder item and set a real price before resubmitting.</textarea>
                 <div class="reject-actions">
-                  <button type="button" class="btn btn-send" data-send>Send rejection</button>
-                  <button type="button" class="btn btn-sm" data-reject-cancel>Cancel</button>
+                  <button type="button" class="admin-btn admin-btn-send" data-send>Send rejection</button>
+                  <button type="button" class="admin-btn" data-reject-cancel>Cancel</button>
                 </div>
               </div>
             </div>
@@ -417,19 +640,19 @@
         <!-- Row 3: Green Bowl -->
         <tr class="row-main" aria-expanded="false" aria-controls="d-green" data-toggle>
           <td><span class="r-name"><span class="chev">&rsaquo;</span>Green Bowl</span></td>
-          <td class="r-email">lia@greenbowl.io</td>
+          <td class="r-owner">lia@greenbowl.io</td>
           <td class="r-time">1 day ago</td>
-          <td><span class="badge pass">AI: Pass</span></td>
-          <td class="cell-actions"><button type="button" class="btn btn-sm" data-review>Review</button></td>
+          <td><span class="badge-ai badge-ai-pass">AI: Pass</span></td>
+          <td class="cell-actions"><button type="button" class="admin-btn" data-review>Review</button></td>
         </tr>
         <tr class="detail-row" id="d-green" hidden>
           <td colspan="5">
             <div class="detail-inner">
-              <div class="panel">
+              <div class="meta">
                 <h3>Menu preview (public view)</h3>
                 <div class="preview-card">
                   <div class="preview-head">Green Bowl</div>
-                  <div class="r-email">Fast, fresh grain bowls</div>
+                  <div class="preview-tagline">Fast, fresh grain bowls</div>
                   <div class="preview-cat">Bowls</div>
                   <div class="preview-item">
                     <div><div class="nm">Teriyaki Tofu Bowl</div><div class="ds">Brown rice, edamame, pickled ginger</div></div>
@@ -447,7 +670,7 @@
                   <div class="preview-note">15 items across 4 categories · 1 menu</div>
                 </div>
               </div>
-              <div class="panel">
+              <div class="meta">
                 <h3>AI pre-screen details</h3>
                 <div class="ai-line"><b>Checked for:</b></div>
                 <div class="ai-checks">
@@ -463,9 +686,9 @@
                 </div>
               </div>
 
-              <div class="actions-bar">
-                <button type="button" class="btn btn-approve" data-approve>&#10003; Approve &amp; publish</button>
-                <button type="button" class="btn btn-reject" data-reject-toggle aria-expanded="false">Reject…</button>
+              <div class="detail-actions">
+                <button type="button" class="admin-btn admin-btn-approve" data-approve>&#10003; Approve &amp; publish</button>
+                <button type="button" class="admin-btn admin-btn-reject" data-reject-toggle aria-expanded="false">Reject…</button>
                 <span class="hint">Approving emails the owner and publishes the menu.</span>
               </div>
 
@@ -473,8 +696,8 @@
                 <label for="rej-green">Rejection comment (sent to owner — required)</label>
                 <textarea id="rej-green" placeholder="Explain what needs to change before this menu can be published…"></textarea>
                 <div class="reject-actions">
-                  <button type="button" class="btn btn-send" data-send>Send rejection</button>
-                  <button type="button" class="btn btn-sm" data-reject-cancel>Cancel</button>
+                  <button type="button" class="admin-btn admin-btn-send" data-send>Send rejection</button>
+                  <button type="button" class="admin-btn" data-reject-cancel>Cancel</button>
                 </div>
               </div>
             </div>
@@ -548,7 +771,7 @@
     btn.addEventListener('click', function(){
       var box = btn.closest('[data-reject-box]');
       var ta = box.querySelector('textarea');
-      if(!ta.value.trim()){ ta.focus(); ta.style.borderColor = 'var(--red)'; return; }
+      if(!ta.value.trim()){ ta.focus(); ta.style.borderColor = 'var(--color-error)'; return; }
       btn.textContent = 'Rejection sent';
       btn.disabled = true;
       btn.style.opacity = '0.75';
