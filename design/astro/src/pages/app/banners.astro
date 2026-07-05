@@ -1,0 +1,184 @@
+---
+import AppShell from '../../layouts/AppShell.astro';
+
+// Migrated from design/landing/app/banners.html (~744 lines). The app shell
+// (topbar/sidebar/drawer/account-menu/stagger entrance) is owned by
+// AppShell.astro — only the <main> banner grid + the co-located confirm
+// dialog (a sibling of <main>, exactly as in the source body) live here.
+// The source's inline <script> (drawer, account dropdown, Escape, stagger)
+// is dropped entirely — all of it duplicates AppShell's own islands
+// (Topbar/Sidebar/PageMotion/DrawerA11y).
+
+// INTERACTIVITY DECISIONS (prototype fidelity — static where the source's
+// initial DOM is static; same call as task-16 report §3 for menu-editor,
+// which cites restaurant.astro's dead-action precedent):
+//   - Drag-to-reorder (.bgrip, draggable) is a visual-only affordance:
+//     grip reveals on card hover/focus, cursor:grab — no native HTML5 drag
+//     wiring. `draggable="true"` is dropped: without a dragstart handler it
+//     would only produce an inert native ghost-drag, not a real reorder.
+//   - Delete (.bdel) is a static affordance (dashboard/RestaurantCard,
+//     menu-editor/DishRow precedent): hover/focus reveals + hovers to
+//     error red, no click handler.
+//   - The confirm-delete dialog is ported in its CLOSED initial state
+//     (source DOM default: scrim `hidden`, wrap without `.show`) — the
+//     same treatment as menu-editor's item-edit panel. It never opens (no
+//     opener wired, matching the dead delete button above).
+//   - The usage indicator (3 of 5 banners, 2 slots left, 60% fill) is
+//     static, matching the initial DOM of 3 rendered banner cards + the
+//     upload card.
+
+// BESPOKE-CSS HANDLING: the source's own <style> header comment (lines
+// 11-15) names 4 "cannot be Tailwind" pieces. All 4 convert cleanly to
+// Tailwind utilities once ported as a *static* page (no scoped <style>,
+// no island needed):
+//   1. Banner-card hover-reveal/zoom — `group` + `group-hover:`/
+//      `group-focus-within:` (RestaurantCard.tsx's edit/delete-button
+//      reveal + image-scale idiom). The `::after` warm scrim is a plain
+//      absolute div using `bg-gradient-to-b from-cocoa-deep/32
+//      via-transparent to-cocoa-deep/42`, matching restaurant.astro's own
+//      substitution of a bespoke `::after` scrim with a gradient div.
+//   2. Upload dropzone — `group` on the `<button>` itself (its own
+//      hover/focus-visible states) + `group-hover:`/`group-focus-visible:`
+//      on the icon chip child.
+//   3. Usage-bar fill — no custom property needed once static: the track
+//      inner span is `scaleX(0.6)` via a plain inline `style` (3 of 5 =
+//      0.6, matches the source's initial `--fill:0.6`).
+//   4. Confirm dialog — closed-state Tailwind utilities (`opacity-0
+//      invisible`, `translate-y-[10px] scale-[0.98]`); the one piece that
+//      doesn't fit a utility class cleanly is the compound pure-black
+//      `box-shadow` (would need an escaped `oklch(...)/...` inside a
+//      bracketed arbitrary value), so that alone is a plain inline `style`.
+// `.bcard.dragging`/`.drop-target` and `.upcard.drag` (JS-toggled states)
+// are dropped — unreachable with no drag/upload JS wired, same call as
+// DishRow dropping the item row's unused drag states.
+// Reduced-motion: app.css's global reset only zeroes transition/animation
+// *duration* (not opacity), so the source's page-specific "always show
+// grip/delete for touch (`<=560px`) and reduced-motion" affordance is kept
+// via `max-[560px]:` and `motion-reduce:` opacity/transform overrides.
+
+// Token hygiene: every colour is a Tailwind utility resolving to a
+// design-system token (cocoa-deep/secondary/error/base-content/base-200/
+// base-300/info — no bare hex/oklch in a class). `rounded-[var(--radius-
+// box)]` matches the source's `border-radius: var(--radius-box)` on
+// .bcard/.upcard/.dlg exactly. `.bgrip`/`.bdel`'s 12px corner uses
+// Tailwind's built-in `rounded-xl` (12px) — a literal transcribed from the
+// source's own literal `border-radius: 12px` (not a --radius-* token),
+// consistent with DishRow's documented `.grip` 8px carve-out.
+
+const banners = [
+  {
+    n: 1,
+    src: '/img/photo-1517248135467-4c7edcad34c4.jpg',
+    alt: 'Warm, plant-filled dining room glowing under low evening light — our welcome banner',
+  },
+  {
+    n: 2,
+    src: '/img/photo-1555396273-367ea4eb4db5.jpg',
+    alt: 'The candle-lit interior of Saffron and Smoke set for dinner service',
+  },
+  {
+    n: 3,
+    src: '/img/photo-1432139555190-58524dae6a55.jpg',
+    alt: 'Charred short rib glistening under warm light — our signature dish banner',
+  },
+];
+
+// Shared classes for the two absolute top-corner action buttons (grip/delete).
+const cornerBtn =
+  'absolute z-[3] inline-flex size-11 items-center justify-center rounded-xl border border-base-content/50 bg-cocoa-deep/74 text-base-content opacity-0 -translate-y-1 backdrop-blur-[6px] transition-[opacity,transform,color,border-color,background-color] duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 focus-visible:opacity-100 focus-visible:translate-y-0 max-[560px]:opacity-100 max-[560px]:translate-y-0 motion-reduce:opacity-100 motion-reduce:translate-y-0';
+---
+<AppShell crumb="Saffron & Smoke" currentRestaurantId="saffron-smoke" currentSection="/app/banners">
+  <main class="mx-auto w-full max-w-[1100px] px-[clamp(1rem,3vw,2.5rem)] pb-20 pt-[clamp(1.5rem,4vw,2.75rem)]">
+
+    <!-- page header -->
+    <div class="mb-[clamp(1.25rem,2.6vw,1.75rem)] flex flex-wrap items-end justify-between gap-6">
+      <div class="min-w-0">
+        <h1 class="stagger text-[clamp(2.1rem,4.4vw,3.1rem)] tracking-[-0.035em]" data-delay="0">Banners</h1>
+        <p class="stagger mt-3 max-w-[58ch] text-pretty text-[clamp(1rem,1.5vw,1.12rem)] leading-relaxed text-base-content/70" data-delay="0">These show as a carousel at the top of your public menu. Drag to reorder.</p>
+      </div>
+      <a class="btn btn-ghost stagger shrink-0" data-delay="1" href="/app/restaurant">
+        <svg class="size-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Preview menu
+      </a>
+    </div>
+
+    <!-- usage indicator -->
+    <div class="stagger mb-[clamp(1.25rem,3vw,1.875rem)] inline-flex flex-wrap items-center gap-3 rounded-full border border-base-content/18 bg-base-200 px-4 py-[9px]"
+         data-delay="1" role="group" aria-label="Banner usage">
+      <span class="text-[13.5px] font-semibold text-base-content whitespace-nowrap">
+        <b id="usedCount" class="text-secondary [font-variant-numeric:tabular-nums]">3</b> of 5 banners used
+      </span>
+      <span class="h-2 w-[clamp(90px,18vw,150px)] shrink-0 overflow-hidden rounded-full bg-base-300" aria-hidden="true">
+        <span id="usageFill" class="block h-full w-full origin-left rounded-full bg-secondary transition-transform duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)]" style="transform:scaleX(0.6)"></span>
+      </span>
+      <span id="slotsLeft" class="whitespace-nowrap text-[12.5px] text-base-content/70">2 slots left</span>
+    </div>
+
+    <!-- banner list -->
+    <section class="stagger grid grid-cols-1 gap-[clamp(1rem,2.2vw,1.375rem)]"
+             data-delay="2" id="bannerList" aria-label="Your banners, drag to reorder">
+
+      {banners.map((b) => (
+        <article class="group relative overflow-hidden rounded-[var(--radius-box)] border border-base-content/18 bg-base-200 transition-[transform,box-shadow,border-color] duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-[3px] hover:border-base-content/50 hover:shadow-floating focus-within:-translate-y-[3px] focus-within:border-base-content/50 focus-within:shadow-floating" data-name={`banner ${b.n}`}>
+          <button class={`${cornerBtn} left-3 top-3 cursor-grab hover:text-secondary hover:border-secondary active:cursor-grabbing`} type="button" aria-label={`Drag to reorder banner ${b.n}`}>
+            <svg class="pointer-events-none size-[18px] fill-current" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+          </button>
+          <button class={`${cornerBtn} right-3 top-3 hover:text-error hover:border-error hover:bg-base-200`} type="button" aria-label={`Delete banner ${b.n}`}>
+            <svg class="pointer-events-none size-[18px] stroke-current fill-none" viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+          <div class="relative aspect-[16/7] overflow-hidden bg-base-300">
+            <img class="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-focus-within:scale-[1.03]" src={b.src} alt={b.alt} loading="lazy" />
+            <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-cocoa-deep/32 via-transparent to-cocoa-deep/42" aria-hidden="true"></div>
+          </div>
+          <span class="absolute z-[2] bottom-3 left-3 inline-flex items-center gap-[7px] rounded-full border border-base-content/50 bg-cocoa-deep/74 px-3 py-[5px] text-[12.5px] font-semibold text-base-content backdrop-blur-[6px]">
+            <span class="size-[7px] shrink-0 rounded-full bg-secondary" aria-hidden="true"></span>Banner {b.n}
+          </span>
+        </article>
+      ))}
+
+      <!-- Upload card -->
+      <button class="upcard group flex aspect-[16/7] min-h-[140px] w-full flex-col items-center justify-center gap-3.5 rounded-[var(--radius-box)] border-[1.5px] border-dashed border-base-content/50 bg-transparent p-6 text-center text-info transition-[border-color,background-color,color,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-[3px] hover:border-secondary hover:bg-secondary/6 hover:text-base-content focus-visible:-translate-y-[3px] focus-visible:border-secondary focus-visible:bg-secondary/6 focus-visible:text-base-content"
+              type="button" id="uploadCard"
+              aria-label="Upload a banner. Drag an image here or browse. JPG or PNG, wide images work best.">
+        <span class="inline-flex size-[54px] shrink-0 items-center justify-center rounded-2xl border border-dashed border-base-content/50 bg-base-200 text-secondary transition-[border-color,background-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:border-secondary group-hover:bg-base-300 group-focus-visible:border-secondary group-focus-visible:bg-base-300" aria-hidden="true">
+          <svg class="size-6 stroke-current fill-none" viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </span>
+        <span class="font-display text-[1.2rem] font-semibold tracking-[-0.02em] text-base-content">Upload banner</span>
+        <span class="max-w-[42ch] text-[13px] leading-[1.45] text-info">Drag an image here or browse — JPG/PNG, wide images work best.</span>
+      </button>
+
+    </section>
+
+    <p class="mt-[26px] flex items-center gap-[9px] text-[13px] text-base-content/70">
+      <svg class="size-4 shrink-0 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      You can add up to 5 banners. When all 5 slots are full, the upload card is replaced by a gentle "limit reached" note.
+    </p>
+  </main>
+
+  <!-- ===================== DESTRUCTIVE CONFIRM DIALOG (closed initial state) =====================
+       Ported for design fidelity (matches menu-editor's closed edit-panel precedent). Never opens —
+       the delete buttons above are static affordances, so no opener is wired. -->
+  <div class="fixed inset-0 z-[55] bg-cocoa-deep/60 opacity-0 invisible backdrop-blur-[2px] transition-[opacity,visibility] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]" id="dlgScrim" hidden></div>
+  <div class="fixed inset-0 z-[80] flex items-center justify-center p-5 opacity-0 invisible transition-[opacity,visibility] duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]" id="confirmWrap" role="presentation">
+    <!-- inline box-shadow: pure-black shadow stop — DESIGN.md §4 documented carve-out (not a
+         --color-* token), transcribed verbatim from the source's own .dlg box-shadow; same
+         carve-out already used by DishRow.tsx/menu-editor.astro's edit-panel shadow. -->
+    <div class="w-full max-w-[420px] translate-y-[10px] scale-[0.98] rounded-[var(--radius-box)] border border-base-content/50 bg-base-200 px-[26px] pb-[22px] pt-[26px] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+         style="box-shadow:0 24px 60px -28px oklch(0 0 0 / 0.9)"
+         role="alertdialog" aria-modal="true" aria-labelledby="dlgTitle" aria-describedby="dlgDesc" id="confirmDlg">
+      <span class="mb-4 inline-flex size-12 items-center justify-center rounded-2xl border border-error/40 bg-error/16 text-error" aria-hidden="true">
+        <svg class="size-[22px] stroke-current fill-none" viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </span>
+      <h2 id="dlgTitle" class="text-[1.45rem] tracking-[-0.025em]">Delete this banner?</h2>
+      <p id="dlgDesc" class="mt-[9px] text-[14.5px] leading-relaxed text-base-content/70">This can&rsquo;t be undone. It will be removed from your menu&rsquo;s banner carousel right away.</p>
+      <div class="mt-[22px] flex gap-3 max-[560px]:flex-col-reverse">
+        <button class="btn btn-ghost flex-1" type="button" id="dlgCancel">Cancel</button>
+        <!-- btn-error: destructive action uses error red, NOT tomato (DESIGN §7.7) -->
+        <button class="btn btn-error flex-1" type="button" id="dlgDelete">
+          <svg class="size-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Delete banner
+        </button>
+      </div>
+    </div>
+  </div>
+</AppShell>
