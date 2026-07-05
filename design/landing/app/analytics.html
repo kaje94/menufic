@@ -366,87 +366,71 @@
         Menufic<span class="-mb-0.5 size-2.5 rounded-full bg-primary" aria-hidden="true"></span>
       </a>
 
-      <div class="min-h-0 flex-1 overflow-y-auto">
-
-        <!-- restaurants list -->
-        <nav aria-label="Your restaurants">
-          <div class="flex items-center justify-between px-2.5 pb-2 pt-1.5 text-xs font-semibold tracking-wide text-base-content/70">
-            <span>Restaurants</span>
-            <span class="rounded-full border border-base-content/10 bg-base-200 px-2 py-px text-[11px] font-semibold">3</span>
-          </div>
-          <ul class="app-nav menu gap-0.5 p-0">
-            <li>
-              <!-- aria-current="location": active restaurant ancestor, not the current page -->
-              <a href="/app/restaurant.html" aria-current="location" class="gap-2.5 py-1.5">
-                <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover" src="/assets/img/photo-1432139555190-58524dae6a55.jpg" alt="">
-                <span class="min-w-0 flex-1 truncate text-[14.5px]">Saffron &amp; Smoke</span>
-                <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
-              </a>
-            </li>
-            <li>
-              <a href="/app/restaurant.html" class="gap-2.5 py-1.5">
-                <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover" src="/assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="">
-                <span class="min-w-0 flex-1 truncate text-[14.5px]">Bella Trattoria</span>
-                <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
-              </a>
-            </li>
-            <li>
-              <a href="/app/restaurant.html" class="gap-2.5 py-1.5">
-                <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover" src="/assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="">
-                <span class="min-w-0 flex-1 truncate text-[14.5px]">Verde Kitchen</span>
-                <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-
-        <div class="my-2.5 border-t border-base-content/10"></div>
-
-        <!-- per-restaurant section nav -->
-        <nav aria-label="Saffron and Smoke sections">
-          <div class="px-2.5 pb-2 pt-1.5 text-xs font-semibold tracking-wide text-base-content/70">Saffron &amp; Smoke</div>
-          <ul class="app-nav menu gap-0.5 p-0">
-            <li>
-              <a href="/app/menu-editor.html" class="gap-3 py-1.5 text-[14.5px]">
-                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      <!-- Restaurant list nav — two-level: restaurant (location) + per-section subnav -->
+      <nav aria-label="Your restaurants" class="flex min-h-0 flex-1 flex-col">
+        <div class="mb-2 mt-1.5 flex items-center justify-between px-2.5 text-xs font-semibold tracking-wide text-base-content/70">
+          <span>Restaurants</span>
+          <span class="rounded-full border border-base-content/10 bg-base-200 px-2 py-px text-[11px] font-semibold">3</span>
+        </div>
+        <ul class="app-nav menu min-h-0 flex-1 flex-nowrap gap-0.5 overflow-y-auto p-0">
+          <li>
+            <!-- aria-current="location": active restaurant ancestor, not the current page -->
+            <a href="/app/restaurant.html" aria-current="location" class="gap-2.5 py-1.5">
+              <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover" src="/assets/img/photo-1432139555190-58524dae6a55.jpg" alt="">
+              <span class="min-w-0 flex-1 truncate text-[14.5px]">Saffron &amp; Smoke</span>
+              <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
+            </a>
+            <!-- Sub-nav under active restaurant; aria-current="page" on the active sub-page -->
+            <nav class="app-subnav ml-[17px] mt-1 mb-2.5 flex flex-col gap-0.5 border-l border-base-content/25 pl-[14px]"
+              aria-label="Saffron and Smoke sections">
+              <a href="/app/menu-editor.html"
+                class="flex min-h-[40px] items-center gap-2.5 rounded-[10px] px-2.5 py-[5px] text-[13.5px] font-medium text-base-content/70 transition-colors duration-200 hover:bg-base-300/40 hover:text-base-content">
+                <svg class="size-4 flex-none stroke-current opacity-85" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
                 Menus
               </a>
-            </li>
-            <li>
-              <a href="/app/banners.html" class="gap-3 py-1.5 text-[14.5px]">
-                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>
+              <a href="/app/banners.html"
+                class="flex min-h-[40px] items-center gap-2.5 rounded-[10px] px-2.5 py-[5px] text-[13.5px] font-medium text-base-content/70 transition-colors duration-200 hover:bg-base-300/40 hover:text-base-content">
+                <svg class="size-4 flex-none stroke-current opacity-85" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>
                 Banners
               </a>
-            </li>
-            <li>
-              <a href="/app/theme.html" class="gap-3 py-1.5 text-[14.5px]">
-                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 1 1 0-20 8 8 0 0 1 0 16h-2a2 2 0 0 0 0 4z"/></svg>
+              <a href="/app/theme.html"
+                class="flex min-h-[40px] items-center gap-2.5 rounded-[10px] px-2.5 py-[5px] text-[13.5px] font-medium text-base-content/70 transition-colors duration-200 hover:bg-base-300/40 hover:text-base-content">
+                <svg class="size-4 flex-none stroke-current opacity-85" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 1 1 0-20 8 8 0 0 1 0 16h-2a2 2 0 0 0 0 4z"/></svg>
                 Theme
               </a>
-            </li>
-            <li>
-              <!-- aria-current="page": this is the current page -->
-              <a href="/app/analytics.html" aria-current="page" class="gap-3 py-1.5 text-[14.5px]">
-                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/></svg>
+              <a href="/app/analytics.html" aria-current="page"
+                class="flex min-h-[40px] items-center gap-2.5 rounded-[10px] px-2.5 py-[5px] text-[13.5px] font-medium text-base-content/70 transition-colors duration-200 hover:bg-base-300/40 hover:text-base-content">
+                <svg class="size-4 flex-none stroke-current opacity-85" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/></svg>
                 Analytics
               </a>
-            </li>
-            <li>
-              <a href="/app/team.html" class="gap-3 py-1.5 text-[14.5px]">
-                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/></svg>
+              <a href="/app/team.html"
+                class="flex min-h-[40px] items-center gap-2.5 rounded-[10px] px-2.5 py-[5px] text-[13.5px] font-medium text-base-content/70 transition-colors duration-200 hover:bg-base-300/40 hover:text-base-content">
+                <svg class="size-4 flex-none stroke-current opacity-85" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/></svg>
                 Team
               </a>
-            </li>
-            <li>
-              <a href="/app/qr.html" class="gap-3 py-1.5 text-[14.5px]">
-                <svg class="size-[19px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 21v.01M17 21h.01M21 14v3"/></svg>
+              <a href="/app/qr.html"
+                class="flex min-h-[40px] items-center gap-2.5 rounded-[10px] px-2.5 py-[5px] text-[13.5px] font-medium text-base-content/70 transition-colors duration-200 hover:bg-base-300/40 hover:text-base-content">
+                <svg class="size-4 flex-none stroke-current opacity-85" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 21v.01M17 21h.01M21 14v3"/></svg>
                 QR
               </a>
-            </li>
-          </ul>
-        </nav>
-
-      </div>
+            </nav>
+          </li>
+          <li>
+            <a href="/app/restaurant.html" class="gap-2.5 py-1.5">
+              <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover" src="/assets/img/photo-1565299624946-b28f40a0ae38.jpg" alt="">
+              <span class="min-w-0 flex-1 truncate text-[14.5px]">Bella Trattoria</span>
+              <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
+            </a>
+          </li>
+          <li>
+            <a href="/app/restaurant.html" class="gap-2.5 py-1.5">
+              <img class="nav-thumb size-[34px] shrink-0 rounded-[9px] border border-base-content/10 object-cover" src="/assets/img/photo-1517248135467-4c7edcad34c4.jpg" alt="">
+              <span class="min-w-0 flex-1 truncate text-[14.5px]">Verde Kitchen</span>
+              <span class="nav-dot size-[7px] shrink-0 rounded-full bg-transparent" aria-hidden="true"></span>
+            </a>
+          </li>
+        </ul>
+      </nav>
 
       <!-- sidebar footer -->
       <div class="mt-auto border-t border-base-content/10 pt-3.5">
