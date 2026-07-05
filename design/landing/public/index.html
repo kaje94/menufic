@@ -36,6 +36,7 @@
    the shared @layer base rule, which targets Menufic's App/Brand/Admin. */
 body { font-family: "General Sans", system-ui, sans-serif; }
 h1, h2, h3, h4 { font-family: "Gambetta", Georgia, serif; text-wrap: balance; }
+.price-display { font-family: "Gambetta", Georgia, serif; }
 
 /* Banner carousel — JS sets `transform: translateX()` on this track per
    active slide (see script below); only the transition curve is bespoke
@@ -145,7 +146,7 @@ h1, h2, h3, h4 { font-family: "Gambetta", Georgia, serif; text-wrap: balance; }
           <div class="card-body flex flex-1 flex-col gap-1.5 p-4">
             <div class="flex items-baseline justify-between gap-3">
               <h3 class="text-[1.18rem] font-semibold leading-tight">Smoked short rib</h3>
-              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary">£28</span>
+              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary price-display">£28</span>
             </div>
             <p class="line-clamp-2 text-sm leading-relaxed text-base-content/70">36-hour cook over oak embers, burnt-honey glaze, smoked sea salt.</p>
             <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
@@ -167,7 +168,7 @@ h1, h2, h3, h4 { font-family: "Gambetta", Georgia, serif; text-wrap: balance; }
           <div class="card-body flex flex-1 flex-col gap-1.5 p-4">
             <div class="flex items-baseline justify-between gap-3">
               <h3 class="text-[1.18rem] font-semibold leading-tight">Wood-fired margherita</h3>
-              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary">£19</span>
+              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary price-display">£19</span>
             </div>
             <p class="line-clamp-2 text-sm leading-relaxed text-base-content/70">San Marzano, fior di latte, basil oil, blistered in the wood oven.</p>
             <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
@@ -189,7 +190,7 @@ h1, h2, h3, h4 { font-family: "Gambetta", Georgia, serif; text-wrap: balance; }
           <div class="card-body flex flex-1 flex-col gap-1.5 p-4">
             <div class="flex items-baseline justify-between gap-3">
               <h3 class="text-[1.18rem] font-semibold leading-tight">Saffron prawns</h3>
-              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary">£22</span>
+              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary price-display">£22</span>
             </div>
             <p class="line-clamp-2 text-sm leading-relaxed text-base-content/70">Saffron chilli butter, seared hard, with a charred lemon half.</p>
             <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
@@ -220,7 +221,7 @@ h1, h2, h3, h4 { font-family: "Gambetta", Georgia, serif; text-wrap: balance; }
           <div class="card-body flex flex-1 flex-col gap-1.5 p-4">
             <div class="flex items-baseline justify-between gap-3">
               <h3 class="text-[1.18rem] font-semibold leading-tight">Red shrimp broth</h3>
-              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary">£16</span>
+              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary price-display">£16</span>
             </div>
             <p class="line-clamp-2 text-sm leading-relaxed text-base-content/70">Slow shellfish bisque, chilli oil, a spoon of crème fraîche.</p>
             <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
@@ -242,7 +243,7 @@ h1, h2, h3, h4 { font-family: "Gambetta", Georgia, serif; text-wrap: balance; }
           <div class="card-body flex flex-1 flex-col gap-1.5 p-4">
             <div class="flex items-baseline justify-between gap-3">
               <h3 class="text-[1.18rem] font-semibold leading-tight">Charred sharing board</h3>
-              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary">£24</span>
+              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary price-display">£24</span>
             </div>
             <p class="line-clamp-2 text-sm leading-relaxed text-base-content/70">Charred flatbreads, smoked dips, pickles, grill-of-the-night.</p>
             <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
@@ -273,7 +274,7 @@ h1, h2, h3, h4 { font-family: "Gambetta", Georgia, serif; text-wrap: balance; }
           <div class="card-body flex flex-1 flex-col gap-1.5 p-4">
             <div class="flex items-baseline justify-between gap-3">
               <h3 class="text-[1.18rem] font-semibold leading-tight">Burnt-honey carrots</h3>
-              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary">£9</span>
+              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary price-display">£9</span>
             </div>
             <p class="line-clamp-2 text-sm leading-relaxed text-base-content/70">Heritage carrots, burnt honey, toasted seeds and dukkah.</p>
             <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
@@ -294,7 +295,7 @@ h1, h2, h3, h4 { font-family: "Gambetta", Georgia, serif; text-wrap: balance; }
           <div class="card-body flex flex-1 flex-col gap-1.5 p-4">
             <div class="flex items-baseline justify-between gap-3">
               <h3 class="text-[1.18rem] font-semibold leading-tight">Sourdough &amp; cultured butter</h3>
-              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary">£6</span>
+              <span class="whitespace-nowrap text-[1.1rem] font-semibold text-primary price-display">£6</span>
             </div>
             <p class="line-clamp-2 text-sm leading-relaxed text-base-content/70">Slow-proved sourdough, warm, with cultured butter and smoked salt.</p>
             <div class="mt-auto flex flex-wrap gap-1.5 pt-1">
@@ -351,7 +352,7 @@ h1, h2, h3, h4 { font-family: "Gambetta", Georgia, serif; text-wrap: balance; }
     <div class="p-6">
       <div class="mb-1 flex items-start justify-between gap-4">
         <h3 id="modalName" class="text-[1.85rem] font-semibold leading-[1.1]"></h3>
-        <span id="modalPrice" class="whitespace-nowrap text-[1.5rem] font-semibold text-primary [font-family:'Gambetta',Georgia,serif]"></span>
+        <span id="modalPrice" class="whitespace-nowrap text-[1.5rem] font-semibold text-primary price-display"></span>
       </div>
       <div id="modalTags" class="my-3.5 flex flex-wrap gap-2"></div>
       <p id="modalDesc" class="text-[15.5px] leading-relaxed text-base-content/70"></p>
