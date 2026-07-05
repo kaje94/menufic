@@ -14,6 +14,9 @@ export interface Dish {
   description: string;
   price: string;
   image: string;
+  // Availability state shown by the menu-editor dish-row segmented control.
+  // Transcribed from each `.item[data-status]` in app/menu-editor.html.
+  availability: 'available' | 'soldout' | 'unavailable';
   tags?: string[];
 }
 
