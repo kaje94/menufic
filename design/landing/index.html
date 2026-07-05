@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="js">
+<html lang="en" class="js" data-theme="menufic">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,71 +11,52 @@
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=boska@400,500,700&f[]=supreme@400,500,600,700&display=swap">
 <!-- Extra fonts for the theme builder font selector -->
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=gambetta@400,500,700&f[]=sentient@400,500,700&f[]=general-sans@400,500,600,700&display=swap">
+<!-- Compiled design system: Tailwind v4 + daisyUI v5 (single source of truth) -->
+<link rel="stylesheet" href="/assets/css/styles.css">
+<!-- ── Signature-component islands (video hero, live-menu device, theme-builder
+     studio, how-it-works assembly, and the Brand nav/pricing/marquee chrome).
+     All colours/shadows are sourced from the compiled design tokens below;
+     only bespoke tonal values with no DESIGN.md token remain as literals. ── -->
 <style>
+/* Local island aliases → the compiled design tokens (styles.css) are the
+   single source of truth for the Brand palette. Only the two values with no
+   DESIGN.md token (tomato hover; the line hairlines) stay as literals. */
 :root{
-  --bg: oklch(0.18 0.03 45);
-  --bg-deep: oklch(0.155 0.026 52);
-  --surface: oklch(0.235 0.034 46);
-  --surface-2: oklch(0.295 0.04 48);
-  --saffron: oklch(0.785 0.14 68);
-  --saffron-deep: oklch(0.72 0.14 70);
-  --tomato: oklch(0.56 0.19 32);
-  --tomato-bright: oklch(0.66 0.19 32);
-  --green: oklch(0.72 0.15 150);
-  --cream: oklch(0.96 0.015 78);
-  --cream-soft: oklch(0.83 0.022 78);
-  --line: oklch(0.42 0.03 48 / 0.5);
-  --line-soft: oklch(0.42 0.03 58 / 0.28);
+  --bg: var(--color-base-100);
+  --bg-deep: var(--color-cocoa-deep);
+  --surface: var(--color-base-200);
+  --surface-2: var(--color-base-300);
+  --saffron: var(--color-secondary);
+  --saffron-deep: var(--color-accent);
+  --tomato: var(--color-primary);
+  --tomato-bright: oklch(0.66 0.19 32);      /* no token — tomato hover */
+  --green: var(--color-success);
+  --cream: var(--color-base-content);
+  --cream-soft: var(--color-info);
+  --line: oklch(0.42 0.03 48 / 0.5);         /* hairline — ~50% alpha */
+  --line-soft: oklch(0.42 0.03 58 / 0.28);   /* quietest separations */
   --ease: cubic-bezier(0.16,1,0.3,1);
   --maxw: 1200px;
   --r: 18px;
 }
 
-*,*::before,*::after{box-sizing:border-box}
+/* Reset (box-sizing/margins/img/a/button) + base body font + saffron
+   :focus-visible ring + Boska heading family all come from styles.css.
+   Only this page's editorial rhythm, the hero overflow guard, and the
+   heading weight/tracking (which Tailwind preflight strips) stay local. */
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--cream);
-  font-family:"Supreme",system-ui,sans-serif;
-  font-size:17px;
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-  overflow-x:hidden;
-}
-img{max-width:100%;display:block}
-a{color:inherit;text-decoration:none}
-button{font-family:inherit;cursor:pointer}
-h1,h2,h3{
-  font-family:"Boska",Georgia,serif;
-  font-weight:700;
-  letter-spacing:-0.03em;
-  line-height:1.02;
-  margin:0;
-  text-wrap:balance;
-}
-p{margin:0;text-wrap:pretty}
+body{font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button{cursor:pointer}
+h1,h2,h3{font-weight:700;letter-spacing:-0.03em;line-height:1.02}
+p{text-wrap:pretty}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
-:focus-visible{outline:3px solid var(--saffron);outline-offset:3px;border-radius:6px}
 
-/* ============ BUTTONS ============ */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  min-height:48px;padding:0 24px;
-  border-radius:999px;border:1px solid transparent;
-  font-family:"Supreme";font-weight:600;font-size:16px;
-  transition:transform .35s var(--ease),background .25s var(--ease),box-shadow .35s var(--ease);
-}
-.btn-primary{
-  background:var(--tomato);color:#fff;
-  box-shadow:0 10px 30px -10px oklch(0.605 0.18 30 / 0.7);
-}
-.btn-primary:hover{background:var(--tomato-bright);transform:translateY(-2px);box-shadow:0 16px 40px -12px oklch(0.605 0.18 30 / 0.8)}
+/* ============ BUTTONS ============
+   Shape (pill/48px/Supreme 600), hover-lift, primary accent-glow and the
+   ghost variant all come from daisyUI + the unlayered .btn overrides in
+   styles.css. Only the press feedback + brand icon sizing are page-local. */
 .btn:active{transform:translateY(0) scale(.985);transition-duration:.08s}
-.btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}
-.btn-ghost:hover{background:oklch(0.30 0.04 60 / 0.5);transform:translateY(-2px)}
 .gicon{width:18px;height:18px;flex:none}
 
 /* ============ NAV (condensing sticky) ============ */
@@ -90,7 +71,7 @@ p{margin:0;text-wrap:pretty}
   -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
   border-bottom:1px solid var(--line-soft);
   padding:10px 0;
-  box-shadow:0 8px 30px -18px oklch(0 0 0 / 0.8);
+  box-shadow:var(--shadow-nav);
 }
 .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}
 .wordmark{
@@ -257,7 +238,7 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
   padding:12px 18px 12px 12px;border-radius:16px;
   background:oklch(0.20 0.028 54 / 0.82);border:1px solid var(--line);
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
-  box-shadow:0 18px 40px -22px oklch(0 0 0 / 0.8);
+  box-shadow:var(--shadow-floating);
 }
 .hero-qr .chip{background:#fff;border-radius:9px;padding:7px;line-height:0;flex:none}
 .hero-qr .chip img{width:62px;height:62px}
@@ -788,7 +769,7 @@ button.bubble.theme:focus-visible{outline:2px solid var(--saffron);outline-offse
 }
 </style>
 </head>
-<body>
+<body class="min-h-screen overflow-x-hidden bg-base-100 text-base-content">
 
 <!-- ============ NAV ============ -->
 <header class="nav" id="nav">
