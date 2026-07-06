@@ -460,7 +460,7 @@ export default function ThemeBuilderPreview() {
                 Desktop
               </button>
             </div>
-            <a href="/public/index.html" className="inline-flex min-h-[40px] items-center gap-2 rounded-full px-3 text-[14px] font-semibold text-secondary transition-colors hover:bg-secondary/[.12]">
+            <a href="/public" className="inline-flex min-h-[40px] items-center gap-2 rounded-full px-3 text-[14px] font-semibold text-secondary transition-colors hover:bg-secondary/[.12]">
               View live menu
               <svg className="size-4 flex-none stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="M13 6l6 6-6 6" /></svg>
             </a>
