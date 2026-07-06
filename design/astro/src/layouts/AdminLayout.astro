@@ -2,6 +2,7 @@
 import BaseHead from './BaseHead.astro';
 import PageMotion from '../components/PageMotion.tsx';
 import '../styles/app.css';
+import '../styles/admin.css';
 
 // The Admin surface has its OWN utilitarian shell (topbar + an "Admin
 // sections" tabsbar) — deliberately NOT the App sidebar/drawer. Ported from
@@ -9,6 +10,17 @@ import '../styles/app.css';
 // admin/restaurants.html — this genuinely IS the shared Admin shell, per
 // that file's own "Shell chrome ... matches admin/restaurants.html for
 // cross-page consistency" comment).
+//
+// Task 24 also imports `../styles/admin.css` here: the byte-identical
+// table/row/button "shape" CSS both admin/review.html and
+// admin/restaurants.html duplicated (`.table-wrap`, `.row-main`+chevron,
+// `.r-owner`, `.cell-actions`, `.admin-btn` base, `.detail-row` shell) now
+// lives in that one file instead of each page's own <style>. Plain
+// (unscoped) CSS import — not a scoped <style> here — so it applies to
+// slotted `<main>` content from both /admin/review and /admin/restaurants
+// without needing :global() wrapping per selector. Page-specific variants
+// (differing padding/min-width/badge colors/`.meta`/`.detail-inner` grid)
+// stay co-located in each page's own <style> block.
 //
 // Active tab is derived from Astro.url.pathname rather than a prop, since
 // the brief fixes Props to { title } only. Only two Admin routes exist today

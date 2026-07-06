@@ -1,0 +1,92 @@
+/* ═══ Shared Admin-control CSS (Task 24 extraction) ══════════════════
+   Both design/landing/admin/review.html and admin/restaurants.html carry
+   a near-identical page <style> block (each source's own header comment
+   calls out ".table-wrap / .row-main / .admin-btn / .count-pill shape...
+   matches [other page] for cross-page consistency"). This file holds ONLY
+   the rules that were byte-identical (property-for-property) between the
+   two sources — the generic table/row/button "shape" — so both
+   /admin/review and /admin/restaurants inherit one copy via AdminLayout's
+   `import '../styles/admin.css'` instead of duplicating it per page.
+
+   Rules that differ even slightly between the two pages (e.g. table
+   min-width 720px vs 880px, tbody td padding 12px vs 11px, .meta padding
+   14px vs 12px, .count-pill's warning-vs-neutral tone, .detail-inner's
+   2-col vs 3-col grid) were deliberately NOT merged here — they stay
+   page-specific in review.astro / restaurants.astro's own <style> blocks,
+   per "err toward moving only rules used identically by both."
+
+   Unlayered (plain CSS, imported after app.css) so it reliably wins
+   source-order conflicts, same rationale as AdminLayout's own chrome
+   <style>. Every declaration reads an existing theme token — no raw
+   colors introduced. */
+
+/* ── Table wrapper (outer chrome shared by both tables) ──────────────── */
+.table-wrap {
+  min-width: 0;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+  border-radius: 6px;
+  background: var(--color-base-200);
+}
+.table-wrap thead th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in oklch, var(--color-base-content) 40%, transparent);
+  padding: 10px 14px;
+  border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+  background: var(--color-base-300);
+  white-space: nowrap;
+}
+
+/* ── Row interactions (expand/collapse chevron, owner-email cell) ────── */
+.row-main { cursor: pointer; }
+.row-main:hover { background: var(--color-base-300); }
+.row-main[aria-expanded="true"] { background: var(--color-base-300); }
+.r-name { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.chev {
+  color: color-mix(in oklch, var(--color-base-content) 38%, transparent);
+  transition: transform 0.18s ease;
+  display: inline-block;
+}
+.row-main[aria-expanded="true"] .chev { transform: rotate(90deg); }
+.r-owner {
+  color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+  font-size: 12.5px;
+  word-break: break-all;
+}
+.cell-actions { white-space: nowrap; }
+
+/* ── Admin compact action button (base shape; color variants + the
+     adjacent-sibling margin rule stay page-specific) ──────────────────── */
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  height: 36px;
+  padding: 0 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid color-mix(in oklch, var(--color-base-content) 20%, transparent);
+  background: var(--color-base-300);
+  color: var(--color-base-content);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font-body);
+  text-decoration: none;
+}
+.admin-btn:hover {
+  border-color: color-mix(in oklch, var(--color-base-content) 36%, transparent);
+}
+
+/* ── Expandable detail row (shell only; .detail-inner grid/padding/gap
+     differ per page and stay page-specific) ───────────────────────────── */
+.detail-row td { padding: 0; background: var(--color-base-100); }
+.detail-row[hidden] { display: none; }

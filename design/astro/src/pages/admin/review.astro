@@ -13,12 +13,24 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 // lines 11-19): Admin is "intentionally utilitarian... near-default
 // daisyUI"; that same comment calls out `.table-wrap`/`.row-main`/
 // `.admin-btn`/`.count-pill` as the SAME shape admin/restaurants.html uses
-// ("for cross-page consistency") — a future admin/restaurants.astro task
-// will need this CSS again. Per the design/landing migration notes
-// (.superpowers/sdd/progress.md, Task 13/14), this cross-page duplication
-// was already flagged as a known MINOR there, not something this
-// single-page task is meant to resolve (extracting a shared admin
-// stylesheet/component is a bigger call than this task's scope). Kept as a
+// ("for cross-page consistency"). Task 24 extracted the byte-identical
+// subset of that shape (`.table-wrap` outer wrapper, `.table-wrap thead
+// th`, `.row-main`+chevron+`.r-name`, `.r-owner`, `.cell-actions`,
+// `.admin-btn` base+hover, `.detail-row` shell) into
+// `src/styles/admin.css`, imported once by AdminLayout.astro — see that
+// file's frontmatter comment. What remains below is genuinely
+// review-specific: either it has no counterpart on admin/restaurants.html
+// at all (`.badge-ai`+variants, `.preview-card` family, `.ai-line`/
+// `.ai-checks`/`.ai-result`, `.reject-box` family, `.admin-btn-approve/
+// -reject/-send` variants), or its declared values differ from
+// restaurants.html's version even though the selector name matches
+// (`.count-pill` is warning-toned here vs. neutral there; `.table-wrap
+// table`'s min-width is 720px here vs. 880px there; `.table-wrap tbody
+// td`'s padding is 12px here vs. 11px there; `.meta`'s padding is 14px
+// here vs. 12px there; `.detail-inner`'s grid is 2-col here vs. 3-col
+// there) — per Task 24's brief, those were deliberately NOT merged since
+// the split was ambiguous, so they stay page-specific rather than being
+// force-fit into a shared rule with an overridden property. Kept as a
 // page-scoped <style>, the same carve-out AdminLayout itself already uses
 // for the shell chrome. Every declaration below reads an existing theme
 // token (--color-success/error/warning/base-*, --font-body) — no new raw/
@@ -293,33 +305,14 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     padding: 1px 9px;
   }
 
-  /* ── Table wrapper ───────────────────────────────────────────────── */
-  .table-wrap {
-    min-width: 0;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
-    border-radius: 6px;
-    background: var(--color-base-200);
-  }
+  /* ── Table wrapper (page-specific tuning only; the outer `.table-wrap`
+       wrapper + `.table-wrap thead th` are byte-identical to
+       restaurants.html and now live in src/styles/admin.css) ──────────── */
   .table-wrap table {
     border-collapse: collapse;
     width: 100%;
     min-width: 720px;
     font-size: 13px;
-  }
-  .table-wrap thead th {
-    text-align: left;
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: color-mix(in oklch, var(--color-base-content) 40%, transparent);
-    padding: 10px 14px;
-    border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
-    background: var(--color-base-300);
-    white-space: nowrap;
   }
   .table-wrap tbody td {
     padding: 12px 14px;
@@ -330,42 +323,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     border-bottom: none;
   }
 
-  /* ── Row interactions ────────────────────────────────────────────── */
-  .row-main {
-    cursor: pointer;
-  }
-  .row-main:hover {
-    background: var(--color-base-300);
-  }
-  .row-main[aria-expanded='true'] {
-    background: var(--color-base-300);
-  }
-  .r-name {
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .chev {
-    color: color-mix(in oklch, var(--color-base-content) 38%, transparent);
-    transition: transform 0.18s ease;
-    display: inline-block;
-  }
-  .row-main[aria-expanded='true'] .chev {
-    transform: rotate(90deg);
-  }
-  .r-owner {
-    color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
-    font-size: 12.5px;
-    word-break: break-all;
-  }
+  /* ── Row interactions (page-specific only; `.row-main`+chevron+`.r-name`/
+       `.r-owner`/`.cell-actions` are shared — see admin.css) ─────────── */
   .r-time {
     color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
     white-space: nowrap;
     font-size: 12.5px;
-  }
-  .cell-actions {
-    white-space: nowrap;
   }
 
   /* ── AI recommendation badge (dot + label) ───────────────────────── */
@@ -405,31 +368,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     margin-top: 3px;
   }
 
-  /* ── Admin compact action buttons ────────────────────────────────── */
-  /* Base: 36px/6px-radius, not brand 48px pills (cross-page consistency
-     w/ admin/restaurants.html, per source's own header comment). */
-  .admin-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    min-height: 36px;
-    height: 36px;
-    padding: 0 12px;
-    font-size: 12.5px;
-    font-weight: 600;
-    border-radius: 6px;
-    border: 1px solid color-mix(in oklch, var(--color-base-content) 20%, transparent);
-    background: var(--color-base-300);
-    color: var(--color-base-content);
-    cursor: pointer;
-    white-space: nowrap;
-    font-family: var(--font-body);
-    text-decoration: none;
-  }
-  .admin-btn:hover {
-    border-color: color-mix(in oklch, var(--color-base-content) 36%, transparent);
-  }
+  /* ── Admin compact action button color variants ─────────────────────
+     (base `.admin-btn`/`.admin-btn:hover` shape is shared — see admin.css) */
   /* Approve & publish: tonal success (green = confirm) */
   .admin-btn-approve {
     color: var(--color-success);
@@ -458,14 +398,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     background: color-mix(in oklch, var(--color-error) 88%, white);
   }
 
-  /* ── Expandable detail row ───────────────────────────────────────── */
-  .detail-row td {
-    padding: 0;
-    background: var(--color-base-100);
-  }
-  .detail-row[hidden] {
-    display: none;
-  }
+  /* ── Expandable detail row (page-specific `.detail-inner` grid only;
+       `.detail-row td`/`.detail-row[hidden]` shell is shared — admin.css) */
   .detail-inner {
     padding: 18px 16px;
     border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
