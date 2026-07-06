@@ -1,0 +1,319 @@
+---
+import AppShell from '../../layouts/AppShell.astro';
+
+// Migrated from design/landing/app/analytics.html (~519 lines). The app shell
+// (topbar/sidebar/drawer/account-menu/stagger entrance) is owned by
+// AppShell.astro — only the <main> page content (page head + date-range
+// control, 3 stat tiles, 4 charts, location table) lives here. The source's
+// inline <script> (drawer, account dropdown, Escape, stagger) is dropped
+// entirely — all of it duplicates AppShell's own islands.
+//
+// SectionBar NOT used for the source's top-of-<main> `.sectionbar` nav
+// (Menus/Banners/Theme/Analytics/Team/QR): that strip is byte-identical to
+// the sidebar's `.app-subnav` (rendered by Sidebar/SubNav via
+// `currentSection`), so it's dropped as redundant — same call as
+// banners.astro/theme.astro. The page DOES have a genuinely separate
+// page-level pill control — the date-range segmented toggle (Today/7
+// days/30 days) + a standalone "Custom range" button — but it isn't ported
+// through the SectionBar.tsx component: SectionBar models a flat row of
+// equally-styled bordered pill *links* (one active), whereas this control is
+// a single-background segmented group (no per-pill border) plus one
+// visually distinct outlined button outside the group, and its "active" tab
+// is a `range=` query param rather than a route match. Reusing SectionBar's
+// shape here would misrepresent the source, so it's ported inline verbatim
+// (Tailwind utilities only, hrefs rewritten to clean routes).
+//
+// CHARTS/VIZ CSS: the source's <style> block (bespoke chart rules: line
+// chart SVG, horizontal bars, vertical bars, donut + legend) is co-located
+// below in a scoped <style> — these are genuine bespoke compounds (SVG
+// element selectors, a conic-gradient donut, linear-gradient bar fills) that
+// don't reduce to Tailwind utilities. Ported near-verbatim from the source,
+// with the same "brand tokens only" rule enforced:
+//   - Line chart / h-bars / v-bars: unchanged — already 100% var(--color-*)
+//     tokens (secondary/accent/base-300/base-content/info) in the source.
+//   - Donut segments: mobile=secondary (saffron), desktop=accent
+//     (saffron-deep), tablet=primary (tomato) — all 3 brand tokens, matching
+//     the source's own comment that its `--viz-muted` off-palette amber was
+//     already replaced with `--color-accent` before this port.
+//   - Peak-hour bar highlight (`.vbar.peak .vbar-fill`) keeps the source's
+//     one documented literal carve-out: `oklch(0.87 0.13 70)` (a brighter
+//     saffron gradient stop with no brand token) — transcribed verbatim,
+//     comment kept in place per the source's own annotation.
+//
+// The source <main> is wider than the app default (w-full max-w-[1320px],
+// NO mx-auto, matching menu-editor.astro/theme.astro) — the chart grid needs
+// the extra breathing room at 1440, per the source's own comment.
+---
+<AppShell crumb="Saffron & Smoke" currentRestaurantId="saffron-smoke" currentSection="/app/analytics">
+  <main class="w-full max-w-[1320px] px-[clamp(1rem,3vw,2.5rem)] pb-20 pt-[clamp(1.375rem,3.4vw,2.375rem)]">
+
+    <!-- page head: title + date-range toggle -->
+    <div class="mb-[clamp(1.25rem,2.6vw,1.875rem)] flex flex-wrap items-end justify-between gap-6">
+      <div class="min-w-0">
+        <h1 class="stagger text-[clamp(2rem,4.4vw,3rem)] tracking-[-0.035em]" data-delay="0">Analytics</h1>
+        <p class="stagger mt-2.5 max-w-[54ch] text-pretty text-[clamp(0.98rem,1.4vw,1.08rem)] leading-relaxed text-base-content/70" data-delay="0">How guests are finding and reading the Saffron &amp; Smoke menu — views, visitors, top dishes and when they show up.</p>
+      </div>
+
+      <!-- date-range segmented control + custom range -->
+      <div class="stagger flex flex-wrap items-center gap-2.5 max-[560px]:w-full" data-delay="1" role="group" aria-label="Date range">
+        <div class="inline-flex items-center gap-[3px] rounded-full border border-base-content/10 bg-base-200 p-1 max-[560px]:flex-1 max-[560px]:justify-between">
+          <a class="inline-flex min-h-[44px] items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-semibold text-base-content/60 transition-colors hover:text-base-content" href="/app/analytics?range=today">Today</a>
+          <a class="inline-flex min-h-[44px] items-center justify-center whitespace-nowrap rounded-full bg-secondary px-4 text-sm font-semibold text-secondary-content max-[560px]:flex-1" href="/app/analytics?range=7d" aria-current="true">7 days</a>
+          <a class="inline-flex min-h-[44px] items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-semibold text-base-content/60 transition-colors hover:text-base-content" href="/app/analytics?range=30d">30 days</a>
+        </div>
+        <a class="inline-flex min-h-[48px] items-center gap-2 whitespace-nowrap rounded-full border border-base-content/20 bg-transparent px-4 text-sm font-semibold text-base-content transition-[border-color,background-color,transform] duration-300 hover:-translate-y-px hover:border-secondary hover:bg-secondary/7"
+           href="/app/analytics?range=custom">
+          <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Custom range
+        </a>
+      </div>
+    </div>
+
+    <!-- ===== SUMMARY STAT TILES ===== -->
+    <section class="mb-[clamp(18px,2.4vw,26px)] grid grid-cols-[repeat(3,minmax(0,1fr))] gap-[clamp(14px,1.8vw,22px)] max-[980px]:grid-cols-1" aria-label="Summary">
+
+      <article class="stagger card flex min-w-0 flex-col gap-3 border border-base-content/10 bg-base-200 p-[clamp(18px,2vw,24px)] transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-[3px] hover:border-base-content/20 hover:shadow-floating" data-delay="2">
+        <div class="flex items-center justify-between gap-3">
+          <span class="inline-flex size-11 shrink-0 items-center justify-center rounded-[13px] bg-secondary/[0.14] text-secondary" aria-hidden="true">
+            <svg class="size-[21px]" viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+          <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-success/40 bg-success/15 px-2.5 py-1 text-[12.5px] font-semibold text-success">
+            <svg class="size-[13px]" viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>+12% vs last week
+          </span>
+        </div>
+        <div class="[font-family:var(--font-display)] text-[clamp(2.1rem,4.4vw,2.9rem)] font-bold leading-none tracking-[-0.03em] tabular-nums">12,480</div>
+        <div class="text-[13.5px] font-medium text-base-content/70">Total page views</div>
+      </article>
+
+      <article class="stagger card flex min-w-0 flex-col gap-3 border border-base-content/10 bg-base-200 p-[clamp(18px,2vw,24px)] transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-[3px] hover:border-base-content/20 hover:shadow-floating" data-delay="3">
+        <div class="flex items-center justify-between gap-3">
+          <span class="inline-flex size-11 shrink-0 items-center justify-center rounded-[13px] bg-secondary/[0.14] text-secondary" aria-hidden="true">
+            <svg class="size-[21px]" viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/></svg>
+          </span>
+          <span class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-success/40 bg-success/15 px-2.5 py-1 text-[12.5px] font-semibold text-success">
+            <svg class="size-[13px]" viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>+8% vs last week
+          </span>
+        </div>
+        <div class="[font-family:var(--font-display)] text-[clamp(2.1rem,4.4vw,2.9rem)] font-bold leading-none tracking-[-0.03em] tabular-nums">8,240</div>
+        <div class="text-[13.5px] font-medium text-base-content/70">Unique visitors</div>
+      </article>
+
+      <!-- most-viewed item tile (bespoke content, same card shell) -->
+      <article class="stagger card flex min-w-0 flex-col gap-3 border border-base-content/10 bg-base-200 p-[clamp(18px,2vw,24px)] transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-[3px] hover:border-base-content/20 hover:shadow-floating" data-delay="4">
+        <div class="flex items-center justify-between gap-3">
+          <span class="inline-flex size-11 shrink-0 items-center justify-center rounded-[13px] bg-secondary/[0.14] text-secondary" aria-hidden="true">
+            <svg class="size-[21px]" viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="currentColor"><path d="M12 2l2.6 6.6L21 9.2l-5 4.4L17.6 21 12 17.3 6.4 21 8 13.6l-5-4.4 6.4-.6z"/></svg>
+          </span>
+          <span class="shrink-0 text-[13.5px] font-medium text-base-content/70">Most-viewed item</span>
+        </div>
+        <div class="flex min-w-0 items-center gap-3.5">
+          <img class="size-[60px] shrink-0 rounded-[14px] border border-secondary/45 object-cover" src="/img/photo-1432139555190-58524dae6a55.jpg" alt="Smoked short rib, glazed and glistening under warm light">
+          <div class="min-w-0">
+            <div class="[font-family:var(--font-display)] truncate text-[1.35rem] font-semibold leading-[1.1] tracking-[-0.02em]">Smoked short rib</div>
+            <div class="mt-[3px] tabular-nums text-[14px] font-semibold text-secondary">1,284 views</div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===== CHARTS ===== -->
+    <section class="mb-[clamp(18px,2.4vw,26px)] grid grid-cols-2 gap-[clamp(14px,1.8vw,22px)] max-[900px]:grid-cols-1" aria-label="Charts">
+
+      <!-- Views over time — full-width span -->
+      <article class="stagger col-span-2 flex min-w-0 flex-col rounded-[var(--radius-box)] border border-base-content/10 bg-base-300 p-[clamp(16px,1.9vw,22px)] max-[900px]:col-span-1" data-delay="5">
+        <div class="mb-4 flex flex-wrap items-baseline justify-between gap-3">
+          <h2 class="[font-family:var(--font-display)] text-[1.22rem] font-semibold tracking-[-0.02em]">Views over time</h2>
+          <span class="text-[12.5px] font-medium text-base-content/70">Last 7 days · 12,480 total</span>
+        </div>
+        <svg class="linechart block h-auto w-full overflow-visible" viewBox="0 0 720 260" role="img" aria-label="Line chart of daily page views over the last 7 days, ranging from about 1,380 on Saturday to 2,480 on Sunday.">
+          <defs>
+            <linearGradient id="viewsArea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--color-secondary)" stop-opacity="0.34"/>
+              <stop offset="100%" stop-color="var(--color-secondary)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line class="grid-line" x1="44" y1="24" x2="708" y2="24"/>
+          <line class="grid-line" x1="44" y1="117" x2="708" y2="117"/>
+          <line class="grid-line" x1="44" y1="210" x2="708" y2="210"/>
+          <text class="axis-label" x="36" y="28" text-anchor="end">2.6k</text>
+          <text class="axis-label" x="36" y="121" text-anchor="end">1.3k</text>
+          <text class="axis-label" x="36" y="214" text-anchor="end">0</text>
+          <path class="area" d="M44,101.3 L154.7,89.8 L265.3,95.5 L376,68.3 L486.7,78.4 L597.3,111.3 L708,32.6 L708,210 L44,210 Z"/>
+          <path class="line" d="M44,101.3 L154.7,89.8 L265.3,95.5 L376,68.3 L486.7,78.4 L597.3,111.3 L708,32.6"/>
+          <circle class="pt" cx="44" cy="101.3" r="4.5"/>
+          <circle class="pt" cx="154.7" cy="89.8" r="4.5"/>
+          <circle class="pt" cx="265.3" cy="95.5" r="4.5"/>
+          <circle class="pt" cx="376" cy="68.3" r="4.5"/>
+          <circle class="pt" cx="486.7" cy="78.4" r="4.5"/>
+          <circle class="pt" cx="597.3" cy="111.3" r="4.5"/>
+          <circle class="pt-peak" cx="708" cy="32.6" r="5.5"/>
+          <text class="day-label" x="44" y="234">Mon</text>
+          <text class="day-label" x="154.7" y="234">Tue</text>
+          <text class="day-label" x="265.3" y="234">Wed</text>
+          <text class="day-label" x="376" y="234">Thu</text>
+          <text class="day-label" x="486.7" y="234">Fri</text>
+          <text class="day-label" x="597.3" y="234">Sat</text>
+          <text class="day-label" x="708" y="234">Sun</text>
+        </svg>
+      </article>
+
+      <!-- Popular items (horizontal bars) -->
+      <article class="stagger flex min-w-0 flex-col rounded-[var(--radius-box)] border border-base-content/10 bg-base-300 p-[clamp(16px,1.9vw,22px)]" data-delay="6">
+        <div class="mb-4 flex flex-wrap items-baseline justify-between gap-3">
+          <h2 class="[font-family:var(--font-display)] text-[1.22rem] font-semibold tracking-[-0.02em]">Popular items</h2>
+          <span class="text-[12.5px] font-medium text-base-content/70">By views</span>
+        </div>
+        <div class="flex min-w-0 flex-col gap-[13px]">
+          <div class="grid min-w-0 grid-cols-1 gap-1.5">
+            <div class="flex min-w-0 items-baseline justify-between gap-3"><span class="min-w-0 truncate text-[14px] font-medium">Smoked short rib</span><span class="shrink-0 tabular-nums text-[13.5px] font-semibold text-secondary">1,284</span></div>
+            <div class="hbar-track"><div class="hbar-fill" style="width:100%"></div></div>
+          </div>
+          <div class="grid min-w-0 grid-cols-1 gap-1.5">
+            <div class="flex min-w-0 items-baseline justify-between gap-3"><span class="min-w-0 truncate text-[14px] font-medium">Wood-fired margherita</span><span class="shrink-0 tabular-nums text-[13.5px] font-semibold text-secondary">1,042</span></div>
+            <div class="hbar-track"><div class="hbar-fill" style="width:81.2%"></div></div>
+          </div>
+          <div class="grid min-w-0 grid-cols-1 gap-1.5">
+            <div class="flex min-w-0 items-baseline justify-between gap-3"><span class="min-w-0 truncate text-[14px] font-medium">Red shrimp broth</span><span class="shrink-0 tabular-nums text-[13.5px] font-semibold text-secondary">868</span></div>
+            <div class="hbar-track"><div class="hbar-fill" style="width:67.6%"></div></div>
+          </div>
+          <div class="grid min-w-0 grid-cols-1 gap-1.5">
+            <div class="flex min-w-0 items-baseline justify-between gap-3"><span class="min-w-0 truncate text-[14px] font-medium">Saffron prawns</span><span class="shrink-0 tabular-nums text-[13.5px] font-semibold text-secondary">712</span></div>
+            <div class="hbar-track"><div class="hbar-fill" style="width:55.5%"></div></div>
+          </div>
+          <div class="grid min-w-0 grid-cols-1 gap-1.5">
+            <div class="flex min-w-0 items-baseline justify-between gap-3"><span class="min-w-0 truncate text-[14px] font-medium">Charred sharing board</span><span class="shrink-0 tabular-nums text-[13.5px] font-semibold text-secondary">596</span></div>
+            <div class="hbar-track"><div class="hbar-fill" style="width:46.4%"></div></div>
+          </div>
+          <div class="grid min-w-0 grid-cols-1 gap-1.5">
+            <div class="flex min-w-0 items-baseline justify-between gap-3"><span class="min-w-0 truncate text-[14px] font-medium">Burnt-honey carrots</span><span class="shrink-0 tabular-nums text-[13.5px] font-semibold text-secondary">432</span></div>
+            <div class="hbar-track"><div class="hbar-fill" style="width:33.6%"></div></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Peak hours (vertical bars) -->
+      <article class="stagger flex min-w-0 flex-col rounded-[var(--radius-box)] border border-base-content/10 bg-base-300 p-[clamp(16px,1.9vw,22px)]" data-delay="7">
+        <div class="mb-4 flex flex-wrap items-baseline justify-between gap-3">
+          <h2 class="[font-family:var(--font-display)] text-[1.22rem] font-semibold tracking-[-0.02em]">Peak hours</h2>
+          <span class="text-[12.5px] font-medium text-base-content/70">Views by hour of day</span>
+        </div>
+        <div class="vbars" role="img" aria-label="Vertical bar chart of views by hour from 11am to 11pm, peaking at 8pm.">
+          <div class="vbar"><div class="vbar-col"><div class="vbar-fill" style="height:28%"></div></div><span class="vbar-lab">11a</span></div>
+          <div class="vbar"><div class="vbar-col"><div class="vbar-fill" style="height:46%"></div></div><span class="vbar-lab">12p</span></div>
+          <div class="vbar"><div class="vbar-col"><div class="vbar-fill" style="height:62%"></div></div><span class="vbar-lab">1</span></div>
+          <div class="vbar"><div class="vbar-col"><div class="vbar-fill" style="height:40%"></div></div><span class="vbar-lab">2</span></div>
+          <div class="vbar"><div class="vbar-col"><div class="vbar-fill" style="height:30%"></div></div><span class="vbar-lab">3</span></div>
+          <div class="vbar"><div class="vbar-col"><div class="vbar-fill" style="height:34%"></div></div><span class="vbar-lab">4</span></div>
+          <div class="vbar"><div class="vbar-col"><div class="vbar-fill" style="height:52%"></div></div><span class="vbar-lab">5</span></div>
+          <div class="vbar"><div class="vbar-col"><div class="vbar-fill" style="height:74%"></div></div><span class="vbar-lab">6</span></div>
+          <div class="vbar peak"><div class="vbar-col"><div class="vbar-fill" style="height:92%"></div></div><span class="vbar-lab">7</span></div>
+          <div class="vbar peak"><div class="vbar-col"><div class="vbar-fill" style="height:100%"></div></div><span class="vbar-lab">8</span></div>
+          <div class="vbar peak"><div class="vbar-col"><div class="vbar-fill" style="height:86%"></div></div><span class="vbar-lab">9</span></div>
+          <div class="vbar"><div class="vbar-col"><div class="vbar-fill" style="height:58%"></div></div><span class="vbar-lab">10</span></div>
+          <div class="vbar"><div class="vbar-col"><div class="vbar-fill" style="height:32%"></div></div><span class="vbar-lab">11p</span></div>
+        </div>
+      </article>
+
+      <!-- Device breakdown (donut) -->
+      <article class="stagger flex min-w-0 flex-col rounded-[var(--radius-box)] border border-base-content/10 bg-base-300 p-[clamp(16px,1.9vw,22px)]" data-delay="8">
+        <div class="mb-4 flex flex-wrap items-baseline justify-between gap-3">
+          <h2 class="[font-family:var(--font-display)] text-[1.22rem] font-semibold tracking-[-0.02em]">Device breakdown</h2>
+          <span class="text-[12.5px] font-medium text-base-content/70">Share of sessions</span>
+        </div>
+        <div class="donut-wrap">
+          <div class="donut" role="img" aria-label="Donut chart: 68% mobile, 24% desktop, 8% tablet.">
+            <div class="donut-center">
+              <b>68%</b>
+              <span>on mobile</span>
+            </div>
+          </div>
+          <div class="legend min-w-0 flex-1">
+            <ul>
+              <li><span class="sw mobile" aria-hidden="true"></span><span class="flex-1 min-w-0 text-[14px]">Mobile</span><span class="tabular-nums text-[14px] font-semibold">68%</span></li>
+              <li><span class="sw desktop" aria-hidden="true"></span><span class="flex-1 min-w-0 text-[14px]">Desktop</span><span class="tabular-nums text-[14px] font-semibold">24%</span></li>
+              <li><span class="sw tablet" aria-hidden="true"></span><span class="flex-1 min-w-0 text-[14px]">Tablet</span><span class="tabular-nums text-[14px] font-semibold">8%</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===== LOCATION TABLE ===== -->
+    <section class="stagger min-w-0 rounded-[var(--radius-box)] border border-base-content/10 bg-base-200 p-[clamp(16px,1.9vw,24px)]" data-delay="9" aria-labelledby="loc-title">
+      <h2 id="loc-title" class="[font-family:var(--font-display)] text-[1.22rem] font-semibold tracking-[-0.02em]">Location breakdown</h2>
+      <p class="mb-4 mt-1 text-[12.5px] text-base-content/70">Where your guests viewed the menu from</p>
+      <div class="overflow-x-auto">
+        <table class="table min-w-[380px]">
+          <caption class="sr-only">Menu views by city over the last 7 days</caption>
+          <thead>
+            <tr>
+              <th class="pb-3 text-xs font-semibold tracking-[0.02em] text-base-content/70">City</th>
+              <th class="pb-3 text-xs font-semibold tracking-[0.02em] text-base-content/70">Country</th>
+              <th class="pb-3 text-right text-xs font-semibold tracking-[0.02em] text-base-content/70">Views</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="transition-colors duration-150 hover:bg-base-300/30"><td class="py-[13px] text-[14.5px] font-semibold">London</td><td class="py-[13px] text-[14.5px] text-base-content/70">United Kingdom</td><td class="py-[13px] text-right tabular-nums text-[14.5px] font-semibold text-secondary">3,210</td></tr>
+            <tr class="transition-colors duration-150 hover:bg-base-300/30"><td class="py-[13px] text-[14.5px] font-semibold">Manchester</td><td class="py-[13px] text-[14.5px] text-base-content/70">United Kingdom</td><td class="py-[13px] text-right tabular-nums text-[14.5px] font-semibold text-secondary">1,980</td></tr>
+            <tr class="transition-colors duration-150 hover:bg-base-300/30"><td class="py-[13px] text-[14.5px] font-semibold">Dublin</td><td class="py-[13px] text-[14.5px] text-base-content/70">Ireland</td><td class="py-[13px] text-right tabular-nums text-[14.5px] font-semibold text-secondary">940</td></tr>
+            <tr class="transition-colors duration-150 hover:bg-base-300/30"><td class="py-[13px] text-[14.5px] font-semibold">Birmingham</td><td class="py-[13px] text-[14.5px] text-base-content/70">United Kingdom</td><td class="py-[13px] text-right tabular-nums text-[14.5px] font-semibold text-secondary">610</td></tr>
+            <tr class="transition-colors duration-150 hover:bg-base-300/30"><td class="py-[13px] text-[14.5px] font-semibold">Leeds</td><td class="py-[13px] text-[14.5px] text-base-content/70">United Kingdom</td><td class="py-[13px] text-right tabular-nums text-[14.5px] font-semibold text-secondary">420</td></tr>
+            <tr><td class="py-[13px] text-[14.5px] font-semibold">Edinburgh</td><td class="py-[13px] text-[14.5px] text-base-content/70">United Kingdom</td><td class="py-[13px] text-right tabular-nums text-[14.5px] font-semibold text-secondary">360</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</AppShell>
+
+<style is:global>
+/* ---- Line chart (SVG: views over time) ---- */
+.linechart .grid-line { stroke: color-mix(in oklch, var(--color-base-content) 10%, transparent); stroke-width: 1; }
+.linechart .axis-label { fill: var(--color-info); font-family: var(--font-body); font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.linechart .day-label { fill: var(--color-info); font-family: var(--font-body); font-size: 14px; font-weight: 600; text-anchor: middle; }
+.linechart .area { fill: url(#viewsArea); }
+.linechart .line { fill: none; stroke: var(--color-secondary); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.linechart .pt { fill: var(--color-secondary); stroke: var(--color-base-300); stroke-width: 3; }
+.linechart .pt-peak { fill: var(--color-base-300); stroke: var(--color-secondary); stroke-width: 3.5; }
+
+/* ---- Horizontal bars (popular items) ---- */
+.hbar-track { height: 12px; border-radius: 999px; background: color-mix(in oklch, var(--color-base-content) 10%, transparent); overflow: hidden; min-width: 0; }
+.hbar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--color-accent), var(--color-secondary)); }
+
+/* ---- Vertical bars (peak hours) ---- */
+.vbars { display: flex; align-items: flex-end; gap: clamp(4px, 0.8vw, 9px); height: 200px; min-width: 0; }
+.vbar { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1 1 0; min-width: 0; height: 100%; }
+.vbar-col { flex: 1; width: 100%; display: flex; align-items: flex-end; min-width: 0; }
+.vbar-fill { width: 100%; border-radius: 7px 7px 3px 3px; min-width: 0; background: linear-gradient(180deg, var(--color-secondary), var(--color-accent)); }
+/* Peak highlight: brighter saffron stop — oklch(0.87 0.13 70) has no brand token; documented carve-out (verbatim from source) */
+.vbar.peak .vbar-fill { background: linear-gradient(180deg, oklch(0.87 0.13 70), var(--color-secondary)); }
+.vbar-lab { font-size: 10.5px; font-weight: 600; color: var(--color-info); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---- Donut chart (device breakdown) ---- */
+/* Segment colours: mobile=secondary(saffron), desktop=accent(saffron-deep), tablet=primary(tomato) — all 3 brand tokens. */
+.donut-wrap { display: flex; align-items: center; gap: clamp(16px, 2.4vw, 28px); flex-wrap: wrap; }
+.donut {
+  position: relative; width: 160px; height: 160px; border-radius: 50%; flex: none;
+  background: conic-gradient(
+    var(--color-secondary) 0 68%,
+    var(--color-accent) 68% 92%,
+    var(--color-primary) 92% 100%
+  );
+}
+.donut::after { content: ""; position: absolute; inset: 26px; border-radius: 50%; background: var(--color-base-300); }
+.donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; text-align: center; }
+.donut-center b { font-family: var(--font-display); font-weight: 700; font-size: 1.55rem; color: var(--color-base-content); letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+.donut-center span { font-size: 11.5px; color: var(--color-info); margin-top: 3px; }
+.legend ul { margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+.legend li { display: flex; align-items: center; gap: 10px; list-style: none; }
+.legend .sw { width: 13px; height: 13px; border-radius: 4px; flex: none; }
+.legend .sw.mobile { background: var(--color-secondary); }
+.legend .sw.desktop { background: var(--color-accent); }
+.legend .sw.tablet { background: var(--color-primary); }
+
+@media (max-width: 560px) {
+  .vbars { height: 170px; }
+  .donut-wrap { justify-content: center; }
+}
+</style>
