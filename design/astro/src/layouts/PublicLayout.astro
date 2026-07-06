@@ -29,12 +29,13 @@ const { title } = Astro.props;
 ---
 <html lang="en" data-theme="menufic-public">
   <head>
-    <BaseHead title={title} />
-    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://api.fontshare.com/v2/css?f[]=gambetta@400,500,600,700&f[]=general-sans@400,500,600,700&display=swap"
-    />
+    {/* menuFonts emits the owner-menu Fontshare link (gambetta/sentient/
+        general-sans/clash-display) ONCE via BaseHead — Task 18's shared
+        mechanism. The diner menu uses Gambetta (display) + General Sans
+        (body). Previously this layout loaded those with its OWN duplicate
+        <link> on top of BaseHead's, double-requesting the families; now
+        each face is fetched exactly once. */}
+    <BaseHead title={title} menuFonts />
   </head>
   <body class="bg-base-100 text-base-content">
     <a
@@ -95,6 +96,34 @@ const { title } = Astro.props;
     </footer>
 
     <PageMotion client:idle />
+
+    {/* Banner carousel (deferred from Task 10 → owned here). The banner markup
+        is chrome that lives in this layout, so its autoplay/dot-click behavior
+        rides with it as a small progressive-enhancement script — verbatim from
+        the source page <script>. Initial DOM is static (slide 1 / aria-current),
+        so no-JS still renders correctly; JS only drives the translateX + dots. */}
+    <script>
+      const track = document.getElementById('bannerTrack');
+      const dots = Array.from(document.querySelectorAll<HTMLButtonElement>('#bannerDots button'));
+      if (track && dots.length) {
+        const slideCount = dots.length;
+        let current = 0;
+        let timer: ReturnType<typeof setInterval> | null = null;
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const goTo = (i: number) => {
+          current = (i + slideCount) % slideCount;
+          track.style.transform = `translateX(${-current * 100}%)`;
+          dots.forEach((d, idx) => d.setAttribute('aria-current', idx === current ? 'true' : 'false'));
+        };
+        const restart = () => {
+          if (reduce) return;
+          if (timer) clearInterval(timer);
+          timer = setInterval(() => goTo(current + 1), 5000);
+        };
+        dots.forEach((d, idx) => d.addEventListener('click', () => { goTo(idx); restart(); }));
+        restart();
+      }
+    </script>
   </body>
 </html>
 

@@ -1,0 +1,15 @@
+---
+import PublicLayout from '../../layouts/PublicLayout.astro';
+import PublicMenu from '../../components/islands/PublicMenu.tsx';
+
+// Diner-facing Public menu (Task 22) — LIGHT "menufic-public" theme.
+// PublicLayout owns the chrome (back-to-editor link, banner header, footer);
+// the sticky search+tabs controls, the category sections of dish cards, and
+// the dish-detail modal are the interactive menu BODY, delivered by the
+// PublicMenu island. client:load so search/tabs/modal work immediately;
+// Astro still server-renders the island's initial HTML (dish content crawlable,
+// matching the source's static initial DOM).
+---
+<PublicLayout title="Saffron & Smoke · Dinner Menu">
+  <PublicMenu client:load />
+</PublicLayout>
