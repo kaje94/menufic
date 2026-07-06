@@ -26,4 +26,6 @@ export interface TeamMember {
   email: string;
   role: 'Owner' | 'Editor' | 'Viewer';
   avatar: string;
+  // Join date shown in the team.html Members table (whitespace-nowrap tabular-nums column).
+  joined: string;
 }

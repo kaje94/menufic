@@ -9,6 +9,7 @@ export const team: TeamMember[] = [
     email: 'a.kajendran@gmail.com',
     role: 'Owner',
     avatar: '/img/photo-1507003211169-0a1dd7228f2d.jpg',
+    joined: 'Jan 4, 2026',
   },
   {
     id: 'maria-conti',
@@ -16,6 +17,7 @@ export const team: TeamMember[] = [
     email: 'maria@saffronsmoke.com',
     role: 'Editor',
     avatar: '/img/photo-1494790108377-be9c29b29330.jpg',
+    joined: 'Feb 12, 2026',
   },
   {
     id: 'daniel-okafor',
@@ -25,6 +27,7 @@ export const team: TeamMember[] = [
     // Source HTML reuses the owner's photo for Daniel Okafor's avatar (team.html:326)
     // — transcribed as-is for fidelity, not a transcription error.
     avatar: '/img/photo-1507003211169-0a1dd7228f2d.jpg',
+    joined: 'Mar 3, 2026',
   },
   {
     id: 'priya-nair',
@@ -32,5 +35,6 @@ export const team: TeamMember[] = [
     email: 'priya@saffronsmoke.com',
     role: 'Viewer',
     avatar: '/img/photo-1438761681033-6461ffad8d80.jpg',
+    joined: 'Apr 21, 2026',
   },
 ];

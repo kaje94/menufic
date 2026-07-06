@@ -1,0 +1,291 @@
+---
+import AppShell from '../../layouts/AppShell.astro';
+import Avatar from '../../components/app/Avatar.tsx';
+import { team } from '../../data/team';
+
+// Migrated from design/landing/app/team.html (~700 lines). The app shell
+// (topbar/sidebar/drawer/account-menu/stagger entrance) is owned by
+// AppShell.astro — only the <main> page content (invite / pending invites /
+// members / transfer-ownership) plus the co-located transfer dialog (a
+// sibling of <main>, exactly as in the source body) live here. The source's
+// inline <script> (drawer, account dropdown, more-menus, copy-link, transfer
+// dialog focus-trap, Escape, stagger) is dropped entirely — the drawer/
+// account/Escape/stagger bits duplicate AppShell's own islands; the rest
+// (more-menu toggle, copy-link feedback, transfer dialog open/close) has no
+// AppShell equivalent, so those affordances are ported STATIC/closed, same
+// precedent as banners.astro's dead delete button + closed confirm dialog:
+//   - "More actions" row buttons: dead affordance, dropdown rendered `hidden`
+//     (closed) — no opener wired.
+//   - "Copy invite link" / "Send invite" / "Revoke" / "Resend" / "Transfer
+//     ownership": dead affordances (no handlers), matching restaurant.astro's
+//     dead-action precedent.
+//   - Transfer-ownership dialog: ported in its CLOSED initial state as plain
+//     Tailwind-utility divs (not a native <dialog>), same substitution
+//     banners.astro made for its confirm dialog — a native <dialog> without
+//     JS to call .showModal() would just stay invisible by UA default, so a
+//     flex-centered overlay pair (scrim + wrap) makes the intent legible in
+//     the static markup instead.
+//
+// IMPORTANT — no `.sectionbar` pill strip: unlike some sibling pages, this
+// baseline never had one (per the migration ledger) — none was added here.
+//
+// TEAM DATA: the Members roster below maps over `data/team.ts`'s `team`
+// array (4 members) instead of copy-pasting 4 near-identical rows. `team.ts`
+// gained a `joined` field (Members-table "Joined" column; not needed by any
+// other consumer) to keep this row fully data-driven — each value
+// transcribed verbatim from the source table cells.
+//
+// BADGES: the source's own <style> block groups 5 badge variants
+// (owner/editor/viewer/pending/expired) plus a shared `.badge-dot` as
+// "cannot be Tailwind" bespoke CSS. In practice every one of them reduces to
+// Tailwind utilities (bg-x/NN opacity-suffix or bracket color-mix percentage,
+// `bg-current` for `background: currentColor`) — ported inline per badge,
+// with ONE literal carve-out preserved: badge-expired's text colour is a
+// "tomato-bright" shade with no brand token (oklch(0.66 0.19 32) — same
+// literal DishRow.tsx already carries for its sold-out badge), kept as an
+// inline `style` attribute with the same comment.
+//
+// ROLE-BADGE FIDELITY QUIRK (verified against source, not a transcription
+// slip): the Owner row's badge includes the `.badge-dot` circle
+// (team.html:284); the Editor/Viewer badges in the Members table do NOT
+// (team.html:300/333/366) — only the Pending-invites section's hardcoded
+// Editor/Viewer/Pending/Expired badges carry a dot. Reproduced exactly:
+// `team.map()` only renders a dot for role === 'Owner'.
+---
+<AppShell crumb="Saffron & Smoke" currentRestaurantId="saffron-smoke" currentSection="/app/team">
+  <main class="w-full max-w-[1080px] px-[clamp(1rem,3vw,2.5rem)] pb-20 pt-[clamp(1.375rem,3.4vw,2.375rem)]">
+
+    <!-- page head -->
+    <div class="mb-[clamp(1.25rem,2.6vw,1.875rem)]">
+      <h1 class="stagger text-[clamp(2rem,4.1vw,2.9rem)] tracking-[-0.035em]" data-delay="0">Team</h1>
+      <p class="stagger mt-2.5 max-w-[60ch] text-pretty text-[clamp(0.98rem,1.4vw,1.08rem)] leading-relaxed text-base-content/70" data-delay="0">Invite people to help run the Saffron &amp; Smoke menu. Editors can change dishes and publish; viewers can look but not touch. You're the owner.</p>
+    </div>
+
+    <!-- ===== INVITE ===== -->
+    <section class="stagger mb-[clamp(1rem,1.6vw,1.375rem)] min-w-0 rounded-[var(--radius-box)] border border-base-content/[0.18] bg-base-200 p-[clamp(1.125rem,2.4vw,1.625rem)]"
+             data-delay="1" aria-labelledby="invite-h">
+      <div class="mb-[18px]">
+        <h2 id="invite-h" class="text-[1.4rem] tracking-[-0.025em]">Invite a teammate</h2>
+        <p class="mt-1.5 max-w-[58ch] text-[13.5px] text-base-content/70">Send an email invite, or copy a shareable link they can use to join with the role you pick.</p>
+      </div>
+
+      <form class="grid grid-cols-[minmax(0,1fr)_170px_auto] items-end gap-3.5 max-[620px]:grid-cols-1 max-[620px]:items-stretch" onsubmit="return false">
+        <div class="flex min-w-0 flex-col gap-2">
+          <label class="text-[13px] font-semibold tracking-[0.01em]" for="invite-email">Email address</label>
+          <input class="input w-full bg-base-100" id="invite-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@restaurant.com">
+        </div>
+        <div class="flex min-w-0 flex-col gap-2">
+          <label class="text-[13px] font-semibold tracking-[0.01em]" for="invite-role">Role</label>
+          <select class="select w-full bg-base-100" id="invite-role" name="role">
+            <option value="editor">Editor</option>
+            <option value="viewer">Viewer</option>
+          </select>
+        </div>
+        <button class="btn btn-primary shrink-0 max-[620px]:w-full" type="submit">
+          <svg class="size-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+          Send invite
+        </button>
+      </form>
+
+      <div class="my-5 flex items-center gap-3.5 text-[12.5px] font-semibold tracking-[0.02em] text-base-content/55" aria-hidden="true">
+        <span class="h-px flex-1 bg-base-content/[0.12]"></span>
+        or share a link
+        <span class="h-px flex-1 bg-base-content/[0.12]"></span>
+      </div>
+
+      <form class="grid grid-cols-[170px_auto] items-end gap-3.5 max-[620px]:grid-cols-1 max-[620px]:items-stretch" onsubmit="return false">
+        <div class="flex min-w-0 flex-col gap-2">
+          <label class="text-[13px] font-semibold tracking-[0.01em]" for="link-role">Link role</label>
+          <select class="select w-full bg-base-100" id="link-role" name="link-role">
+            <option value="editor">Editor</option>
+            <option value="viewer">Viewer</option>
+          </select>
+        </div>
+        <button class="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-full border border-base-content/25 bg-transparent px-4 text-[14px] font-semibold text-base-content transition-[border-color,color,transform] duration-200 hover:-translate-y-px hover:border-secondary hover:text-secondary"
+                type="submit" id="copyInviteLink">
+          <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <span>Copy invite link</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- ===== PENDING INVITES ===== -->
+    <section class="stagger mb-[clamp(1rem,1.6vw,1.375rem)] min-w-0 rounded-[var(--radius-box)] border border-base-content/[0.18] bg-base-200 p-[clamp(1.125rem,2.4vw,1.625rem)]"
+             data-delay="2" aria-labelledby="pending-h">
+      <div class="mb-[18px]">
+        <h2 id="pending-h" class="text-[1.4rem] tracking-[-0.025em]">Pending invites</h2>
+        <p class="mt-1.5 max-w-[58ch] text-[13.5px] text-base-content/70">People who've been invited but haven't joined yet. Expired invites can be re-sent.</p>
+      </div>
+
+      <ul class="flex flex-col gap-2.5" style="list-style:none;margin:0;padding:0">
+        <li class="flex min-w-0 flex-wrap items-center gap-3.5 rounded-2xl border border-base-content/[0.13] bg-base-100 px-3.5 py-3">
+          <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-[11px] border border-base-content/[0.13] bg-base-300 text-base-content/60" aria-hidden="true">
+            <svg class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block truncate text-[14.5px] font-semibold text-base-content [font-family:var(--font-body)]">chef@saffronsmoke.com</span>
+            <span class="mt-0.5 flex flex-wrap items-center gap-2">
+              <span class="badge inline-flex items-center gap-1.5 rounded-full bg-base-300 border border-base-content/[0.18] px-2.5 py-[3px] text-[11.5px] font-semibold text-base-content [font-family:var(--font-body)] tracking-[0.01em]"><span class="size-[6px] flex-none rounded-full bg-current" aria-hidden="true"></span>Editor</span>
+              <span class="badge inline-flex items-center gap-1.5 rounded-full bg-secondary/[0.14] border border-secondary/40 px-2.5 py-[3px] text-[11.5px] font-semibold text-secondary [font-family:var(--font-body)] tracking-[0.01em]"><span class="size-[6px] flex-none rounded-full bg-current" aria-hidden="true"></span>Pending</span>
+              <span class="text-[12.5px] text-base-content/60">Sent 2 days ago</span>
+            </span>
+          </span>
+          <button class="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-full border border-error/30 bg-transparent px-4 text-[14px] font-semibold text-error transition-[background-color,border-color,transform] duration-200 hover:-translate-y-px hover:border-error/50 hover:bg-error/10 max-[620px]:w-full"
+                  type="button" aria-label="Revoke invite for chef@saffronsmoke.com">Revoke</button>
+        </li>
+
+        <li class="flex min-w-0 flex-wrap items-center gap-3.5 rounded-2xl border border-base-content/[0.13] bg-base-100 px-3.5 py-3">
+          <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-[11px] border border-base-content/[0.13] bg-base-300 text-base-content/60" aria-hidden="true">
+            <svg class="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block truncate text-[14.5px] font-semibold text-base-content [font-family:var(--font-body)]">host@saffronsmoke.com</span>
+            <span class="mt-0.5 flex flex-wrap items-center gap-2">
+              <span class="badge inline-flex items-center gap-1.5 rounded-full bg-transparent border border-base-content/[0.18] px-2.5 py-[3px] text-[11.5px] font-semibold text-base-content/65 [font-family:var(--font-body)] tracking-[0.01em]"><span class="size-[6px] flex-none rounded-full bg-current" aria-hidden="true"></span>Viewer</span>
+              <!-- badge-expired text: "tomato-bright" carve-out, no brand token (same literal as DishRow.tsx's sold-out badge) -->
+              <span class="badge inline-flex items-center gap-1.5 rounded-full bg-error/[0.14] border border-error/35 px-2.5 py-[3px] text-[11.5px] font-semibold [font-family:var(--font-body)] tracking-[0.01em]" style="color:oklch(0.66 0.19 32)"><span class="size-[6px] flex-none rounded-full bg-current" aria-hidden="true"></span>Expired</span>
+              <span class="text-[12.5px] text-base-content/60">Sent 3 weeks ago</span>
+            </span>
+          </span>
+          <button class="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-full border border-base-content/25 bg-transparent px-4 text-[14px] font-semibold text-base-content transition-[border-color,color,transform] duration-200 hover:-translate-y-px hover:border-secondary hover:text-secondary max-[620px]:w-full"
+                  type="button" aria-label="Resend invite to host@saffronsmoke.com">
+            <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Resend
+          </button>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ===== MEMBERS ===== -->
+    <section class="stagger mb-[clamp(1rem,1.6vw,1.375rem)] min-w-0 rounded-[var(--radius-box)] border border-base-content/[0.18] bg-base-200 p-[clamp(1.125rem,2.4vw,1.625rem)]"
+             data-delay="3" aria-labelledby="members-h">
+      <div class="mb-[18px]">
+        <h2 id="members-h" class="text-[1.4rem] tracking-[-0.025em]">Members</h2>
+        <p class="mt-1.5 max-w-[58ch] text-[13.5px] text-base-content/70">Everyone with access to this restaurant. Only the owner can change roles or remove people.</p>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl [-webkit-overflow-scrolling:touch]">
+        <table class="table min-w-[560px] [&_tbody_tr:hover]:bg-base-300/40">
+          <caption class="sr-only">Members of Saffron &amp; Smoke, with role and join date</caption>
+          <thead>
+            <tr>
+              <th scope="col">Member</th>
+              <th scope="col">Role</th>
+              <th scope="col">Joined</th>
+              <th scope="col"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {team.map((m) => {
+              const isOwner = m.role === 'Owner';
+              const badgeCls = isOwner
+                ? 'bg-secondary text-secondary-content'
+                : m.role === 'Editor'
+                ? 'bg-base-300 text-base-content border border-base-content/[0.18]'
+                : 'bg-transparent text-base-content/65 border border-base-content/[0.18]';
+              return (
+                <tr>
+                  <td>
+                    <div class="flex min-w-0 items-center gap-3">
+                      <Avatar src={m.avatar} name={m.name} size={42} className="size-[42px] shrink-0 border border-base-content/[0.13]" />
+                      <span class="min-w-0">
+                        {isOwner ? (
+                          <b class="flex min-w-0 flex-wrap items-center gap-1.5 [font-family:var(--font-body)] text-[14.5px] font-semibold text-base-content">
+                            {m.name}
+                            <span class="rounded-full border border-base-content/[0.13] bg-base-100 px-2 py-px text-[11px] font-semibold text-base-content/60">You</span>
+                          </b>
+                        ) : (
+                          <b class="block truncate [font-family:var(--font-body)] text-[14.5px] font-semibold text-base-content">{m.name}</b>
+                        )}
+                        <span class="block truncate text-[12.5px] text-base-content/60">{m.email}</span>
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class={`badge inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[11.5px] font-semibold [font-family:var(--font-body)] tracking-[0.01em] ${badgeCls}`}>
+                      {isOwner && <span class="size-[6px] flex-none rounded-full bg-current/70" aria-hidden="true"></span>}
+                      {m.role}
+                    </span>
+                  </td>
+                  <td class="whitespace-nowrap text-[13.5px] tabular-nums text-base-content/60">{m.joined}</td>
+                  <td class="text-right">
+                    {isOwner ? (
+                      <span class="whitespace-nowrap text-[12.5px] text-base-content/60">Restaurant owner</span>
+                    ) : (
+                      <div class="more relative inline-block">
+                        <button class="inline-flex size-11 items-center justify-center rounded-xl border border-base-content/[0.13] bg-base-200 text-base-content/60 transition-[background-color,border-color,color] duration-200 hover:border-base-content/25 hover:bg-base-300 hover:text-base-content more-btn"
+                                type="button" aria-haspopup="true" aria-expanded="false" aria-label={`More actions for ${m.name}`}>
+                          <svg class="size-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg>
+                        </button>
+                        <div class="more-menu absolute right-0 top-[calc(100%+8px)] z-30 hidden min-w-[188px] flex-col gap-0.5 rounded-[var(--radius-field)] border border-base-content/20 bg-base-300 p-[7px] shadow-floating" role="menu" aria-label={`Actions for ${m.name}`}>
+                          <button class="flex w-full min-h-[44px] items-center gap-2.5 rounded-[10px] border-none bg-transparent px-3 text-left [font-family:var(--font-body)] text-[14px] font-medium text-base-content transition-colors duration-150 hover:bg-base-100/60" type="button" role="menuitem">
+                            <svg class="size-[17px] shrink-0 text-base-content/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+                            Change role
+                          </button>
+                          <button class="flex w-full min-h-[44px] items-center gap-2.5 rounded-[10px] border-none bg-transparent px-3 text-left [font-family:var(--font-body)] text-[14px] font-medium text-error transition-[background-color] duration-150 hover:bg-error/[0.13]" type="button" role="menuitem">
+                            <svg class="size-[17px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== TRANSFER OWNERSHIP ===== -->
+    <section class="stagger mb-[clamp(1rem,1.6vw,1.375rem)] min-w-0 rounded-[var(--radius-box)] border border-base-content/[0.18] bg-base-200 p-[clamp(1.125rem,2.4vw,1.625rem)]"
+             data-delay="4" aria-labelledby="transfer-h">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="min-w-0 flex-1">
+          <b id="transfer-h" class="block text-[14.5px] font-semibold text-base-content [font-family:var(--font-body)]">Transfer ownership</b>
+          <span class="mt-0.5 block text-[13px] text-base-content/60">Hand this restaurant to another member. You'll become an Editor.</span>
+        </div>
+        <button class="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-full border border-base-content/25 bg-transparent px-4 text-[14px] font-semibold text-base-content transition-[border-color,color,transform] duration-200 hover:-translate-y-px hover:border-secondary hover:text-secondary max-[620px]:w-full"
+                type="button" id="openTransfer" aria-haspopup="dialog">
+          <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          Transfer ownership
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== TRANSFER DIALOG (closed initial state) =====================
+       Ported for design fidelity (matches banners.astro's closed confirm-dialog precedent).
+       Never opens — the "Transfer ownership" button above is a static affordance, so no
+       opener is wired. Plain Tailwind-utility overlay pair, not a native <dialog>, since a
+       native <dialog> without JS to call .showModal() would just stay invisible by UA default. -->
+  <div class="fixed inset-0 z-[90] bg-[oklch(0.13_0.02_50_/_0.66)] opacity-0 invisible backdrop-blur-[3px] transition-[opacity,visibility] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]" id="dialogScrim" hidden></div>
+  <div class="fixed inset-0 z-[95] flex items-center justify-center p-4 opacity-0 invisible transition-[opacity,visibility] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]" role="presentation">
+    <div class="w-full max-w-[460px] rounded-[var(--radius-box)] border border-base-content/20 bg-base-200 text-base-content"
+         style="box-shadow:0 30px 70px -30px oklch(0 0 0 / 0.9)"
+         role="alertdialog" id="transferDialog" aria-labelledby="td-title" aria-describedby="td-desc">
+      <form id="transferForm">
+        <div class="p-6 pb-2">
+          <span class="mb-3.5 inline-flex size-12 items-center justify-center rounded-[var(--radius-field)] border border-secondary/40 bg-secondary/[0.14] text-secondary" aria-hidden="true">
+            <svg class="size-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          </span>
+          <h2 id="td-title" class="text-[1.5rem] tracking-[-0.03em]">Transfer ownership of Saffron &amp; Smoke?</h2>
+          <p id="td-desc" class="mt-2 text-[14px] leading-relaxed text-base-content/70">The person you choose becomes the new owner with full control. You'll become an Editor and can no longer manage the team or billing.</p>
+          <div class="mt-[18px] flex flex-col gap-2">
+            <label class="text-[13px] font-semibold" for="transfer-member">New owner</label>
+            <select class="select w-full bg-base-100" id="transfer-member" name="member" required>
+              <option value="maria">Maria Conti · Editor</option>
+              <option value="daniel">Daniel Okafor · Editor</option>
+              <option value="priya">Priya Nair · Viewer</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex gap-3 px-6 pb-6 pt-2">
+          <button class="btn btn-ghost flex-1" type="button" id="cancelTransfer">Cancel</button>
+          <button class="btn btn-primary flex-1" type="submit">Confirm transfer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</AppShell>
