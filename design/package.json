@@ -2,13 +2,11 @@
   "name": "menufic-design-prototype",
   "private": true,
   "version": "0.0.0",
+  "description": "Menufic V2 design prototype — Astro + React app in ./astro (migrated from the retired static HTML in ./landing).",
   "scripts": {
-    "build:css": "tailwindcss -i ./landing/assets/css/app.css -o ./landing/assets/css/styles.css --minify",
-    "watch:css": "tailwindcss -i ./landing/assets/css/app.css -o ./landing/assets/css/styles.css --watch"
-  },
-  "devDependencies": {
-    "@tailwindcss/cli": "^4.0.0",
-    "daisyui": "^5.0.0",
-    "tailwindcss": "^4.0.0"
+    "dev": "npm --prefix astro run dev",
+    "build": "npm --prefix astro run build",
+    "preview": "npm --prefix astro run preview",
+    "check": "npm --prefix astro exec astro check"
   }
 }
