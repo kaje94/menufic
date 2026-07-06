@@ -1,0 +1,108 @@
+---
+import AppShell from '../../layouts/AppShell.astro';
+
+// Migrated from design/landing/app/qr.html (~326 lines). The app shell
+// (topbar/sidebar/drawer/account-menu/stagger entrance) is owned by
+// AppShell.astro — only the <main> QR-card content lives here. The source's
+// inline <script> (drawer, account dropdown, copy-link, Escape, stagger) is
+// dropped entirely: drawer/account/Escape/stagger duplicate AppShell's own
+// islands, and "Copy link" has no AppShell equivalent, so it's ported as a
+// dead/static affordance — same precedent as team.astro's "Copy invite link"
+// button (id kept, no handler wired).
+//
+// BESPOKE-CSS HANDLING: the source's own <style> header comment names two
+// "cannot be Tailwind" rules (.qr-chip, .qr-public). Both convert cleanly:
+//   1. .qr-chip → `flex-none rounded-[var(--radius-box)] border
+//      border-secondary/35 bg-white p-[18px]` (color-mix(secondary 35%,
+//      transparent) == the `/35` opacity-modifier idiom used throughout).
+//      One carve-out preserved: the pure-white background is real #fff, not
+//      a token — same intentional non-derivable choice already documented
+//      on the landing hero-qr chip (`oklch(1 0 0)` in VideoHero.tsx) because
+//      QR scanners need genuine white for reliable contrast. Its
+//      `@media(max-width:380px){ img{200x200} }` companion converts to a
+//      plain `max-[380px]:size-[200px]` variant on the <img> itself — no
+//      co-located CSS needed.
+//   2. .qr-public's compound `transition: gap …, color …` (two properties,
+//      two durations, shared easing) → `transition-[gap,color] duration-200
+//      ease-[cubic-bezier(0.16,1,0.3,1)] hover:gap-3 hover:text-accent`, the
+//      same multi-property arbitrary-list idiom already used by team.astro's
+//      link buttons (`transition-[border-color,color,transform]`). The two
+//      source durations (250ms gap / 200ms color) collapse to one shared
+//      200ms, a negligible fidelity loss for a hover-only micro-transition.
+// The one piece that doesn't reduce to a utility class is the compound
+// pure-black `box-shadow` on .qr-chip (oklch(0 0 0 / 0.7) isn't a
+// --color-* token) — kept as an inline `style`, the same carve-out already
+// used by DishRow.tsx / menu-editor.astro's edit-panel shadow / banners.astro's
+// confirm dialog.
+//
+// Route rewrite: the source's "View public menu" link (`/public/index.html`)
+// becomes `/public`, matching restaurant.astro/menu-editor.astro's existing
+// preview-link convention.
+---
+<AppShell crumb="Saffron & Smoke" currentRestaurantId="saffron-smoke" currentSection="/app/qr">
+  <main class="mx-auto w-full max-w-[640px] px-[clamp(1rem,3vw,2.5rem)] pb-20 pt-[clamp(1.5rem,4vw,3.25rem)]">
+
+    <div class="mb-[clamp(1.375rem,3vw,2rem)] text-center">
+      <h1 class="stagger text-[clamp(2rem,4.1vw,2.9rem)] tracking-[-0.035em]" data-delay="0">QR code</h1>
+      <p class="stagger mx-auto mt-2.5 max-w-[46ch] text-pretty text-[clamp(0.98rem,1.4vw,1.08rem)] leading-relaxed text-base-content/70" data-delay="0">One code for Saffron &amp; Smoke. Print it once — it always opens your latest published menu.</p>
+    </div>
+
+    <section class="card stagger min-w-0 flex-col items-center gap-0 border border-base-content/[0.18] bg-base-200 p-[clamp(1.375rem,3vw,2.125rem)] text-center shadow-floating" data-delay="1" aria-labelledby="qr-card-h">
+      <h2 id="qr-card-h" class="sr-only">Saffron &amp; Smoke menu QR code</h2>
+
+      <!-- published status — hand-rolled green pill (matches dashboard pattern; no daisyUI success badge) -->
+      <span class="mb-[1.375rem] inline-flex items-center gap-2 rounded-full border border-success/40 bg-success/15 px-[13px] py-[5px] text-xs font-semibold text-success">
+        <span class="size-2 shrink-0 rounded-full bg-success" aria-hidden="true"></span>Published &amp; live
+      </span>
+
+      <!-- QR code chip: bg-white is an intentional non-derivable carve-out
+           (scanners need real white, not a token) — see file-header comment;
+           box-shadow is the pure-black inline-style carve-out (same as
+           DishRow/menu-editor/banners). -->
+      <div class="flex-none rounded-[var(--radius-box)] border border-secondary/35 bg-white p-[18px]" style="box-shadow:0 14px 34px -20px oklch(0 0 0 / 0.7)">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://menufic.com/r/saffron-smoke"
+             width="240" height="240"
+             class="block size-60 max-[380px]:size-[200px] rounded-[6px]"
+             alt="QR code that opens the Saffron and Smoke menu at menufic.com/r/saffron-smoke">
+      </div>
+
+      <!-- URL row -->
+      <div class="mt-6 flex w-full flex-wrap items-center justify-center gap-2.5">
+        <span class="inline-flex min-h-[48px] min-w-0 max-w-full items-center gap-2.5 rounded-full border border-base-content/30 bg-base-100 pl-4 pr-1.5">
+          <svg class="size-4 shrink-0 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <code class="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-[14.5px] font-semibold text-base-content [font-family:var(--font-body)]">menufic.com/r/saffron-smoke</code>
+          <!-- dead affordance: no clipboard handler wired (Copy link script dropped, see file header) -->
+          <button class="inline-flex min-h-[38px] shrink-0 items-center justify-center gap-[7px] rounded-full border border-base-content/[0.18] bg-base-300 px-[13px] text-[13px] font-semibold text-base-content transition-[border-color,color] duration-200 hover:border-secondary hover:text-secondary"
+                  type="button" id="copyLink" aria-label="Copy public menu link">
+            <svg class="size-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span id="copyLinkText">Copy link</span>
+          </button>
+        </span>
+      </div>
+
+      <!-- download actions -->
+      <div class="mt-6 flex w-full flex-wrap justify-center gap-3">
+        <a class="btn btn-primary max-[560px]:w-full"
+           href="https://api.qrserver.com/v1/create-qr-code/?size=1024x1024&format=png&data=https://menufic.com/r/saffron-smoke"
+           download="saffron-smoke-menu-qr.png">
+          <svg class="size-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PNG
+        </a>
+        <a class="btn btn-ghost max-[560px]:w-full"
+           href="https://api.qrserver.com/v1/create-qr-code/?size=1024x1024&format=svg&data=https://menufic.com/r/saffron-smoke"
+           download="saffron-smoke-menu-qr.svg">
+          <svg class="size-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download SVG
+        </a>
+      </div>
+
+      <p class="mt-[22px] max-w-[44ch] text-pretty text-[13.5px] leading-relaxed text-base-content/70">Print it for tables, windows and flyers — it always points to your latest menu.</p>
+
+      <a class="mt-5 inline-flex min-h-[44px] items-center gap-2 rounded-[10px] px-1.5 text-[15px] font-semibold text-secondary transition-[gap,color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:gap-3 hover:text-accent"
+         href="/public">
+        View public menu
+        <svg class="size-[17px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </section>
+  </main>
+</AppShell>
